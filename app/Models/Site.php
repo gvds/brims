@@ -9,4 +9,6 @@ class Site extends Model
 {
     /** @use HasFactory<\Database\Factories\SiteFactory> */
     use HasFactory;
+
+    protected $guarded = ['id'];
 }

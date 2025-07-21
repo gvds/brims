@@ -25,6 +25,26 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function arms(): HasMany
+    {
+        return $this->hasMany(Arm::class);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    public function sites(): HasMany
+    {
+        return $this->hasMany(Site::class);
+    }
+
+    public function subjects(): HasMany
+    {
+        return $this->hasMany(Subject::class);
+    }
+
     public function studies(): HasMany
     {
         return $this->hasMany(Study::class);

@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Filament\Resources\Projects\Resources\Arms;
+
+use App\Filament\Resources\Projects\ProjectResource;
+use App\Filament\Resources\Projects\Resources\Arms\Pages\CreateArm;
+use App\Filament\Resources\Projects\Resources\Arms\Pages\EditArm;
+use App\Filament\Resources\Projects\Resources\Arms\Schemas\ArmForm;
+use App\Filament\Resources\Projects\Resources\Arms\Tables\ArmsTable;
+use App\Filament\Resources\Projects\Resources\Studies\Pages\ViewArm;
+use App\Filament\Resources\Projects\Resources\Studies\Schemas\ArmInfolist;
+use App\Models\Arm;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+
+class ArmResource extends Resource
+{
+    protected static ?string $model = Arm::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $parentResource = ProjectResource::class;
+
+    public static function form(Schema $schema): Schema
+    {
+        return ArmForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return ArmsTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return ArmInfolist::configure($schema);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\EventsRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'create' => CreateArm::route('/create'),
+            'view' => ViewArm::route('/{record}'),
+            'edit' => EditArm::route('/{record}/edit'),
+        ];
+    }
+}

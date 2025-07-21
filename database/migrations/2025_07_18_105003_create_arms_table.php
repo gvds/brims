@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('arms', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->nullable();
+            $table->string('name', 50);
             $table->foreignIdFor(Project::class)->constrained();
             $table->unsignedBigInteger('redcap_arm_id')->nullable();
-            $table->unsignedTinyInteger('arm_num')->nullable();
+            $table->unsignedTinyInteger('arm_num');
             $table->boolean('manual_enrol')->default(0);
             $table->string('switcharms', 100)->nullable();
             $table->timestamps();

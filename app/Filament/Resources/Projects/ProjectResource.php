@@ -46,6 +46,9 @@ class ProjectResource extends Resource
         return [
             RelationManagers\StudiesRelationManager::class,
             RelationManagers\MembersRelationManager::class,
+            RelationManagers\ArmsRelationManager::class,
+            RelationManagers\SitesRelationManager::class,
+            // RelationManagers\SubjectsRelationManager::class,
         ];
     }
 
