@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -139,5 +141,17 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'project_member')->withPivot(['id', 'role'])->withTimestamps();
+    }
+
+    public function projectSite(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Site::class,
+            ProjectMember::class,
+            'user_id',
+            'id',
+            'id',
+            'site_id'
+        );
     }
 }

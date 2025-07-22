@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AssayDefinitionSeeder::class,
             ProjectSeeder::class,
+            SpecimentypeSeeder::class,
         ]);
     }
 }

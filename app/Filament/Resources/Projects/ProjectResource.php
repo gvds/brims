@@ -11,13 +11,10 @@ use App\Filament\Resources\Projects\Schemas\ProjectInfolist;
 use App\Filament\Resources\Projects\Tables\ProjectsTable;
 use App\Models\Project;
 use BackedEnum;
-use Filament\Resources\Pages\Page;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Factories\Relationship;
 
 class ProjectResource extends Resource
 {
@@ -46,8 +43,9 @@ class ProjectResource extends Resource
         return [
             RelationManagers\StudiesRelationManager::class,
             RelationManagers\MembersRelationManager::class,
-            RelationManagers\ArmsRelationManager::class,
             RelationManagers\SitesRelationManager::class,
+            RelationManagers\ArmsRelationManager::class,
+            RelationManagers\SpecimentypesRelationManager::class,
             // RelationManagers\SubjectsRelationManager::class,
         ];
     }

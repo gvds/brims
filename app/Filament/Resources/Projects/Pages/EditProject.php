@@ -32,7 +32,6 @@ class EditProject extends EditRecord
                 $record->members()->attach($data['leader_id'], ['role' => 'Admin']);
             }
         }
-
         $record->update($data);
 
         return $record;

@@ -18,15 +18,8 @@ class ArmsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('project_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('redcap_arm_id')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('arm_num')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 IconColumn::make('manual_enrol')
                     ->boolean(),
                 TextColumn::make('switcharms')

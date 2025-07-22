@@ -2,26 +2,15 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
-use App\Models\ProjectMember;
+use App\Models\Site;
 use App\Models\User;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
 use Filament\Actions\EditAction;
-use Filament\DateTimePicker;
-use Filament\Forms\Components\DateTimePicker as ComponentsDateTimePicker;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle as ComponentsToggle;
-use Filament\Notifications\Notification;
-use Filament\Textarea;
-use Filament\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +58,8 @@ class MembersRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('team.name')
                     ->label('Team'),
+                TextColumn::make('projectSite.name')
+                    ->label('Site')
             ])
             ->headerActions([
                 AttachAction::make()
@@ -82,6 +73,10 @@ class MembersRelationManager extends RelationManager
                                 'Member' => 'Member',
                             ])
                             ->required(),
+                        Select::make('site_id')
+                            ->options(
+                                Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
+                            ),
                     ]),
             ])
             ->recordActions([
@@ -92,11 +87,16 @@ class MembersRelationManager extends RelationManager
                                 'Admin' => 'Admin',
                                 'Member' => 'Member',
                             ])
-                            ->required(),
-                    ])
-                    ->visible(fn(User $record) => $this->getOwnerRecord()->leader_id !== $record->id),
+                            ->required()
+                            ->disabled(fn(User $record) => $record->id === $this->ownerRecord->leader_id),
+                        Select::make('site_id')
+                            ->options(
+                                Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
+                            ),
+                    ]),
+                // ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id or $this->ownerRecord->leader_id === auth()->id()),
                 DetachAction::make()
-                    ->visible(fn(User $record) => $this->getOwnerRecord()->leader_id !== $record->id),
+                    ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(
                 //     function (User $record, DetachAction $action) {
                 //         if ($record->pivot->pivotParent->members->count() === 1) {
