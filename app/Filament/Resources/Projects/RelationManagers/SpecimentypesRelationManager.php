@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Projects\RelationManagers;
 
 use App\Enums\StorageDestinations;
+use App\Models\Specimentype;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -93,11 +94,6 @@ class SpecimentypesRelationManager extends RelationManager
                             ->default(null)
                             ->requiredIf('store', true)
                             ->prohibitedIf('store', false),
-                        // TextInput::make('storageDestination')
-                        // ->label('Destination')
-                        // ->default(null)
-                        // ->requiredIf('store', true)
-                        // ->prohibitedIf('store', false),
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
@@ -128,8 +124,7 @@ class SpecimentypesRelationManager extends RelationManager
                 IconColumn::make('pooled')
                     ->boolean(),
                 TextColumn::make('defaultVolume')
-                    ->numeric(),
-                TextColumn::make('volumeUnit'),
+                    ->formatStateUsing(fn(Specimentype $record) => $record->defaultVolume . ' ' . $record->volumeUnit),
                 TextColumn::make('specimenGroup')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('labware.name')
