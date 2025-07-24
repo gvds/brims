@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Projects\Tables;
 
 use App\Models\Project;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -14,7 +15,7 @@ class ProjectsTable
     {
         return $table
             ->striped()
-            // ->recordUrl('')
+            ->recordUrl(fn(Project $record) => route('filament.app.resources.projects.access', $record))
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
@@ -52,7 +53,7 @@ class ProjectsTable
                 //
             ])
             ->recordActions([
-                // ViewAction::make(),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 // BulkActionGroup::make([

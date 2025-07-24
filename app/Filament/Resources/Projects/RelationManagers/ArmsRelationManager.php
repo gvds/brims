@@ -31,6 +31,7 @@ class ArmsRelationManager extends RelationManager
                 Action::make('create')
                     ->schema([
                         TextInput::make('name')
+                            ->required()
                             ->default(null),
                         Toggle::make('manual_enrol')
                             ->required()
