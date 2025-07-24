@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Pest\Collision\Events;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             AssayDefinitionSeeder::class,
             ProjectSeeder::class,
             SpecimentypeSeeder::class,
+            EventSeeder::class,
         ]);
     }
 }

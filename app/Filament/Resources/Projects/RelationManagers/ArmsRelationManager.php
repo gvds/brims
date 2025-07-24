@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Projects\RelationManagers;
 use App\Filament\Resources\Projects\Resources\Arms\ArmResource;
 use App\Models\Arm;
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -35,13 +36,16 @@ class ArmsRelationManager extends RelationManager
                             ->required()
                             ->inline(false)
                             ->default(false),
-                        TextInput::make('arm_num')
-                            ->integer()
-                            ->default(null)
-                            ->minValue(1),
+                        CheckboxList::make('switcharms')
+                            ->options(
+                                fn(): array => Arm::where('project_id', $this->ownerRecord->id)
+                                    ->pluck('name', 'id')
+                                    ->toArray()
+                            )
                     ])
                     ->action(function (array $data): void {
                         $data['project_id'] = $this->ownerRecord->id;
+                        $data['arm_num'] = Arm::where('project_id', $this->ownerRecord->id)->max('arm_num') + 1;
                         Arm::create($data);
                     }),
             ]);

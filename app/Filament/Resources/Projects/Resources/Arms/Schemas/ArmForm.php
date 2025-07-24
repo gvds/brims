@@ -13,20 +13,20 @@ class ArmForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->default(null),
-                Toggle::make('manual_enrol')
-                    ->required()
-                    ->inline(false)
-                    ->default(false),
-                TextInput::make('arm_num')
-                    ->integer()
-                    ->default(null)
-                    ->minValue(1),
+                // TextInput::make('name')
+                //     ->default(null),
+                // Toggle::make('manual_enrol')
+                //     ->required()
+                //     ->inline(false)
+                //     ->default(false),
+                // TextInput::make('arm_num')
+                //     ->integer()
+                //     ->default(null)
+                //     ->minValue(1),
                 // CheckboxList::make('switcharms')
                 //     ->relationship(titleAttribute: 'name')
-                TextInput::make('switcharms')
-                    ->default(null),
+                // TextInput::make('switcharms')
+                //     ->default(null),
             ]);
     }
 }

@@ -27,7 +27,8 @@ class ProjectInfolist
         return $schema
             ->components([
                 Grid::make([
-                    'default' => 3,
+                    'default' => 1,
+                    'sm' => 3,
                 ])
                     ->schema([
                         TextEntry::make('title'),
@@ -42,7 +43,9 @@ class ProjectInfolist
                             ->date('Y-m-d'),
                     ])
                     ->extraAttributes(['class' => 'min-w-full']),
-                TextEntry::make('description'),
+                TextEntry::make('description')
+                    ->wrap(true)
+                    ->limit(500),
             ])
             ->extraAttributes(['class' => 'border border-gray-200 rounded-lg py-4 px-5 bg-gray-50 dark:bg-zinc-900 dark:border-zinc-800']);
     }

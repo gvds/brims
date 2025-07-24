@@ -30,8 +30,8 @@ class Arm extends Model
         return $this->hasMany(Event::class);
     }
 
-    public function switcharms(): BelongsToMany
-    {
-        return $this->belongsToMany(Arm::class, 'arms', 'id', 'id');
-    }
+    // public function switcharms(): HasMany
+    // {
+    //     return $this->hasMany(Arm::class, 'switcharms', 'id');
+    // }
 }

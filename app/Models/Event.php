@@ -11,4 +11,9 @@ class Event extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function arm()
+    {
+        return $this->belongsTo(Arm::class);
+    }
 }

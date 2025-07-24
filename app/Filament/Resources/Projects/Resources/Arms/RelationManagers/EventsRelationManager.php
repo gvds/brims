@@ -59,10 +59,10 @@ class EventsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->default(0),
-                TextInput::make('event_order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                // TextInput::make('event_order')
+                //     ->required()
+                //     ->numeric()
+                //     ->default(0),
                 Toggle::make('repeatable')
                     ->required(),
                 Toggle::make('active')
@@ -75,6 +75,8 @@ class EventsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->reorderable('event_order')
+            ->defaultSort('event_order', 'asc')
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
