@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Subjects\Schemas;
+namespace App\Filament\Project\Resources\Subjects\Schemas;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -17,26 +16,31 @@ class SubjectForm
             ->components([
                 TextInput::make('subjectID')
                     ->required(),
+                TextInput::make('project_id')
+                    ->required()
+                    ->numeric(),
                 Select::make('site_id')
                     ->relationship('site', 'name')
                     ->required(),
+                TextInput::make('user_id')
+                    ->required()
+                    ->numeric(),
                 TextInput::make('firstname')
                     ->default(null),
                 TextInput::make('lastname')
                     ->default(null),
-                Repeater::make('address')
-                    ->schema([
-                        TextInput::make('street')
-                            ->required()
-                    ])
+                Textarea::make('address')
+                    ->default(null)
                     ->columnSpanFull(),
                 DatePicker::make('enrolDate'),
                 Select::make('arm_id')
                     ->relationship('arm', 'name')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
+                    ->default(null),
                 DatePicker::make('armBaselineDate'),
+                TextInput::make('previous_arm_id')
+                    ->numeric()
+                    ->default(null),
+                DatePicker::make('previousArmBaselineDate'),
                 TextInput::make('subject_status')
                     ->required()
                     ->numeric()

@@ -7,7 +7,6 @@ use App\Filament\Resources\Projects\Resources\Specimentypes\Pages\CreateSpecimen
 use App\Filament\Resources\Projects\Resources\Specimentypes\Pages\EditSpecimentype;
 use App\Filament\Resources\Projects\Resources\Specimentypes\Pages\ViewSpecimentype;
 use App\Filament\Resources\Projects\Resources\Specimentypes\Schemas\SpecimentypeForm;
-use App\Filament\Resources\Projects\Resources\Specimentypes\Schemas\SpecimentypeInfolist;
 use App\Filament\Resources\Projects\Resources\Specimentypes\Tables\SpecimentypesTable;
 use App\Models\Specimentype;
 use BackedEnum;
@@ -27,11 +26,6 @@ class SpecimentypeResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return SpecimentypeForm::configure($schema);
-    }
-
-    public static function infolist(Schema $schema): Schema
-    {
-        return SpecimentypeInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table

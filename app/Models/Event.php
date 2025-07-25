@@ -12,6 +12,11 @@ class Event extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'repeatable' => 'boolean',
+        'active' => 'boolean',
+    ];
+
     public function arm()
     {
         return $this->belongsTo(Arm::class);

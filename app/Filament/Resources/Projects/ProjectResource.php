@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Projects;
 
-use App\Filament\Resources\Projects\Pages\AccessProject;
 use App\Filament\Resources\Projects\Pages\CreateProject;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
@@ -46,8 +45,8 @@ class ProjectResource extends Resource
             RelationManagers\MembersRelationManager::class,
             RelationManagers\SitesRelationManager::class,
             RelationManagers\ArmsRelationManager::class,
+            RelationManagers\LabwareRelationManager::class,
             RelationManagers\SpecimentypesRelationManager::class,
-            // RelationManagers\SubjectsRelationManager::class,
         ];
     }
 
@@ -58,7 +57,6 @@ class ProjectResource extends Resource
             'create' => CreateProject::route('/create'),
             'view' => ViewProject::route('/{record}'),
             'edit' => EditProject::route('/{record}/edit'),
-            'access' => AccessProject::route('/{record}/access'),
         ];
     }
 }

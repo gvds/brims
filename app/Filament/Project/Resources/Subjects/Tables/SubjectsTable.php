@@ -1,55 +1,53 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Subjects\Resources\Events\Tables;
+namespace App\Filament\Project\Resources\Subjects\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class EventsTable
+class SubjectsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('subjectID')
                     ->searchable(),
-                TextColumn::make('arm_id')
+                TextColumn::make('project_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('redcap_event_id')
+                TextColumn::make('site.name')
                     ->numeric()
                     ->sortable(),
-                IconColumn::make('autolog')
-                    ->boolean(),
-                TextColumn::make('offset')
+                TextColumn::make('user_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('offset_ante_window')
+                TextColumn::make('firstname')
+                    ->searchable(),
+                TextColumn::make('lastname')
+                    ->searchable(),
+                TextColumn::make('enrolDate')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('arm.name')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('offset_post_window')
+                TextColumn::make('armBaselineDate')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('previous_arm_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('name_labels')
+                TextColumn::make('previousArmBaselineDate')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('subject_status')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('subject_event_labels')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('study_id_labels')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('event_order')
-                    ->numeric()
-                    ->sortable(),
-                IconColumn::make('repeatable')
-                    ->boolean(),
-                IconColumn::make('active')
-                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -63,6 +61,7 @@ class EventsTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

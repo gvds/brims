@@ -3,11 +3,10 @@
 namespace App\Filament\Resources\Projects\Tables;
 
 use App\Models\Project;
-use Filament\Actions\ViewAction;
-use Filament\Notifications\Notification;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 
 class ProjectsTable
 {
@@ -15,21 +14,10 @@ class ProjectsTable
     {
         return $table
             ->striped()
-            ->recordUrl(fn(Project $record) => route('filament.app.resources.projects.access', $record))
             ->columns([
                 TextColumn::make('title')
-                    ->searchable()
-                    ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-400 text-lg']),
-                // ->action(function (Project $project) {
-                //     session(['currentProject' => $project]);
-                //     Notification::make('projectselection')
-                //         ->title('Project Selected')
-                //         ->body(Str::markdown("The current project has changed to **" . $project->title . "**"))
-                //         ->status('success')
-                //         ->color('success')
-                //         ->send();
-                //     redirect()->route('filament.app.resources.projects.view', ['record' => $project]);
-                // }),
+                    ->searchable(),
+                // ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-400']),
                 TextColumn::make('team.name')
                     ->searchable(),
                 TextColumn::make('leader.fullname')
@@ -49,12 +37,20 @@ class ProjectsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('title')
             ->filters([
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-            ])
+                Action::make('Access')
+                    ->icon('heroicon-o-chevron-double-right')
+                    ->action(function (Project $project) {
+                        session(['currentProject' => $project]);
+                        redirect()->route('filament.project.pages.dashboard');
+                    })
+                    ->button()
+                    ->extraAttributes(['class' => 'hover:invert']),
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 // BulkActionGroup::make([
                 //     DeleteBulkAction::make(),

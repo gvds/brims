@@ -59,4 +59,9 @@ class Project extends Model
     {
         return $this->hasMany(Specimentype::class);
     }
+
+    public function labware(): HasMany
+    {
+        return $this->hasMany(Labware::class);
+    }
 }
