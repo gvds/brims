@@ -4,10 +4,11 @@ namespace App\Filament\Project\Resources\Subjects\Schemas;
 
 use App\Enums\SubjectStatus;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class SubjectForm
 {
@@ -16,35 +17,38 @@ class SubjectForm
         return $schema
             ->components([
                 TextInput::make('subjectID')
-                    ->required(),
-                TextInput::make('project_id')
                     ->required()
-                    ->numeric(),
+                    ->columnSpanFull(),
                 Select::make('site_id')
                     ->relationship('site', 'name')
                     ->required(),
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('user_id')
+                    ->label('Manager')
+                    ->relationship(
+                        name: 'user',
+                        modifyQueryUsing: fn(Builder $query) => $query->whereAttachedTo(session()->get('currentProject'))
+                    )
+                    ->getOptionLabelFromRecordUsing(
+                        fn($record) => $record->fullname
+                    )
+                    ->required(),
                 TextInput::make('firstname')
                     ->default(null),
                 TextInput::make('lastname')
                     ->default(null),
-                Textarea::make('address')
-                    ->default(null)
-                    ->columnSpanFull(),
+                Repeater::make('address')
+                    ->simple(
+                        TextInput::make('addressEntry'),
+                    ),
+                //     ->columnSpanFull(),
                 DatePicker::make('enrolDate'),
-                Select::make('arm_id')
-                    ->relationship('arm', 'name')
-                    ->default(null),
-                DatePicker::make('armBaselineDate'),
-                TextInput::make('previous_arm_id')
-                    ->numeric()
-                    ->default(null),
-                DatePicker::make('previousArmBaselineDate'),
-                Select::make('subject_status')
+                Select::make('status')
                     ->options(SubjectStatus::class)
                     ->required(),
+            ])
+            ->columns(2)
+            ->extraAttributes([
+                'class' => 'w-1/3',
             ]);
     }
 }

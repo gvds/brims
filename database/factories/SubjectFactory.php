@@ -22,11 +22,11 @@ class SubjectFactory extends Factory
             // 'user_id' =>,
             'firstname' => fake()->firstName(),
             'lastname' => fake()->lastName(),
-            'address' => fake()->address(),
+            'address' => explode("\n", fake()->address()),
             'enrolDate' => fake()->date(),
             // 'arm_id' =>,
             'armBaselineDate' => fake()->date(),
-            'subject_status' => 0,
+            'status' => 0,
         ];
     }
 }

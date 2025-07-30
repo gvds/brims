@@ -30,6 +30,8 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
      */
     protected $guarded = ['id'];
 
+    protected $appends = ['fullname'];
+
     /**
      * The attributes that should be hidden for serialization.
      *

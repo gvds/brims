@@ -29,7 +29,7 @@ return new class extends Migration
             $table->date('armBaselineDate')->nullable();
             $table->foreignIdFor(Arm::class, 'previous_arm_id')->nullable()->constrained();
             $table->date('previousArmBaselineDate')->nullable();
-            $table->unsignedTinyInteger('subject_status')->default(0);
+            $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

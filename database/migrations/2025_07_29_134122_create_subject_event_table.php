@@ -22,7 +22,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->unsignedTinyInteger('iteration')->default(1);
-            $table->unsignedTinyInteger('eventstatus')->default(0);
+            $table->unsignedTinyInteger('status')->default(0);
             $table->unsignedTinyInteger('labelstatus')->default(0);
             $table->date('eventDate')->nullable();
             $table->date('minDate')->nullable();

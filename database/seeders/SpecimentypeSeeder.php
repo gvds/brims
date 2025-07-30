@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Specimentype;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Session;
 
 class SpecimentypeSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class SpecimentypeSeeder extends Seeder
      */
     public function run(): void
     {
-        Project::all()->each(
+        Project::withoutGlobalScopes()->get()->each(
             function (Project $project) {
                 $primarySpecimentypes = Specimentype::factory()
                     ->count(3)

@@ -3,6 +3,7 @@
 namespace App\Filament\Project\Resources\Subjects\Schemas;
 
 use App\Enums\SubjectStatus;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
@@ -10,6 +11,7 @@ use Filament\Schemas\Schema;
 
 class SubjectInfolist
 {
+
     public static function configure(Schema $schema): Schema
     {
         $record = $schema->getRecord();
@@ -26,12 +28,13 @@ class SubjectInfolist
                             ->label('Subject ID'),
                         TextEntry::make('fullname')
                             ->label('Full Name'),
-                        TextEntry::make('address'),
+                        TextEntry::make('address')
+                            ->listWithLineBreaks(),
                         TextEntry::make('site.name')
                             ->label('Site Name'),
                         TextEntry::make('enrolDate')
                             ->date('Y-m-d'),
-                        TextEntry::make('subject_status')
+                        TextEntry::make('status')
                             ->label('Status'),
                     ]),
                 Grid::make()

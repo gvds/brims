@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Enums\SubjectStatus;
+use App\Models\Scopes\SubjectScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+#[ScopedBy([SubjectScope::class])]
 class Subject extends Model
 {
     /** @use HasFactory<\Database\Factories\SubjectFactory> */
@@ -17,7 +20,7 @@ class Subject extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'subject_status' => SubjectStatus::class,
+        'status' => SubjectStatus::class,
         'address' => 'json',
     ];
 
@@ -43,6 +46,11 @@ class Subject extends Model
         return $this->belongsTo(Arm::class);
     }
 
+    public function previousArm(): BelongsTo
+    {
+        return $this->belongsTo(Arm::class, 'previous_arm_id');
+    }
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
@@ -50,6 +58,7 @@ class Subject extends Model
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'subject_event', 'subject_id', 'event_id')
-            ->withPivot('id', 'iteration', 'eventstatus', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate');
+            ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
+            ->withTimestamps();
     }
 }
