@@ -117,4 +117,5 @@ return [
 
     'system_route_prefix' => 'filament',
 
+    'dark_mode' => true,
 ];

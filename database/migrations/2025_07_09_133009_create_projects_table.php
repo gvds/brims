@@ -22,6 +22,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('submission_date')->nullable();
             $table->date('public_release_date')->nullable();
+            $table->string('subjectID_prefix', 10);
+            $table->unsignedTinyInteger('subjectID_digits');
+            $table->string('storageProjectName', 40)->nullable();
+            // $table->foreignIdFor(Label::class)->nullable()->constrained();
             $table->timestamps();
         });
     }

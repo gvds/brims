@@ -17,7 +17,16 @@ class SubjectFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            // 'subjectID' =>,
+            // 'site_id' =>,
+            // 'user_id' =>,
+            'firstname' => fake()->firstName(),
+            'lastname' => fake()->lastName(),
+            'address' => fake()->address(),
+            'enrolDate' => fake()->date(),
+            // 'arm_id' =>,
+            'armBaselineDate' => fake()->date(),
+            'subject_status' => 0,
         ];
     }
 }

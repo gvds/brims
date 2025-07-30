@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-enum SampleStatus: int
+use Filament\Support\Contracts\HasLabel;
+
+enum SpecimenStatus: int implements HasLabel
 {
     case Unassigned = 0;
     case Registered = 1;
@@ -15,4 +17,9 @@ enum SampleStatus: int
     case Lost = 8;
     case LoggedOut = 9;
     case Received = 10;
+
+    public function getLabel(): ?string
+    {
+        return $this->name;
+    }
 }

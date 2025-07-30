@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Subjects\Schemas;
 
+use App\Enums\SubjectStatus;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -41,10 +42,9 @@ class SubjectForm
                     ->numeric()
                     ->default(null),
                 DatePicker::make('previousArmBaselineDate'),
-                TextInput::make('subject_status')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                Select::make('subject_status')
+                    ->options(SubjectStatus::class)
+                    ->required(),
             ]);
     }
 }

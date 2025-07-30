@@ -26,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super_admin') ? true : null;
         });
 
-        // TextInput::configureUsing(function (TextInput $component): void {
-        //     $component->trim();
-        // });
+        TextInput::configureUsing(function (TextInput $component): void {
+            $component->trim();
+        });
     }
 }

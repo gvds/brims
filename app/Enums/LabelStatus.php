@@ -4,15 +4,11 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum EventStatus: int implements HasLabel
+enum SubjectStatus: int implements HasLabel
 {
     case Pending = 0;
-    case Primed = 1;
-    case Scheduled = 2;
-    case Logged = 3;
-    case LoggedLate = 4;
-    case Missed = 5;
-    case Cancelled = 6;
+    case Queued = 1;
+    case Generated = 2;
 
     public function getLabel(): ?string
     {

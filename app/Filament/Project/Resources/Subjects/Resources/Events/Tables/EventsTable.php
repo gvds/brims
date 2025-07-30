@@ -1,51 +1,56 @@
 <?php
 
-namespace App\Filament\Project\Resources\Subjects\Tables;
+namespace App\Filament\Project\Resources\Subjects\Resources\Events\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class SubjectsTable
+class EventsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('subjectID')
+                TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('project_id')
+                TextColumn::make('arm_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('site.name')
+                TextColumn::make('redcap_event_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('user_id')
+                IconColumn::make('autolog')
+                    ->boolean(),
+                TextColumn::make('offset')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('firstname')
-                    ->searchable(),
-                TextColumn::make('lastname')
-                    ->searchable(),
-                TextColumn::make('enrolDate')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('arm.name')
+                TextColumn::make('offset_ante_window')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('armBaselineDate')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('previous_arm_id')
+                TextColumn::make('offset_post_window')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('previousArmBaselineDate')
-                    ->date()
+                TextColumn::make('name_labels')
+                    ->numeric()
                     ->sortable(),
-                TextColumn::make('subject_status'),
+                TextColumn::make('subject_event_labels')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('study_id_labels')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('event_order')
+                    ->numeric()
+                    ->sortable(),
+                IconColumn::make('repeatable')
+                    ->boolean(),
+                IconColumn::make('active')
+                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
