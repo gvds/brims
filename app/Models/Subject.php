@@ -61,4 +61,23 @@ class Subject extends Model
             ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
             ->withTimestamps();
     }
+
+    public function switchArm(int $arm_id): void
+    {
+        $this->previous_arm_id = $this->arm_id;
+        $this->previousArmBaselineDate = $this->armBaselineDate;
+        $this->arm_id = $arm_id;
+        $this->armBaselineDate = now();
+        $this->save();
+        // dd($arm_id);
+    }
+
+    public function revertArmSwitch(): void
+    {
+        $this->arm_id = $this->previous_arm_id;
+        $this->armBaselineDate = $this->previousArmBaselineDate;
+        $this->previous_arm_id = null;
+        $this->previousArmBaselineDate = null;
+        $this->save();
+    }
 }

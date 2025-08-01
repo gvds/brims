@@ -28,4 +28,14 @@ class Team extends Model
     {
         return $this->belongsTo(User::class, 'leader_id');
     }
+
+    public function protocols(): HasMany
+    {
+        return $this->hasMany(Protocol::class);
+    }
+
+    public function studyDesigns(): HasMany
+    {
+        return $this->hasMany(StudyDesign::class);
+    }
 }

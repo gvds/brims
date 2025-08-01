@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Arm extends Model
@@ -17,7 +16,7 @@ class Arm extends Model
 
     protected $casts = [
         'manual_enrol' => 'boolean',
-        'switcharms' => 'json',
+        'switcharms' => 'array',
     ];
 
     public function project(): BelongsTo

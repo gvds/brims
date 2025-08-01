@@ -16,4 +16,6 @@ class ViewSubject extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    protected $listeners = ['refreshData' => '$refresh'];
 }

@@ -22,7 +22,7 @@ class ProjectsRelationManager extends RelationManager
     {
         return ProjectsTable::configure($table)
             ->headerActions([
-                CreateAction::make(), // Uncomment if you want to allow creating projects directly from the team relation manager
+                CreateAction::make(),
             ]);
     }
 }

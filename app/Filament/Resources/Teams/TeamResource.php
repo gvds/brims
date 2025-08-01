@@ -35,6 +35,8 @@ class TeamResource extends Resource
         return [
             RelationManagers\MembersRelationManager::class,
             RelationManagers\ProjectsRelationManager::class,
+            RelationManagers\ProtocolsRelationManager::class,
+            RelationManagers\StudyDesignsRelationManager::class,
         ];
     }
 

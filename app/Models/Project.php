@@ -68,4 +68,9 @@ class Project extends Model
     {
         return $this->hasMany(Labware::class);
     }
+
+    public function publications(): HasMany
+    {
+        return $this->hasMany(Publication::class);
+    }
 }
