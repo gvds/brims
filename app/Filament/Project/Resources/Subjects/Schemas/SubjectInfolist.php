@@ -4,18 +4,16 @@ namespace App\Filament\Project\Resources\Subjects\Schemas;
 
 use App\Enums\SubjectStatus;
 use App\Models\Arm;
-use Dom\Text;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\HtmlString;
 
 class SubjectInfolist
@@ -74,7 +72,8 @@ class SubjectInfolist
                                 TextEntry::make('previousArmBaselineDate')
                                     ->label('Baseline Date')
                                     ->date('Y-m-d'),
-                            ]),
+                            ])
+                            ->hidden(fn() => $record->previous_arm_id === null),
                     ]),
                 TextEntry::make('user.fullname')
                     ->label('Manager'),
@@ -88,7 +87,7 @@ class SubjectInfolist
                         ->label('Re-Instate Subject')
                         ->color('success')
                         ->action(fn() => $record->update(['status' => SubjectStatus::Enrolled->value]))
-                        // ->after(fn($livewire) => $livewire->dispatch('refreshData'))
+                        // ->after(fn($livewire) => $livewire->dispatch('refreshSubjectViewData'))
                         ->visible(fn() => $record->status->value === SubjectStatus::Dropped->value),
                     Action::make('switch_arm')
                         ->label('Switch Arm')
@@ -97,10 +96,18 @@ class SubjectInfolist
                             Select::make('arm_id')
                                 ->label('Arm')
                                 ->options(Arm::query()->whereIn('id', $record->arm->switcharms ?? [])->pluck('name', 'id'))
-                                ->required(),
+                                ->required()
+                                ->in(fn() => Arm::query()->whereIn('id', $record->arm->switcharms ?? [])->pluck('id')),
+                            DatePicker::make('armBaselineDate')
+                                ->label('New Arm Baseline Date')
+                                ->default(Date::now())
+                                ->required()
+                                ->beforeOrEqual('today')
+                                ->afterOrEqual($record->armBaselineDate)
+                                ->visible(fn() => $record->status->value === SubjectStatus::Enrolled->value && $record->arm->switcharms !== null),
                         ])
-                        ->action(fn($data) => $record->switchArm($data['arm_id']))
-                        ->after(fn($livewire) => $livewire->dispatch('refreshData'))
+                        ->action(fn($data) => $record->switchArm($data['arm_id'], $data['armBaselineDate']))
+                        ->after(fn($livewire) => $livewire->dispatch('refreshSubjectViewData'))
                         ->requiresConfirmation()
                         ->modalDescription(new HtmlString('<div class="text-md font-bold">Are you sure you want to switch arms?</div><div class="text-lg text-red-500 font-bold">All currently pending events will be cancelled.</div>'))
                         ->visible(fn() => $record->status->value === SubjectStatus::Enrolled->value && $record->arm->switcharms !== null),
@@ -108,7 +115,7 @@ class SubjectInfolist
                         ->label('Revert Arm Switch')
                         ->color('warning')
                         ->action(fn() => $record->revertArmSwitch())
-                        ->after(fn($livewire) => $livewire->dispatch('refreshData'))
+                        ->after(fn($livewire) => $livewire->dispatch('refreshSubjectViewData'))
                         ->requiresConfirmation()
                         ->modalDescription(new HtmlString('<div class="text-md font-bold">Are you sure you want to revert the previous arm switch?</div><div class="text-lg text-red-500 font-bold">All currently events in the current arm will be deleted.</div>'))
                         ->visible(fn() => $record->status->value === SubjectStatus::Enrolled->value && $record->previous_arm_id !== null),

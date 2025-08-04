@@ -2,10 +2,13 @@
 
 namespace App\Filament\Project\Resources\Subjects\Resources\Events\Tables;
 
+use App\Models\Subject;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -22,32 +25,16 @@ class EventsTable
                 TextColumn::make('name')
                     ->label('Event Name')
                     ->searchable(),
-                // TextColumn::make('redcap_event_id')
-                //     ->numeric(),
-                // IconColumn::make('autolog')
-                //     ->boolean(),
                 TextColumn::make('eventDate')
                     ->date('Y-m-d'),
                 TextColumn::make('minDate')
                     ->date('Y-m-d'),
                 TextColumn::make('maxDate')
                     ->date('Y-m-d'),
-                TextColumn::make('status')
+                TextColumn::make('pivot.status')
                     ->label('Status'),
                 TextColumn::make('logDate')
                     ->date('Y-m-d'),
-                // TextColumn::make('offset')
-                //     ->numeric(),
-                // TextColumn::make('offset_ante_window')
-                //     ->numeric(),
-                // TextColumn::make('offset_post_window')
-                //     ->numeric(),
-                // TextColumn::make('name_labels')
-                //     ->numeric(),
-                // TextColumn::make('subject_event_labels')
-                //     ->numeric(),
-                // TextColumn::make('study_id_labels')
-                //     ->numeric(),
                 TextColumn::make('event_order')
                     ->numeric(),
                 IconColumn::make('repeatable')
@@ -74,12 +61,33 @@ class EventsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                // EditAction::make(),
+                Action::make('newItteration')
+                    ->label('New Iteration')
+                    ->schema(
+                        [
+                            DatePicker::make('eventDate')
+                                ->default(today()),
+                        ]
+                    )
+                    ->action(function ($record, $data) {
+                        $subject = Subject::find($record->pivot->subject_id);
+                        $subject->events()->attach($record->id, [
+                            'iteration' => $record->pivot->iteration + 1,
+                            'status' => 0,
+                            'labelstatus' => 0,
+                            'eventDate' => $data['eventDate'],
+                            // 'minDate' => now(),
+                            // 'maxDate' => now(),
+                        ]);
+                    })
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-plus'),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }

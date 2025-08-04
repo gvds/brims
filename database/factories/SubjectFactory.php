@@ -16,6 +16,7 @@ class SubjectFactory extends Factory
      */
     public function definition(): array
     {
+        $startdate = fake()->date();
         return [
             // 'subjectID' =>,
             // 'site_id' =>,
@@ -23,9 +24,9 @@ class SubjectFactory extends Factory
             'firstname' => fake()->firstName(),
             'lastname' => fake()->lastName(),
             'address' => explode("\n", fake()->address()),
-            'enrolDate' => fake()->date(),
+            'enrolDate' => $startdate,
             // 'arm_id' =>,
-            'armBaselineDate' => fake()->date(),
+            'armBaselineDate' => $startdate,
             'status' => 0,
         ];
     }

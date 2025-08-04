@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum SubjectStatus: int implements HasLabel
+enum LabelStatus: int implements HasLabel
 {
     case Pending = 0;
     case Queued = 1;

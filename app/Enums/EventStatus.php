@@ -2,9 +2,10 @@
 
 namespace App\Enums;
 
+use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum EventStatus: int implements HasLabel
+enum EventStatus: int implements HasLabel, HasColor
 {
     case Pending = 0;
     case Primed = 1;
@@ -17,5 +18,18 @@ enum EventStatus: int implements HasLabel
     public function getLabel(): ?string
     {
         return $this->name;
+    }
+
+    public function getColor(): string | array | null
+    {
+        return match ($this) {
+            self::Pending => 'gray',
+            self::Primed => 'info',
+            self::Scheduled => 'warning',
+            self::Logged => 'success',
+            self::LoggedLate => 'success',
+            self::Missed => 'danger',
+            self::Cancelled => 'danger',
+        };
     }
 }

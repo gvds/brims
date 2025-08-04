@@ -19,12 +19,12 @@ class EventInfolist
                     ->numeric(),
                 IconEntry::make('autolog')
                     ->boolean(),
-                TextEntry::make('offset')
-                    ->numeric(),
-                TextEntry::make('offset_ante_window')
-                    ->numeric(),
-                TextEntry::make('offset_post_window')
-                    ->numeric(),
+                TextEntry::make('eventDate')
+                    ->date('Y-m-d'),
+                TextEntry::make('minDate')
+                    ->date('Y-m-d'),
+                TextEntry::make('maxDate')
+                    ->date('Y-m-d'),
                 TextEntry::make('name_labels')
                     ->numeric(),
                 TextEntry::make('subject_event_labels')
@@ -37,10 +37,6 @@ class EventInfolist
                     ->boolean(),
                 IconEntry::make('active')
                     ->boolean(),
-                TextEntry::make('created_at')
-                    ->dateTime(),
-                TextEntry::make('updated_at')
-                    ->dateTime(),
             ]);
     }
 }

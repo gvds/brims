@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Subjects\Resources\Events\Schemas;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -22,9 +23,8 @@ class EventForm
                     ->default(null),
                 Toggle::make('autolog')
                     ->required(),
-                TextInput::make('offset')
-                    ->numeric()
-                    ->default(null),
+                DatePicker::make('eventDate')
+                    ->date('Y-m-d'),
                 TextInput::make('offset_ante_window')
                     ->numeric()
                     ->default(null),

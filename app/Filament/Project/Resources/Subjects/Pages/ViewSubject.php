@@ -17,5 +17,5 @@ class ViewSubject extends ViewRecord
         ];
     }
 
-    protected $listeners = ['refreshData' => '$refresh'];
+    protected $listeners = ['refreshSubjectViewData' => '$refresh'];
 }

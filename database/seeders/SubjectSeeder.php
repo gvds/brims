@@ -58,6 +58,11 @@ class SubjectSeeder extends Seeder
                         'site_id' => $member->pivot->site_id,
                         'arm_id' => $project->arms->first()->id,
                         'subjectID' => $project->subjectID_prefix . Str::padLeft($sequence->index + 1 + 6, $project->subjectID_digits, '0'),
+                        'firstname' => null,
+                        'lastname' => null,
+                        'address' => null,
+                        'enrolDate' => null,
+                        'armBaselineDate' => null,
                         'status' => 0,
                     ];
                 })
