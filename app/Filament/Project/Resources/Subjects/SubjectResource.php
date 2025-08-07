@@ -41,7 +41,7 @@ class SubjectResource extends Resource
     {
         return [
             RelationManagers\EventsRelationManager::class,
-            RelationManagers\SubjectEventsRelationManager::class,
+            // RelationManagers\SubjectEventsRelationManager::class,
         ];
     }
 

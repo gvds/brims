@@ -66,7 +66,6 @@ class EventsTable
                 // EditAction::make(),
                 Action::make('newItteration')
                     ->label('New Iteration')
-                    // ->visible(fn(Model $record) => $record->repeatable)
                     ->schema(
                         [
                             DatePicker::make('eventDate')
@@ -85,7 +84,8 @@ class EventsTable
                             // 'maxDate' => now(),
                         ]);
                     })
-                    // ->visible(fn($record) => $record->repeatable && SubjectEvent::where('event_id', $record->id)->max('iteration') === $record->iteration)
+                    // ->visible(fn($record) => $record->repeatable)
+                    ->visible(fn($record) => $record->repeatable && SubjectEvent::where('event_id', $record->id)->max('iteration') === $record->iteration)
                     ->requiresConfirmation()
                     ->icon('heroicon-o-plus'),
                 ViewAction::make(),

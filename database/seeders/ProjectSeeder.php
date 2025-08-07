@@ -41,14 +41,23 @@ class ProjectSeeder extends Seeder
                             'role' => 'Member',
                             'site_id' => $project->sites->random(1)->first()->id,
                         ]));
-                Arm::factory()
+                $arms = Arm::factory()
                     ->count(3)
                     ->for($project)
                     ->sequence(fn(Sequence $sequence) => [
                         'arm_num' => $sequence->index + 1,
-                        'manual_enrol' => $sequence->index === 0 ? true : false
+                        'manual_enrol' => $sequence->index === 0 ? true : false,
                     ])
                     ->create();
+                $arms->each(function (Arm $arm) {
+                    $arm->update([
+                        'switcharms' => match ($arm->arm_num) {
+                            1 => [$arm->id + 1, $arm->id + 2],
+                            2 => [$arm->id + 1],
+                            3 => null,
+                        }
+                    ]);
+                });
             });
         });
     }

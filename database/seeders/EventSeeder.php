@@ -26,6 +26,7 @@ class EventSeeder extends Seeder
                             'event_order' => $sequence->index + 1,
                             'offset' => $offset,
                             'autolog' => $sequence->index === 0 ? true : false,
+                            'repeatable' => $sequence->index === 0 ? false : fake()->randomElement([true, false])
                         ];
                     })
                     ->create();
