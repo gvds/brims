@@ -28,7 +28,7 @@ class Event extends Model
     public function subjects(): BelongsToMany
     {
         return $this->belongsToMany(Subject::class, 'subject_event', 'event_id', 'subject_id')
-            ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
+            // ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
             ->withTimestamps();
     }
 }

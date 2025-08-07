@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 #[ScopedBy([SubjectScope::class])]
@@ -57,11 +58,28 @@ class Subject extends Model
     {
         return $this->belongsTo(Project::class);
     }
+    // public function events(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Event::class, 'subject_event', 'subject_id', 'event_id')
+    //         ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
+    //         ->withTimestamps();
+    // }
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'subject_event', 'subject_id', 'event_id')
-            ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
+            ->using(SubjectEvent::class)
+            // ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
             ->withTimestamps();
+    }
+
+    public function subjectEvents(): HasMany
+    {
+        return $this->hasMany(SubjectEvent::class);
+        // ->join('events', 'subject_event.event_id', '=', 'events.id')
+        // ->join('arms', 'events.arm_id', '=', 'arms.id')
+        // ->orderBy('arms.arm_num', 'asc')
+        // ->orderBy('event_order', 'asc')
+        // ->orderBy('iteration', 'asc');
     }
 
     public function switchArm(int $arm_id, string $armBaselineDate): void

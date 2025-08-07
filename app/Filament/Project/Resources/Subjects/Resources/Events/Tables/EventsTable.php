@@ -3,24 +3,27 @@
 namespace App\Filament\Project\Resources\Subjects\Resources\Events\Tables;
 
 use App\Models\Subject;
+use App\Models\SubjectEvent;
 use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class EventsTable
+
 {
+
     public static function configure(Table $table): Table
     {
         return $table
+            // ->modifyQueryUsing(fn(Builder $query) => dd($query->get()))
             ->modifyQueryUsing(fn(Builder $query) => $query->join('arms', 'events.arm_id', '=', 'arms.id'))
             ->columns([
+                TextColumn::make('id'),
                 TextColumn::make('arm.name'),
                 TextColumn::make('name')
                     ->label('Event Name')
@@ -31,7 +34,7 @@ class EventsTable
                     ->date('Y-m-d'),
                 TextColumn::make('maxDate')
                     ->date('Y-m-d'),
-                TextColumn::make('pivot.status')
+                TextColumn::make('status')
                     ->label('Status'),
                 TextColumn::make('logDate')
                     ->date('Y-m-d'),
@@ -60,20 +63,21 @@ class EventsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
                 // EditAction::make(),
                 Action::make('newItteration')
                     ->label('New Iteration')
+                    // ->visible(fn(Model $record) => $record->repeatable)
                     ->schema(
                         [
                             DatePicker::make('eventDate')
                                 ->default(today()),
                         ]
                     )
-                    ->action(function ($record, $data) {
-                        $subject = Subject::find($record->pivot->subject_id);
+                    ->action(function ($livewire, $record, $data) {
+                        // dd($record->id, SubjectEvent::where('event_id', $record->id)->max('iteration'), $record->iteration);
+                        $subject = $livewire->getOwnerRecord();
                         $subject->events()->attach($record->id, [
-                            'iteration' => $record->pivot->iteration + 1,
+                            'iteration' => $record->iteration + 1,
                             'status' => 0,
                             'labelstatus' => 0,
                             'eventDate' => $data['eventDate'],
@@ -81,13 +85,15 @@ class EventsTable
                             // 'maxDate' => now(),
                         ]);
                     })
+                    // ->visible(fn($record) => $record->repeatable && SubjectEvent::where('event_id', $record->id)->max('iteration') === $record->iteration)
                     ->requiresConfirmation()
                     ->icon('heroicon-o-plus'),
-            ])
-            ->toolbarActions([
-                // BulkActionGroup::make([
-                //     DeleteBulkAction::make(),
-                // ]),
+                ViewAction::make(),
             ]);
+        // ->toolbarActions([
+        // BulkActionGroup::make([
+        //     DeleteBulkAction::make(),
+        // ]),
+        // ]);
     }
 }

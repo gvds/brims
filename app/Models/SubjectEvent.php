@@ -11,6 +11,13 @@ class SubjectEvent extends Pivot
 {
     protected $guarded = ['id'];
 
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
+
     protected $casts = [
         'status' => EventStatus::class,
         'labelstatus' => LabelStatus::class,
@@ -18,7 +25,7 @@ class SubjectEvent extends Pivot
 
     public function event(): BelongsTo
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class)->with('arm');
     }
 
     public function subject(): BelongsTo
