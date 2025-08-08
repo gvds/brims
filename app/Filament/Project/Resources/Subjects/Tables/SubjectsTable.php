@@ -79,7 +79,8 @@ class SubjectsTable
             ])
             ->deferFilters(false)
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->visible(fn($record) => $record->status !== SubjectStatus::Generated),
                 EditAction::make(),
             ])
             ->toolbarActions([

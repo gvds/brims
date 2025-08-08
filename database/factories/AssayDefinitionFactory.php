@@ -18,29 +18,29 @@ class AssayDefinitionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => Str::ucfirst($this->faker->words(3, true)),
-            'description' => $this->faker->sentence(),
-            'measurementType' => $this->faker->word(),
-            'technologyType' => $this->faker->randomElement(['PCR', 'ELISA', 'scRNAseq', 'Luminex']),
+            'name' => Str::ucfirst(fake()->words(3, true)),
+            'description' => fake()->sentence(),
+            'measurementType' => fake()->word(),
+            'technologyType' => fake()->randomElement(['PCR', 'ELISA', 'scRNAseq', 'Luminex']),
             'additional_fields' => [
                 [
-                    'field_name' => $this->faker->word(),
+                    'field_name' => fake()->word(),
                     'field_type' => 'radio',
                     'field_options' => [
-                        ['option_value' => '1', 'option_label' => Str::ucfirst($this->faker->word())],
-                        ['option_value' => '2', 'option_label' => Str::ucfirst($this->faker->word())],
-                        ['option_value' => '3', 'option_label' => Str::ucfirst($this->faker->word())],
+                        ['option_value' => '1', 'option_label' => Str::ucfirst(fake()->word())],
+                        ['option_value' => '2', 'option_label' => Str::ucfirst(fake()->word())],
+                        ['option_value' => '3', 'option_label' => Str::ucfirst(fake()->word())],
                     ],
-                    'required' => $this->faker->boolean()
+                    'required' => fake()->boolean()
                 ],
                 [
-                    'field_name' => $this->faker->word(),
+                    'field_name' => fake()->word(),
                     'field_type' => 'text',
                     'max_length' => 255,
                     'sub_type' => 'integer',
-                    'min_value' => $this->faker->numberBetween(1, 10),
-                    'max_value' => $this->faker->numberBetween(11, 100),
-                    'required' => $this->faker->boolean()
+                    'min_value' => fake()->numberBetween(1, 10),
+                    'max_value' => fake()->numberBetween(11, 100),
+                    'required' => fake()->boolean()
                 ]
             ],
             'created_at' => now(),

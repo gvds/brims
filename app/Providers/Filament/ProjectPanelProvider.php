@@ -38,6 +38,7 @@ class ProjectPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Violet,
             ])
+            ->breadcrumbs(false)
             ->discoverResources(in: app_path('Filament/Project/Resources'), for: 'App\Filament\Project\Resources')
             ->discoverPages(in: app_path('Filament/Project/Pages'), for: 'App\Filament\Project\Pages')
             ->pages([

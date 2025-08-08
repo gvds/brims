@@ -10,6 +10,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Grid;
 
 class ViewArm extends ViewRecord
 {
@@ -26,12 +27,18 @@ class ViewArm extends ViewRecord
             Action::make('edit')
                 ->fillForm(fn(Arm $record): array => $record->toArray())
                 ->schema([
-                    TextInput::make('name')
-                        ->default(null),
-                    Toggle::make('manual_enrol')
-                        ->required()
-                        ->inline(false)
-                        ->default(false),
+                    Grid::make()
+                        ->columns(2)
+                        ->components([
+                            TextInput::make('name')
+                                ->required()
+                                ->default(null),
+                            Toggle::make('manual_enrol')
+                                ->required()
+                                ->inline(false)
+                                ->default(false),
+                        ])
+                        ->columnSpanFull(),
                     CheckboxList::make('switcharms')
                         ->options(
                             fn(): array => Arm::where('project_id', $this->record->project_id)

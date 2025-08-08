@@ -72,14 +72,20 @@ class Subject extends Model
             ->withTimestamps();
     }
 
-    public function subjectEvents(): HasMany
+    // public function subjectEvents(): HasMany
+    // {
+    //     return $this->hasMany(SubjectEvent::class);
+    //     // ->join('events', 'subject_event.event_id', '=', 'events.id')
+    //     // ->join('arms', 'events.arm_id', '=', 'arms.id')
+    //     // ->orderBy('arms.arm_num', 'asc')
+    //     // ->orderBy('event_order', 'asc')
+    //     // ->orderBy('iteration', 'asc');
+    // }
+
+
+    public function enrol(): void
     {
-        return $this->hasMany(SubjectEvent::class);
-        // ->join('events', 'subject_event.event_id', '=', 'events.id')
-        // ->join('arms', 'events.arm_id', '=', 'arms.id')
-        // ->orderBy('arms.arm_num', 'asc')
-        // ->orderBy('event_order', 'asc')
-        // ->orderBy('iteration', 'asc');
+        dd($this);
     }
 
     public function switchArm(int $arm_id, string $armBaselineDate): void
@@ -135,5 +141,17 @@ class Subject extends Model
             DB::rollBack();
             throw $th;
         }
+    }
+
+    public function addEventIteration(Event $event, CarbonImmutable $eventDate): void
+    {
+        $this->events()->attach($event, [
+            'iteration' => $event->iteration + 1,
+            'status' => 0,
+            'labelstatus' => 0,
+            'eventDate' => $eventDate,
+            'minDate' => $eventDate->subDays($event->offset_ante_window),
+            'maxDate' => $eventDate->addDays($event->offset_post_window),
+        ]);
     }
 }

@@ -24,15 +24,15 @@ class PublicationFactory extends Factory
             $names[] = fake()->unique()->name(); // Generate a unique fake name
         }
 
-        $publication_status = $this->faker->randomElement(PublicationStatus::cases())->value;
+        $publication_status = fake()->randomElement(PublicationStatus::cases())->value;
 
         return [
-            'pubmed_id' => $publication_status === 'published' ? $this->faker->unique()->numerify('#######') : null,
-            'doi' => $publication_status === 'published' ? $this->faker->unique()->bothify('10.1234/??????.?????') : null,
+            'pubmed_id' => $publication_status === 'published' ? fake()->unique()->numerify('#######') : null,
+            'doi' => $publication_status === 'published' ? fake()->unique()->bothify('10.1234/??????.?????') : null,
             'publication_status' => $publication_status,
-            'title' => $this->faker->sentence(nbWords: 20, variableNbWords: true),
+            'title' => fake()->sentence(nbWords: 20, variableNbWords: true),
             'authors' => $names,
-            'publication_date' => $publication_status === 'published' ? $this->faker->year() : null,
+            'publication_date' => $publication_status === 'published' ? fake()->year() : null,
         ];
     }
 }

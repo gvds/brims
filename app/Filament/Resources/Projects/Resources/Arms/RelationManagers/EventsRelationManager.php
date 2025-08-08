@@ -12,7 +12,9 @@ use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -31,22 +33,39 @@ class EventsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required(),
-                TextInput::make('redcap_event_id')
-                    ->numeric()
-                    ->default(null),
-                Toggle::make('autolog')
-                    ->required(),
+                Grid::make()
+                    ->components([
+                        TextInput::make('name')
+                            ->required(),
+                        TextEntry::make('redcap_event_id')
+                            ->visible(fn($record) => isset($record->redcap_event_id)),
+                        // ->integer()
+                        // ->default(null),
+                    ])
+                    ->columnSpanFull(),
                 TextInput::make('offset')
                     ->numeric()
-                    ->default(null),
+                    ->default(0)
+                    ->helperText('The number of days from the arm baseline date that the event is scheduled'),
+                Grid::make()
+                    ->components([
+                        Toggle::make('autolog')
+                            ->inline(false)
+                            ->required(),
+                        Toggle::make('repeatable')
+                            ->inline(false)
+                            ->required(),
+                    ]),
                 TextInput::make('offset_ante_window')
                     ->numeric()
-                    ->default(null),
+                    ->default(null)
+                    ->helperText('The number of days before the event date that the event can occur')
+                    ->hint('Leave blank if not required'),
                 TextInput::make('offset_post_window')
                     ->numeric()
-                    ->default(null),
+                    ->default(null)
+                    ->helperText('The number of days after the event date that the event can occur')
+                    ->hint('Leave blank if not required'),
                 TextInput::make('name_labels')
                     ->required()
                     ->numeric()
@@ -63,10 +82,10 @@ class EventsRelationManager extends RelationManager
                 //     ->required()
                 //     ->numeric()
                 //     ->default(0),
-                Toggle::make('repeatable')
-                    ->required(),
                 Toggle::make('active')
-                    ->required()
+                    ->inline(false)
+                    ->onColor('success')
+                    ->offColor('danger')
                     ->default(true),
             ]);
     }

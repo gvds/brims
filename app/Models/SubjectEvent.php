@@ -23,13 +23,13 @@ class SubjectEvent extends Pivot
         'labelstatus' => LabelStatus::class,
     ];
 
-    public function event(): BelongsTo
-    {
-        return $this->belongsTo(Event::class)->with('arm');
-    }
+    // public function event(): BelongsTo
+    // {
+    //     return $this->belongsTo(Event::class)->with('arm');
+    // }
 
-    public function subject(): BelongsTo
-    {
-        return $this->belongsTo(Subject::class);
-    }
+    // public function subject(): BelongsTo
+    // {
+    //     return $this->belongsTo(Subject::class);
+    // }
 }

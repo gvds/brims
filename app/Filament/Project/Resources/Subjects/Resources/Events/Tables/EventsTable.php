@@ -2,8 +2,12 @@
 
 namespace App\Filament\Project\Resources\Subjects\Resources\Events\Tables;
 
+use App\Enums\EventStatus;
+use App\Enums\SubjectStatus;
+use App\Models\Event;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
+use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -73,19 +77,17 @@ class EventsTable
                         ]
                     )
                     ->action(function ($livewire, $record, $data) {
-                        // dd($record->id, SubjectEvent::where('event_id', $record->id)->max('iteration'), $record->iteration);
+                        $eventDate = new CarbonImmutable($data['eventDate']);
                         $subject = $livewire->getOwnerRecord();
-                        $subject->events()->attach($record->id, [
-                            'iteration' => $record->iteration + 1,
-                            'status' => 0,
-                            'labelstatus' => 0,
-                            'eventDate' => $data['eventDate'],
-                            // 'minDate' => now(),
-                            // 'maxDate' => now(),
-                        ]);
+                        $subject->addEventIteration($record, $eventDate);
                     })
-                    // ->visible(fn($record) => $record->repeatable)
-                    ->visible(fn($record) => $record->repeatable && SubjectEvent::where('event_id', $record->id)->max('iteration') === $record->iteration)
+                    ->visible(
+                        fn($record, $livewire) => $record->repeatable &&
+                            $record->status !== EventStatus::Cancelled &&
+                            $record->iteration === SubjectEvent::where('event_id', $record->id)->max('iteration') &&
+                            $record->eventDate > SubjectEvent::where('event_id', $record->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
+                            $livewire->getOwnerRecord()->status === SubjectStatus::Enrolled
+                    )
                     ->requiresConfirmation()
                     ->icon('heroicon-o-plus'),
                 ViewAction::make(),

@@ -82,12 +82,13 @@ class SubjectInfolist
                         ->label('Drop Subject')
                         ->color('danger')
                         ->action(fn() => $record->update(['status' => SubjectStatus::Dropped->value]))
+                        ->after(fn($livewire) => $livewire->dispatch('refreshSubjectViewData'))
                         ->visible(fn() => $record->status->value === SubjectStatus::Enrolled->value),
                     Action::make('Re-Instate')
                         ->label('Re-Instate Subject')
                         ->color('success')
                         ->action(fn() => $record->update(['status' => SubjectStatus::Enrolled->value]))
-                        // ->after(fn($livewire) => $livewire->dispatch('refreshSubjectViewData'))
+                        ->after(fn($livewire) => $livewire->dispatch('refreshSubjectViewData'))
                         ->visible(fn() => $record->status->value === SubjectStatus::Dropped->value),
                     Action::make('switch_arm')
                         ->label('Switch Arm')

@@ -9,6 +9,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Grid;
 use Filament\Tables\Table;
 
 class ArmsRelationManager extends RelationManager
@@ -30,13 +31,18 @@ class ArmsRelationManager extends RelationManager
                 // CreateAction::make(),
                 Action::make('create')
                     ->schema([
-                        TextInput::make('name')
-                            ->required()
-                            ->default(null),
-                        Toggle::make('manual_enrol')
-                            ->required()
-                            ->inline(false)
-                            ->default(false),
+                        Grid::make()
+                            ->columns(2)
+                            ->components([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->default(null),
+                                Toggle::make('manual_enrol')
+                                    ->required()
+                                    ->inline(false)
+                                    ->default(false),
+                            ])
+                            ->columnSpanFull(),
                         CheckboxList::make('switcharms')
                             ->options(
                                 fn(): array => Arm::where('project_id', $this->ownerRecord->id)

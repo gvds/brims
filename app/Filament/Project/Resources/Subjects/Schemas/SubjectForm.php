@@ -2,12 +2,17 @@
 
 namespace App\Filament\Project\Resources\Subjects\Schemas;
 
-use App\Enums\SubjectStatus;
+use Dom\Text;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Filament\Support\Assets\Font;
+use Filament\Support\Enums\FontWeight;
+use Filament\Support\Enums\TextSize;
 use Illuminate\Database\Eloquent\Builder;
 
 class SubjectForm
@@ -16,12 +21,32 @@ class SubjectForm
     {
         return $schema
             ->components([
-                TextInput::make('subjectID')
-                    ->required()
+                TextEntry::make('subjectID')
+                    ->label('Subject ID')
+                    ->size(TextSize::Large)
+                    ->weight(FontWeight::Bold),
+                TextEntry::make('site.name')
+                    ->label('Site Name')
+                    ->size(TextSize::Large)
+                    ->weight(FontWeight::Bold),
+                TextEntry::make('status')
+                    ->size(TextSize::Large)
+                    ->weight(FontWeight::Bold),
+                TextEntry::make('arm.name')
+                    ->label('Current Arm')
+                    ->size(TextSize::Large)
+                    ->weight(FontWeight::Bold),
+                Grid::make()
+                    ->columns(2)
+                    ->components([
+                        TextInput::make('firstname')
+                            ->label('First Name')
+                            ->default(null),
+                        TextInput::make('lastname')
+                            ->label('Last Name')
+                            ->default(null),
+                    ])
                     ->columnSpanFull(),
-                Select::make('site_id')
-                    ->relationship('site', 'name')
-                    ->required(),
                 Select::make('user_id')
                     ->label('Manager')
                     ->relationship(
@@ -32,19 +57,15 @@ class SubjectForm
                         fn($record) => $record->fullname
                     )
                     ->required(),
-                TextInput::make('firstname')
-                    ->default(null),
-                TextInput::make('lastname')
-                    ->default(null),
+                DatePicker::make('enrolDate')
+                    ->label('Enrolment Date')
+                    ->default(now())
+                    ->required(),
                 Repeater::make('address')
                     ->simple(
                         TextInput::make('addressEntry'),
-                    ),
-                //     ->columnSpanFull(),
-                DatePicker::make('enrolDate'),
-                Select::make('status')
-                    ->options(SubjectStatus::class)
-                    ->required(),
+                    )
+                    ->columnSpan(2),
             ])
             ->columns(2)
             ->extraAttributes([
