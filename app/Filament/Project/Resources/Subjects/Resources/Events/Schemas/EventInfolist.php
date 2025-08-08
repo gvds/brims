@@ -10,27 +10,29 @@ class EventInfolist
 {
     public static function configure(Schema $schema): Schema
     {
+        // dd($schema->getRecord());
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('arm_id')
-                    ->numeric(),
-                TextEntry::make('redcap_event_id')
-                    ->numeric(),
+                TextEntry::make('arm.name')
+                    ->label('Arm Name'),
+                // TextEntry::make('redcap_event_id')
+                //     ->numeric(),
                 IconEntry::make('autolog')
                     ->boolean(),
-                TextEntry::make('eventDate')
+                TextEntry::make('pivot.eventDate')
                     ->date('Y-m-d'),
                 TextEntry::make('minDate')
                     ->date('Y-m-d'),
                 TextEntry::make('maxDate')
                     ->date('Y-m-d'),
-                TextEntry::make('name_labels')
-                    ->numeric(),
-                TextEntry::make('subject_event_labels')
-                    ->numeric(),
-                TextEntry::make('study_id_labels')
-                    ->numeric(),
+                TextEntry::make('status'),
+                // TextEntry::make('name_labels')
+                //     ->numeric(),
+                // TextEntry::make('subject_event_labels')
+                //     ->numeric(),
+                // TextEntry::make('study_id_labels')
+                //     ->numeric(),
                 TextEntry::make('event_order')
                     ->numeric(),
                 IconEntry::make('repeatable')

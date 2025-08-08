@@ -4,7 +4,10 @@ namespace App\Filament\Project\Resources\Subjects\RelationManagers;
 
 use App\Enums\EventStatus;
 use App\Enums\LabelStatus;
+use App\Enums\SubjectStatus;
 use App\Models\Subject;
+use App\Models\SubjectEvent;
+use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
@@ -14,6 +17,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -28,34 +32,34 @@ class SubjectEventsRelationManager extends RelationManager
 {
     protected static string $relationship = 'subjectEvents';
 
-    // public function form(Schema $schema): Schema
-    // {
-    //     return $schema
-    //         ->components([
-    //             Select::make('subject_id')
-    //                 ->relationship('subject', 'id')
-    //                 ->required(),
-    //             Select::make('event_id')
-    //                 ->relationship('event', 'name')
-    //                 ->required(),
-    //             TextInput::make('iteration')
-    //                 ->required()
-    //                 ->numeric()
-    //                 ->default(1),
-    //             Select::make('status')
-    //                 ->options(EventStatus::class)
-    //                 ->required()
-    //                 ->default(0),
-    //             Select::make('labelstatus')
-    //                 ->options(LabelStatus::class)
-    //                 ->required()
-    //                 ->default(0),
-    //             DatePicker::make('eventDate'),
-    //             DatePicker::make('minDate'),
-    //             DatePicker::make('maxDate'),
-    //             DatePicker::make('logDate'),
-    //         ]);
-    // }
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Select::make('subject_id')
+                    ->relationship('subject', 'id')
+                    ->required(),
+                Select::make('event_id')
+                    ->relationship('event', 'name')
+                    ->required(),
+                TextInput::make('iteration')
+                    ->required()
+                    ->numeric()
+                    ->default(1),
+                Select::make('status')
+                    ->options(EventStatus::class)
+                    ->required()
+                    ->default(0),
+                Select::make('labelstatus')
+                    ->options(LabelStatus::class)
+                    ->required()
+                    ->default(0),
+                DatePicker::make('eventDate'),
+                DatePicker::make('minDate'),
+                DatePicker::make('maxDate'),
+                DatePicker::make('logDate'),
+            ]);
+    }
 
     public function table(Table $table): Table
     {
@@ -120,20 +124,44 @@ class SubjectEventsRelationManager extends RelationManager
                                 ->default(today()),
                         ]
                     )
-                    ->action(function ($record, $data) {
-                        $subject = Subject::find($record->subject_id);
-                        $subject->events()->attach($record->id, [
-                            'iteration' => $record->iteration + 1,
-                            'status' => 0,
-                            'labelstatus' => 0,
-                            'eventDate' => $data['eventDate'],
-                            // 'minDate' => now(),
-                            // 'maxDate' => now(),
-                        ]);
+                    ->action(function ($livewire, $record, $data) {
+                        $eventDate = new CarbonImmutable($data['eventDate']);
+                        // $subject = $livewire->getOwnerRecord();
+                        $record->addEventIteration($eventDate);
+                        // $subject->addEventIteration($record, $eventDate);
                     })
-                    ->visible(fn($record) => $record->repeatable == 0)
+                    ->visible(
+                        fn($record, $livewire) =>
+                        $record->event->repeatable &&
+                            $record->status !== EventStatus::Cancelled &&
+                            $record->iteration === SubjectEvent::where('event_id', $record->event->id)->max('iteration') &&
+                            $record->eventDate > SubjectEvent::where('event_id', $record->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
+                            $livewire->getOwnerRecord()->status === SubjectStatus::Enrolled
+                    )
                     ->requiresConfirmation()
                     ->icon('heroicon-o-plus'),
+                ViewAction::make(),
+                Action::make('logEvent')
+                    ->schema(
+                        [
+                            DatePicker::make('logDate')
+                                ->default(today())
+                                ->required()
+                                ->beforeOrEqual('today')
+                                ->afterOrEqual(fn($livewire) => $livewire->getOwnerRecord()->armBaselineDate)
+                                ->label('Log Date'),
+                        ]
+                    )
+                    ->action(function ($record, $data) {
+                        $record->log($data);
+                    })
+                    ->button()
+                    ->color('info')
+                    ->extraAttributes(['class' => 'py-1'])
+                    ->requiresConfirmation()
+                    ->visible(
+                        fn($record) => $record->status === EventStatus::Scheduled
+                    ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -2,7 +2,9 @@
 
 namespace App\Filament\Project\Resources\Subjects\Resources\Events\Schemas;
 
+use App\Enums\EventStatus;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -18,13 +20,12 @@ class EventForm
                 TextInput::make('arm_id')
                     ->required()
                     ->numeric(),
-                TextInput::make('redcap_event_id')
-                    ->numeric()
-                    ->default(null),
                 Toggle::make('autolog')
                     ->required(),
                 DatePicker::make('eventDate')
                     ->date('Y-m-d'),
+                Select::make('status')
+                    ->options(EventStatus::class),
                 TextInput::make('offset_ante_window')
                     ->numeric()
                     ->default(null),

@@ -9,8 +9,10 @@ use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\View;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -67,7 +69,7 @@ class EventsTable
                 //
             ])
             ->recordActions([
-                // EditAction::make(),
+                EditAction::make(),
                 Action::make('newItteration')
                     ->label('New Iteration')
                     ->schema(
@@ -91,6 +93,27 @@ class EventsTable
                     ->requiresConfirmation()
                     ->icon('heroicon-o-plus'),
                 ViewAction::make(),
+                Action::make('logEvent')
+                    ->schema(
+                        [
+                            DatePicker::make('logDate')
+                                ->default(today())
+                                ->required()
+                                ->beforeOrEqual('today')
+                                ->afterOrEqual(fn($livewire) => $livewire->getOwnerRecord()->armBaselineDate)
+                                ->label('Log Date'),
+                        ]
+                    )
+                    ->action(function ($record, $data) {
+                        $record->log($data);
+                    })
+                    ->button()
+                    ->color('info')
+                    ->extraAttributes(['class' => 'py-1'])
+                    ->requiresConfirmation()
+                    ->visible(
+                        fn($record) => $record->status === EventStatus::Scheduled
+                    ),
             ]);
         // ->toolbarActions([
         // BulkActionGroup::make([
