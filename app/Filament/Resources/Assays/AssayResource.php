@@ -25,16 +25,19 @@ class AssayResource extends Resource
         return false;
     }
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return AssayForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return AssaysTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

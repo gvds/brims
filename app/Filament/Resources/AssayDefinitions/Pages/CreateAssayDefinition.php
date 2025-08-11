@@ -13,12 +13,14 @@ class CreateAssayDefinition extends CreateRecord
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
+    #[\Override]
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->id();
         return $data;
     }
 
+    #[\Override]
     protected function getRedirectUrl(): string
     {
         return static::getResource()::getUrl('index');

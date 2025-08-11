@@ -17,6 +17,7 @@ class StudyDesignsRelationManager extends RelationManager
 
     // protected static ?string $relatedResource = StudydesignResource::class;
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

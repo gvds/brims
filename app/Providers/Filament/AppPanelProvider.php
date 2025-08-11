@@ -28,6 +28,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AppPanelProvider extends PanelProvider
 {
+    #[\Override]
     public function register(): void
     {
         parent::register();

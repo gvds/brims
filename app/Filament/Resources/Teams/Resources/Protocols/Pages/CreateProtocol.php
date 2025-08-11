@@ -10,6 +10,7 @@ class CreateProtocol extends CreateRecord
 {
     protected static string $resource = ProtocolResource::class;
 
+    #[\Override]
     protected function handleRecordCreation(array $data): Model
     {
         $data['user_id'] = auth()->id();

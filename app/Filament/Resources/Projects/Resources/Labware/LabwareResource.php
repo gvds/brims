@@ -24,16 +24,19 @@ class LabwareResource extends Resource
     protected static ?string $parentResource = ProjectResource::class;
 
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return LabwareForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return LabwareTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

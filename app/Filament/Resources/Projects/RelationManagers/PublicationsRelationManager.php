@@ -17,6 +17,7 @@ class PublicationsRelationManager extends RelationManager
 
     // protected static ?string $relatedResource = PublicationResource::class;
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

@@ -25,6 +25,7 @@ class EditSubject extends EditRecord
         ];
     }
 
+    #[\Override]
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if ($this->record->status === SubjectStatus::Generated) {
@@ -35,6 +36,7 @@ class EditSubject extends EditRecord
         return $data;
     }
 
+    #[\Override]
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
 

@@ -19,6 +19,7 @@ class MembersRelationManager extends RelationManager
 {
     protected static string $relationship = 'members';
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

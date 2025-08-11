@@ -25,6 +25,7 @@ class EditProject extends EditRecord
         return [];
     }
 
+    #[\Override]
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         if ($data['leader_id'] !== $record->getOriginal('leader_id')) {
@@ -38,6 +39,7 @@ class EditProject extends EditRecord
     }
 
 
+    #[\Override]
     protected function getRedirectUrl(): string
     {
         return static::getResource()::getUrl('view', [

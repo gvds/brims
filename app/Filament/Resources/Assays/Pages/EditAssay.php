@@ -17,6 +17,7 @@ class EditAssay extends EditRecord
         ];
     }
 
+    #[\Override]
     protected function getRedirectUrl(): string
     {
         return static::getResource()::getUrl('index');

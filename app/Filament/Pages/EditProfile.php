@@ -10,6 +10,7 @@ use Filament\Schemas\Schema;
 class EditProfile extends BaseEditProfile
 {
     // protected string $view = 'filament.pages.profile';
+    #[\Override]
     public function form(Schema $schema): Schema
     {
         return $schema

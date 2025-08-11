@@ -13,11 +13,13 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
+    #[\Override]
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
 
+    #[\Override]
     protected function handleRecordCreation(array $data): Model
     {
         $data['password'] = bcrypt(Str::random(25));

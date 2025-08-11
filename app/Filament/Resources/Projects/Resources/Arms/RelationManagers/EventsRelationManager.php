@@ -24,6 +24,7 @@ class EventsRelationManager extends RelationManager
 {
     protected static string $relationship = 'events';
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

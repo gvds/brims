@@ -20,16 +20,19 @@ class TeamResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return TeamForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return TeamsTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

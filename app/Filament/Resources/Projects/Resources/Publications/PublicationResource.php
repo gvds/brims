@@ -26,21 +26,25 @@ class PublicationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return PublicationForm::configure($schema);
     }
 
+    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return PublicationInfolist::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return PublicationsTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

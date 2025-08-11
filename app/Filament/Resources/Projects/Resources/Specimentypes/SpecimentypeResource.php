@@ -23,16 +23,19 @@ class SpecimentypeResource extends Resource
 
     protected static ?string $parentResource = ProjectResource::class;
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return SpecimentypeForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return SpecimentypesTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

@@ -12,6 +12,7 @@ class Login extends BaseLogin
 {
     // protected string $view = 'filament.pages.login';
 
+    #[\Override]
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -40,6 +41,7 @@ class Login extends BaseLogin
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
+    #[\Override]
     protected function getCredentialsFromFormData(array $data): array
     {
         return [

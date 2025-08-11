@@ -26,21 +26,25 @@ class ProtocolResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return ProtocolForm::configure($schema);
     }
 
+    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return ProtocolInfolist::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return ProtocolsTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

@@ -23,21 +23,25 @@ class ProjectResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return ProjectForm::configure($schema);
     }
 
+    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return ProjectInfolist::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return ProjectsTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

@@ -24,21 +24,25 @@ class ArmResource extends Resource
 
     protected static ?string $parentResource = ProjectResource::class;
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return ArmForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return ArmsTable::configure($table);
     }
 
+    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return ArmInfolist::configure($schema);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

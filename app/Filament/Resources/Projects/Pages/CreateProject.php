@@ -9,6 +9,7 @@ class CreateProject extends CreateRecord
 {
     protected static string $resource = ProjectResource::class;
 
+    #[\Override]
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['team_id'] = auth()->user()->team_id;

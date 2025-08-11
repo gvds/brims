@@ -27,21 +27,25 @@ class StudyResource extends Resource
 
     protected static ?string $parentResource = ProjectResource::class;
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return StudyForm::configure($schema);
     }
 
+    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return StudyInfolist::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return StudiesTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

@@ -30,6 +30,7 @@ class SpecimentypesRelationManager extends RelationManager
 
     protected static ?string $title = 'Specimen Types';
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

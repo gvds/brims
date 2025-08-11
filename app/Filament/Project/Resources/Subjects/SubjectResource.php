@@ -22,21 +22,25 @@ class SubjectResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return SubjectForm::configure($schema);
     }
 
+    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return SubjectInfolist::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return SubjectsTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

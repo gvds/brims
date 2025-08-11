@@ -28,6 +28,7 @@ class AssaysRelationManager extends RelationManager
 {
     protected static string $relationship = 'assays';
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

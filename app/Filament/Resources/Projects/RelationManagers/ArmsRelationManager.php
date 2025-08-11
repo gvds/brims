@@ -18,6 +18,7 @@ class ArmsRelationManager extends RelationManager
 
     protected static ?string $relatedResource = ArmResource::class;
 
+    #[\Override]
     public function isReadOnly(): bool
     {
         return false;

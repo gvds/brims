@@ -22,16 +22,19 @@ class EventResource extends Resource
 
     protected static ?string $parentResource = ArmResource::class;
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return EventForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return EventsTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [
