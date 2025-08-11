@@ -131,7 +131,7 @@ class SubjectEventsRelationManager extends RelationManager
                         // $subject->addEventIteration($record, $eventDate);
                     })
                     ->visible(
-                        fn($record, $livewire) =>
+                        fn($record, $livewire): bool =>
                         $record->event->repeatable &&
                             $record->status !== EventStatus::Cancelled &&
                             $record->iteration === SubjectEvent::where('event_id', $record->event->id)->max('iteration') &&
@@ -160,7 +160,7 @@ class SubjectEventsRelationManager extends RelationManager
                     ->extraAttributes(['class' => 'py-1'])
                     ->requiresConfirmation()
                     ->visible(
-                        fn($record) => $record->status === EventStatus::Scheduled
+                        fn($record): bool => $record->status === EventStatus::Scheduled
                     ),
             ])
             ->toolbarActions([

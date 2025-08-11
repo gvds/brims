@@ -88,7 +88,7 @@ class MembersRelationManager extends RelationManager
                                 'Member' => 'Member',
                             ])
                             ->required()
-                            ->disabled(fn(User $record) => $record->id === $this->ownerRecord->leader_id),
+                            ->disabled(fn(User $record): bool => $record->id === $this->ownerRecord->leader_id),
                         Select::make('site_id')
                             ->options(
                                 Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
@@ -96,7 +96,7 @@ class MembersRelationManager extends RelationManager
                     ]),
                 // ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id or $this->ownerRecord->leader_id === auth()->id()),
                 DetachAction::make()
-                    ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id),
+                    ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(
                 //     function (User $record, DetachAction $action) {
                 //         if ($record->pivot->pivotParent->members->count() === 1) {

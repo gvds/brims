@@ -124,7 +124,7 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     protected function fullname(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->firstname . ' ' . $this->lastname,
+            get: fn(): string => $this->firstname . ' ' . $this->lastname,
         );
     }
 

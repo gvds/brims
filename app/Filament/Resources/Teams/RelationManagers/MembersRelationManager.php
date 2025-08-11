@@ -45,7 +45,7 @@ class MembersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255),
                 Select::make('team_role')
-                    ->options(fn() => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
+                    ->options(fn(): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
                     ->required(),
                 TextInput::make('telephone')
                     ->prefix('+')

@@ -124,7 +124,7 @@ class SpecimentypesRelationManager extends RelationManager
                 IconColumn::make('pooled')
                     ->boolean(),
                 TextColumn::make('defaultVolume')
-                    ->formatStateUsing(fn(Specimentype $record) => $record->defaultVolume . ' ' . $record->volumeUnit),
+                    ->formatStateUsing(fn(Specimentype $record): string => $record->defaultVolume . ' ' . $record->volumeUnit),
                 TextColumn::make('specimenGroup')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('labware.name')

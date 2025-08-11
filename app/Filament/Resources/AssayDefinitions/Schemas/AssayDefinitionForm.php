@@ -87,7 +87,7 @@ class AssayDefinitionForm
                             ->minValue(1)
                             ->maxValue(255)
                             ->default(255)
-                            ->visible(fn(Get $get) => in_array($get('field_type'), ['text'])),
+                            ->visible(fn(Get $get): bool => in_array($get('field_type'), ['text'])),
                         Select::make('sub_type')
                             ->label('Sub Type')
                             ->live()
@@ -102,15 +102,15 @@ class AssayDefinitionForm
                                     $set($field, null);
                                 }
                             })
-                            ->visible(fn(Get $get) => in_array($get('field_type'), ['text'])),
+                            ->visible(fn(Get $get): bool => in_array($get('field_type'), ['text'])),
                         TextInput::make('min_value')
                             ->label('Min Value')
                             ->integer()
-                            ->visible(fn(Get $get) => in_array($get('sub_type'), ['integer', 'numeric'])),
+                            ->visible(fn(Get $get): bool => in_array($get('sub_type'), ['integer', 'numeric'])),
                         TextInput::make('max_value')
                             ->label('Max Value')
                             ->integer()
-                            ->visible(fn(Get $get) => in_array($get('sub_type'), ['integer', 'numeric'])),
+                            ->visible(fn(Get $get): bool => in_array($get('sub_type'), ['integer', 'numeric'])),
                         Repeater::make('field_options')
                             ->label('Field Options')
                             ->table([
@@ -131,7 +131,7 @@ class AssayDefinitionForm
                             ->columns(2)
                             ->columnSpanFull()
                             ->defaultItems(1)
-                            ->visible(fn(Get $get) => in_array($get('field_type'), ['select', 'radio', 'checkboxlist'])),
+                            ->visible(fn(Get $get): bool => in_array($get('field_type'), ['select', 'radio', 'checkboxlist'])),
                         Toggle::make('required')
                             ->label('Required')
                             ->default(false)

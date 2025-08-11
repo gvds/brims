@@ -44,7 +44,7 @@ class ProjectSeeder extends Seeder
                 $arms = Arm::factory()
                     ->count(3)
                     ->for($project)
-                    ->sequence(fn(Sequence $sequence) => [
+                    ->sequence(fn(Sequence $sequence): array => [
                         'arm_num' => $sequence->index + 1,
                         'manual_enrol' => $sequence->index === 0 ? true : false,
                     ])

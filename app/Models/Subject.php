@@ -25,7 +25,7 @@ class Subject extends Model
     protected function fullname(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->firstname . ' ' . $this->lastname,
+            get: fn(): string => $this->firstname . ' ' . $this->lastname,
         );
     }
 

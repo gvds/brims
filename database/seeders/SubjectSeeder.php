@@ -36,6 +36,7 @@ class SubjectSeeder extends Seeder
                 ]);
 
             $first_arm = $project->arms->first();
+
             $subjects->each(function ($subject) use ($project, $first_arm): void {
                 $enrolDate = new CarbonImmutable($subject->enrolDate);
                 $events = $project->events->where('arm_id', $first_arm->id);

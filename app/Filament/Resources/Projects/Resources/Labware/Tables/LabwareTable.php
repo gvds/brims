@@ -33,7 +33,7 @@ class LabwareTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->recordClasses(fn(Model $record) => isset($record->project_id) ? 'text-gray-500' : 'text-green-500')
+            ->recordClasses(fn(Model $record): string => isset($record->project_id) ? 'text-gray-500' : 'text-green-500')
             ->filters([
                 //
             ])

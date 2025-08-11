@@ -84,7 +84,7 @@ class EventsTable
                         $subject->addEventIteration($record, $eventDate);
                     })
                     ->visible(
-                        fn($record, $livewire) => $record->repeatable &&
+                        fn($record, $livewire): bool => $record->repeatable &&
                             $record->status !== EventStatus::Cancelled &&
                             $record->iteration === SubjectEvent::where('event_id', $record->id)->max('iteration') &&
                             $record->eventDate > SubjectEvent::where('event_id', $record->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
@@ -112,7 +112,7 @@ class EventsTable
                     ->extraAttributes(['class' => 'py-1'])
                     ->requiresConfirmation()
                     ->visible(
-                        fn($record) => $record->status === EventStatus::Scheduled
+                        fn($record): bool => $record->status === EventStatus::Scheduled
                     ),
             ]);
         // ->toolbarActions([

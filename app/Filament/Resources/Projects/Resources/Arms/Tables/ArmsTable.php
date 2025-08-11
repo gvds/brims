@@ -34,7 +34,7 @@ class ArmsTable
                     ->boolean(),
                 TextColumn::make('switcharms')
                     ->label('Switchable Arms')
-                    ->state(fn($record) => Arm::whereIn('id', $record->switcharms ?? [])->get()->map(fn($arm) => $arm['arm_num'] . ': ' . $arm['name']))
+                    ->state(fn($record) => Arm::whereIn('id', $record->switcharms ?? [])->get()->map(fn($arm): string => $arm['arm_num'] . ': ' . $arm['name']))
                     ->listWithLineBreaks()
                     ->size(TextSize::ExtraSmall)
                     ->placeholder('--- No Switchable Arms ---'),

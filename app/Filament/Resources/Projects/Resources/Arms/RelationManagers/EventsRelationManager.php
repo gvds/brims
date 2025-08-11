@@ -38,7 +38,7 @@ class EventsRelationManager extends RelationManager
                         TextInput::make('name')
                             ->required(),
                         TextEntry::make('redcap_event_id')
-                            ->visible(fn($record) => isset($record->redcap_event_id)),
+                            ->visible(fn($record): bool => isset($record->redcap_event_id)),
                         // ->integer()
                         // ->default(null),
                     ])

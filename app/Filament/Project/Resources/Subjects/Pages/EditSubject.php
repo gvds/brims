@@ -20,7 +20,7 @@ class EditSubject extends EditRecord
     {
         return [
             ViewAction::make()
-                ->visible(fn($record) => $record->status !== SubjectStatus::Generated),
+                ->visible(fn($record): bool => $record->status !== SubjectStatus::Generated),
             DeleteAction::make(),
         ];
     }
