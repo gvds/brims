@@ -16,7 +16,7 @@ class SubjectFactory extends Factory
      */
     public function definition(): array
     {
-        $startdate = fake()->date();
+        $startdate = fake()->dateTimeBetween('-1 year', 'now');
         return [
             // 'subjectID' =>,
             // 'site_id' =>,

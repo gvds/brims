@@ -42,8 +42,8 @@ class SubjectSeeder extends Seeder
                 $events = $project->events->where('arm_id', $first_arm->id);
                 $events->each(fn($event) => $subject->events()->attach($event, [
                     'eventDate' => $enrolDate->addDays($event->offset),
-                    'minDate' => $enrolDate->addDays($event->offset - $event->offset_ante_window),
-                    'maxDate' => $enrolDate->addDays($event->offset + $event->offset_post_window),
+                    'minDate' => isset($event->offset_ante_window) ? $enrolDate->addDays($event->offset - $event->offset_ante_window) : null,
+                    'maxDate' => isset($event->offset_post_window) ? $enrolDate->addDays($event->offset + $event->offset_post_window) : null,
                     'iteration' => 1,
                     'status' => 0,
                 ]));

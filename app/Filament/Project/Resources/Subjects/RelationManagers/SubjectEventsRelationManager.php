@@ -74,13 +74,13 @@ class SubjectEventsRelationManager extends RelationManager
                 TextColumn::make('event.name'),
                 TextColumn::make('status'),
                 TextColumn::make('eventDate')
-                    ->date(),
+                    ->date('Y-m-d'),
                 TextColumn::make('minDate')
-                    ->date(),
+                    ->date('Y-m-d'),
                 TextColumn::make('maxDate')
-                    ->date(),
+                    ->date('Y-m-d'),
                 TextColumn::make('logDate')
-                    ->date(),
+                    ->date('Y-m-d'),
                 TextColumn::make('event.event_order')
                     ->label('Event Order'),
                 IconColumn::make('event.repeatable')
@@ -88,7 +88,8 @@ class SubjectEventsRelationManager extends RelationManager
                     ->label('Repeatable'),
                 TextColumn::make('iteration')
                     ->numeric(),
-                TextColumn::make('labelstatus'),
+                TextColumn::make('labelstatus')
+                    ->label('Label Status'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

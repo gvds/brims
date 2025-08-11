@@ -25,11 +25,11 @@ class SubjectForm
                     ->label('Subject ID')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold),
-                TextEntry::make('site.name')
-                    ->label('Site Name')
+                TextEntry::make('status')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold),
-                TextEntry::make('status')
+                TextEntry::make('site.name')
+                    ->label('Site Name')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold),
                 TextEntry::make('arm.name')
@@ -65,7 +65,8 @@ class SubjectForm
                     ->simple(
                         TextInput::make('addressEntry'),
                     )
-                    ->columnSpan(2),
+                    ->columnSpan(2)
+                    ->hint('Enter one address component per line'),
             ])
             ->columns(2)
             ->extraAttributes([
