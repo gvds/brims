@@ -12,13 +12,15 @@ class AssayDefinition extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'active' => 'boolean',
-        'additional_fields' => 'json',
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+            'additional_fields' => 'json',
+        ];
     }
 }

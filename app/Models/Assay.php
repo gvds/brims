@@ -13,10 +13,6 @@ class Assay extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'additional_fields' => 'json',
-    ];
-
     public function study(): BelongsTo
     {
         return $this->belongsTo(Study::class);
@@ -30,5 +26,11 @@ class Assay extends Model
     public function created_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    protected function casts(): array
+    {
+        return [
+            'additional_fields' => 'json',
+        ];
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('subjects', function (Blueprint $table): void {
             $table->id();
             $table->string('subjectID', 10)->unique();
             $table->foreignIdFor(Project::class)->constrained();

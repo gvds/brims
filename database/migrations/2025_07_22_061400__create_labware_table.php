@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('labware', function (Blueprint $table) {
+        Schema::create('labware', function (Blueprint $table): void {
             $table->id();
             $table->string('name', 30);
             $table->string('barcodeFormat', 50);

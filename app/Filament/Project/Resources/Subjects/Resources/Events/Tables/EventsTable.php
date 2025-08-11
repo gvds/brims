@@ -78,7 +78,7 @@ class EventsTable
                                 ->default(today()),
                         ]
                     )
-                    ->action(function ($livewire, $record, $data) {
+                    ->action(function ($livewire, $record, $data): void {
                         $eventDate = new CarbonImmutable($data['eventDate']);
                         $subject = $livewire->getOwnerRecord();
                         $subject->addEventIteration($record, $eventDate);
@@ -104,7 +104,7 @@ class EventsTable
                                 ->label('Log Date'),
                         ]
                     )
-                    ->action(function ($record, $data) {
+                    ->action(function ($record, $data): void {
                         $record->log($data);
                     })
                     ->button()

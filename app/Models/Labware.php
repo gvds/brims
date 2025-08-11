@@ -12,12 +12,14 @@ class Labware extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-
-    protected $casts = [
-        'preregister' => 'boolean',
-    ];
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'preregister' => 'boolean',
+        ];
     }
 }

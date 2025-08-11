@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('publications', function (Blueprint $table) {
+        Schema::create('publications', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(Project::class)->constrained()->onDelete('cascade');
             $table->string('pubmed_id')->nullable()->unique();

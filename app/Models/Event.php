@@ -15,11 +15,6 @@ class Event extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'repeatable' => 'boolean',
-        'active' => 'boolean',
-    ];
-
     public function arm(): BelongsTo
     {
         return $this->belongsTo(Arm::class);
@@ -39,4 +34,11 @@ class Event extends Model
     //         'logDate' => $data['logDate'],
     //     ]);
     // }
+    protected function casts(): array
+    {
+        return [
+            'repeatable' => 'boolean',
+            'active' => 'boolean',
+        ];
+    }
 }

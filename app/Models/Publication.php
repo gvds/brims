@@ -13,13 +13,15 @@ class Publication extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'authors' => 'array',
-        'publication_status' => PublicationStatus::class,
-    ];
-
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'authors' => 'array',
+            'publication_status' => PublicationStatus::class,
+        ];
     }
 }

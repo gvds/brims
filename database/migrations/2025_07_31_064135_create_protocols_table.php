@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('protocols', function (Blueprint $table) {
+        Schema::create('protocols', function (Blueprint $table): void {
             $table->id();
             $table->string('name')->unique();
             $table->foreignIdFor(Team::class)->constrained()->onDelete('cascade');

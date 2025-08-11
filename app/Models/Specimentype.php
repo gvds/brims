@@ -13,10 +13,6 @@ class Specimentype extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'transferDestinations' => 'json',
-    ];
-
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
@@ -42,4 +38,10 @@ class Specimentype extends Model
     //     return $this->hasMany(virtualUnit::class, 'storageSampleType', 'storageSampleType');
     //     // return $this->hasMany(virtualUnit::class, 'storageSampleType', 'storageSampleType')->where('project_id', $this->project_id);
     // }
+    protected function casts(): array
+    {
+        return [
+            'transferDestinations' => 'json',
+        ];
+    }
 }

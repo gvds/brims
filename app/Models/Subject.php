@@ -22,11 +22,6 @@ class Subject extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'status' => SubjectStatus::class,
-        'address' => 'json',
-    ];
-
     protected function fullname(): Attribute
     {
         return new Attribute(
@@ -154,4 +149,11 @@ class Subject extends Model
     //         'maxDate' => $eventDate->addDays($event->offset_post_window),
     //     ]);
     // }
+    protected function casts(): array
+    {
+        return [
+            'status' => SubjectStatus::class,
+            'address' => 'json',
+        ];
+    }
 }

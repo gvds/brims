@@ -97,7 +97,7 @@ class AssayDefinitionForm
                                 'numeric' => 'Numeric',
                             ])
                             ->default('text')
-                            ->afterStateUpdated(function ($state, callable $set) {
+                            ->afterStateUpdated(function ($state, callable $set): void {
                                 foreach (['min_value', 'max_value'] as $field) {
                                     $set($field, null);
                                 }

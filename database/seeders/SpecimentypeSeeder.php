@@ -16,7 +16,7 @@ class SpecimentypeSeeder extends Seeder
     public function run(): void
     {
         Project::withoutGlobalScopes()->get()->each(
-            function (Project $project) {
+            function (Project $project): void {
                 $primarySpecimentypes = Specimentype::factory()
                     ->count(3)
                     ->for($project)
@@ -24,7 +24,7 @@ class SpecimentypeSeeder extends Seeder
                         'primary' => true,
                     ]);
                 $primarySpecimentypes->each(
-                    function (Specimentype $specimentype) use ($project) {
+                    function (Specimentype $specimentype) use ($project): void {
                         Specimentype::factory()
                             ->count(2)
                             ->for($project)

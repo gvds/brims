@@ -14,7 +14,7 @@ class PublicationSeeder extends Seeder
      */
     public function run(): void
     {
-        Project::all()->each(function ($project) {
+        Project::all()->each(function ($project): void {
             Publication::factory()
                 ->count(random_int(1, 5))
                 ->for($project)

@@ -46,7 +46,7 @@ class AssaysRelationManager extends RelationManager
                     ->label('Assay Definition')
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
+                    ->afterStateUpdated(function ($state, callable $set): void {
                         $set('additional_fields', []);
                     }),
                 TextInput::make('technologyPlatform')
@@ -97,10 +97,8 @@ class AssaysRelationManager extends RelationManager
                             if ($field['field_type'] === 'select') {
                                 $fields[] = Select::make($fieldname)
                                     ->label($field['label'] ?? null)
-                                    ->options(function () use ($field) {
-                                        return collect($field['field_options'] ?? [])
-                                            ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]);
-                                    })
+                                    ->options(fn() => collect($field['field_options'] ?? [])
+                                        ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]))
                                     ->required($field['required'] ?? false);
                             }
                             if ($field['field_type'] === 'radio') {
@@ -108,10 +106,8 @@ class AssaysRelationManager extends RelationManager
                                     ->schema([
                                         Radio::make($fieldname)
                                             ->label($field['label'] ?? null)
-                                            ->options(function () use ($field) {
-                                                return collect($field['field_options'] ?? [])
-                                                    ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]);
-                                            })
+                                            ->options(fn() => collect($field['field_options'] ?? [])
+                                                ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]))
                                             ->inline()
                                             ->required($field['required'] ?? false)
                                     ]);
@@ -121,10 +117,8 @@ class AssaysRelationManager extends RelationManager
                                     ->schema([
                                         CheckboxList::make($fieldname)
                                             ->label($field['label'] ?? null)
-                                            ->options(function () use ($field) {
-                                                return collect($field['field_options'] ?? [])
-                                                    ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]);
-                                            })
+                                            ->options(fn() => collect($field['field_options'] ?? [])
+                                                ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]))
                                             ->required($field['required'] ?? false)
                                     ]);
                             }

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subject_event', function (Blueprint $table) {
+        Schema::create('subject_event', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(Subject::class)
                 ->constrained()

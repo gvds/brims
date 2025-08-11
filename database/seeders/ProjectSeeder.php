@@ -17,7 +17,7 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::all()->each(function (Team $team) {
+        Team::all()->each(function (Team $team): void {
             $projects = Project::factory()
                 ->count(3)
                 ->for($team)
@@ -26,7 +26,7 @@ class ProjectSeeder extends Seeder
                 ->create([
                     'leader_id' => $team->leader->id,
                 ]);
-            $projects->each(function (Project $project) use ($team) {
+            $projects->each(function (Project $project) use ($team): void {
                 $project->load('sites');
                 $project->members()->attach($team->leader->id, [
                     'role' => 'Admin',
@@ -49,7 +49,7 @@ class ProjectSeeder extends Seeder
                         'manual_enrol' => $sequence->index === 0 ? true : false,
                     ])
                     ->create();
-                $arms->each(function (Arm $arm) {
+                $arms->each(function (Arm $arm): void {
                     $arm->update([
                         'switcharms' => match ($arm->arm_num) {
                             1 => [$arm->id + 1, $arm->id + 2],

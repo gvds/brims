@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('specimentypes', function (Blueprint $table) {
+        Schema::create('specimentypes', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->string('name', 50);

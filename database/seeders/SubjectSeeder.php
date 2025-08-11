@@ -17,7 +17,7 @@ class SubjectSeeder extends Seeder
      */
     public function run(): void
     {
-        Project::with(['members', 'arms'])->withoutGlobalScopes()->get()->each(function ($project) {
+        Project::with(['members', 'arms'])->withoutGlobalScopes()->get()->each(function ($project): void {
             $subjects = Subject::factory()
                 ->count(6)
                 ->for($project)
@@ -36,7 +36,7 @@ class SubjectSeeder extends Seeder
                 ]);
 
             $first_arm = $project->arms->first();
-            $subjects->each(function ($subject) use ($project, $first_arm) {
+            $subjects->each(function ($subject) use ($project, $first_arm): void {
                 $enrolDate = new CarbonImmutable($subject->enrolDate);
                 $events = $project->events->where('arm_id', $first_arm->id);
                 $events->each(fn($event) => $subject->events()->attach($event, [

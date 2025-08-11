@@ -25,10 +25,10 @@ class PublicationForm
                     ->schema([
                         TextInput::make('pubmed_id')
                             ->requiredIf('publication_status', PublicationStatus::Published->value)
-                            ->regex('/^\d{7,8}$/', 'PubMed ID must be a 7 or 8 digit number.'),
+                            ->regex('/^\d{7,8}$/'),
                         TextInput::make('doi')
                             ->requiredIf('publication_status', PublicationStatus::Published->value)
-                            ->regex('/^10\.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i', 'DOI must start with "10." followed by a valid DOI format.'),
+                            ->regex('/^10\.\d{4,9}\/[-._;()\/:A-Z0-9]+$/i'),
                         TextInput::make('publication_date')
                             ->requiredIf('publication_status', PublicationStatus::Published->value),
                         Select::make('publication_status')

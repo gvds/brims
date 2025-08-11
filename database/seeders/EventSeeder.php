@@ -16,7 +16,7 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         Arm::all()->each(
-            function (Arm $arm) {
+            function (Arm $arm): void {
                 Event::factory()
                     ->count(4)
                     ->for($arm)

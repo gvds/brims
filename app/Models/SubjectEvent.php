@@ -19,11 +19,6 @@ class SubjectEvent extends Pivot
      */
     public $incrementing = true;
 
-    protected $casts = [
-        'status' => EventStatus::class,
-        'labelstatus' => LabelStatus::class,
-    ];
-
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class)->with('arm');
@@ -56,5 +51,12 @@ class SubjectEvent extends Pivot
             'labelstatus' => LabelStatus::Generated,
             'logDate' => $data['logDate'],
         ]);
+    }
+    protected function casts(): array
+    {
+        return [
+            'status' => EventStatus::class,
+            'labelstatus' => LabelStatus::class,
+        ];
     }
 }

@@ -14,11 +14,6 @@ class Arm extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'manual_enrol' => 'boolean',
-        'switcharms' => 'array',
-    ];
-
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
@@ -33,4 +28,11 @@ class Arm extends Model
     // {
     //     return $this->hasMany(Arm::class, 'switcharms', 'id');
     // }
+    protected function casts(): array
+    {
+        return [
+            'manual_enrol' => 'boolean',
+            'switcharms' => 'array',
+        ];
+    }
 }
