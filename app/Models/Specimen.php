@@ -3,11 +3,17 @@
 namespace App\Models;
 
 use App\Enums\SpecimenStatus;
+use App\Models\Scopes\SpecimenScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+#[ScopedBy([SpecimenScope::class])]
 class Specimen extends Pivot
 {
+    use HasFactory;
+
     protected $table = 'specimens';
 
     protected $guarded = ['id'];
@@ -34,5 +40,20 @@ class Specimen extends Pivot
     public function parentSpecimen(): BelongsTo
     {
         return $this->belongsTo(Specimen::class, 'parentSpecimen_id');
+    }
+
+    public function loggedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'loggedBy_id');
+    }
+
+    public function loggedOutBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'loggedOutBy_id');
+    }
+
+    public function usedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'usedBy_id');
     }
 }

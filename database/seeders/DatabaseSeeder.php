@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             SpecimentypeSeeder::class,
             EventSeeder::class,
             SubjectSeeder::class,
+            SpecimenSeeder::class,
             PublicationSeeder::class,
         ]);
     }

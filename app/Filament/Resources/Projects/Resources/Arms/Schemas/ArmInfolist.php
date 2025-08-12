@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Studies\Schemas;
+namespace App\Filament\Resources\Projects\Resources\Arms\Schemas;
 
 use App\Models\Arm;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class ArmInfolist

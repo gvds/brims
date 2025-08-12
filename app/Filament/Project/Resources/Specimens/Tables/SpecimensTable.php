@@ -14,6 +14,7 @@ class SpecimensTable
     {
         return $table
             ->columns([
+                TextColumn::make('barcode'),
                 TextColumn::make('subjectEvent.event.name'),
                 TextColumn::make('specimenType.name'),
                 TextColumn::make('site.name'),
@@ -26,16 +27,15 @@ class SpecimensTable
                 TextColumn::make('thawcount')
                     ->label('Thaw Count')
                     ->numeric(),
-                TextColumn::make('loggedBy.fullname'),
+                TextColumn::make('loggedBy.fullname')
+                    ->label('Logged By'),
                 TextColumn::make('loggedAt')
-                    ->dateTime()
+                    ->dateTime('Y-m-d H:i')
                     ->sortable(),
-                TextColumn::make('loggedOutBy.fullname')
-                    ->sortable(),
-                TextColumn::make('usedBy.fullname')
-                    ->sortable(),
+                TextColumn::make('loggedOutBy.fullname'),
+                TextColumn::make('usedBy.fullname'),
                 TextColumn::make('usedAt')
-                    ->dateTime()
+                    ->dateTime('Y-m-d H:i')
                     ->sortable(),
                 TextColumn::make('parentSpecimen.barcode')
                     ->searchable(),

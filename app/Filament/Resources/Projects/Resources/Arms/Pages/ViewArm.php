@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Studies\Pages;
+namespace App\Filament\Resources\Projects\Resources\Arms\Pages;
 
 use App\Filament\Resources\Projects\ProjectResource;
 use App\Filament\Resources\Projects\Resources\Arms\ArmResource;
