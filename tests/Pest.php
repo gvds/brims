@@ -11,8 +11,13 @@
 |
 */
 
+use App\Models\Team;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+
 pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -41,5 +46,5 @@ expect()->extend('toBeOne', fn() => $this->toBe(1));
 
 function something(): void
 {
-    // ..
+    //
 }
