@@ -33,7 +33,7 @@ class SpecimenSeeder extends Seeder
                         'site_id' => $subjectEvent->subject->site_id,
                         'volume' => $specimenType->defaultVolume,
                         'volumeUnit' => $specimenType->volumeUnit,
-                        'loggedBy' => fake()->randomElement($project->members->pluck('id')),
+                        'loggedBy_id' => fake()->randomElement($project->members->pluck('id')),
                         'loggedAt' => now(),
                         'status' => SpecimenStatus::Logged,
                     ]);
