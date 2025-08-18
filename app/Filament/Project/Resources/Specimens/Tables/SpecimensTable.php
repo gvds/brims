@@ -37,11 +37,12 @@ class SpecimensTable
                     ->sortable(),
                 TextColumn::make('loggedOutBy.fullname'),
                 TextColumn::make('usedBy.fullname'),
-                TextColumn::make('usedAt')
-                    ->dateTime('Y-m-d H:i')
-                    ->sortable(),
                 TextColumn::make('parentSpecimen.barcode')
                     ->searchable(),
+                TextColumn::make('usedAt')
+                    ->dateTime('Y-m-d H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
