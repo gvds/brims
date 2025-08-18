@@ -17,7 +17,6 @@
 /public/css
 /public/storage
 /storage/*.key
-/storage/pail
 /vendor
 /database/testing*
 Thumbs.db
