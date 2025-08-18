@@ -1,93 +1,146 @@
 <?php
 
-
 use App\Models\Project;
-use App\Filament\Resources\Projects\ProjectResource;
 use App\Filament\Resources\Projects\Pages\CreateProject;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Resources\Projects\Pages\ViewProject;
-use App\Models\Team;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Filament\Actions\DeleteAction;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Role;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
-
-it('can render page', function () {
-
-    livewire(ListProjects::class)
-        ->assertSuccessful();
+it('shows empty state when no projects exist', function () {
+    $user = User::factory()->create();
+    Livewire::actingAs($user)
+        ->test(ListProjects::class)
+        ->assertSee('No projects');
 });
 
-// it('can list projects in the table', function () {
+it('can list projects in the table', function () {
+    $projects = Project::factory()->count(3)->create([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id()
+    ]);
 
-//     $user = User::factory()
-//         ->create();
-//     $team = Team::factory()
-//         ->create([
-//             'leader_id' => $user->id,
-//         ]);
-//     $user->update([
-//         'team_id' => $team->id,
-//         'team_role' => 'Admin',
-//     ]);
+    livewire(ListProjects::class)
+        ->assertCanSeeTableRecords($projects);
+});
 
-//     $projects = Project::factory()->count(3)->create([
-//         'team_id' => $team->id,
-//         'leader_id' => $user->id
-//     ]);
+it('can search projects by name', function () {
+    $projects = Project::factory()->count(3)->create([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id()
+    ]);
 
-//     Livewire::actingAs($user)
-//         ->test(ListProjects::class)
-//         ->assertCanSeeTableRecords($projects)
-//         ->searchTable($projects->first()->name)
-//         ->assertCanSeeTableRecords($projects->take(1))
-//         ->assertCanNotSeeTableRecords($projects->skip(1));
-// });
+    livewire(ListProjects::class)
+        ->searchTable($projects->first()->name)
+        ->assertCanSeeTableRecords($projects->take(1))
+        ->assertCanNotSeeTableRecords($projects->where('name', '!=', $projects->first()->name));
+});
 
-// it('can create a project', function () {
-//     $data = Project::factory()->make()->toArray();
+it('can create a project', function () {
+    $data = Project::factory()->make([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id()
+    ])->toArray();
 
-//     livewire(CreateProject::class)
-//         ->fillForm($data)
-//         ->call('create')
-//         ->assertNotified()
-//         ->assertRedirect();
+    livewire(CreateProject::class)
+        ->fillForm($data)
+        ->call('create')
+        ->assertNotified()
+        ->assertRedirect();
 
-//     assertDatabaseHas(Project::class, [
-//         'name' => $data['name'],
-//     ]);
-// });
+    assertDatabaseHas(Project::class, [
+        'title' => $data['title'],
+    ]);
+});
 
-// it('can view a project', function () {
-//     $project = Project::factory()->create();
+it('cannot create a project with missing required fields', function () {
+    livewire(CreateProject::class)
+        ->fillForm(['title' => ''])
+        ->call('create')
+        ->assertHasFormErrors(['title' => 'required']);
+});
 
-//     livewire(ViewProject::class, [
-//         'record' => $project->getKey(),
-//     ])->assertOk()
-//         ->assertSee($project->name);
-// });
+it('can view a project', function () {
+    $project = Project::factory()->create([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id()
+    ]);
 
-// it('can edit a project', function () {
-//     $project = Project::factory()->create();
-//     $newName = 'Updated Project Name';
+    livewire(ViewProject::class, [
+        'record' => $project->getKey(),
+    ])->assertOk()
+        ->assertSee($project->title);
+});
 
-//     livewire(EditProject::class, [
-//         'record' => $project->getKey(),
-//     ])->fillForm([
-//         'name' => $newName,
-//     ])->call('save')
-//         ->assertNotified()
-//         ->assertRedirect();
+it('can edit a project', function () {
+    $project = Project::factory()->create([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id()
+    ]);
+    $newTitle = 'Updated Project Name';
 
-//     assertDatabaseHas(Project::class, [
-//         'id' => $project->id,
-//         'name' => $newName,
-//     ]);
+    livewire(EditProject::class, [
+        'record' => $project->getKey(),
+    ])->fillForm([
+        'title' => $newTitle,
+    ])->call('save')
+        ->assertNotified()
+        ->assertRedirect();
+
+    assertDatabaseHas(Project::class, [
+        'id' => $project->id,
+        'title' => $newTitle,
+    ]);
+});
+
+it('can delete a project', function () {
+    $project = Project::factory()->create([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id()
+    ]);
+
+    livewire(EditProject::class, [
+        'record' => $project->getKey(),
+    ])->callAction(DeleteAction::class)
+        ->assertNotified()
+        ->assertRedirect();
+
+    assertDatabaseMissing(Project::class, [
+        'id' => $project->id,
+    ]);
+});
+
+it('cannot view a non-existent project', function () {
+    livewire(ViewProject::class, [
+        'record' => 999999,
+    ]);
+})->throws(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+it('cannot create a project with duplicate title', function () {
+    Project::factory()->create([
+        'team_id' => $this->team->id,
+        'leader_id' => auth()->id(),
+        'title' => 'Unique Project Title',
+    ]);
+
+    livewire(CreateProject::class)
+        ->fillForm([
+            'title' => 'Unique Project Title',
+            'team_id' => $this->team->id,
+            'leader_id' => auth()->id(),
+        ])
+        ->call('create')
+        ->assertHasFormErrors(['title']);
+});
+
+// it('cannot access project list when not authenticated', function () {
+//     livewire(ListProjects::class)
+//         ->assertForbidden();
 // });

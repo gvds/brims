@@ -27,7 +27,7 @@ class ProjectsTable
                 TextColumn::make('team.name')
                     ->searchable(),
                 TextColumn::make('leader.fullname')
-                    ->searchable(),
+                    ->searchable(['firstname', 'lastname']),
                 TextColumn::make('submission_date')
                     ->date('Y-m-d')
                     ->sortable(),

@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\Projects\Schemas;
 
 use App\Models\Site;
+use Dom\Text;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +21,8 @@ class ProjectForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true),
                 TextInput::make('identifier')
                     ->required()
                     ->unique(ignoreRecord: true),
@@ -35,6 +38,28 @@ class ProjectForm
                         fn($record) => $record->fullname
                     )
                     ->required(),
+                Fieldset::make("Subject ID")
+                    ->contained(false)
+                    ->schema([
+                        TextInput::make('subjectID_prefix')
+                            ->label('Prefix')
+                            ->hint('Between 2 and 10 uppercase characters')
+                            ->required()
+                            ->maxLength(10)
+                            ->minLength(2)
+                            ->regex('/^[A-Z]{2,10}$/'),
+                        TextInput::make('subjectID_digits')
+                            ->label('Digits')
+                            ->numeric()
+                            ->required()
+                            ->minValue(2)
+                            ->maxValue(8)
+                            ->hint('The number of digits in a subject ID'),
+                    ]),
+                TextInput::make('storageProjectName')
+                    ->label('Storage Project Name')
+                    ->required()
+                    ->maxLength(40),
                 Grid::make(2)
                     ->schema([
                         DatePicker::make('submission_date'),

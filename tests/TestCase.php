@@ -8,24 +8,47 @@ use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 
-beforeEach(function () {
-    /** @var \App\Models\User $user */
-    $user = User::factory()->create();
 
-    /** @var \App\Models\Team $team */
-    $team = Team::factory()->create([
-        'leader_id' => $user->id,
-    ]);
+// beforeEach(function () {
+//     /** @var \App\Models\User $user */
+//     $user = User::factory()->create();
 
-    $user->update([
-        'team_id' => $team->id,
-        'team_role' => 'Admin',
-    ]);
+//     /** @var \App\Models\Team $team */
+//     $team = Team::factory()->create([
+//         'leader_id' => $user->id,
+//     ]);
 
-    actingAs($user);
-});
+//     $user->update([
+//         'team_id' => $team->id,
+//         'team_role' => 'Admin',
+//     ]);
+
+//     actingAs($user);
+// });
 
 abstract class TestCase extends BaseTestCase
 {
-    //
+    protected Team $team;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+
+        /** @var \App\Models\Team $team */
+        $team = Team::factory()->create([
+            'leader_id' => $user->id,
+        ]);
+        $this->team = $team;
+
+        $user->update([
+            'team_id' => $team->id,
+            'team_role' => 'Admin',
+        ]);
+        // actingAs($user);
+
+        $this->actingAs($user);
+    }
 }

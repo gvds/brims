@@ -19,4 +19,5 @@
 /storage/*.key
 /storage/pail
 /vendor
+/database/*
 Thumbs.db

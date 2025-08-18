@@ -131,7 +131,6 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     public function getFilamentName(): string
     {
         return $this->fullname;
-        // return "{$this->firstname} {$this->lastname}";
     }
 
     public function team(): BelongsTo

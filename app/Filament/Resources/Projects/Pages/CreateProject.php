@@ -21,4 +21,12 @@ class CreateProject extends CreateRecord
     {
         $this->record->members()->attach($this->record->leader_id, ['role' => 'Admin']);
     }
+
+    #[\Override]
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('view', [
+            'record' => $this->record,
+        ]);
+    }
 }
