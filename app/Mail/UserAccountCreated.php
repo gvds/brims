@@ -25,7 +25,7 @@ class UserAccountCreated extends Mailable implements ShouldQueue
         $this->loginUrl = URL::temporarySignedRoute(
             'newaccount',
             now()->addDay(),
-            ['user' => $this->user->id]
+            ['user' => $user->id]
         );
     }
 
