@@ -52,7 +52,7 @@ class UsersTable
                     ->toggle()
                     ->default(),
                 SelectFilter::make('homesite')
-                    ->options(fn() => \App\Models\User::distinct('homesite')->pluck('homesite', 'homesite'))
+                    ->options(fn() => \App\Models\User::whereNotNull('homesite')->distinct('homesite')->pluck('homesite', 'homesite'))
                     ->multiple()
                     ->searchable()
                     ->preload()

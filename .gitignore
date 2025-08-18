@@ -19,5 +19,5 @@
 /storage/*.key
 /storage/pail
 /vendor
-/database/*
+/database/testing*
 Thumbs.db

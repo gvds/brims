@@ -63,6 +63,7 @@ class UserForm
                         TextInput::make('homesite')
                             ->label('Home Site')
                             ->maxLength(10)
+                            ->required()
                             ->default(null),
                     ]),
                 Grid::make([

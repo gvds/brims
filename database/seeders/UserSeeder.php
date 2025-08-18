@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -30,19 +31,18 @@ class UserSeeder extends Seeder
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
-            $team = Team::factory(1)
+            $team = Team::factory()
                 ->create([
                     'leader_id' => $user->id,
                 ]);
             $user->update([
-                'team_id' => $team[0]->id,
+                'team_id' => $team->id,
                 'team_role' => 'Admin',
             ]);
             DB::table('model_has_roles')->insert([
                 'role_id' => 1,
                 'model_type' => User::class,
                 'model_id' => $user->id,
-                // 'team_id' => $user->team_id,
             ]);
 
             $user2 = User::factory()
@@ -55,34 +55,33 @@ class UserSeeder extends Seeder
                     'homesite' => 'SU_ZA',
                     'password' => Hash::make('password'),
                 ]);
-            $team2 = Team::factory(1)
+            $team2 = Team::factory()
                 ->create([
                     'leader_id' => $user2->id,
                 ]);
-            // $user2->assignRole('super_admin', $team2[0]->id);
             $user2->update([
-                'team_id' => $team2[0]->id,
+                'team_id' => $team2->id,
                 'team_role' => 'Admin',
             ]);
             DB::table('model_has_roles')->insert([
                 'role_id' => 1,
                 'model_type' => User::class,
                 'model_id' => $user2->id,
-                // 'team_id' => $user2->team_id,
             ]);
         }
 
-        User::factory(3)
-            ->create([
-                'team_id' => $team[0]->id,
-                'team_role' => 'Member',
-            ]);
-        User::factory(3)
-            ->create([
-                'team_id' => $team2[0]->id,
-                'team_role' => 'Member',
-            ]);
+        $teams = Team::all();
 
-        // User::factory(5)->create();
+        $users = User::factory(4)
+            ->state(new Sequence(
+                ['team_id' => $teams->first()->id],
+                ['team_id' => $teams->last()->id],
+            ))
+            ->create([
+                'team_role' => 'Member',
+            ]);
+        $users->each(function ($user) {
+            $user->assignRole('User');
+        });
     }
 }
