@@ -18,7 +18,7 @@ class EventSeeder extends Seeder
         Arm::all()->each(
             function (Arm $arm): void {
                 Event::factory()
-                    ->count(4)
+                    ->count(3)
                     ->for($arm)
                     ->sequence(function (Sequence $sequence) {
                         $offset = $sequence->index === 0 ? 0 : ($offset ?? 0) + fake()->numberBetween(7, 24);

@@ -45,7 +45,7 @@ class SubjectSeeder extends Seeder
                     'minDate' => isset($event->offset_ante_window) ? $enrolDate->addDays($event->offset - $event->offset_ante_window) : null,
                     'maxDate' => isset($event->offset_post_window) ? $enrolDate->addDays($event->offset + $event->offset_post_window) : null,
                     'iteration' => 1,
-                    'status' => 0,
+                    'status' => isset($event->offset_ante_window) ? fake()->randomElement([0, 3]) : 0,
                 ]));
             });
 

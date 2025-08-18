@@ -20,7 +20,7 @@ class SpecimentypeFactory extends Factory
         $fields = [
             'name' => fake()->word(),
             'primary' => fake()->boolean(),
-            'aliquots' => fake()->numberBetween(1, 10),
+            'aliquots' => fake()->numberBetween(1, 3),
             'pooled' => fake()->boolean(),
             'defaultVolume' => fake()->numberBetween(5, 100),
             'volumeUnit' => fake()->randomElement(['µl', 'ml']),

@@ -29,7 +29,7 @@ class Specimen extends Pivot
 
     public function specimenType(): BelongsTo
     {
-        return $this->belongsTo(Specimentype::class, 'specimen_type_id');
+        return $this->belongsTo(Specimentype::class, 'specimenType_id');
     }
 
     public function site(): BelongsTo
@@ -55,5 +55,19 @@ class Specimen extends Pivot
     public function usedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'usedBy_id');
+    }
+
+    public function logOut(): void
+    {
+        $this->status = SpecimenStatus::LoggedOut;
+        $this->loggedOutBy()->associate(auth()->user());
+        $this->save();
+    }
+
+    public function logReturn(): void
+    {
+        $this->status = SpecimenStatus::InStorage;
+        $this->loggedOutBy()->disassociate(auth()->user());
+        $this->save();
     }
 }

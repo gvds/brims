@@ -6,7 +6,6 @@ use App\Models\Project;
 use App\Models\Specimentype;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Session;
 
 class SpecimentypeSeeder extends Seeder
 {
@@ -24,12 +23,12 @@ class SpecimentypeSeeder extends Seeder
                         'primary' => true,
                     ]);
                 $primarySpecimentypes->each(
-                    function (Specimentype $specimentype) use ($project): void {
+                    function (Specimentype $parentSpecimentype) use ($project): void {
                         Specimentype::factory()
                             ->count(2)
                             ->for($project)
                             ->create([
-                                'parentSpecimenType_id' => $specimentype->id,
+                                'parentSpecimenType_id' => $parentSpecimentype->id,
                                 'primary' => false,
                             ]);
                     }

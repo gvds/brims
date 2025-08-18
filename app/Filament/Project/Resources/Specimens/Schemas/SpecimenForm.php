@@ -2,8 +2,10 @@
 
 namespace App\Filament\Project\Resources\Specimens\Schemas;
 
+use App\Enums\SpecimenStatus;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class SpecimenForm
@@ -15,7 +17,7 @@ class SpecimenForm
                 TextInput::make('subject_event_id')
                     ->required()
                     ->numeric(),
-                TextInput::make('specimen_type_id')
+                TextInput::make('specimenType_id')
                     ->required()
                     ->numeric(),
                 TextInput::make('site_id')
@@ -25,7 +27,7 @@ class SpecimenForm
                     ->required()
                     ->numeric()
                     ->default(0),
-                TextInput::make('aliquote')
+                TextInput::make('aliquot')
                     ->required()
                     ->numeric(),
                 TextInput::make('volume')
@@ -38,14 +40,20 @@ class SpecimenForm
                     ->numeric()
                     ->default(0),
                 TextInput::make('loggedBy')
-                    ->required()
+                    ->rules([
+                        'requiredIf' => fn(Get $get) => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut])
+                    ])
                     ->numeric(),
                 DateTimePicker::make('loggedAt'),
                 TextInput::make('loggedOutBy')
-                    ->required()
+                    ->rules([
+                        'requiredIf' => fn(Get $get) => in_array($get('status'), [SpecimenStatus::LoggedOut])
+                    ])
                     ->numeric(),
                 TextInput::make('usedBy')
-                    ->required()
+                    ->rules([
+                        'requiredIf' => fn(Get $get) => in_array($get('status'), [SpecimenStatus::Used])
+                    ])
                     ->numeric(),
                 DateTimePicker::make('usedAt'),
                 TextInput::make('parentSpecimenID')

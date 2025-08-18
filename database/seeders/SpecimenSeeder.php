@@ -17,7 +17,7 @@ class SpecimenSeeder extends Seeder
      */
     public function run(): void
     {
-        SubjectEvent::with('subject.project')->each(function (SubjectEvent $subjectEvent): void {
+        SubjectEvent::with('subject.project')->where('status', 3)->each(function (SubjectEvent $subjectEvent): void {
             $project = $subjectEvent->subject->project->load('members');
             Specimentype::where('project_id', $project->id)->where('primary', true)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
                 Specimen::factory()
@@ -33,10 +33,42 @@ class SpecimenSeeder extends Seeder
                         'site_id' => $subjectEvent->subject->site_id,
                         'volume' => $specimenType->defaultVolume,
                         'volumeUnit' => $specimenType->volumeUnit,
-                        'loggedBy' => fake()->randomElement($project->members->pluck('id')),
+                        'loggedBy_id' => fake()->randomElement($project->members->pluck('id')),
                         'loggedAt' => now(),
-                        'status' => SpecimenStatus::Logged,
+                        'usedBy_id' => fake()->randomElement($project->members->pluck('id')),
+                        'usedAt' => now(),
+                        'status' => SpecimenStatus::Used,
                     ]);
+            });
+
+            Specimentype::with('parentSpecimenType')->where('project_id', $project->id)->where('primary', false)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
+                $parentSpecimenType = $specimenType->parentSpecimenType;
+
+                if ($parentSpecimenType->pooled) {
+                    $parentSpecimens = Specimen::where('specimenType_id', $parentSpecimenType->id)->where('subject_event_id', $subjectEvent->id)->take(1)->get();
+                } else {
+                    $parentSpecimens = Specimen::where('specimenType_id', $parentSpecimenType->id)->where('subject_event_id', $subjectEvent->id)->get();
+                }
+                $parentSpecimens->each(function (Specimen $parentSpecimen) use ($subjectEvent, $specimenType, $project): void {
+                    Specimen::factory()
+                        ->count($specimenType->aliquots)
+                        ->for($subjectEvent)
+                        ->for($specimenType)
+                        ->sequence(function (Sequence $sequence): array {
+                            return [
+                                'aliquot' => $sequence->index + 1,
+                            ];
+                        })
+                        ->create([
+                            'site_id' => $subjectEvent->subject->site_id,
+                            'volume' => $specimenType->defaultVolume,
+                            'volumeUnit' => $specimenType->volumeUnit,
+                            'loggedBy_id' => fake()->randomElement($project->members->pluck('id')),
+                            'loggedAt' => now(),
+                            'status' => SpecimenStatus::Logged,
+                            'parentSpecimen_id' => $parentSpecimen->id,
+                        ]);
+                });
             });
         });
     }

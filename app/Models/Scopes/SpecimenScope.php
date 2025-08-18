@@ -13,11 +13,12 @@ class SpecimenScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->whereHas(
-            'specimenType',
-            fn($query) =>
-            $query->where('project_id', session()->get('currentProject')->id)
-        );
+        session()->get('currentProject') ?
+            $builder->whereHas(
+                'specimenType',
+                fn($query) =>
+                $query->where('project_id', session()->get('currentProject')->id)
+            ) : $builder;
         // if (auth()->user()->hasRole('super_admin')) return;
         // $builder->where('site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id);
     }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
             $table->string('barcode', 20);
             $table->foreignIdFor(SubjectEvent::class, 'subject_event_id')->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Specimentype::class, 'specimen_type_id')->constrained();
+            $table->foreignIdFor(Specimentype::class, 'specimenType_id')->constrained();
             $table->foreignIdFor(Site::class, 'site_id')->constrained();
             $table->unsignedTinyInteger('status')->default(0)->constrained();
             // $table->foreignIdFor(Location::class)->constrained();
