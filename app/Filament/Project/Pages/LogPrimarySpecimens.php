@@ -98,6 +98,7 @@ class LogPrimarySpecimens extends Page implements HasForms
     public function submit(): void
     {
         $data = $this->form->getState();
+        $this->specimens = $data;
         foreach ($data['specimens'] ?? [] as $typeId => $specimens) {
             foreach ($specimens as $specimenData) {
                 // Save each specimen instance, relate to project as needed
