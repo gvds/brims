@@ -23,6 +23,7 @@ class ProjectSeeder extends Seeder
                 ->for($team)
                 ->hasStudies(4)
                 ->hasSites(2)
+                ->hasLabware(5)
                 ->create([
                     'leader_id' => $team->leader->id,
                 ]);
