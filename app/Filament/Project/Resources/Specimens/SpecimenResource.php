@@ -22,16 +22,19 @@ class SpecimenResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'barcode';
 
+    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return SpecimenForm::configure($schema);
     }
 
+    #[\Override]
     public static function table(Table $table): Table
     {
         return SpecimensTable::configure($table);
     }
 
+    #[\Override]
     public static function getRelations(): array
     {
         return [

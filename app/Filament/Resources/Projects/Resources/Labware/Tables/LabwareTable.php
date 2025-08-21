@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Projects\Resources\Labware\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -22,8 +23,9 @@ class LabwareTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('barcodeFormat'),
-                // ->prefix('^')
-                // ->formatStateUsing(fn($state) => $state . '$'),
+                TextColumn::make('specimenTypesCount')
+                    ->label('Specimen Types')
+                    ->counts('specimenTypes'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -38,15 +40,34 @@ class LabwareTable
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data): array {
+                        self::regexPreAndPostfix($data);
+                        return $data;
+                    }),
             ])
             ->recordActions([
                 EditAction::make()
+                    ->mutateDataUsing(function (array $data): array {
+                        self::regexPreAndPostfix($data);
+                        return $data;
+                    }),
+                DeleteAction::make()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    private static function regexPreAndPostfix(array &$data): void
+    {
+        if ($data['barcodeFormat'][0] !== '^') {
+            $data['barcodeFormat'] = '^' . $data['barcodeFormat'];
+        }
+        if ($data['barcodeFormat'][-1] !== '$') {
+            $data['barcodeFormat'] .= '$';
+        }
     }
 }

@@ -14,14 +14,14 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
-it('shows empty state when no projects exist', function () {
+it('shows empty state when no projects exist', function (): void {
     $user = User::factory()->create();
     Livewire::actingAs($user)
         ->test(ListProjects::class)
         ->assertSee('No projects');
 });
 
-it('can list projects in the table', function () {
+it('can list projects in the table', function (): void {
     $projects = Project::factory()->count(3)->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -31,7 +31,7 @@ it('can list projects in the table', function () {
         ->assertCanSeeTableRecords($projects);
 });
 
-it('can search projects by name', function () {
+it('can search projects by name', function (): void {
     $projects = Project::factory()->count(3)->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -43,7 +43,7 @@ it('can search projects by name', function () {
         ->assertCanNotSeeTableRecords($projects->where('name', '!=', $projects->first()->name));
 });
 
-it('can create a project', function () {
+it('can create a project', function (): void {
     $data = Project::factory()->make([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -60,14 +60,14 @@ it('can create a project', function () {
     ]);
 });
 
-it('cannot create a project with missing required fields', function () {
+it('cannot create a project with missing required fields', function (): void {
     livewire(CreateProject::class)
         ->fillForm(['title' => ''])
         ->call('create')
         ->assertHasFormErrors(['title' => 'required']);
 });
 
-it('can view a project', function () {
+it('can view a project', function (): void {
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -79,7 +79,7 @@ it('can view a project', function () {
         ->assertSee($project->title);
 });
 
-it('can edit a project', function () {
+it('can edit a project', function (): void {
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -100,7 +100,7 @@ it('can edit a project', function () {
     ]);
 });
 
-it('can delete a project', function () {
+it('can delete a project', function (): void {
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -117,13 +117,13 @@ it('can delete a project', function () {
     ]);
 });
 
-it('cannot view a non-existent project', function () {
+it('cannot view a non-existent project', function (): void {
     livewire(ViewProject::class, [
         'record' => 999999,
     ]);
 })->throws(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-it('cannot create a project with duplicate title', function () {
+it('cannot create a project with duplicate title', function (): void {
     Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id(),

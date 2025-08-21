@@ -41,18 +41,18 @@ class SpecimenForm
                     ->default(0),
                 TextInput::make('loggedBy')
                     ->rules([
-                        'requiredIf' => fn(Get $get) => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut])
+                        'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut])
                     ])
                     ->numeric(),
                 DateTimePicker::make('loggedAt'),
                 TextInput::make('loggedOutBy')
                     ->rules([
-                        'requiredIf' => fn(Get $get) => in_array($get('status'), [SpecimenStatus::LoggedOut])
+                        'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut])
                     ])
                     ->numeric(),
                 TextInput::make('usedBy')
                     ->rules([
-                        'requiredIf' => fn(Get $get) => in_array($get('status'), [SpecimenStatus::Used])
+                        'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used])
                     ])
                     ->numeric(),
                 DateTimePicker::make('usedAt'),

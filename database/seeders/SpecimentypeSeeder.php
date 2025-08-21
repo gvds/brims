@@ -19,6 +19,7 @@ class SpecimentypeSeeder extends Seeder
                 $primarySpecimentypes = Specimentype::factory()
                     ->count(3)
                     ->for($project)
+                    ->projectLabware($project->id)
                     ->create([
                         'primary' => true,
                     ]);
@@ -27,6 +28,7 @@ class SpecimentypeSeeder extends Seeder
                         Specimentype::factory()
                             ->count(2)
                             ->for($project)
+                            ->projectLabware($project->id)
                             ->create([
                                 'parentSpecimenType_id' => $parentSpecimentype->id,
                                 'primary' => false,

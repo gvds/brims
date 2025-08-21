@@ -30,6 +30,7 @@ abstract class TestCase extends BaseTestCase
 {
     protected Team $team;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

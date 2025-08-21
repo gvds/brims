@@ -5,7 +5,7 @@ use App\Models\User;
 
 use function Pest\Livewire\livewire;
 
-it('can load the page', function () {
+it('can load the page', function (): void {
     $users = User::factory()->count(5)->create();
 
     livewire(ListUsers::class)

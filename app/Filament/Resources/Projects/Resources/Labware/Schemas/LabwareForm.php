@@ -14,9 +14,11 @@ class LabwareForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('barcodeFormat')
-                    ->prefix('^')
-                    ->postfix('$')
+                    ->label('Barcode Format Regex')
+                    // ->prefix('^')
+                    // ->postfix('$')
                     ->hint('Use a regular expression to define the barcode format')
+                    ->helperText('The Regex must begin with ^ and end with $. These will be automatically added if not present.')
                     ->required(),
             ])
             ->columns(1);

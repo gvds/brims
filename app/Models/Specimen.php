@@ -18,10 +18,6 @@ class Specimen extends Pivot
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'status' => SpecimenStatus::class,
-    ];
-
     public function subjectEvent(): BelongsTo
     {
         return $this->belongsTo(SubjectEvent::class, 'subject_event_id');
@@ -67,7 +63,13 @@ class Specimen extends Pivot
     public function logReturn(): void
     {
         $this->status = SpecimenStatus::InStorage;
-        $this->loggedOutBy()->disassociate(auth()->user());
+        $this->loggedOutBy()->disassociate();
         $this->save();
+    }
+    protected function casts(): array
+    {
+        return [
+            'status' => SpecimenStatus::class,
+        ];
     }
 }

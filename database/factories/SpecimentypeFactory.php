@@ -29,9 +29,9 @@ class SpecimentypeFactory extends Factory
                 ['destination' => fake()->word()],
             ],
             'specimenGroup' => fake()->randomElement(['Group A', 'Group B', 'Group C']),
-            'labware_id' => fake()->randomElement(
-                \App\Models\Labware::pluck('id')->toArray()
-            ),
+            // 'labware_id' => fake()->randomElement(
+            //     \App\Models\Labware::pluck('id')->toArray()
+            // ),
             // 'store' => fake()->boolean(),
             // 'storageDestination' => fake()->randomElement(['Internal', 'Biorepository', null]),
             // 'storageSpecimenType' => fake()->word(),
@@ -52,5 +52,20 @@ class SpecimentypeFactory extends Factory
             ];
         }
         return [];
+    }
+
+    /**
+     * @param mixed $project_id
+     * @return Factory
+     */
+    public function projectLabware($project_id): Factory
+    {
+        return $this->state(function (array $attributes) use ($project_id) {
+            return [
+                'labware_id' => fake()->randomElement(
+                    \App\Models\Labware::where('project_id', $project_id)->pluck('id')
+                )
+            ];
+        });
     }
 }
