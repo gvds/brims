@@ -18,7 +18,7 @@ class LabwareFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            'barcodeFormat' => '^[A-Z]{' . fake()->numberBetween(2, 4) . '}' . '[0-9]{' . fake()->numberBetween(3, 8) . '}$',
+            'barcodeFormat' => '^' . fake()->regexify('[A-Z]{' . fake()->numberBetween(2, 4) . '}' . '[0-9]{' . fake()->numberBetween(3, 8) . '}$'),
         ];
     }
 }

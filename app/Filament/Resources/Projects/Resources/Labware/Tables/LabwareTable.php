@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Projects\Resources\Labware\Tables;
 
+use App\Models\Labware;
+use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -9,7 +11,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class LabwareTable
@@ -23,7 +24,8 @@ class LabwareTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('barcodeFormat'),
-                TextColumn::make('specimenTypesCount')
+                TextColumn::make('specimenTypes.name'),
+                TextColumn::make('specimenTypes_count')
                     ->label('Specimen Types')
                     ->counts('specimenTypes'),
                 TextColumn::make('created_at')
@@ -53,6 +55,7 @@ class LabwareTable
                         return $data;
                     }),
                 DeleteAction::make()
+                    ->hidden(fn(Labware $record) => $record->specimenTypes->count() > 0)
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
