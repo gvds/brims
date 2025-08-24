@@ -5,13 +5,15 @@ namespace App\Filament\Project\Pages;
 use App\Enums\SpecimenStatus;
 use App\Filament\Forms\Components\SpecimenBarcode;
 use App\Models\Specimen;
-use App\Models\SpecimenType;
+use App\Models\Specimentype;
+use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
 use Dom\Text;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -51,6 +53,9 @@ class LogPrimarySpecimens extends Page implements HasForms
     public ?array $specimens = null;
     private ?User $user = null;
     public ?string $pse_barcode = null;
+    public ?SubjectEvent $subjectEvent = null;
+    public ?Subject $subject = null;
+    public bool $stageOneCompleted = false;
 
     public function mount(): void
     {
