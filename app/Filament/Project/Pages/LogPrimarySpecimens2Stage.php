@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Fieldset;
@@ -24,6 +25,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\isNull;
 
 class LogPrimarySpecimens2Stage extends Page implements HasForms
 {
@@ -40,50 +43,59 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
     protected string $view = "filament.project.pages.log-primary-specimens-two-stage";
 
     // Properties
-    public Collection $primaryTypes;
+    public Collection $specimenTypes;
     public Collection $groups;
     public array $aliquotCounts = [];
     public ?array $specimens = null;
-    private ?User $user = null;
-    public ?string $pse_barcode = null;
+    public ?User $user = null;
+    public ?int $userSiteId = null;
+    public ?string $pse_barcode = '5_37_73';
+    // public ?string $pse_barcode = null;
     public ?SubjectEvent $subjectEvent = null;
     public ?Subject $subject = null;
+    // public bool $stageOneCompleted = true;
     public bool $stageOneCompleted = false;
 
-    protected $listeners = ['aliquotChanged' => '$refresh'];
+    protected $listeners = ['updateform' => '$refresh'];
 
     public function mount(): void
     {
         $this->initializeUser();
-        $this->initializePrimaryTypes();
+        $this->initializeSpecimenTypes();
+
+        // $this->subject = Subject::find(37);
+        // $this->subjectEvent = SubjectEvent::find(73);
     }
 
     private function initializeUser(): void
     {
-        $this->user = session("currentProject")->members()->where("user_id", auth()->user()->getAuthIdentifier())->first();
+        $this->user = session("currentProject")->members()->where("user_id", \Illuminate\Support\Facades\Auth::id())->first();
         if (!$this->user) {
             Notification::make()
                 ->title("Error")
                 ->body("You are not a member of this project.")
                 ->color("danger")
                 ->send();
-            $this->redirect(route("filament.project.pages.dashboard"));
+            $this->redirect(route("filament.app.resources.projects.index"));
         }
+
+        // Store the site_id separately since pivot data gets lost during Livewire serialization
+        $this->userSiteId = $this->user->pivot->site_id;
     }
 
-    private function initializePrimaryTypes(): void
+    private function initializeSpecimenTypes(): void
     {
-        $this->primaryTypes = Specimentype::query()
+        $this->specimenTypes = Specimentype::query()
             ->where("project_id", session("currentProject")->id)
             ->where("primary", true)
             ->get();
 
         // Initialize aliquotCounts for each type
-        foreach ($this->primaryTypes as $type) {
+        foreach ($this->specimenTypes as $type) {
             $this->aliquotCounts[$type->id] = (int) ($type->aliquots ?? 1);
         }
 
-        $this->groups = $this->primaryTypes->pluck("specimenGroup")
+        $this->groups = $this->specimenTypes->pluck("specimenGroup")
             ->unique()
             ->sortBy("name");
     }
@@ -95,21 +107,21 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             return [
                 TextInput::make("pse_barcode")
                     ->label("Project Subject Event Barcode")
-                    ->helperText("Scan the barcode containing project_id, subject_id and subjectevent_id")
+                    ->helperText("Scan the barcode")
                     ->required()
                     ->regex("/^" . session("currentProject")->id . "_\d+_\d+$/")
                     ->statePath("pse_barcode")
+                    ->autofocus()
                     ->extraAttributes(["class" => "w-full md:w-80"])
             ];
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
             $sections = [];
-            $groupedTypes = $this->primaryTypes->groupBy("specimenGroup");
-
+            $groupedTypes = $this->specimenTypes->groupBy("specimenGroup");
             foreach ($groupedTypes as $group => $types) {
                 $specimenTypes = [];
                 foreach ($types as $type) {
-                    $aliquots = $this->aliquotCounts[$type->id] ?? (int) ($type->aliquots ?? 1);
+                    $aliquots = $this->aliquotCounts[$type->id];
                     $aliquotFields = [];
                     for ($i = 0; $i < $aliquots; $i++) {
                         $aliquotFields[] = Grid::make()
@@ -117,6 +129,7 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
                                     ->label("Aliquot " . ($i + 1))
                                     ->regex("/" . $type->Labware->barcodeFormat . "/")
+                                    ->disabled(isset($this->specimens[$type->id][$i]["barcode"]))
                                     ->extraAttributes(["style" => "height: 30px"]),
                                 TextInput::make("specimens.{$type->id}.{$i}.volume")
                                     ->hiddenLabel()
@@ -126,6 +139,7 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
                                     ->minValue(0)
                                     ->default($type->defaultVolume)
                                     ->suffix($type->volumeUnit)
+                                    ->disabled(isset($this->specimens[$type->id][$i]["barcode"]))
                                     ->extraAttributes(["style" => "height: 30px"]),
                             ])
                             ->columns(1)
@@ -179,13 +193,13 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
     public function addAliquot(int $typeId): void
     {
         $this->aliquotCounts[$typeId] = ($this->aliquotCounts[$typeId] ?? 0) + 1;
-        $this->dispatch("aliquotChanged");
+        $this->dispatch("updateform");
     }
 
     public function removeAliquot(int $typeId): void
     {
         $this->aliquotCounts[$typeId] = max(($this->aliquotCounts[$typeId] ?? 0) - 1, 0);
-        $this->dispatch("aliquotChanged");
+        $this->dispatch("updateform");
     }
 
     // Validate PSE barcode and move to stage 2
@@ -219,19 +233,35 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             return;
         }
 
-        // Initialize specimen default volumes
-        if (is_null($this->specimens)) {
-            $specimens = [];
-            foreach ($this->primaryTypes as $type) {
-                $aliquots = (int) ($type->aliquots ?? 1);
-                for ($i = 0; $i < $aliquots; $i++) {
+        $loggedSpecimenTypes = Specimen::where("subject_event_id", $this->subjectEvent->id)->whereRelation("specimentype", "primary", true)->get()->groupBy("specimenType_id");
+        // dd($loggedSpecimenTypes);
+        $specimens = [];
+
+        if ($loggedSpecimenTypes->count() !== 0) {
+            foreach ($loggedSpecimenTypes as $specimenType_id => $loggedSpecimens) {
+                foreach ($loggedSpecimens as $aliquot => $specimen) {
+                    $specimens[$specimenType_id][$aliquot] = [
+                        "barcode" => $specimen->barcode,
+                        "volume" => $specimen->volume,
+                        'logged' => true,
+                    ];
+                }
+            }
+        }
+
+        foreach ($this->specimenTypes as $type) {
+            $aliquots = (int) ($type->aliquots ?? 1);
+            for ($i = 0; $i < $aliquots; $i++) {
+                if (!isset($specimens[$type->id][$i]["barcode"])) {
                     $specimens[$type->id][$i]["volume"] = $type->defaultVolume;
                 }
             }
-            $this->specimens = $specimens;
         }
+        $this->specimens = $specimens;
 
         $this->stageOneCompleted = true;
+
+        $this->dispatch("updateform");
 
         Notification::make()
             ->title("Subject Event Found")
@@ -257,11 +287,11 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             DB::beginTransaction();
 
             foreach ($this->specimens ?? [] as $specimenType_id => $specimens) {
-                $specimenType = Specimentype::find($specimenType_id);
-                if (!$specimenType) continue;
+                $specimenType = $this->specimenTypes->find($specimenType_id);
+                if (!$specimenType) throw new \Exception("Specimen Type ID {$specimenType_id} not found");
 
                 foreach ($specimens as $aliquot => $specimenData) {
-                    if (isset($specimenData["barcode"]) && !empty($specimenData["barcode"])) {
+                    if (isset($specimenData["barcode"]) && !empty($specimenData["barcode"]) && !isset($specimenData['logged'])) {
                         Specimen::create([
                             "barcode" => $specimenData["barcode"],
                             "volume" => $specimenData["volume"],
@@ -269,10 +299,10 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
                             "aliquot" => $aliquot,
                             "specimenType_id" => $specimenType_id,
                             "subject_event_id" => $this->subjectEvent->id,
-                            "site_id" => $this->user->pivot->site_id,
+                            "site_id" => $this->userSiteId,
                             "status" => SpecimenStatus::Logged,
-                            "logged_by" => auth()->user()->getAuthIdentifier(),
-                            "logged_at" => now(),
+                            "loggedBy_id" => $this->user->id,
+                            "loggedAt" => now(),
                         ]);
                         $loggedCount++;
                     }
@@ -289,7 +319,9 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
 
             // Reset form for new entry
             $this->reset(["pse_barcode", "specimens", "subjectEvent", "subject", "stageOneCompleted"]);
-            $this->initializePrimaryTypes();
+            $this->initializeSpecimenTypes();
+
+            $this->dispatch("updateform");
         } catch (\Throwable $th) {
             DB::rollBack();
 
@@ -305,7 +337,7 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
     public function resetForm(): void
     {
         $this->reset(["pse_barcode", "specimens", "subjectEvent", "subject", "stageOneCompleted"]);
-        $this->initializePrimaryTypes();
+        $this->initializeSpecimenTypes();
 
         Notification::make()
             ->title("Form Reset")

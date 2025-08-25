@@ -6,9 +6,6 @@ use App\Models\Team;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use App\Models\User;
 
-use function Pest\Laravel\actingAs;
-
-
 // beforeEach(function () {
 //     /** @var \App\Models\User $user */
 //     $user = User::factory()->create();
@@ -29,6 +26,7 @@ use function Pest\Laravel\actingAs;
 abstract class TestCase extends BaseTestCase
 {
     protected Team $team;
+    protected User $adminuser;
 
     #[\Override]
     protected function setUp(): void
@@ -48,8 +46,7 @@ abstract class TestCase extends BaseTestCase
             'team_id' => $team->id,
             'team_role' => 'Admin',
         ]);
-        // actingAs($user);
-
-        $this->actingAs($user);
+        $this->adminuser = $user;
+        // actingAs($this->user);
     }
 }

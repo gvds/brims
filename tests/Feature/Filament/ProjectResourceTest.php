@@ -5,7 +5,6 @@ use App\Filament\Resources\Projects\Pages\CreateProject;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Resources\Projects\Pages\ViewProject;
-use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Livewire\Livewire;
 
@@ -15,13 +14,13 @@ use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 it('shows empty state when no projects exist', function (): void {
-    $user = User::factory()->create();
-    Livewire::actingAs($user)
-        ->test(ListProjects::class)
+    actingAs($this->adminuser);
+    Livewire::test(ListProjects::class)
         ->assertSee('No projects');
 });
 
 it('can list projects in the table', function (): void {
+    actingAs($this->adminuser);
     $projects = Project::factory()->count(3)->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -32,6 +31,7 @@ it('can list projects in the table', function (): void {
 });
 
 it('can search projects by name', function (): void {
+    actingAs($this->adminuser);
     $projects = Project::factory()->count(3)->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -44,6 +44,7 @@ it('can search projects by name', function (): void {
 });
 
 it('can create a project', function (): void {
+    actingAs($this->adminuser);
     $data = Project::factory()->make([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -61,6 +62,7 @@ it('can create a project', function (): void {
 });
 
 it('cannot create a project with missing required fields', function (): void {
+    actingAs($this->adminuser);
     livewire(CreateProject::class)
         ->fillForm(['title' => ''])
         ->call('create')
@@ -68,6 +70,7 @@ it('cannot create a project with missing required fields', function (): void {
 });
 
 it('can view a project', function (): void {
+    actingAs($this->adminuser);
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -80,6 +83,7 @@ it('can view a project', function (): void {
 });
 
 it('can edit a project', function (): void {
+    actingAs($this->adminuser);
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -101,6 +105,7 @@ it('can edit a project', function (): void {
 });
 
 it('can delete a project', function (): void {
+    actingAs($this->adminuser);
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id()
@@ -118,12 +123,14 @@ it('can delete a project', function (): void {
 });
 
 it('cannot view a non-existent project', function (): void {
+    actingAs($this->adminuser);
     livewire(ViewProject::class, [
         'record' => 999999,
     ]);
 })->throws(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
 it('cannot create a project with duplicate title', function (): void {
+    actingAs($this->adminuser);
     Project::factory()->create([
         'team_id' => $this->team->id,
         'leader_id' => auth()->id(),
@@ -140,7 +147,7 @@ it('cannot create a project with duplicate title', function (): void {
         ->assertHasFormErrors(['title']);
 });
 
-// it('cannot access project list when not authenticated', function () {
-//     livewire(ListProjects::class)
-//         ->assertForbidden();
-// });
+it('cannot access project list when not authenticated', function () {
+    livewire(ListProjects::class)
+        ->assertForbidden();
+});
