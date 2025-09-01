@@ -6,6 +6,7 @@ use App\Enums\EventStatus;
 use App\Enums\LabelStatus;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class SubjectEvent extends Pivot
@@ -27,6 +28,11 @@ class SubjectEvent extends Pivot
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
+    }
+
+    public function specimens(): HasMany
+    {
+        return $this->hasMany(Specimen::class, 'subject_event_id');
     }
 
     public function addEventIteration(CarbonImmutable $eventDate): void

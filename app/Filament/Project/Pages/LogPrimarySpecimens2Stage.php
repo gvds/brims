@@ -11,22 +11,17 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\isNull;
 
 class LogPrimarySpecimens2Stage extends Page implements HasForms
 {
@@ -44,16 +39,13 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
 
     // Properties
     public Collection $specimenTypes;
-    public Collection $groups;
-    public array $aliquotCounts = [];
     public ?array $specimens = null;
     public ?User $user = null;
     public ?int $userSiteId = null;
-    public ?string $pse_barcode = '5_37_73';
-    // public ?string $pse_barcode = null;
+    // public ?string $pse_barcode = '5_37_73';
+    public ?string $pse_barcode = null;
     public ?SubjectEvent $subjectEvent = null;
     public ?Subject $subject = null;
-    // public bool $stageOneCompleted = true;
     public bool $stageOneCompleted = false;
 
     protected $listeners = ['updateform' => '$refresh'];
@@ -62,9 +54,6 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
     {
         $this->initializeUser();
         $this->initializeSpecimenTypes();
-
-        // $this->subject = Subject::find(37);
-        // $this->subjectEvent = SubjectEvent::find(73);
     }
 
     private function initializeUser(): void
@@ -89,15 +78,6 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             ->where("project_id", session("currentProject")->id)
             ->where("primary", true)
             ->get();
-
-        // Initialize aliquotCounts for each type
-        foreach ($this->specimenTypes as $type) {
-            $this->aliquotCounts[$type->id] = (int) ($type->aliquots ?? 1);
-        }
-
-        $this->groups = $this->specimenTypes->pluck("specimenGroup")
-            ->unique()
-            ->sortBy("name");
     }
 
     protected function getFormSchema(): array
@@ -112,7 +92,12 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
                     ->regex("/^" . session("currentProject")->id . "_\d+_\d+$/")
                     ->statePath("pse_barcode")
                     ->autofocus()
-                    ->extraAttributes(["class" => "w-full md:w-80"])
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn() => $this->validatePseBarcode())
+                    ->extraAttributes([
+                        "class" => "w-full md:w-80",
+                        "onkeydown" => "if(event.key === 'Enter') { event.preventDefault(); \$wire.validatePseBarcode(); }"
+                    ])
             ];
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
@@ -121,9 +106,8 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             foreach ($groupedTypes as $group => $types) {
                 $specimenTypes = [];
                 foreach ($types as $type) {
-                    $aliquots = $this->aliquotCounts[$type->id];
                     $aliquotFields = [];
-                    for ($i = 0; $i < $aliquots; $i++) {
+                    for ($i = 0; $i < count($this->specimens[$type->id]); $i++) {
                         $aliquotFields[] = Grid::make()
                             ->schema([
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
@@ -151,15 +135,19 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
                                 Action::make("addAliquot_" . $type->id)
                                     ->hiddenLabel()
                                     ->action(fn() => $this->addAliquot($type->id))
-                                    ->color("primary")
+                                    ->color("success")
                                     ->icon(Heroicon::Plus)
                                     ->outlined(),
                                 Action::make("removeAliquot_" . $type->id)
                                     ->hiddenLabel()
                                     ->action(fn() => $this->removeAliquot($type->id))
-                                    ->color("primary")
+                                    ->color("danger")
                                     ->icon(Heroicon::Minus)
-                                    ->outlined(),
+                                    ->requiresConfirmation(fn() => $this->logged($type->id))
+                                    ->modalHeading(fn() => $this->logged($type->id) ? "Delete " . $type->name . " Aliquot " . ($i) : null)
+                                    ->modalDescription(fn() => $this->logged($type->id) ? "The aliquot with barcode " . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]["barcode"] ?? '') . " will be deleted. Are you sure you want to do this?" : null)
+                                    ->outlined()
+                                    ->modalSubmitAction(fn(Action $action) => $action->label('Delete')),
                             ])
                             ->grow(false),
                         Fieldset::make($type->name)
@@ -190,15 +178,20 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
         }
     }
 
-    public function addAliquot(int $typeId): void
+    private function logged($specimenType_id): bool
     {
-        $this->aliquotCounts[$typeId] = ($this->aliquotCounts[$typeId] ?? 0) + 1;
+        return $this->specimens[$specimenType_id][count($this->specimens[$specimenType_id]) - 1]["logged"] ?? false;
+    }
+
+    private function addAliquot(int $typeId): void
+    {
+        array_push($this->specimens[$typeId], ["volume" => $this->specimenTypes->find($typeId)->defaultVolume]);
         $this->dispatch("updateform");
     }
 
-    public function removeAliquot(int $typeId): void
+    private function removeAliquot(int $typeId): void
     {
-        $this->aliquotCounts[$typeId] = max(($this->aliquotCounts[$typeId] ?? 0) - 1, 0);
+        array_pop($this->specimens[$typeId]);
         $this->dispatch("updateform");
     }
 
@@ -213,10 +206,10 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
         $this->subjectEvent = SubjectEvent::find($subject_event_id);
         $this->subject = Subject::find($subject_id);
 
-        if (!$this->subjectEvent || !$this->subject) {
+        if ((int) $project_id !== session("currentProject")->id) {
             Notification::make()
                 ->title("Validation Error")
-                ->body("The Project-Subject-Event Barcode is invalid.")
+                ->body("The Project ID in the barcode does not match the current project.")
                 ->color("danger")
                 ->send()
                 ->persistent();
@@ -234,7 +227,6 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
         }
 
         $loggedSpecimenTypes = Specimen::where("subject_event_id", $this->subjectEvent->id)->whereRelation("specimentype", "primary", true)->get()->groupBy("specimenType_id");
-        // dd($loggedSpecimenTypes);
         $specimens = [];
 
         if ($loggedSpecimenTypes->count() !== 0) {
@@ -250,11 +242,11 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
         }
 
         foreach ($this->specimenTypes as $type) {
-            $aliquots = (int) ($type->aliquots ?? 1);
-            for ($i = 0; $i < $aliquots; $i++) {
-                if (!isset($specimens[$type->id][$i]["barcode"])) {
-                    $specimens[$type->id][$i]["volume"] = $type->defaultVolume;
-                }
+            if (count($specimens[$type->id] ?? []) > 0) {
+                continue;
+            }
+            for ($i = 0; $i < (int) ($type->aliquots); $i++) {
+                $specimens[$type->id][$i]["volume"] = $type->defaultVolume;
             }
         }
         $this->specimens = $specimens;
@@ -262,12 +254,6 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
         $this->stageOneCompleted = true;
 
         $this->dispatch("updateform");
-
-        Notification::make()
-            ->title("Subject Event Found")
-            ->body("Ready to log specimens for Subject {$this->subject->subjectID}, Event {$this->subjectEvent->event->name}")
-            ->color("success")
-            ->send();
     }
 
     // Submit the specimens for the validated PSE
@@ -338,12 +324,7 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
     {
         $this->reset(["pse_barcode", "specimens", "subjectEvent", "subject", "stageOneCompleted"]);
         $this->initializeSpecimenTypes();
-
-        Notification::make()
-            ->title("Form Reset")
-            ->body("You can start over with a new PSE barcode.")
-            ->color("info")
-            ->send();
+        $this->dispatch("updateform");
     }
 
     protected function getHeaderActions(): array
