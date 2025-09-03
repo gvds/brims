@@ -36,6 +36,8 @@ abstract class TestCase extends BaseTestCase
         /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
+        $user->assignRole('super_admin');
+
         /** @var \App\Models\Team $team */
         $team = Team::factory()->create([
             'leader_id' => $user->id,

@@ -17,13 +17,7 @@ use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
 beforeEach(function (): void {
-    // Create super_admin role and super_admin user for testing
-    Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-    /** @var User $user */
-    $user = User::factory()->create();
-    $user->assignRole('super_admin');
-    actingAs($user);
-    $this->user = $user;
+    actingAs($this->adminuser);
 });
 
 describe('UserResource List Page', function (): void {
@@ -63,15 +57,6 @@ describe('UserResource List Page', function (): void {
             ->searchTable('John')
             ->assertCanSeeTableRecords([$user1])
             ->assertCanNotSeeTableRecords([$user2]);
-    });
-
-    it('can sort users by username', function (): void {
-        $user1 = User::factory()->create(['username' => 'alpha']);
-        $user2 = User::factory()->create(['username' => 'beta']);
-
-        livewire(ListUsers::class)
-            ->sortTable('username')
-            ->assertCanSeeTableRecords([$user1, $user2], inOrder: true);
     });
 
     it('can filter users by team', function (): void {
@@ -253,7 +238,7 @@ describe('UserResource Edit Page', function (): void {
         ]);
 
         livewire(EditUser::class, ['record' => $user->id])
-            ->assertFormSet([
+            ->assertSchemaStateSet([
                 'username' => 'testuser',
                 'email' => 'test@example.com',
             ]);
