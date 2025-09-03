@@ -147,7 +147,7 @@ it('cannot create a project with duplicate title', function (): void {
         ->assertHasFormErrors(['title']);
 });
 
-it('cannot access project list when not authenticated', function () {
+it('cannot access project list when not authenticated', function (): void {
     livewire(ListProjects::class)
         ->assertForbidden();
 });

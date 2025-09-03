@@ -176,7 +176,7 @@ class LogPrimarySpecimens extends Page implements HasForms
     public function submit(): void
     {
         $data = $this->form->getState();
-        [$project_id, $subject_id, $subject_event_id] = explode('_', $data['pse_barcode'] ?? null);
+        [$project_id, $subject_id, $subject_event_id] = explode('_', (string) ($data['pse_barcode'] ?? null));
         $subjectEvent = SubjectEvent::find($subject_event_id);
 
         if ($subjectEvent->id !== $subject_id) {
@@ -220,7 +220,7 @@ class LogPrimarySpecimens extends Page implements HasForms
             Notification::make()
                 ->title('Specimens Logged')
                 ->body($loggedCount . ' primary specimens logged successfully.')
-                ->color(fn() => $loggedCount > 0 ? 'success' : 'warning')
+                ->color(fn(): string => $loggedCount > 0 ? 'success' : 'warning')
                 ->send();
         } catch (\Throwable $th) {
 

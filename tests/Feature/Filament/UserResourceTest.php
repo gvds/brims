@@ -16,7 +16,7 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Create super_admin role and super_admin user for testing
     Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
     /** @var User $user */
@@ -26,7 +26,7 @@ beforeEach(function () {
     $this->user = $user;
 });
 
-describe('UserResource List Page', function () {
+describe('UserResource List Page', function (): void {
     it('can load the users list page', function (): void {
         $users = User::factory()->count(5)->create();
 
@@ -88,7 +88,7 @@ describe('UserResource List Page', function () {
     });
 });
 
-describe('UserResource Create Page', function () {
+describe('UserResource Create Page', function (): void {
     it('can render create user page', function (): void {
         $response = get(UserResource::getUrl('create'));
 
@@ -125,7 +125,7 @@ describe('UserResource Create Page', function () {
         // Check if email was sent or queued (try both)
         try {
             Mail::assertSent(UserAccountCreated::class);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If not sent, check if it was queued
             Mail::assertQueued(UserAccountCreated::class);
         }
@@ -237,7 +237,7 @@ describe('UserResource Create Page', function () {
     });
 });
 
-describe('UserResource Edit Page', function () {
+describe('UserResource Edit Page', function (): void {
     it('can render edit user page', function (): void {
         $user = User::factory()->create();
 
@@ -333,7 +333,7 @@ describe('UserResource Edit Page', function () {
     });
 });
 
-describe('UserResource Permissions', function () {
+describe('UserResource Permissions', function (): void {
     it('requires authentication to access user resource', function (): void {
         Auth::logout();
 

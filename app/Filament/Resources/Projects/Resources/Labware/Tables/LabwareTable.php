@@ -55,7 +55,7 @@ class LabwareTable
                         return $data;
                     }),
                 DeleteAction::make()
-                    ->hidden(fn(Labware $record) => $record->specimenTypes->count() > 0)
+                    ->hidden(fn(Labware $record): bool => $record->specimenTypes->count() > 0)
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

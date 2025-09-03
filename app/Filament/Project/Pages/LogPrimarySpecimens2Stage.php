@@ -143,11 +143,11 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
                                     ->action(fn() => $this->removeAliquot($type->id))
                                     ->color("danger")
                                     ->icon(Heroicon::Minus)
-                                    ->requiresConfirmation(fn() => $this->logged($type->id))
+                                    ->requiresConfirmation(fn(): bool => $this->logged($type->id))
                                     ->modalHeading(fn() => $this->logged($type->id) ? "Delete " . $type->name . " Aliquot " . ($i) : null)
                                     ->modalDescription(fn() => $this->logged($type->id) ? "The aliquot with barcode " . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]["barcode"] ?? '') . " will be deleted. Are you sure you want to do this?" : null)
                                     ->outlined()
-                                    ->modalSubmitAction(fn(Action $action) => $action->label('Delete')),
+                                    ->modalSubmitAction(fn(Action $action): \Filament\Actions\Action => $action->label('Delete')),
                             ])
                             ->grow(false),
                         Fieldset::make($type->name)
@@ -202,7 +202,7 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             "pse_barcode" => ["required", "regex:/^" . session("currentProject")->id . "_\d+_\d+$/"],
         ]);
 
-        [$project_id, $subject_id, $subject_event_id] = explode("_", $this->pse_barcode);
+        [$project_id, $subject_id, $subject_event_id] = explode("_", (string) $this->pse_barcode);
         $this->subjectEvent = SubjectEvent::find($subject_event_id);
         $this->subject = Subject::find($subject_id);
 
@@ -300,7 +300,7 @@ class LogPrimarySpecimens2Stage extends Page implements HasForms
             Notification::make()
                 ->title("Specimens Logged")
                 ->body($loggedCount . " primary specimens logged successfully.")
-                ->color(fn() => $loggedCount > 0 ? "success" : "warning")
+                ->color(fn(): string => $loggedCount > 0 ? "success" : "warning")
                 ->send();
 
             // Reset form for new entry
