@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Project;
 use App\Filament\Resources\Projects\Pages\CreateProject;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Resources\Projects\Pages\ViewProject;
-use Filament\Actions\DeleteAction;
+use App\Models\Project;
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
@@ -23,7 +23,7 @@ it('can list projects in the table', function (): void {
     actingAs($this->adminuser);
     $projects = Project::factory()->count(3)->create([
         'team_id' => $this->team->id,
-        'leader_id' => auth()->id()
+        'leader_id' => auth()->id(),
     ]);
 
     livewire(ListProjects::class)
@@ -34,7 +34,7 @@ it('can search projects by name', function (): void {
     actingAs($this->adminuser);
     $projects = Project::factory()->count(3)->create([
         'team_id' => $this->team->id,
-        'leader_id' => auth()->id()
+        'leader_id' => auth()->id(),
     ]);
 
     livewire(ListProjects::class)
@@ -47,7 +47,7 @@ it('can create a project', function (): void {
     actingAs($this->adminuser);
     $data = Project::factory()->make([
         'team_id' => $this->team->id,
-        'leader_id' => auth()->id()
+        'leader_id' => auth()->id(),
     ])->toArray();
 
     livewire(CreateProject::class)
@@ -73,7 +73,7 @@ it('can view a project', function (): void {
     actingAs($this->adminuser);
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
-        'leader_id' => auth()->id()
+        'leader_id' => auth()->id(),
     ]);
 
     livewire(ViewProject::class, [
@@ -86,7 +86,7 @@ it('can edit a project', function (): void {
     actingAs($this->adminuser);
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
-        'leader_id' => auth()->id()
+        'leader_id' => auth()->id(),
     ]);
     $newTitle = 'Updated Project Name';
 
@@ -108,12 +108,12 @@ it('can delete a project', function (): void {
     actingAs($this->adminuser);
     $project = Project::factory()->create([
         'team_id' => $this->team->id,
-        'leader_id' => auth()->id()
+        'leader_id' => auth()->id(),
     ]);
 
     livewire(EditProject::class, [
         'record' => $project->getKey(),
-    ])->callAction(DeleteAction::class)
+    ])->callAction(TestAction::make('delete'))
         ->assertNotified()
         ->assertRedirect();
 

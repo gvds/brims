@@ -20,7 +20,7 @@ class TeamsTable
                     ->wrap()
                     ->lineClamp(2),
                 TextColumn::make('leader.fullname')
-                    ->searchable(),
+                    ->searchable(['firstname', 'lastname']),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -5,8 +5,9 @@ use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\UserResource;
 use App\Mail\UserAccountCreated;
-use App\Models\User;
 use App\Models\Team;
+use App\Models\User;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -247,7 +248,7 @@ describe('UserResource Edit Page', function (): void {
     it('can save user changes', function (): void {
         $user = User::factory()->create();
         // Assign a default role if user doesn't have one
-        if (!$user->roles->count()) {
+        if (! $user->roles->count()) {
             $userRole = Role::where('name', 'user')->first();
             $user->assignRole($userRole);
         }
@@ -271,7 +272,7 @@ describe('UserResource Edit Page', function (): void {
         $user2 = User::factory()->create(['username' => 'user2']);
 
         // Assign roles if they don't have them
-        if (!$user1->roles->count()) {
+        if (! $user1->roles->count()) {
             $userRole = Role::where('name', 'user')->first();
             $user1->assignRole($userRole);
         }
@@ -312,7 +313,7 @@ describe('UserResource Edit Page', function (): void {
         $user = User::factory()->create();
 
         livewire(EditUser::class, ['record' => $user->id])
-            ->callAction('delete');
+            ->callAction(TestAction::make('delete'));
 
         expect(User::find($user->id))->toBeNull();
     });

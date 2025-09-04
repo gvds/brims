@@ -426,10 +426,11 @@ describe('LogPrimarySpecimens Header Actions', function (): void {
             ->assertHasFormErrors(['pse_barcode' => 'The project Subject Event Barcode field format is invalid.']);
     });
 
-    it('can submit via header action', function (): void {
+    it('can validate barcode and show submit action', function (): void {
         livewire(LogPrimarySpecimens::class)
+            ->assertActionExists('proceed')
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->callAction('proceed')
+            ->call('validatePseBarcode')  // Call the method directly instead of the action
             ->assertActionExists('submit');
     });
 

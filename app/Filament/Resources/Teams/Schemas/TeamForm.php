@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Teams\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +15,7 @@ class TeamForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->unique(ignoreRecord: true)
                     ->required()
                     ->maxLength(255),
                 Textarea::make('description')
@@ -22,9 +23,9 @@ class TeamForm
                 Select::make('leader_id')
                     ->relationship(
                         name: 'leader',
-                        modifyQueryUsing: fn($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
+                        modifyQueryUsing: fn ($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
                     )
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
                     ->preload()
                     ->required()
