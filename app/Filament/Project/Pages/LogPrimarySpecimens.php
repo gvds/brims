@@ -137,7 +137,8 @@ class LogPrimarySpecimens extends Page implements HasForms
                                     ->action(fn() => $this->addAliquot($type->id))
                                     ->color("success")
                                     ->icon(Heroicon::Plus)
-                                    ->outlined(),
+                                    ->outlined()
+                                    ->extraAttributes(["id" => "addAliquot_" . $type->id]),
                                 Action::make("removeAliquot_" . $type->id)
                                     ->hiddenLabel()
                                     ->action(fn() => $this->removeAliquot($type->id))
@@ -147,6 +148,7 @@ class LogPrimarySpecimens extends Page implements HasForms
                                     ->modalHeading(fn() => $this->logged($type->id) ? "Delete " . $type->name . " Aliquot " . ($i) : null)
                                     ->modalDescription(fn() => $this->logged($type->id) ? "The aliquot with barcode " . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]["barcode"] ?? '') . " will be deleted. Are you sure you want to do this?" : null)
                                     ->outlined()
+                                    ->extraAttributes(["id" => "removeAliquot_" . $type->id])
                                     ->modalSubmitAction(fn(Action $action): \Filament\Actions\Action => $action->label('Delete')),
                             ])
                             ->grow(false),

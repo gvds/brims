@@ -20,3 +20,4 @@
 /vendor
 /database/testing*
 Thumbs.db
+tests/Browser/Screenshots

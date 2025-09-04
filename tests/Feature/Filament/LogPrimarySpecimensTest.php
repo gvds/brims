@@ -12,6 +12,7 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\ViewException;
 
@@ -221,16 +222,128 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
     });
 
     it('can add additional aliquots', function (): void {
-        // Skip this test as addAliquot is a private method accessed via form actions
-        // This functionality would be tested through integration tests
-        expect(true)->toBeTrue();
+        $specimenTypeId = $this->primarySpecimenTypes->first()->id;
+
+        // Initially, there should be 2 aliquots (default from factory)
+        $initialSpecimens = $this->component->get('specimens');
+        expect($initialSpecimens[$specimenTypeId])->toHaveCount(2);
+
+        // Simulate adding an aliquot by manipulating the specimens array directly
+        // This tests the data structure behavior that the addAliquot method would create
+        $specimenType = $this->primarySpecimenTypes->first();
+        $currentSpecimens = $this->component->get('specimens');
+        $currentSpecimens[$specimenTypeId][] = ['volume' => $specimenType->defaultVolume];
+
+        $this->component->set('specimens', $currentSpecimens);
+
+        // Verify that a new aliquot was added
+        $updatedSpecimens = $this->component->get('specimens');
+        expect($updatedSpecimens[$specimenTypeId])->toHaveCount(3);
+
+        // Verify the new aliquot has the default volume
+        $newAliquot = $updatedSpecimens[$specimenTypeId][2];
+        expect($newAliquot['volume'])->toBe(5.0); // Default volume from factory
+        expect($newAliquot['barcode'] ?? null)->toBeNull(); // No barcode initially
+
+        // Verify we can add multiple aliquots
+        $currentSpecimens = $this->component->get('specimens');
+        $currentSpecimens[$specimenTypeId][] = ['volume' => $specimenType->defaultVolume];
+        $this->component->set('specimens', $currentSpecimens);
+
+        $finalSpecimens = $this->component->get('specimens');
+        expect($finalSpecimens[$specimenTypeId])->toHaveCount(4);
     });
 
     it('can remove aliquots', function (): void {
-        // Skip this test as removeAliquot is a private method accessed via form actions
-        // This functionality would be tested through integration tests
-        expect(true)->toBeTrue();
+        $specimenTypeId = $this->primarySpecimenTypes->first()->id;
+
+        // Initially, there should be 2 aliquots (default from factory)
+        $initialSpecimens = $this->component->get('specimens');
+        expect($initialSpecimens[$specimenTypeId])->toHaveCount(2);
+
+        // First add an additional aliquot so we have 3 to work with
+        $specimenType = $this->primarySpecimenTypes->first();
+        $currentSpecimens = $this->component->get('specimens');
+        $currentSpecimens[$specimenTypeId][] = ['volume' => $specimenType->defaultVolume];
+        $this->component->set('specimens', $currentSpecimens);
+
+        // Verify we now have 3 aliquots
+        $specimensWith3 = $this->component->get('specimens');
+        expect($specimensWith3[$specimenTypeId])->toHaveCount(3);
+
+        // Simulate removing an aliquot (removes the last one)
+        $currentSpecimens = $this->component->get('specimens');
+        array_pop($currentSpecimens[$specimenTypeId]);
+        $this->component->set('specimens', $currentSpecimens);
+
+        // Verify that an aliquot was removed
+        $updatedSpecimens = $this->component->get('specimens');
+        expect($updatedSpecimens[$specimenTypeId])->toHaveCount(2);
+
+        // Remove another aliquot
+        $currentSpecimens = $this->component->get('specimens');
+        array_pop($currentSpecimens[$specimenTypeId]);
+        $this->component->set('specimens', $currentSpecimens);
+
+        // Verify we now have 1 aliquot
+        $finalSpecimens = $this->component->get('specimens');
+        expect($finalSpecimens[$specimenTypeId])->toHaveCount(1);
     });
+
+    it('can add and remove aliquots via the browser', function (): void {
+        $page = visit(route('filament.project.pages.log-primary-specimens'))
+            ->assertSee('Project Subject Event Barcode')
+            ->fill('form.pse_barcode', $this->pseBarcode)
+            ->click('Validate Barcode');
+
+        $page->assertSee('Aliquot 1')
+            ->assertSee('Aliquot 2');
+
+        $page->press('#addAliquot_' . $this->primarySpecimenTypes->first()->id)
+            ->assertSee('Aliquot 3');
+
+        $page->press('#removeAliquot_' . $this->primarySpecimenTypes->first()->id)
+            ->assertDontSee('Aliquot 3');
+    });
+
+    it('requires confirmation before removing a previously logged aliquot via the browser', function (): void {
+
+        $existingSpecimen = Specimen::factory()
+            ->count(2)
+            ->for($this->subjectEvent, 'subjectEvent')
+            ->for($this->primarySpecimenTypes->first(), 'specimenType')
+            ->for($this->project->sites->first(), 'site')
+            ->sequence(
+                ['barcode' => 'EX12340'],
+                ['barcode' => 'EX12341'],
+            )
+            ->sequence(
+                ['aliquot' => 1],
+                ['aliquot' => 2],
+            )
+            ->create([
+                'volume' => 3.5,
+                'aliquot' => 0,
+                'status' => SpecimenStatus::Logged,
+                'loggedBy_id' => $this->user->id,
+                'loggedAt' => now(),
+            ]);
+
+        $page = visit(route('filament.project.pages.log-primary-specimens'))
+            ->assertSee('Project Subject Event Barcode')
+            ->fill('form.pse_barcode', $this->pseBarcode)
+            ->click('Validate Barcode');
+
+        $page->assertSee('EX12340')
+            ->assertSee('EX12341');
+
+        $page->press('#removeAliquot_' . $this->primarySpecimenTypes->first()->id)
+            ->assertSee('Are you sure you want to do this?');
+
+        $page->press('Delete')
+            ->assertDontSee('EX12341');
+    });
+
     it('loads existing logged specimens correctly', function (): void {
         // Create a logged specimen first
         Specimen::factory()
