@@ -20,7 +20,7 @@ class Assay extends Model
 
     public function assaydefinition(): BelongsTo
     {
-        return $this->belongsTo(Assaydefinition::class);
+        return $this->belongsTo(AssayDefinition::class);
     }
 
     public function created_by(): BelongsTo

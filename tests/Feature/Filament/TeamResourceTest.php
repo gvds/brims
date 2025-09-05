@@ -97,7 +97,7 @@ describe('TeamResource Create Page', function (): void {
     it('can load the create team page', function (): void {
         livewire(CreateTeam::class)
             ->assertOk()
-            ->assertFormExists();
+            ->assertSchemaExists('form');
     });
 
     it('can create a team with required fields', function (): void {
@@ -169,8 +169,8 @@ describe('TeamResource Edit Page', function (): void {
 
         livewire(EditTeam::class, ['record' => $team->getRouteKey()])
             ->assertOk()
-            ->assertFormExists()
-            ->assertFormSet([
+            ->assertSchemaExists('form')
+            ->assertSchemaStateSet([
                 'name' => $team->name,
                 'description' => $team->description,
             ]);
