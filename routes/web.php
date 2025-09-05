@@ -12,3 +12,7 @@ Route::get(
 )
     ->middleware(['web', 'signed'])
     ->name('newaccount');
+
+// Route::get('/xdebug', function () {
+//     xdebug_info();
+// });

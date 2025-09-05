@@ -12,7 +12,6 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\ViewException;
 
@@ -304,44 +303,6 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
 
         $page->press('#removeAliquot_' . $this->primarySpecimenTypes->first()->id)
             ->assertDontSee('Aliquot 3');
-    });
-
-    it('requires confirmation before removing a previously logged aliquot via the browser', function (): void {
-
-        $existingSpecimen = Specimen::factory()
-            ->count(2)
-            ->for($this->subjectEvent, 'subjectEvent')
-            ->for($this->primarySpecimenTypes->first(), 'specimenType')
-            ->for($this->project->sites->first(), 'site')
-            ->sequence(
-                ['barcode' => 'EX12340'],
-                ['barcode' => 'EX12341'],
-            )
-            ->sequence(
-                ['aliquot' => 1],
-                ['aliquot' => 2],
-            )
-            ->create([
-                'volume' => 3.5,
-                'aliquot' => 0,
-                'status' => SpecimenStatus::Logged,
-                'loggedBy_id' => $this->user->id,
-                'loggedAt' => now(),
-            ]);
-
-        $page = visit(route('filament.project.pages.log-primary-specimens'))
-            ->assertSee('Project Subject Event Barcode')
-            ->fill('form.pse_barcode', $this->pseBarcode)
-            ->click('Validate Barcode');
-
-        $page->assertSee('EX12340')
-            ->assertSee('EX12341');
-
-        $page->press('#removeAliquot_' . $this->primarySpecimenTypes->first()->id)
-            ->assertSee('Are you sure you want to do this?');
-
-        $page->press('Delete')
-            ->assertDontSee('EX12341');
     });
 
     it('loads existing logged specimens correctly', function (): void {

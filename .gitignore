@@ -18,6 +18,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/docker
 /database/testing*
 Thumbs.db
 tests/Browser/Screenshots
