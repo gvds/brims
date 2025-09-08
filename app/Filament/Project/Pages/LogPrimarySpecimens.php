@@ -42,8 +42,8 @@ class LogPrimarySpecimens extends Page implements HasForms
     public ?array $specimens = null;
     public ?User $user = null;
     public ?int $userSiteId = null;
-    // public ?string $pse_barcode = '5_37_73';
-    public ?string $pse_barcode = null;
+    public ?string $pse_barcode = '3_19_37';
+    // public ?string $pse_barcode = null;
     public ?SubjectEvent $subjectEvent = null;
     public ?Subject $subject = null;
     public bool $stageOneCompleted = false;
@@ -88,15 +88,14 @@ class LogPrimarySpecimens extends Page implements HasForms
                 TextInput::make("pse_barcode")
                     ->label("Project Subject Event Barcode")
                     ->helperText("Scan the barcode")
-                    ->required()
-                    ->regex("/^" . session("currentProject")->id . "_\d+_\d+$/")
+                    // ->rules([new \App\Rules\ValidPSE()])
                     ->statePath("pse_barcode")
                     ->autofocus()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn() => $this->validatePseBarcode())
+                    // ->live(onBlur: true)
+                    // ->afterStateUpdated(fn() => $this->loadSpecimenBarcodes())
                     ->extraAttributes([
                         "class" => "w-full md:w-80",
-                        "onkeydown" => "if(event.key === 'Enter') { event.preventDefault(); \$wire.validatePseBarcode(); }"
+                        "x-on:keydown.enter.prevent" => "\$wire.loadSpecimenBarcodes()"
                     ])
             ];
         } else {
@@ -198,35 +197,19 @@ class LogPrimarySpecimens extends Page implements HasForms
     }
 
     // Validate PSE barcode and move to stage 2
-    public function validatePseBarcode(): void
+    public function loadSpecimenBarcodes(): void
     {
+
         $this->validate([
-            "pse_barcode" => ["required", "regex:/^" . session("currentProject")->id . "_\d+_\d+$/"],
+            "pse_barcode" => [
+                "required",
+                new \App\Rules\ValidPSE,
+            ],
         ]);
 
         [$project_id, $subject_id, $subject_event_id] = explode("_", (string) $this->pse_barcode);
         $this->subjectEvent = SubjectEvent::find($subject_event_id);
         $this->subject = Subject::find($subject_id);
-
-        if ((int) $project_id !== session("currentProject")->id) {
-            Notification::make()
-                ->title("Validation Error")
-                ->body("The Project ID in the barcode does not match the current project.")
-                ->color("danger")
-                ->send()
-                ->persistent();
-            return;
-        }
-
-        if ($this->subjectEvent->subject_id != $subject_id) {
-            Notification::make()
-                ->title("Validation Error")
-                ->body("The Subject ID in the barcode does not match the Subject Event record.")
-                ->color("danger")
-                ->send()
-                ->persistent();
-            return;
-        }
 
         $loggedSpecimenTypes = Specimen::where("subject_event_id", $this->subjectEvent->id)->whereRelation("specimentype", "primary", true)->get()->groupBy("specimenType_id");
         $specimens = [];
@@ -347,7 +330,7 @@ class LogPrimarySpecimens extends Page implements HasForms
             $actions[] = Action::make("proceed")
                 ->label("Validate Barcode")
                 ->color("success")
-                ->action("validatePseBarcode");
+                ->action("loadSpecimenBarcodes");
         }
 
         return $actions;

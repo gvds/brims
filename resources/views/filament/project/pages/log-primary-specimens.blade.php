@@ -8,9 +8,12 @@
                 {{ $this->form }}
             </div>
         @else
-            <div class="text-xl bg-white dark:bg-gray-800 shadow rounded-xl p-6">
-                    Log specimens for Subject <span class="font-bold">{{ $subject->subjectID }}</span>,
-                    Event <span class="font-bold">{{ $subjectEvent->event->name }}</span>
+        <div class='flex justify-between text-xl bg-white dark:bg-gray-800 shadow rounded-xl p-6'>
+            <div>
+                    Log specimens for Subject: <span class="font-bold">{{ $subject->subjectID }}</span> |
+                    Event: <span class="font-bold">{{ $subjectEvent->event->name }}</span>
+                </div>
+                    <div class="italic">PSE Barcode: {{ $pse_barcode }}</div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6">

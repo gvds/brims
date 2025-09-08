@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Labware;
 use App\Models\Project;
 use App\Models\Specimentype;
 use Illuminate\Database\Migrations\Migration;
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->boolean('store')->default(0);
             $table->json('transferDestinations')->nullable();
             $table->string('specimenGroup', 50)->nullable();
-            $table->unsignedBigInteger('labware_id');
+            $table->foreignIdFor(Labware::class)->nullable()->constrained();
             $table->string('storageDestination', 15)->nullable();
             $table->string('storageSpecimenType', 50)->nullable()->index();
             $table->foreignIdFor(Specimentype::class, 'parentSpecimenType_id')->nullable();
