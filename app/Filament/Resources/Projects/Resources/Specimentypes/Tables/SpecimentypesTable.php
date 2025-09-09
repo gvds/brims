@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\Projects\Resources\Specimentypes\Tables;
 
+use App\Models\Specimentype;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class SpecimentypesTable
@@ -15,38 +18,34 @@ class SpecimentypesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('project.title')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable(isIndividual: true, isGlobal: false),
                 IconColumn::make('primary')
                     ->boolean(),
                 TextColumn::make('aliquots')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 IconColumn::make('pooled')
                     ->boolean(),
                 TextColumn::make('defaultVolume')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('volumeUnit')
-                    ->searchable(),
+                    ->formatStateUsing(fn(Specimentype $record): string => $record->defaultVolume . ' ' . $record->volumeUnit),
+                TextColumn::make('specimenGroup')
+                    ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('labware.name')
+                    ->searchable(isIndividual: true, isGlobal: false),
                 IconColumn::make('store')
                     ->boolean(),
-                TextColumn::make('sampleGroup')
-                    ->searchable(),
-                TextColumn::make('labware.name')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('storageDestination')
-                    ->searchable(),
+                    ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('storageSpecimenType')
-                    ->searchable(),
-                TextColumn::make('parentSpecimenType_id')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('parentSpecimenType.name')
+                    ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('transferDestinations')
+                    ->formatStateUsing(fn($state) => collect($state)->implode(', '))
+                    ->listWithLineBreaks()
+                    ->searchable(isIndividual: true, isGlobal: false),
                 IconColumn::make('active')
                     ->boolean(),
                 TextColumn::make('created_at')
@@ -59,11 +58,16 @@ class SpecimentypesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('primary')
+                    ->label('Primary'),
+            ])
+            ->deferFilters(false)
+            ->headerActions([
+                CreateAction::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
