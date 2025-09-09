@@ -27,25 +27,32 @@ class LogPrimarySpecimens extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationLabel = "Log Primary Specimens (2-Stage)";
+    protected static ?string $navigationLabel = 'Log Primary Specimens (2-Stage)';
 
-    protected static ?string $title = "Log Primary Specimens";
+    protected static ?string $title = 'Log Primary Specimens';
 
     protected static ?int $navigationSort = 101;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 
-    protected string $view = "filament.project.pages.log-primary-specimens";
+    protected string $view = 'filament.project.pages.log-primary-specimens';
 
     // Properties
     public Collection $specimenTypes;
+
     public ?array $specimens = null;
+
     public ?User $user = null;
+
     public ?int $userSiteId = null;
-    public ?string $pse_barcode = '3_19_37';
-    // public ?string $pse_barcode = null;
+
+    // public ?string $pse_barcode = '3_19_37';
+    public ?string $pse_barcode = null;
+
     public ?SubjectEvent $subjectEvent = null;
+
     public ?Subject $subject = null;
+
     public bool $stageOneCompleted = false;
 
     protected $listeners = ['updateform' => '$refresh'];
@@ -58,14 +65,14 @@ class LogPrimarySpecimens extends Page implements HasForms
 
     private function initializeUser(): void
     {
-        $this->user = session("currentProject")->members()->where("user_id", \Illuminate\Support\Facades\Auth::id())->first();
-        if (!$this->user) {
+        $this->user = session('currentProject')->members()->where('user_id', \Illuminate\Support\Facades\Auth::id())->first();
+        if (! $this->user) {
             Notification::make()
-                ->title("Error")
-                ->body("You are not a member of this project.")
-                ->color("danger")
+                ->title('Error')
+                ->body('You are not a member of this project.')
+                ->color('danger')
                 ->send();
-            $this->redirect(route("filament.app.resources.projects.index"));
+            $this->redirect(route('filament.app.resources.projects.index'));
         }
 
         // Store the site_id separately since pivot data gets lost during Livewire serialization
@@ -75,33 +82,33 @@ class LogPrimarySpecimens extends Page implements HasForms
     private function initializeSpecimenTypes(): void
     {
         $this->specimenTypes = Specimentype::query()
-            ->where("project_id", session("currentProject")->id)
-            ->where("primary", true)
+            ->where('project_id', session('currentProject')->id)
+            ->where('primary', true)
             ->get();
     }
 
     protected function getFormSchema(): array
     {
-        if (!$this->stageOneCompleted) {
+        if (! $this->stageOneCompleted) {
             // Stage 1 - PSE Barcode scanning
             return [
-                TextInput::make("pse_barcode")
-                    ->label("Project Subject Event Barcode")
-                    ->helperText("Scan the barcode")
+                TextInput::make('pse_barcode')
+                    ->label('Project Subject Event Barcode')
+                    ->helperText('Scan the barcode')
                     // ->rules([new \App\Rules\ValidPSE()])
-                    ->statePath("pse_barcode")
+                    ->statePath('pse_barcode')
                     ->autofocus()
                     // ->live(onBlur: true)
                     // ->afterStateUpdated(fn() => $this->loadSpecimenBarcodes())
                     ->extraAttributes([
-                        "class" => "w-full md:w-80",
-                        "x-on:keydown.enter.prevent" => "\$wire.loadSpecimenBarcodes()"
-                    ])
+                        'class' => 'w-full md:w-80',
+                        'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
+                    ]),
             ];
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
             $sections = [];
-            $groupedTypes = $this->specimenTypes->groupBy("specimenGroup");
+            $groupedTypes = $this->specimenTypes->groupBy('specimenGroup');
             foreach ($groupedTypes as $group => $types) {
                 $specimenTypes = [];
                 foreach ($types as $type) {
@@ -110,69 +117,69 @@ class LogPrimarySpecimens extends Page implements HasForms
                         $aliquotFields[] = Grid::make()
                             ->schema([
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
-                                    ->label("Aliquot " . ($i + 1))
-                                    ->regex("/" . $type->Labware->barcodeFormat . "/")
-                                    ->disabled(isset($this->specimens[$type->id][$i]["barcode"]))
-                                    ->extraAttributes(["style" => "height: 30px"]),
+                                    ->label('Aliquot '.($i + 1))
+                                    ->regex('/'.$type->Labware->barcodeFormat.'/')
+                                    ->disabled(isset($this->specimens[$type->id][$i]['barcode']))
+                                    ->extraAttributes(['style' => 'height: 30px']),
                                 TextInput::make("specimens.{$type->id}.{$i}.volume")
                                     ->hiddenLabel()
                                     ->numeric()
-                                    ->inputMode("decimal")
+                                    ->inputMode('decimal')
                                     ->requiredWith("specimens.{$type->id}.{$i}.barcode")
                                     ->minValue(0)
                                     ->default($type->defaultVolume)
                                     ->suffix($type->volumeUnit)
-                                    ->disabled(isset($this->specimens[$type->id][$i]["barcode"]))
-                                    ->extraAttributes(["style" => "height: 30px"]),
+                                    ->disabled(isset($this->specimens[$type->id][$i]['barcode']))
+                                    ->extraAttributes(['style' => 'height: 30px']),
                             ])
                             ->columns(1)
-                            ->extraAttributes(["class" => "py-0 mb-2"]);
+                            ->extraAttributes(['class' => 'py-0 mb-2']);
                     }
                     $specimenTypes[] = Flex::make([
                         Grid::make(1)
                             ->schema([
-                                Action::make("addAliquot_" . $type->id)
+                                Action::make('addAliquot_'.$type->id)
                                     ->hiddenLabel()
-                                    ->action(fn() => $this->addAliquot($type->id))
-                                    ->color("success")
+                                    ->action(fn () => $this->addAliquot($type->id))
+                                    ->color('success')
                                     ->icon(Heroicon::Plus)
                                     ->outlined()
-                                    ->extraAttributes(["id" => "addAliquot_" . $type->id]),
-                                Action::make("removeAliquot_" . $type->id)
+                                    ->extraAttributes(['id' => 'addAliquot_'.$type->id]),
+                                Action::make('removeAliquot_'.$type->id)
                                     ->hiddenLabel()
-                                    ->action(fn() => $this->removeAliquot($type->id))
-                                    ->color("danger")
+                                    ->action(fn () => $this->removeAliquot($type->id))
+                                    ->color('danger')
                                     ->icon(Heroicon::Minus)
-                                    ->requiresConfirmation(fn(): bool => $this->logged($type->id))
-                                    ->modalHeading(fn() => $this->logged($type->id) ? "Delete " . $type->name . " Aliquot " . ($i) : null)
-                                    ->modalDescription(fn() => $this->logged($type->id) ? "The aliquot with barcode " . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]["barcode"] ?? '') . " will be deleted. Are you sure you want to do this?" : null)
+                                    ->requiresConfirmation(fn (): bool => $this->logged($type->id))
+                                    ->modalHeading(fn () => $this->logged($type->id) ? 'Delete '.$type->name.' Aliquot '.($i) : null)
+                                    ->modalDescription(fn () => $this->logged($type->id) ? 'The aliquot with barcode '.($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '').' will be deleted. Are you sure you want to do this?' : null)
                                     ->outlined()
-                                    ->extraAttributes(["id" => "removeAliquot_" . $type->id])
-                                    ->modalSubmitAction(fn(Action $action): \Filament\Actions\Action => $action->label('Delete')),
+                                    ->extraAttributes(['id' => 'removeAliquot_'.$type->id])
+                                    ->modalSubmitAction(fn (Action $action): \Filament\Actions\Action => $action->label('Delete')),
                             ])
                             ->grow(false),
                         Fieldset::make($type->name)
                             ->schema($aliquotFields)
                             ->columns([
-                                "default" => 1,
-                                "sm" => 2,
-                                "md" => 3,
-                                "lg" => 4,
-                                "xl" => 5,
-                                "2xl" => 6,
-                                "3xl" => 8,
+                                'default' => 1,
+                                'sm' => 2,
+                                'md' => 3,
+                                'lg' => 4,
+                                'xl' => 5,
+                                '2xl' => 6,
+                                '3xl' => 8,
                             ])
                             ->grow(true)
-                            ->extraAttributes(["class" => "py-0"]),
+                            ->extraAttributes(['class' => 'py-0']),
                     ])
-                        ->extraAttributes(["class" => "items-center"]);
+                        ->extraAttributes(['class' => 'items-center']);
                 }
                 $sections[] = Section::make($group)
                     ->schema($specimenTypes)
                     ->compact()
                     ->collapsible()
                     ->columns(1)
-                    ->extraAttributes(["class" => "py-0"]);
+                    ->extraAttributes(['class' => 'py-0']);
             }
 
             return $sections;
@@ -181,19 +188,19 @@ class LogPrimarySpecimens extends Page implements HasForms
 
     private function logged($specimenType_id): bool
     {
-        return $this->specimens[$specimenType_id][count($this->specimens[$specimenType_id]) - 1]["logged"] ?? false;
+        return $this->specimens[$specimenType_id][count($this->specimens[$specimenType_id]) - 1]['logged'] ?? false;
     }
 
     private function addAliquot(int $typeId): void
     {
-        array_push($this->specimens[$typeId], ["volume" => $this->specimenTypes->find($typeId)->defaultVolume]);
-        $this->dispatch("updateform");
+        array_push($this->specimens[$typeId], ['volume' => $this->specimenTypes->find($typeId)->defaultVolume]);
+        $this->dispatch('updateform');
     }
 
     private function removeAliquot(int $typeId): void
     {
         array_pop($this->specimens[$typeId]);
-        $this->dispatch("updateform");
+        $this->dispatch('updateform');
     }
 
     // Validate PSE barcode and move to stage 2
@@ -201,25 +208,25 @@ class LogPrimarySpecimens extends Page implements HasForms
     {
 
         $this->validate([
-            "pse_barcode" => [
-                "required",
+            'pse_barcode' => [
+                'required',
                 new \App\Rules\ValidPSE,
             ],
         ]);
 
-        [$project_id, $subject_id, $subject_event_id] = explode("_", (string) $this->pse_barcode);
+        [$project_id, $subject_id, $subject_event_id] = explode('_', (string) $this->pse_barcode);
         $this->subjectEvent = SubjectEvent::find($subject_event_id);
         $this->subject = Subject::find($subject_id);
 
-        $loggedSpecimenTypes = Specimen::where("subject_event_id", $this->subjectEvent->id)->whereRelation("specimentype", "primary", true)->get()->groupBy("specimenType_id");
+        $loggedSpecimenTypes = Specimen::where('subject_event_id', $this->subjectEvent->id)->whereRelation('specimentype', 'primary', true)->get()->groupBy('specimenType_id');
         $specimens = [];
 
         if ($loggedSpecimenTypes->count() !== 0) {
             foreach ($loggedSpecimenTypes as $specimenType_id => $loggedSpecimens) {
                 foreach ($loggedSpecimens as $aliquot => $specimen) {
                     $specimens[$specimenType_id][$aliquot] = [
-                        "barcode" => $specimen->barcode,
-                        "volume" => $specimen->volume,
+                        'barcode' => $specimen->barcode,
+                        'volume' => $specimen->volume,
                         'logged' => true,
                     ];
                 }
@@ -231,25 +238,26 @@ class LogPrimarySpecimens extends Page implements HasForms
                 continue;
             }
             for ($i = 0; $i < (int) ($type->aliquots); $i++) {
-                $specimens[$type->id][$i]["volume"] = $type->defaultVolume;
+                $specimens[$type->id][$i]['volume'] = $type->defaultVolume;
             }
         }
         $this->specimens = $specimens;
 
         $this->stageOneCompleted = true;
 
-        $this->dispatch("updateform");
+        $this->dispatch('updateform');
     }
 
     // Submit the specimens for the validated PSE
     public function submit(): void
     {
-        if (!$this->stageOneCompleted || !$this->subjectEvent) {
+        if (! $this->stageOneCompleted || ! $this->subjectEvent) {
             Notification::make()
-                ->title("Error")
-                ->body("Please scan a valid PSE barcode first.")
-                ->color("danger")
+                ->title('Error')
+                ->body('Please scan a valid PSE barcode first.')
+                ->color('danger')
                 ->send();
+
             return;
         }
 
@@ -259,21 +267,23 @@ class LogPrimarySpecimens extends Page implements HasForms
 
             foreach ($this->specimens ?? [] as $specimenType_id => $specimens) {
                 $specimenType = $this->specimenTypes->find($specimenType_id);
-                if (!$specimenType) throw new \Exception("Specimen Type ID {$specimenType_id} not found");
+                if (! $specimenType) {
+                    throw new \Exception("Specimen Type ID {$specimenType_id} not found");
+                }
 
                 foreach ($specimens as $aliquot => $specimenData) {
-                    if (isset($specimenData["barcode"]) && !empty($specimenData["barcode"]) && !isset($specimenData['logged'])) {
+                    if (isset($specimenData['barcode']) && ! empty($specimenData['barcode']) && ! isset($specimenData['logged'])) {
                         Specimen::create([
-                            "barcode" => $specimenData["barcode"],
-                            "volume" => $specimenData["volume"],
-                            "volumeUnit" => $specimenType->volumeUnit,
-                            "aliquot" => $aliquot,
-                            "specimenType_id" => $specimenType_id,
-                            "subject_event_id" => $this->subjectEvent->id,
-                            "site_id" => $this->userSiteId,
-                            "status" => SpecimenStatus::Logged,
-                            "loggedBy_id" => $this->user->id,
-                            "loggedAt" => now(),
+                            'barcode' => $specimenData['barcode'],
+                            'volume' => $specimenData['volume'],
+                            'volumeUnit' => $specimenType->volumeUnit,
+                            'aliquot' => $aliquot,
+                            'specimenType_id' => $specimenType_id,
+                            'subject_event_id' => $this->subjectEvent->id,
+                            'site_id' => $this->userSiteId,
+                            'status' => SpecimenStatus::Logged,
+                            'loggedBy_id' => $this->user->id,
+                            'loggedAt' => now(),
                         ]);
                         $loggedCount++;
                     }
@@ -283,23 +293,23 @@ class LogPrimarySpecimens extends Page implements HasForms
             DB::commit();
 
             Notification::make()
-                ->title("Specimens Logged")
-                ->body($loggedCount . " primary specimens logged successfully.")
-                ->color(fn(): string => $loggedCount > 0 ? "success" : "warning")
+                ->title('Specimens Logged')
+                ->body($loggedCount.' primary specimens logged successfully.')
+                ->color(fn (): string => $loggedCount > 0 ? 'success' : 'warning')
                 ->send();
 
             // Reset form for new entry
-            $this->reset(["pse_barcode", "specimens", "subjectEvent", "subject", "stageOneCompleted"]);
+            $this->reset(['pse_barcode', 'specimens', 'subjectEvent', 'subject', 'stageOneCompleted']);
             $this->initializeSpecimenTypes();
 
-            $this->dispatch("updateform");
+            $this->dispatch('updateform');
         } catch (\Throwable $th) {
             DB::rollBack();
 
             Notification::make()
-                ->title("Failed")
-                ->body("Failed to log primary specimens. " . $th->getMessage())
-                ->color("danger")
+                ->title('Failed')
+                ->body('Failed to log primary specimens. '.$th->getMessage())
+                ->color('danger')
                 ->send();
         }
     }
@@ -307,9 +317,9 @@ class LogPrimarySpecimens extends Page implements HasForms
     // Reset form and start over
     public function resetForm(): void
     {
-        $this->reset(["pse_barcode", "specimens", "subjectEvent", "subject", "stageOneCompleted"]);
+        $this->reset(['pse_barcode', 'specimens', 'subjectEvent', 'subject', 'stageOneCompleted']);
         $this->initializeSpecimenTypes();
-        $this->dispatch("updateform");
+        $this->dispatch('updateform');
     }
 
     protected function getHeaderActions(): array
@@ -317,20 +327,20 @@ class LogPrimarySpecimens extends Page implements HasForms
         $actions = [];
 
         if ($this->stageOneCompleted) {
-            $actions[] = Action::make("reset")
-                ->label("Start Over")
-                ->color("danger")
-                ->action("resetForm");
+            $actions[] = Action::make('reset')
+                ->label('Start Over')
+                ->color('danger')
+                ->action('resetForm');
 
-            $actions[] = Action::make("submit")
-                ->label("Save Specimens")
-                ->color("primary")
-                ->action("submit");
+            $actions[] = Action::make('submit')
+                ->label('Save Specimens')
+                ->color('primary')
+                ->action('submit');
         } else {
-            $actions[] = Action::make("proceed")
-                ->label("Validate Barcode")
-                ->color("success")
-                ->action("loadSpecimenBarcodes");
+            $actions[] = Action::make('proceed')
+                ->label('Validate Barcode')
+                ->color('success')
+                ->action('loadSpecimenBarcodes');
         }
 
         return $actions;

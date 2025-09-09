@@ -18,7 +18,6 @@ class ArmFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            // 'arm_num' => fake()->unique()->numberBetween(1, 10 ** 6),
             'manual_enrol' => fake()->boolean(),
         ];
     }

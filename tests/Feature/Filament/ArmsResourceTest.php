@@ -52,6 +52,7 @@ describe('Arms Model and Business Logic', function (): void {
     it('belongs to a project correctly', function (): void {
         $arm = Arm::factory()->create([
             'project_id' => $this->project->id,
+            'arm_num' => 1,
         ]);
 
         expect($arm->project)->toBeInstanceOf(Project::class);
@@ -61,6 +62,7 @@ describe('Arms Model and Business Logic', function (): void {
     it('can have many events', function (): void {
         $arm = Arm::factory()->create([
             'project_id' => $this->project->id,
+            'arm_num' => 1,
         ]);
 
         $events = Event::factory()->count(3)->create([
@@ -77,6 +79,7 @@ describe('Arms Model and Business Logic', function (): void {
         $arm = Arm::factory()->create([
             'project_id' => $this->project->id,
             'manual_enrol' => 1, // Integer value
+            'arm_num' => 1,
         ]);
 
         $arm->refresh();
@@ -85,6 +88,7 @@ describe('Arms Model and Business Logic', function (): void {
         $arm = Arm::factory()->create([
             'project_id' => $this->project->id,
             'manual_enrol' => 0, // Integer value
+            'arm_num' => 2,
         ]);
 
         $arm->refresh();
@@ -113,6 +117,7 @@ describe('Arms Model and Business Logic', function (): void {
         $arm = Arm::factory()->create([
             'project_id' => $this->project->id,
             'switcharms' => null,
+            'arm_num' => 1,
         ]);
 
         expect($arm->switcharms)->toBeNull();
@@ -142,6 +147,7 @@ describe('Arms Model and Business Logic', function (): void {
     it('can be deleted when no events exist', function (): void {
         $arm = Arm::factory()->create([
             'project_id' => $this->project->id,
+            'arm_num' => 1,
         ]);
 
         $armId = $arm->id;
@@ -156,6 +162,7 @@ describe('Arms Events Relationship', function (): void {
     beforeEach(function (): void {
         $this->arm = Arm::factory()->create([
             'project_id' => $this->project->id,
+            'arm_num' => 1,
         ]);
     });
 
@@ -200,6 +207,7 @@ describe('Arms Events Relationship', function (): void {
     it('events belong to the correct arm', function (): void {
         $otherArm = Arm::factory()->create([
             'project_id' => $this->project->id,
+            'arm_num' => 2,
         ]);
 
         $event1 = Event::factory()->create(['arm_id' => $this->arm->id]);
@@ -271,6 +279,7 @@ describe('Arms Data Integrity', function (): void {
             'project_id' => $this->project->id,
             'name' => 'Original Name',
             'manual_enrol' => false,
+            'arm_num' => 1,
         ]);
 
         $arm->update([

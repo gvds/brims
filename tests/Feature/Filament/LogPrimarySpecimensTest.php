@@ -129,14 +129,14 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
     it('validates PSE barcode format', function (): void {
         livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => 'invalid-format'])
-            ->call('validatePseBarcode')
+            ->call('loadSpecimenBarcodes')
             ->assertHasFormErrors(['pse_barcode']);
     });
 
     it('accepts valid PSE barcode format', function (): void {
         livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode')
+            ->call('loadSpecimenBarcodes')
             ->assertHasNoFormErrors()
             ->assertSet('stageOneCompleted', true);
     });
@@ -146,7 +146,7 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
 
         $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $wrongProjectBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
 
         // Should not progress to stage 2
         expect($component->get('stageOneCompleted'))->toBeFalse();
@@ -165,7 +165,7 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
 
         $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $mismatchedBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
 
         // Should not progress to stage 2
         expect($component->get('stageOneCompleted'))->toBeFalse();
@@ -188,7 +188,7 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
 
         $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
 
         $specimens = $component->get('specimens');
         expect($specimens[$this->primarySpecimenTypes->first()->id][0]['barcode'])->toBe('EX1234');
@@ -198,7 +198,7 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
     it('transitions to stage two after successful validation', function (): void {
         livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode')
+            ->call('loadSpecimenBarcodes')
             ->assertSet('stageOneCompleted', true)
             ->assertSet('subjectEvent.id', $this->subjectEvent->id)
             ->assertSet('subject.id', $this->subject->id);
@@ -210,14 +210,31 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
         // Set up stage 2 by validating PSE first
         $this->component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
     });
 
     it('shows specimen entry form after PSE validation', function (): void {
+        // First check that stage one completed successfully
+        expect($this->component->get('stageOneCompleted'))->toBeTrue();
+
+        // Check that specimens array is populated
+        $specimens = $this->component->get('specimens');
+        expect($specimens)->not->toBeNull();
+
+        // Check that we have specimens for the first specimen type
+        $specimenTypeId = $this->primarySpecimenTypes->first()->id;
+        expect($specimens[$specimenTypeId])->toHaveCount(2); // Should have 2 aliquots
+
+        // The form schema is dynamically generated, so let's check if we can fill form fields
+        // which will verify they exist
         $this->component
             ->assertSet('stageOneCompleted', true)
-            ->assertSee('Aliquot 1')
-            ->assertSee('Aliquot 2');
+            ->fillForm([
+                "specimens.{$specimenTypeId}.0.barcode" => 'TEST1234',
+                "specimens.{$specimenTypeId}.0.volume" => 5.0,
+            ])
+            ->assertFormFieldExists("specimens.{$specimenTypeId}.0.barcode")
+            ->assertFormFieldExists("specimens.{$specimenTypeId}.1.barcode");
     });
 
     it('can add additional aliquots', function (): void {
@@ -306,7 +323,7 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
         // Reload the component to pick up the logged specimen
         $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
 
         $specimenTypeId = $this->primarySpecimenTypes->first()->id;
 
@@ -329,7 +346,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
         // Set up stage 2 with specimen data
         $this->component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
     });
 
     it('can submit specimens successfully', function (): void {
@@ -397,7 +414,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
         // Reload component to pick up existing specimen
         $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
 
         $specimenTypeId = $this->primarySpecimenTypes->first()->id;
 
@@ -450,7 +467,7 @@ describe('LogPrimarySpecimens Form Reset', function (): void {
     it('can reset form to start over', function (): void {
         $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode')
+            ->call('loadSpecimenBarcodes')
             ->assertSet('stageOneCompleted', true);
 
         $component
@@ -470,26 +487,61 @@ describe('LogPrimarySpecimens Header Actions', function (): void {
     });
 
     it('shows save and reset actions in stage two', function (): void {
-        livewire(LogPrimarySpecimens::class)
+        $specimenType = $this->primarySpecimenTypes->first();
+
+        $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode')
-            ->assertActionExists('submit')
-            ->assertActionExists('reset');
+            ->call('loadSpecimenBarcodes')
+            ->assertSet('stageOneCompleted', true);
+
+        // Verify the submit action works and actually submits data
+        $component
+            ->fillForm([
+                "specimens.{$specimenType->id}.0.barcode" => 'AB1234',
+                "specimens.{$specimenType->id}.0.volume" => 2.5,
+                "specimens.{$specimenType->id}.0.comments" => 'Test specimen',
+            ])
+            ->call('submit');
+
+        // Should create a specimen record
+        expect(Specimen::count())->toBe(1);
+
+        // Verify the reset action clears the form
+        $component = livewire(LogPrimarySpecimens::class)
+            ->fillForm(['pse_barcode' => $this->pseBarcode])
+            ->call('loadSpecimenBarcodes')
+            ->fillForm([
+                "specimens.{$specimenType->id}.0.barcode" => 'AB5678',
+                "specimens.{$specimenType->id}.0.volume" => 2.5,
+            ])
+            ->call('resetForm')
+            ->assertSet('stageOneCompleted', false)
+            ->assertSet('pse_barcode', '');
     });
 
     it('can trigger PSE validation via header action', function (): void {
         livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => 'invalid-barcode'])
-            ->call('validatePseBarcode')
-            ->assertHasFormErrors(['pse_barcode' => 'The project Subject Event Barcode field format is invalid.']);
+            ->call('loadSpecimenBarcodes')
+            ->assertHasFormErrors(['pse_barcode' => 'The barcode format is invalid.']);
     });
 
     it('can validate barcode and show submit action', function (): void {
-        livewire(LogPrimarySpecimens::class)
-            ->assertActionExists('proceed')
+        $component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode')  // Call the method directly instead of the action
-            ->assertActionExists('submit');
+            ->call('loadSpecimenBarcodes')
+            ->assertSet('stageOneCompleted', true);
+
+        // Verify we can call submit method (proves the action is functional)
+        $specimenType = $this->primarySpecimenTypes->first();
+        $component
+            ->fillForm([
+                "specimens.{$specimenType->id}.0.barcode" => 'AB1234',
+                "specimens.{$specimenType->id}.0.volume" => 2.5,
+            ])
+            ->call('submit');
+
+        expect(Specimen::count())->toBe(1);
     });
 
     it('can reset via header action', function (): void {
@@ -503,7 +555,7 @@ describe('LogPrimarySpecimens Form Validation', function (): void {
     beforeEach(function (): void {
         $this->component = livewire(LogPrimarySpecimens::class)
             ->fillForm(['pse_barcode' => $this->pseBarcode])
-            ->call('validatePseBarcode');
+            ->call('loadSpecimenBarcodes');
     });
 
     it('validates barcode format against labware requirements', function (): void {
