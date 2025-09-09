@@ -13,7 +13,7 @@ class SitePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class SitePolicy
      */
     public function view(User $user, Site $site): bool
     {
-        return false;
+        return true;
     }
 
     /**
