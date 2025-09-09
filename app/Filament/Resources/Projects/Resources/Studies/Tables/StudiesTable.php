@@ -27,8 +27,6 @@ class StudiesTable
                     ->sortable(),
                 TextColumn::make('studyfile')
                     ->searchable(),
-                TextColumn::make('studyfilename')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

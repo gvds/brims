@@ -21,11 +21,11 @@ class ViewArm extends ViewRecord
         return [
             // EditAction::make(),
             Action::make('return')
-                ->label('Return to Arms')
+                ->label('Return to Project')
                 ->color('gray')
-                ->url(fn(): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id, 'activeRelationManager' => 4, 'relation' => 3])),
+                ->url(fn (): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id, 'activeRelationManager' => 4, 'relation' => 3])),
             Action::make('edit')
-                ->fillForm(fn(Arm $record): array => $record->toArray())
+                ->fillForm(fn (Arm $record): array => $record->toArray())
                 ->schema([
                     Grid::make()
                         ->columns(2)
@@ -41,11 +41,11 @@ class ViewArm extends ViewRecord
                         ->columnSpanFull(),
                     CheckboxList::make('switcharms')
                         ->options(
-                            fn(): array => Arm::where('project_id', $this->record->project_id)
+                            fn (): array => Arm::where('project_id', $this->record->project_id)
                                 ->where('id', '!=', $this->record->id)
                                 ->pluck('name', 'id')
                                 ->toArray()
-                        )
+                        ),
                 ])
                 ->action(function (array $data, Arm $record): void {
                     $record->fill($data);
