@@ -39,6 +39,7 @@ class Event extends Model
         return [
             'repeatable' => 'boolean',
             'active' => 'boolean',
+            'autolog' => 'boolean',
         ];
     }
 }
