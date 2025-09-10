@@ -38,6 +38,10 @@ class ArmsTable
                     ->listWithLineBreaks()
                     ->size(TextSize::ExtraSmall)
                     ->placeholder('--- No Switchable Arms ---'),
+                TextColumn::make('events_count')
+                    ->label('Events')
+                    ->counts('events')
+                    ->alignCenter(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
