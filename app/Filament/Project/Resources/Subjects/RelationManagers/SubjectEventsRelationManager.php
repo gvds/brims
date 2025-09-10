@@ -5,7 +5,6 @@ namespace App\Filament\Project\Resources\Subjects\RelationManagers;
 use App\Enums\EventStatus;
 use App\Enums\LabelStatus;
 use App\Enums\SubjectStatus;
-use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
@@ -31,6 +30,15 @@ use Illuminate\Database\Eloquent\Builder;
 class SubjectEventsRelationManager extends RelationManager
 {
     protected static string $relationship = 'subjectEvents';
+
+    protected $listeners = [
+        'refreshSubjectViewData' => 'refreshTable',
+    ];
+
+    public function refreshTable(): void
+    {
+        $this->resetTable();
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -132,8 +140,7 @@ class SubjectEventsRelationManager extends RelationManager
                         // $subject->addEventIteration($record, $eventDate);
                     })
                     ->visible(
-                        fn($record, $livewire): bool =>
-                        $record->event->repeatable &&
+                        fn($record, $livewire): bool => $record->event->repeatable &&
                             $record->status !== EventStatus::Cancelled &&
                             $record->iteration === SubjectEvent::where('event_id', $record->event->id)->max('iteration') &&
                             $record->eventDate > SubjectEvent::where('event_id', $record->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
