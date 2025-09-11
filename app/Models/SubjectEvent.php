@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Enums\EventStatus;
 use App\Enums\LabelStatus;
+use App\Models\Scopes\SubjectEventScope;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+#[ScopedBy([SubjectEventScope::class])]
 class SubjectEvent extends Pivot
 {
     protected $guarded = ['id'];

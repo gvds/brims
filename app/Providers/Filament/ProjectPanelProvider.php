@@ -43,6 +43,7 @@ class ProjectPanelProvider extends PanelProvider
                 PanelsRenderHook::TOPBAR_LOGO_AFTER,
                 function () {
                     $currentProject = session()->has('currentProject') ? session('currentProject') : null;
+
                     return view('filament.topbar', ['currentProject' => $currentProject]);
                 }
             )
@@ -59,14 +60,14 @@ class ProjectPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 NavigationItem::make('Main Panel')
-                    ->url('/projects')
-                    ->icon('heroicon-o-home')
+                    ->url('/')
+                    ->icon('heroicon-o-home'),
             ])
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
+            // ->widgets([
+            //     AccountWidget::class,
+            //     FilamentInfoWidget::class,
+            // ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
