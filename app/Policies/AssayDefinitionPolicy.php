@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\AssayDefinition;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class AssayDefinitionPolicy
 {
@@ -13,7 +12,7 @@ class AssayDefinitionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +20,7 @@ class AssayDefinitionPolicy
      */
     public function view(User $user, AssayDefinition $assayDefinition): bool
     {
-        return false;
+        return true;
     }
 
     /**

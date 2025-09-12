@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Specimentype;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SpecimentypePolicy
 {
@@ -13,7 +12,7 @@ class SpecimentypePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**

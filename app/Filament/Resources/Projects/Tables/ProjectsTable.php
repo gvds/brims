@@ -13,15 +13,17 @@ class ProjectsTable
 {
     public static function configure(Table $table): Table
     {
-        session()->forget('currentProject');
+        // session()->forget('currentProject');
         return $table
             // ->striped()
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
                     ->action(function (Project $record) {
-                        session(['currentProject' => $record]);
-                        return redirect()->route('filament.project.resources.subjects.index');
+                        if (auth()->user()->can('view', $record)) {
+                            session(['currentProject' => $record]);
+                            return redirect()->route('filament.project.pages.dashboard');
+                        }
                     })
                     ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
                 TextColumn::make('team.name')

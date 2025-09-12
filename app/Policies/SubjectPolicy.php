@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Subject;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SubjectPolicy
 {
@@ -13,7 +12,7 @@ class SubjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +20,7 @@ class SubjectPolicy
      */
     public function view(User $user, Subject $subject): bool
     {
-        return false;
+        return $subject->user->id === $user->id;
     }
 
     /**
@@ -37,7 +36,7 @@ class SubjectPolicy
      */
     public function update(User $user, Subject $subject): bool
     {
-        return false;
+        return $subject->user->id === $user->id;
     }
 
     /**

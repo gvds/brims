@@ -21,7 +21,8 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        return true;
+        return $project->members->contains($user);
+        // return $user->hasRole('super_admin') || $project->members->contains($user) || $project->leader->is($user);
     }
 
     /**

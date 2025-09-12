@@ -11,6 +11,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use STS\FilamentImpersonate\Actions\Impersonate;
 
 class UsersTable
 {
@@ -71,6 +72,7 @@ class UsersTable
             ->deferFilters(false)
             ->recordActions([
                 EditAction::make(),
+                Impersonate::make()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
