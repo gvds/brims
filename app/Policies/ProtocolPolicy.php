@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Protocol;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ProtocolPolicy
 {
@@ -13,7 +12,7 @@ class ProtocolPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**

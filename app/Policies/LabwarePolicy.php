@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Labware;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class LabwarePolicy
 {
@@ -13,7 +12,7 @@ class LabwarePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +20,7 @@ class LabwarePolicy
      */
     public function view(User $user, Labware $labware): bool
     {
-        return false;
+        return true;
     }
 
     /**

@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Study;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class StudyPolicy
 {
@@ -13,7 +12,7 @@ class StudyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**

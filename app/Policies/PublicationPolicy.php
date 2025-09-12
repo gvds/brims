@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Publication;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PublicationPolicy
 {
@@ -13,7 +12,7 @@ class PublicationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**

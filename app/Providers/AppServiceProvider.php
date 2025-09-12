@@ -22,11 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Gate::before(
-        //     fn($user, $ability): ?true =>
-        //     // return true;
-        //     $user->hasRole('super_admin') ? true : null
-        // );
+        Gate::before(
+            fn ($user, $ability): ?true => $user->hasRole('super_admin') ? true : null
+        );
 
         TextInput::configureUsing(function (TextInput $component): void {
             $component->trim();
