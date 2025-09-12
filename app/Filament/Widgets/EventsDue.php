@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Project;
+use App\Models\SubjectEvent;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -17,18 +18,12 @@ class EventsDue extends TableWidget
         return $table
             ->query(function (): Builder {
                 return Project::query()
+                    ->whereRelation('members', 'user_id', auth()->id())
                     ->whereHas('subjects.subjectEvents', function (Builder $query) {
                         $query->whereIn('status', [0, 1, 2])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today());
-                    })
-                    ->withCount(['subjects as events_due_count' => function (Builder $query) {
-                        $query->whereHas('subjectEvents', function (Builder $subQuery) {
-                            $subQuery->whereIn('status', [0, 1, 2])
-                                ->where('minDate', '<=', today())
-                                ->where('maxDate', '>=', today());
-                        });
-                    }]);
+                    });
             })
             ->columns([
                 TextColumn::make('title')
@@ -43,7 +38,18 @@ class EventsDue extends TableWidget
                     ->weight('bold')
                     ->size('md'),
                 TextColumn::make('events_due_count')
-                    ->label('Events'),
-            ]);
+                    ->label('Events')
+                    ->getStateUsing(function (Project $record) {
+                        return SubjectEvent::whereHas('subject', function (Builder $query) use ($record) {
+                            $query->where('project_id', $record->id)
+                                ->where('user_id', auth()->id());
+                        })
+                            ->whereIn('status', [0, 1, 2])
+                            ->where('minDate', '<=', today())
+                            ->where('maxDate', '>=', today())
+                            ->count();
+                    }),
+            ])
+            ->paginated(false);
     }
 }

@@ -3,12 +3,7 @@
 namespace App\Filament\Project\Widgets;
 
 use App\Models\SubjectEvent;
-use Dom\Text;
-use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\EditAction;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -26,6 +21,7 @@ class EventsOverdue extends TableWidget
                 fn(): Builder => SubjectEvent::query()
                     ->whereIn('status', [0, 1, 2])
                     ->where('maxDate', '<', today())
+                    ->whereRelation('subject', 'user_id', auth()->id())
             )
             ->columns([
                 TextColumn::make('subject.fullname')
@@ -37,6 +33,7 @@ class EventsOverdue extends TableWidget
                 TextColumn::make('minDate'),
                 TextColumn::make('maxDate'),
             ])
+            ->paginated(false)
             ->recordUrl(
                 fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', $record->subject_id)
             );
