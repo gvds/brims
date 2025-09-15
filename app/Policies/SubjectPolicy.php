@@ -28,7 +28,7 @@ class SubjectPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return session()->has('currentProject') && session('currentProject')->members->contains('id', $user->id);
     }
 
     /**

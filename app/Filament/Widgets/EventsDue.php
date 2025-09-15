@@ -16,22 +16,21 @@ class EventsDue extends TableWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(function (): Builder {
-                return Project::query()
+            ->query(
+                fn(): Builder => Project::query()
                     ->whereRelation('members', 'user_id', auth()->id())
-                    ->whereHas('subjects.subjectEvents', function (Builder $query) {
-                        $query->whereIn('status', [0, 1, 2])
+                    ->whereHas(
+                        'subjects.subjectEvents',
+                        fn(Builder $query) => $query->whereIn('status', [0, 1, 2])
                             ->where('minDate', '<=', today())
-                            ->where('maxDate', '>=', today());
-                    });
-            })
+                            ->where('maxDate', '>=', today())
+                    )
+            )
             ->columns([
                 TextColumn::make('title')
                     ->label('Project')
-                    // ->description(fn(Project $record) => 'Events Due: ' . $record->events_due_count)
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
-
                         return redirect()->route('filament.project.pages.dashboard');
                     })
                     ->color('primary')
@@ -39,16 +38,17 @@ class EventsDue extends TableWidget
                     ->size('md'),
                 TextColumn::make('events_due_count')
                     ->label('Events')
-                    ->getStateUsing(function (Project $record) {
-                        return SubjectEvent::whereHas('subject', function (Builder $query) use ($record) {
-                            $query->where('project_id', $record->id)
-                                ->where('user_id', auth()->id());
-                        })
+                    ->getStateUsing(
+                        fn(Project $record) => SubjectEvent::whereHas(
+                            'subject',
+                            fn(Builder $query) => $query->where('project_id', $record->id)
+                                ->where('user_id', auth()->id())
+                        )
                             ->whereIn('status', [0, 1, 2])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today())
-                            ->count();
-                    }),
+                            ->count()
+                    ),
             ])
             ->paginated(false);
     }
