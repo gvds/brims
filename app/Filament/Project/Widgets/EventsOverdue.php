@@ -3,6 +3,7 @@
 namespace App\Filament\Project\Widgets;
 
 use App\Enums\EventStatus;
+use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -14,6 +15,10 @@ class EventsOverdue extends TableWidget
 {
     protected static ?string $heading = 'Overdue Events';
 
+    public static function canView(): bool
+    {
+        return auth()->user()->can('create', Subject::class);
+    }
     public function table(Table $table): Table
     {
         return $table

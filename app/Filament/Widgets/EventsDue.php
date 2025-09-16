@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Enums\EventStatus;
 use App\Models\Project;
+use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -12,7 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class EventsDue extends TableWidget
 {
-    // protected static ?string $heading = 'Events Due';
+    public static function canView(): bool
+    {
+        return auth()->user()->can('create', Subject::class);
+    }
 
     public function table(Table $table): Table
     {
