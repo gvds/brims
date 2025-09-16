@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\EventStatus;
 use App\Models\Project;
 use App\Models\SubjectEvent;
 use Filament\Tables\Columns\TextColumn;
@@ -21,7 +22,7 @@ class EventsDue extends TableWidget
                     ->whereRelation('members', 'user_id', auth()->id())
                     ->whereHas(
                         'subjects.subjectEvents',
-                        fn(Builder $query) => $query->whereIn('status', [0, 1, 2])
+                        fn(Builder $query) => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today())
                     )
@@ -44,7 +45,7 @@ class EventsDue extends TableWidget
                             fn(Builder $query) => $query->where('project_id', $record->id)
                                 ->where('user_id', auth()->id())
                         )
-                            ->whereIn('status', [0, 1, 2])
+                            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today())
                             ->count()

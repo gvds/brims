@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Widgets;
 
+use App\Enums\EventStatus;
 use App\Models\SubjectEvent;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -19,7 +20,7 @@ class EventsOverdue extends TableWidget
             ->description('Click on a row to access the subject details')
             ->query(
                 fn(): Builder => SubjectEvent::query()
-                    ->whereIn('status', [0, 1, 2])
+                    ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                     ->where('maxDate', '<', today())
                     ->whereRelation('subject', 'user_id', auth()->id())
             )
