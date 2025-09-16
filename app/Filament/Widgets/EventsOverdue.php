@@ -4,8 +4,8 @@ namespace App\Filament\Widgets;
 
 use App\Enums\EventStatus;
 use App\Models\Project;
-use App\Models\Subject;
 use App\Models\SubjectEvent;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -13,12 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class EventsOverdue extends TableWidget
 {
-    protected static ?string $heading = 'Overdue Events';
 
-    public static function canView(): bool
-    {
-        return auth()->user()->can('create', Subject::class);
-    }
+    use HasWidgetShield;
+
+    protected static ?string $heading = 'Overdue Events';
 
     public function table(Table $table): Table
     {

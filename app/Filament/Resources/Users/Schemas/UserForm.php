@@ -96,6 +96,8 @@ class UserForm
                                 modifyQueryUsing: fn($query) => auth()->user()->hasRole('super_admin') ? $query : $query->whereNot('name', 'super_admin')
                             )
                             ->getOptionLabelFromRecordUsing(fn(Role $role) => Str::title(Str::replace('_', ' ', $role->name)))
+                            ->preload()
+                            ->multiple()
                             ->required()
                             ->default(4),
                         Toggle::make('active')

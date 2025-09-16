@@ -3,20 +3,19 @@
 namespace App\Filament\Project\Widgets;
 
 use App\Enums\EventStatus;
-use App\Models\Subject;
 use App\Models\SubjectEvent;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class EventsDue extends TableWidget
+class ProjectEventsOverdue extends TableWidget
 {
-    public static function canView(): bool
-    {
-        return auth()->user()->can('create', Subject::class);
-    }
+    protected static ?string $heading = 'Overdue Events';
+
+    use HasWidgetShield;
 
     public function table(Table $table): Table
     {
@@ -25,8 +24,7 @@ class EventsDue extends TableWidget
             ->query(
                 fn(): Builder => SubjectEvent::query()
                     ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                    ->where('minDate', '<=', today())
-                    ->where('maxDate', '>=', today())
+                    ->where('maxDate', '<', today())
                     ->whereRelation('subject', 'user_id', auth()->id())
             )
             ->columns([
@@ -40,7 +38,7 @@ class EventsDue extends TableWidget
                 TextColumn::make('maxDate'),
             ])
             ->paginated(false)
-            ->emptyStateHeading('No Events Due')
+            ->emptyStateHeading('No Overdue Events')
             ->recordUrl(
                 fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', $record->subject_id)
             );

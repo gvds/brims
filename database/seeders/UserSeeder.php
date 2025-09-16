@@ -43,6 +43,7 @@ class UserSeeder extends Seeder
                 'role_id' => 1,
                 'model_type' => User::class,
                 'model_id' => $user->id,
+                'team_id' => $team->id,
             ]);
 
             $user2 = User::factory()
@@ -67,6 +68,7 @@ class UserSeeder extends Seeder
                 'role_id' => 1,
                 'model_type' => User::class,
                 'model_id' => $user2->id,
+                'team_id' => $team2->id,
             ]);
         }
 
@@ -81,6 +83,7 @@ class UserSeeder extends Seeder
                 'team_role' => 'Member',
             ]);
         $users->each(function ($user) {
+            setPermissionsTeamId($user->team_id);
             $user->assignRole('User');
         });
     }

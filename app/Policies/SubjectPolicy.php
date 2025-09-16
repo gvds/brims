@@ -28,7 +28,8 @@ class SubjectPolicy
      */
     public function create(User $user): bool
     {
-        return session()->has('currentProject') && session('currentProject')->members->contains('id', $user->id);
+        return $user->hasPermissionTo('Create:Subject');
+        // return session()->has('currentProject') && session('currentProject')->members->contains('id', $user->id);
     }
 
     /**
