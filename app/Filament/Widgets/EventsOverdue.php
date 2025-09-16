@@ -49,6 +49,7 @@ class EventsOverdue extends TableWidget
                             ->count();
                     }),
             ])
+            ->emptyStateHeading('No Overdue Events')
             ->paginated(false);
     }
 }

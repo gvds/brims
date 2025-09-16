@@ -10,9 +10,9 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class EventsOverdue extends TableWidget
+class EventsDue extends TableWidget
 {
-    protected static ?string $heading = 'Overdue Events';
+    protected static ?string $heading = 'Events Due';
 
     public function table(Table $table): Table
     {
@@ -21,7 +21,8 @@ class EventsOverdue extends TableWidget
             ->query(
                 fn(): Builder => SubjectEvent::query()
                     ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                    ->where('maxDate', '<', today())
+                    ->where('minDate', '<=', today())
+                    ->where('maxDate', '>=', today())
                     ->whereRelation('subject', 'user_id', auth()->id())
             )
             ->columns([
@@ -35,7 +36,7 @@ class EventsOverdue extends TableWidget
                 TextColumn::make('maxDate'),
             ])
             ->paginated(false)
-            ->emptyStateHeading('No Overdue Events')
+            ->emptyStateHeading('No Events Due')
             ->recordUrl(
                 fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', $record->subject_id)
             );

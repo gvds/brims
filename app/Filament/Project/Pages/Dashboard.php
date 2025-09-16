@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Project\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
 
@@ -11,8 +11,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             'default' => 1,
-            'xl' => 2,
-            '2xl' => 3
+            '2xl' => 2,
         ];
     }
 }

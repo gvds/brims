@@ -2,12 +2,12 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Project\Pages\Dashboard;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -30,7 +30,7 @@ class ProjectPanelProvider extends PanelProvider
 
         FilamentView::registerRenderHook(
             name: 'panels::head.end',
-            hook: fn (): string => Blade::render(string: "@vite('resources/js/app.js')"),
+            hook: fn(): string => Blade::render(string: "@vite('resources/js/app.js')"),
         );
     }
 
