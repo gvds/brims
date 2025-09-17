@@ -15,12 +15,11 @@ class SetUserTeam
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!empty(auth()->user())) {
-            // session value set on login
-            // dd(session('team_id'));
-            // setPermissionsTeamId(session('team_id'));
-            setPermissionsTeamId(auth()->user()->team_id);
+        $response = $next($request);
+        if (!empty($request->user())) {
+            setPermissionsTeamId(session('team_id'));
         }
-        return $next($request);
+        // return $next($request);
+        return $response;
     }
 }
