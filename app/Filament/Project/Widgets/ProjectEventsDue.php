@@ -37,7 +37,7 @@ class ProjectEventsDue extends TableWidget
                 TextColumn::make('maxDate'),
             ])
             ->paginated(false)
-            ->emptyStateHeading('No Events Due')
+            ->emptyStateHeading('')
             ->recordUrl(
                 fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', $record->subject_id)
             );

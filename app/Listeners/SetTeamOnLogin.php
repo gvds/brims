@@ -24,7 +24,5 @@ class SetTeamOnLogin
         $user = $event->user;
         // Assuming the User model has a 'team_id' attribute
         session(['team_id' => $user->team_id]);
-        // // Optionally, you can set the permissions team ID here if needed
-        setPermissionsTeamId($user->team_id);
     }
 }

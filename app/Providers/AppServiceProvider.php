@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Middleware\SetUserTeam;
+use App\Listeners\SetTeamOnLogin;
 use Filament\Forms\Components\TextInput;
 use App\Models\Permission;
 use App\Models\Role;
@@ -32,17 +33,9 @@ class AppServiceProvider extends ServiceProvider
             ->setPermissionClass(Permission::class)
             ->setRoleClass(Role::class);
 
-        // Livewire::addPersistentMiddleware([
-        //     SetUserTeam::class,
-        // ]);
-
-        /** @var Kernel $kernel */
-        // $kernel = app()->make(Kernel::class);
-
-        // $kernel->addToMiddlewarePriorityBefore(
-        //     SetUserTeam::class,
-        //     SubstituteBindings::class,
-        // );
+        Livewire::addPersistentMiddleware([
+            SetTeamOnLogin::class,
+        ]);
 
         Gate::before(
             fn($user, $ability): ?true => $user->hasRole('super_admin') ? true : null

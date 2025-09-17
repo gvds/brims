@@ -38,7 +38,7 @@ class ProjectEventsOverdue extends TableWidget
                 TextColumn::make('maxDate'),
             ])
             ->paginated(false)
-            ->emptyStateHeading('No Overdue Events')
+            ->emptyStateHeading('')
             ->recordUrl(
                 fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', $record->subject_id)
             );

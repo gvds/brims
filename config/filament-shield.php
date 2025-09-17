@@ -38,7 +38,6 @@ return [
 
     'tenant_model' => 'App\Models\Team',
 
-
     /*
     |--------------------------------------------------------------------------
     | User Model
@@ -121,16 +120,25 @@ return [
         'merge' => true,
         'generate' => true,
         'methods' => [
-            'viewAny', 'view', 'create', 'update', 'delete', 'restore',
-            'forceDelete', 'forceDeleteAny', 'restoreAny', 'replicate', 'reorder',
+            'viewAny',
+            'view',
+            'create',
+            'update',
+            'delete',
+            // 'restore',
+            // 'forceDelete',
+            // 'forceDeleteAny',
+            // 'restoreAny',
+            // 'replicate',
+            'reorder',
         ],
         'single_parameter_methods' => [
             'viewAny',
             'create',
             'deleteAny',
-            'forceDeleteAny',
-            'restoreAny',
-            'reorder',
+            // 'forceDeleteAny',
+            // 'restoreAny',
+            // 'reorder',
         ],
     ],
 
@@ -241,9 +249,9 @@ return [
     */
 
     'discovery' => [
-        'discover_all_resources' => false,
-        'discover_all_widgets' => false,
-        'discover_all_pages' => false,
+        'discover_all_resources' => true,
+        'discover_all_widgets' => true,
+        'discover_all_pages' => true,
     ],
 
     /*

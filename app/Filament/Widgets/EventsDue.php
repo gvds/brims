@@ -53,7 +53,7 @@ class EventsDue extends TableWidget
                             ->count()
                     ),
             ])
-            ->emptyStateHeading('No Events Due')
+            ->emptyStateHeading('')
             ->paginated(false);
     }
 }

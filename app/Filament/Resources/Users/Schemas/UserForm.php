@@ -8,7 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Spatie\Permission\Models\Role;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class UserForm
@@ -93,13 +93,18 @@ class UserForm
                             ->label('Role')
                             ->relationship(
                                 titleAttribute: 'name',
-                                modifyQueryUsing: fn($query) => auth()->user()->hasRole('super_admin') ? $query : $query->whereNot('name', 'super_admin')
+                                modifyQueryUsing: function ($query) {
+                                    $query->whereNull('roles.team_id');
+                                    if (!auth()->user()->hasRole('super_admin')) {
+                                        $query->whereNot('name', 'super_admin');
+                                    }
+                                }
                             )
-                            ->getOptionLabelFromRecordUsing(fn(Role $role) => Str::title(Str::replace('_', ' ', $role->name)))
+                            ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::title(Str::replace('_', ' ', $record->name)))
                             ->preload()
-                            ->multiple()
                             ->required()
-                            ->default(4),
+                            ->multiple(),
+                        //     ->default(4),
                         Toggle::make('active')
                             ->required()
                             ->default(true)

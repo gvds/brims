@@ -30,7 +30,8 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        setPermissionsTeamId(1);
+        return $user->hasPermissionTo('Create:Project');
     }
 
     /**
@@ -38,7 +39,7 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        return true;
+        return $project->members->contains($user) && $user->hasPermissionTo('Update:Project');
     }
 
     /**
@@ -46,7 +47,7 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        return true;
+        return $project->members->contains($user) && $user->hasPermissionTo('Delete:Project');
     }
 
     /**

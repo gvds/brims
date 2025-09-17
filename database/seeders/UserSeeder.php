@@ -83,7 +83,6 @@ class UserSeeder extends Seeder
                 'team_role' => 'Member',
             ]);
         $users->each(function ($user) {
-            setPermissionsTeamId($user->team_id);
             $user->assignRole('User');
         });
     }
