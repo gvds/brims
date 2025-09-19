@@ -6,6 +6,7 @@ use App\Filament\Pages\Dashboard;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Pages\Login;
+use App\Models\Project;
 use App\Models\Team;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -68,7 +69,8 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('')
             ->login(Login::class)
-            ->tenant(Team::class)
+            ->tenant(Project::class, ownershipRelationship: 'project')
+            // ->tenant(Project::class, ownershipRelationship: 'team')
             ->tenantMiddleware([
                 \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
             ], isPersistent: true)

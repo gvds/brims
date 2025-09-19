@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\SystemRoles;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\HasName;
@@ -59,6 +60,8 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
             'password' => 'hashed',
             'app_authentication_secret' => 'encrypted',
             'app_authentication_recovery_codes' => 'encrypted:array',
+            'system_role' => SystemRoles::class,
+            'active' => 'boolean',
         ];
     }
 
@@ -124,19 +127,22 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     //         ->implode('');
     // }
 
-    public function teams(): BelongsToMany
-    {
-        return $this->belongsToMany(Team::class);
-    }
+    // public function teams(): BelongsToMany
+    // {
+    //     // return $this->belongsToMany(Team::class);
+    //     return $this->belongsToMany(Project::class, 'project_member');
+    // }
 
     public function getTenants(Panel $panel): Collection
     {
-        return $this->teams;
+        return $this->projects;
+        // return $this->teams;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->teams()->whereKey($tenant)->exists();
+        return $this->projects()->whereKey($tenant)->exists();
+        // return $this->teams()->whereKey($tenant)->exists();
     }
 
     protected function fullname(): Attribute

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('username', 20)->unique();
             $table->string('firstname', 50);
             $table->string('lastname', 50);
+            $table->unsignedTinyInteger('system_role')->default(1);
             $table->foreignIdFor(Team::class)->nullable()->constrained();
             $table->string('team_role', 20)->nullable();
             $table->string('email')->unique();

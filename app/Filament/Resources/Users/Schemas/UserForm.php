@@ -94,7 +94,7 @@ class UserForm
                             ->relationship(
                                 titleAttribute: 'name',
                                 modifyQueryUsing: function ($query) {
-                                    $query->whereNull('roles.team_id');
+                                    $query->whereNull('roles.project_id');
                                     if (!auth()->user()->hasRole('super_admin')) {
                                         $query->whereNot('name', 'super_admin');
                                     }

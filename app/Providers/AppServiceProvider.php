@@ -33,9 +33,9 @@ class AppServiceProvider extends ServiceProvider
             ->setPermissionClass(Permission::class)
             ->setRoleClass(Role::class);
 
-        Livewire::addPersistentMiddleware([
-            SetTeamOnLogin::class,
-        ]);
+        // Livewire::addPersistentMiddleware([
+        //     SetTeamOnLogin::class,
+        // ]);
 
         Gate::before(
             fn($user, $ability): ?true => $user->hasRole('super_admin') ? true : null

@@ -39,12 +39,12 @@ class UserSeeder extends Seeder
                 'team_id' => $team->id,
                 'team_role' => 'Admin',
             ]);
-            DB::table('model_has_roles')->insert([
-                'role_id' => 1,
-                'model_type' => User::class,
-                'model_id' => $user->id,
-                'team_id' => $team->id,
-            ]);
+            // DB::table('model_has_roles')->insert([
+            //     'role_id' => 1,
+            //     'model_type' => User::class,
+            //     'model_id' => $user->id,
+            //     'project_id' => $team->id,
+            // ]);
 
             $user2 = User::factory()
                 ->create([
@@ -64,12 +64,12 @@ class UserSeeder extends Seeder
                 'team_id' => $team2->id,
                 'team_role' => 'Admin',
             ]);
-            DB::table('model_has_roles')->insert([
-                'role_id' => 1,
-                'model_type' => User::class,
-                'model_id' => $user2->id,
-                'team_id' => $team2->id,
-            ]);
+            // DB::table('model_has_roles')->insert([
+            //     'role_id' => 1,
+            //     'model_type' => User::class,
+            //     'model_id' => $user2->id,
+            //     'project_id' => $team2->id,
+            // ]);
         }
 
         $teams = Team::all();
@@ -82,8 +82,8 @@ class UserSeeder extends Seeder
             ->create([
                 'team_role' => 'Member',
             ]);
-        $users->each(function ($user) {
-            $user->assignRole('User');
-        });
+        // $users->each(function ($user) {
+        //     $user->assignRole('User');
+        // });
     }
 }
