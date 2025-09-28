@@ -1,0 +1,10 @@
+{
+    "chat.mcp.serverSampling": {
+        "ipacs_brims/.vscode/mcp.json: laravel-boost": {
+            "allowedModels": [
+                "copilot/gpt-4.1",
+                "copilot/claude-3.7-sonnet"
+            ]
+        }
+    }
+}
