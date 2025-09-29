@@ -19,6 +19,7 @@ class EventsDue extends TableWidget
     public function table(Table $table): Table
     {
         return $table
+            ->description('Click on a row to access the project')
             ->query(
                 fn(): Builder => Project::query()
                     ->whereRelation('members', 'user_id', auth()->id())
@@ -34,7 +35,7 @@ class EventsDue extends TableWidget
                     ->label('Project')
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
-                        return redirect()->route('filament.project.pages.dashboard');
+                        return redirect()->route('filament.project.pages.dashboard', parameters: ['tenant' => $record->id]);
                     })
                     ->color('primary')
                     ->weight('bold')

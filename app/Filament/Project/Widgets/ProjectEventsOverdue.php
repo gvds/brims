@@ -40,7 +40,7 @@ class ProjectEventsOverdue extends TableWidget
             ->paginated(false)
             ->emptyStateHeading('')
             ->recordUrl(
-                fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', $record->subject_id)
+                fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => $record->id, 'record' => $record->subject_id])
             );
     }
 }

@@ -21,6 +21,7 @@ class EventsOverdue extends TableWidget
     public function table(Table $table): Table
     {
         return $table
+            ->description('Click on a row to access the project')
             ->query(function (): Builder {
                 return Project::query()
                     ->whereRelation('members', 'user_id', auth()->id())
@@ -32,11 +33,9 @@ class EventsOverdue extends TableWidget
             ->columns([
                 TextColumn::make('title')
                     ->label('Project')
-                    // ->description(fn(Project $record) => 'Events Due: ' . $record->events_due_count)
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
-
-                        return redirect()->route('filament.project.pages.dashboard');
+                        return redirect()->route('filament.project.pages.dashboard', parameters: ['tenant' => $record->id]);
                     })
                     ->color('primary')
                     ->weight('bold')
