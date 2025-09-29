@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\SetUserTeam;
+use App\Enums\SystemRoles;
 use App\Listeners\SetTeamOnLogin;
 use Filament\Forms\Components\TextInput;
 use App\Models\Permission;
@@ -36,9 +36,8 @@ class AppServiceProvider extends ServiceProvider
         // Livewire::addPersistentMiddleware([
         //     SetTeamOnLogin::class,
         // ]);
-
         Gate::before(
-            fn($user, $ability): ?true => $user->hasRole('super_admin') ? true : null
+            fn($user): ?true => $user->system_role == SystemRoles::SuperAdmin ? true : null
         );
 
         TextInput::configureUsing(function (TextInput $component): void {

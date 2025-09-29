@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class UserForm
 {
@@ -89,21 +88,26 @@ class UserForm
                     'sm' => 2
                 ])
                     ->schema([
-                        Select::make('roles')
-                            ->label('Role')
-                            ->relationship(
-                                titleAttribute: 'name',
-                                modifyQueryUsing: function ($query) {
-                                    $query->whereNull('roles.project_id');
-                                    if (!auth()->user()->hasRole('super_admin')) {
-                                        $query->whereNot('name', 'super_admin');
-                                    }
-                                }
-                            )
-                            ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::title(Str::replace('_', ' ', $record->name)))
-                            ->preload()
+                        Select::make('system_role')
+                            ->label('System Role')
+                            ->options(SystemRoles::class)
                             ->required()
-                            ->multiple(),
+                            ->visible(fn() => auth()->user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
+                        // Select::make('roles')
+                        //     ->label('Role')
+                        //     ->relationship(
+                        //         titleAttribute: 'name',
+                        //         modifyQueryUsing: function ($query) {
+                        //             $query->whereNull('roles.project_id');
+                        //             if (!auth()->user()->hasRole('super_admin')) {
+                        //                 $query->whereNot('name', 'super_admin');
+                        //             }
+                        //         }
+                        //     )
+                        //     ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::title(Str::replace('_', ' ', $record->name)))
+                        //     ->preload()
+                        //     ->required()
+                        //     ->multiple(),
                         //     ->default(4),
                         Toggle::make('active')
                             ->required()

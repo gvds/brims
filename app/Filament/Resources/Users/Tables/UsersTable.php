@@ -25,6 +25,8 @@ class UsersTable
                     ->label('Name')
                     ->searchable(['firstname', 'lastname']),
                 TextColumn::make('team.name'),
+                TextColumn::make('team_role')
+                    ->label('Team Role'),
                 TextColumn::make('email')
                     ->searchable(),
                 TextColumn::make('telephone')
@@ -32,9 +34,9 @@ class UsersTable
                     ->searchable(),
                 TextColumn::make('homesite')
                     ->label('Home Site'),
-                TextColumn::make('roles.name')
-                    ->label('Role')
-                    ->formatStateUsing(fn(string $state): string => Str::title(Str::replace('_', ' ', $state))),
+                TextColumn::make('system_role')
+                    ->label('System Role')
+                    ->searchable(),
                 IconColumn::make('active')
                     ->boolean(),
                 TextColumn::make('created_at')

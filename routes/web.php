@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
 //     // phpinfo();
-//     $a = 12;
-//     $a++;
-//     $a = $a ** 2;
+//     $a = 10;
+//     $a += 3;
+//     $a **= 2;
 //     return $a;
 // });
 
