@@ -7,6 +7,8 @@ use App\Models\Scopes\SpecimenScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 #[ScopedBy([SpecimenScope::class])]
@@ -72,4 +74,39 @@ class Specimen extends Pivot
             'status' => SpecimenStatus::class,
         ];
     }
+
+    public function subject(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Subject::class,
+            SubjectEvent::class,
+            'id', // Foreign key on subject_events table
+            'id', // Foreign key on subjects table
+            'subject_event_id', // Local key on specimens table
+            'subject_id' // Local key on subject_events table
+        );
+    }
+
+
+    // public function project(): BelongsTo
+    // {
+    //     return $this->subject->belongsTo(Project::class);
+    // }
+
+    public function project(): HasOneThrough
+    {
+        return $this->subjectEvent->hasOneThrough(
+            Project::class,
+            Subject::class,
+            'id', // Foreign key on subject_events table
+            'id', // Foreign key on projects table
+            'subject_id', // Local key on specimens table (through subjectEvent)
+            'project_id' // Local key on subject_events table
+        );
+    }
+
+    // public function project(): BelongsTo
+    // {
+    //     return $this->subjectEvent->subject->belongsTo(Project::class);
+    // }
 }

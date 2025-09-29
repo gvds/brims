@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Event extends Model
 {
@@ -18,6 +19,18 @@ class Event extends Model
     public function arm(): BelongsTo
     {
         return $this->belongsTo(Arm::class);
+    }
+
+    public function project(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Project::class,
+            Arm::class,
+            'id', // Foreign key on arms table
+            'id', // Foreign key on projects table
+            'arm_id', // Local key on events table
+            'project_id' // Local key on arms table
+        );
     }
 
     public function subjects(): BelongsToMany

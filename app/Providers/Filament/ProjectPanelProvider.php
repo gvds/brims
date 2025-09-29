@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Project\Pages\Dashboard;
+use App\Models\Project;
 use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -49,6 +50,13 @@ class ProjectPanelProvider extends PanelProvider
             )
             ->id('project')
             ->path('project')
+            ->tenant(Project::class, ownershipRelationship: 'project')
+            ->tenantMiddleware([
+                \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+            ], isPersistent: true)
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+            ])
             ->colors([
                 'primary' => Color::Violet,
             ])

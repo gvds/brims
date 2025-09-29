@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Studydesign;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class StudydesignPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Studydesign');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Studydesign $studydesign): bool
+    public function view(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return false;
+        return $authUser->can('View:Studydesign');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Studydesign');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Studydesign $studydesign): bool
+    public function update(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return false;
+        return $authUser->can('Update:Studydesign');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Studydesign $studydesign): bool
+    public function delete(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return false;
+        return $authUser->can('Delete:Studydesign');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Studydesign $studydesign): bool
+    public function reorder(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return false;
+        return $authUser->can('Reorder:Studydesign');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Studydesign $studydesign): bool
-    {
-        return false;
-    }
 }

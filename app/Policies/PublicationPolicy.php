@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Publication;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PublicationPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Publication');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Publication $publication): bool
+    public function view(AuthUser $authUser, Publication $publication): bool
     {
-        return false;
+        return $authUser->can('View:Publication');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Publication');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Publication $publication): bool
+    public function update(AuthUser $authUser, Publication $publication): bool
     {
-        return false;
+        return $authUser->can('Update:Publication');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Publication $publication): bool
+    public function delete(AuthUser $authUser, Publication $publication): bool
     {
-        return false;
+        return $authUser->can('Delete:Publication');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Publication $publication): bool
+    public function reorder(AuthUser $authUser, Publication $publication): bool
     {
-        return false;
+        return $authUser->can('Reorder:Publication');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Publication $publication): bool
-    {
-        return false;
-    }
 }

@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\AssayDefinition;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AssayDefinitionPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:AssayDefinition');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, AssayDefinition $assayDefinition): bool
+    public function view(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return true;
+        return $authUser->can('View:AssayDefinition');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:AssayDefinition');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, AssayDefinition $assayDefinition): bool
+    public function update(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return false;
+        return $authUser->can('Update:AssayDefinition');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, AssayDefinition $assayDefinition): bool
+    public function delete(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return false;
+        return $authUser->can('Delete:AssayDefinition');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, AssayDefinition $assayDefinition): bool
+    public function reorder(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return false;
+        return $authUser->can('Reorder:AssayDefinition');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, AssayDefinition $assayDefinition): bool
-    {
-        return false;
-    }
 }

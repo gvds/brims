@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Assay;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AssayPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Assay');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Assay $assay): bool
+    public function view(AuthUser $authUser, Assay $assay): bool
     {
-        return true;
+        return $authUser->can('View:Assay');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Assay');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Assay $assay): bool
+    public function update(AuthUser $authUser, Assay $assay): bool
     {
-        return false;
+        return $authUser->can('Update:Assay');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Assay $assay): bool
+    public function delete(AuthUser $authUser, Assay $assay): bool
     {
-        return false;
+        return $authUser->can('Delete:Assay');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Assay $assay): bool
+    public function reorder(AuthUser $authUser, Assay $assay): bool
     {
-        return false;
+        return $authUser->can('Reorder:Assay');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Assay $assay): bool
-    {
-        return false;
-    }
 }

@@ -1,68 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Project;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProjectPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Project');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Project $project): bool
+    public function view(AuthUser $authUser, Project $project): bool
     {
-        return $project->members->contains($user);
-        // return $user->hasRole('super_admin') || $project->members->contains($user) || $project->leader->is($user);
+        return $authUser->can('View:Project');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        setPermissionsTeamId(1);
-        return $user->hasPermissionTo('Create:Project');
+        return $authUser->can('Create:Project');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Project $project): bool
+    public function update(AuthUser $authUser, Project $project): bool
     {
-        return $project->members->contains($user) && $user->hasPermissionTo('Update:Project');
+        return $authUser->can('Update:Project');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Project $project): bool
+    public function delete(AuthUser $authUser, Project $project): bool
     {
-        return $project->members->contains($user) && $user->hasPermissionTo('Delete:Project');
+        return $authUser->can('Delete:Project');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Project $project): bool
+    public function reorder(AuthUser $authUser, Project $project): bool
     {
-        return false;
+        return $authUser->can('Reorder:Project');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Project $project): bool
-    {
-        return false;
-    }
 }

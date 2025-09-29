@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Specimentype;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SpecimentypePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Specimentype');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Specimentype $specimentype): bool
+    public function view(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return false;
+        return $authUser->can('View:Specimentype');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Specimentype');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Specimentype $specimentype): bool
+    public function update(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return false;
+        return $authUser->can('Update:Specimentype');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Specimentype $specimentype): bool
+    public function delete(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return false;
+        return $authUser->can('Delete:Specimentype');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Specimentype $specimentype): bool
+    public function reorder(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return false;
+        return $authUser->can('Reorder:Specimentype');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Specimentype $specimentype): bool
-    {
-        return false;
-    }
 }

@@ -1,66 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Site;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SitePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Site');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Site $site): bool
+    public function view(AuthUser $authUser, Site $site): bool
     {
-        return true;
+        return $authUser->can('View:Site');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Site');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Site $site): bool
+    public function update(AuthUser $authUser, Site $site): bool
     {
-        return false;
+        return $authUser->can('Update:Site');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Site $site): bool
+    public function delete(AuthUser $authUser, Site $site): bool
     {
-        return false;
+        return $authUser->can('Delete:Site');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Site $site): bool
+    public function reorder(AuthUser $authUser, Site $site): bool
     {
-        return false;
+        return $authUser->can('Reorder:Site');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Site $site): bool
-    {
-        return false;
-    }
 }

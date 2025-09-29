@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Study;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class StudyPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Study');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Study $study): bool
+    public function view(AuthUser $authUser, Study $study): bool
     {
-        return false;
+        return $authUser->can('View:Study');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Study');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Study $study): bool
+    public function update(AuthUser $authUser, Study $study): bool
     {
-        return false;
+        return $authUser->can('Update:Study');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Study $study): bool
+    public function delete(AuthUser $authUser, Study $study): bool
     {
-        return false;
+        return $authUser->can('Delete:Study');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Study $study): bool
+    public function reorder(AuthUser $authUser, Study $study): bool
     {
-        return false;
+        return $authUser->can('Reorder:Study');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Study $study): bool
-    {
-        return false;
-    }
 }

@@ -1,66 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Specimen;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SpecimenPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('ViewAny:Specimen');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Specimen $specimen): bool
+    public function view(AuthUser $authUser, Specimen $specimen): bool
     {
-        return false;
+        return $authUser->can('View:Specimen');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Specimen');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Specimen $specimen): bool
+    public function update(AuthUser $authUser, Specimen $specimen): bool
     {
-        return false;
+        return $authUser->can('Update:Specimen');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Specimen $specimen): bool
+    public function delete(AuthUser $authUser, Specimen $specimen): bool
     {
-        return false;
+        return $authUser->can('Delete:Specimen');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Specimen $specimen): bool
+    public function reorder(AuthUser $authUser, Specimen $specimen): bool
     {
-        return false;
+        return $authUser->can('Reorder:Specimen');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Specimen $specimen): bool
-    {
-        return false;
-    }
 }

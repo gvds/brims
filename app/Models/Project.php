@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\ProjectScope;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 #[ScopedBy([ProjectScope::class])]
-class Project extends Model
+class Project extends Model implements HasName
 {
     /** @use HasFactory<\Database\Factories\ProjectFactory> */
     use HasFactory;
@@ -72,5 +73,10 @@ class Project extends Model
     public function publications(): HasMany
     {
         return $this->hasMany(Publication::class);
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->name ?? "Project #{$this->id}";
     }
 }

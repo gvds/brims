@@ -69,11 +69,10 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('')
             ->login(Login::class)
-            ->tenant(Project::class, ownershipRelationship: 'project')
-            // ->tenant(Project::class, ownershipRelationship: 'team')
-            ->tenantMiddleware([
-                \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
-            ], isPersistent: true)
+            // ->tenant(Project::class, ownershipRelationship: 'project')
+            // ->tenantMiddleware([
+            //     \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+            // ], isPersistent: true)
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ])

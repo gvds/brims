@@ -16,3 +16,8 @@ Route::get(
 // Route::get('/xdebug', function () {
 //     xdebug_info();
 // });
+
+Route::get('/ptest', function () {
+    $specimen = \App\Models\Specimen::find(640);
+    dd($specimen->project);
+});

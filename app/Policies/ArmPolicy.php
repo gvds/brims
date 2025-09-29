@@ -1,66 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Arm;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ArmPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('ViewAny:Arm');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Arm $arm): bool
+    public function view(AuthUser $authUser, Arm $arm): bool
     {
-        return false;
+        return $authUser->can('View:Arm');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->can('Create:Arm');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Arm $arm): bool
+    public function update(AuthUser $authUser, Arm $arm): bool
     {
-        return false;
+        return $authUser->can('Update:Arm');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Arm $arm): bool
+    public function delete(AuthUser $authUser, Arm $arm): bool
     {
-        return false;
+        return $authUser->can('Delete:Arm');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Arm $arm): bool
+    public function reorder(AuthUser $authUser, Arm $arm): bool
     {
-        return false;
+        return $authUser->can('Reorder:Arm');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Arm $arm): bool
-    {
-        return false;
-    }
 }
