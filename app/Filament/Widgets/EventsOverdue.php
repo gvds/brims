@@ -27,7 +27,8 @@ class EventsOverdue extends TableWidget
                     ->whereRelation('members', 'user_id', auth()->id())
                     ->whereHas('subjects.subjectEvents', function (Builder $query) {
                         $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                            ->where('maxDate', '<', today());
+                            ->where('maxDate', '<', today())
+                            ->whereRelation('subject', 'user_id', '=', auth()->id());
                     });
             })
             ->columns([

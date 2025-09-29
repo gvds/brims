@@ -28,6 +28,7 @@ class EventsDue extends TableWidget
                         fn(Builder $query) => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today())
+                            ->whereRelation('subject', 'user_id', '=', auth()->id())
                     )
             )
             ->columns([
