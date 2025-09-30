@@ -2,6 +2,7 @@
 
 namespace App\Models\Scopes;
 
+use App\Enums\SystemRoles;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -13,14 +14,14 @@ class SpecimenScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        return;
+        $builder;
         // session()->get('currentProject') ?
         //     $builder->whereHas(
         //         'specimenType',
         //         fn($query) =>
         //         $query->where('project_id', session()->get('currentProject')->id)
         //     ) : $builder;
-        // if (auth()->user()->hasRole('super_admin')) return;
+        // if (auth()->user()->system_role === SystemRoles::SuperAdmin) return;
         // $builder->where('site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id);
     }
 }
