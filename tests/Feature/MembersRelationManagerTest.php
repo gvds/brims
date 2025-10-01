@@ -21,7 +21,7 @@ it('can render the members relation manager', function () {
 
 it('displays existing team members', function () {
     $team = Team::factory()->create();
-    $adminUser = User::factory()->create([
+    $teamAdminUser = User::factory()->create([
         'team_id' => $team->id,
         'team_role' => TeamRoles::Admin,
         'active' => true,
@@ -32,13 +32,13 @@ it('displays existing team members', function () {
         'active' => true,
     ]);
 
-    $this->actingAs($adminUser);
+    $this->actingAs($teamAdminUser);
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
         'pageClass' => \App\Filament\Resources\Teams\Pages\EditTeam::class,
     ])
-        ->assertCanSeeTableRecords([$adminUser, $memberUser]);
+        ->assertCanSeeTableRecords([$teamAdminUser, $memberUser]);
 });
 
 it('shows user details in the table', function () {
@@ -129,9 +129,8 @@ it('can edit existing team members', function () {
         'team_role' => TeamRoles::Member,
     ]);
     $user = User::factory()->create();
-    $user->assignRole('super_admin');
 
-    $this->actingAs($user);
+    $this->actingAs($this->adminuser);
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
@@ -158,9 +157,8 @@ it('can delete team members', function () {
         'team_id' => $team->id,
     ]);
     $user = User::factory()->create();
-    $user->assignRole('super_admin');
 
-    $this->actingAs($user);
+    $this->actingAs($this->adminuser);
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SystemRoles;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -95,7 +96,7 @@ describe('UserResource Create Page', function (): void {
             'telephone' => '1234567890',
             'homesite' => 'Test Site',
             'active' => true,
-            'roles' => $userRole->id, // Explicitly set the user role
+            'system_role' => SystemRoles::User,
         ];
 
         livewire(CreateUser::class)
@@ -197,9 +198,6 @@ describe('UserResource Create Page', function (): void {
     it('redirects to index after creating user', function (): void {
         Mail::fake();
 
-        // Get the user role ID
-        $userRole = Role::where('name', 'user')->first();
-
         $userData = [
             'username' => 'testuser2',
             'firstname' => 'Test',
@@ -207,7 +205,7 @@ describe('UserResource Create Page', function (): void {
             'email' => 'test2@example.com',
             'homesite' => 'Test Site',
             'active' => true,
-            'roles' => $userRole->id,
+            'system_role' => SystemRoles::User,
         ];
 
         livewire(CreateUser::class)
@@ -247,17 +245,11 @@ describe('UserResource Edit Page', function (): void {
 
     it('can save user changes', function (): void {
         $user = User::factory()->create();
-        // Assign a default role if user doesn't have one
-        if (! $user->roles->count()) {
-            $userRole = Role::where('name', 'user')->first();
-            $user->assignRole($userRole);
-        }
 
         livewire(EditUser::class, ['record' => $user->id])
             ->fillForm([
                 'firstname' => 'Updated',
                 'lastname' => 'Name',
-                'roles' => $user->roles->first()->id, // Keep existing role
             ])
             ->call('save')
             ->assertHasNoFormErrors();
@@ -271,17 +263,10 @@ describe('UserResource Edit Page', function (): void {
         $user1 = User::factory()->create(['username' => 'user1']);
         $user2 = User::factory()->create(['username' => 'user2']);
 
-        // Assign roles if they don't have them
-        if (! $user1->roles->count()) {
-            $userRole = Role::where('name', 'user')->first();
-            $user1->assignRole($userRole);
-        }
-
         // Should allow keeping the same username
         livewire(EditUser::class, ['record' => $user1->id])
             ->fillForm([
                 'username' => 'user1',
-                'roles' => $user1->roles->first()->id,
             ])
             ->call('save')
             ->assertHasNoFormErrors();
@@ -290,24 +275,11 @@ describe('UserResource Edit Page', function (): void {
         livewire(EditUser::class, ['record' => $user1->id])
             ->fillForm([
                 'username' => 'user2',
-                'roles' => $user1->roles->first()->id,
             ])
             ->call('save')
             ->assertHasFormErrors(['username']);
     });
 
-    it('can update user roles', function (): void {
-        $role = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'web']);
-        $user = User::factory()->create();
-
-        livewire(EditUser::class, ['record' => $user->id])
-            ->fillForm([
-                'roles' => [$role->id],
-            ])
-            ->call('save');
-
-        expect($user->fresh()->hasRole('editor'))->toBeTrue();
-    });
 
     it('can delete user', function (): void {
         $user = User::factory()->create();
@@ -316,6 +288,83 @@ describe('UserResource Edit Page', function (): void {
             ->callAction(TestAction::make('delete'));
 
         expect(User::find($user->id))->toBeNull();
+    });
+
+    test('that the team field of a user who is the team leader is disabled', function (): void {
+        // Create a team and set a user as its leader
+        $team = Team::factory()->create(['name' => 'Team Alpha']);
+
+        $teamLeader = User::factory()->create([
+            'team_id' => $team->id,
+            'team_role' => 'Admin',
+            'username' => 'teamleader',
+            'firstname' => 'Team',
+            'lastname' => 'Leader',
+        ]);
+
+        // Set the user as the team leader
+        $team->update(['leader_id' => $teamLeader->id]);
+
+        // Test that the team field is disabled for the team leader
+        $component = livewire(EditUser::class, ['record' => $teamLeader->id]);
+
+        // Check that the team_id field is disabled
+        $component->assertFormFieldIsDisabled('team_id');
+
+        // Verify that attempting to change the team doesn't work
+        $anotherTeam = Team::factory()->create(['name' => 'Team Beta']);
+
+        $component
+            ->fillForm([
+                'team_id' => $anotherTeam->id,
+            ])
+            ->call('save');
+
+        // Verify the team assignment hasn't changed
+        expect($teamLeader->fresh()->team_id)->toBe($team->id);
+        expect($team->fresh()->leader_id)->toBe($teamLeader->id);
+    });
+
+    it('can change the team of a user who is not a team leader', function (): void {
+        // Create a team and set a user as its leader
+        $team = Team::factory()->create(['name' => 'Team Alpha']);
+
+        $teamLeader = User::factory()->create([
+            'team_id' => $team->id,
+            'team_role' => 'Admin',
+            'username' => 'teamleader',
+            'firstname' => 'Team',
+            'lastname' => 'Leader',
+        ]);
+
+        // Set the user as the team leader
+        $team->update(['leader_id' => $teamLeader->id]);
+
+        $nonteamLeader = User::factory()->create([
+            'team_id' => $team->id,
+            'team_role' => 'Admin',
+            'username' => 'nonteamleader',
+            'firstname' => 'Team',
+            'lastname' => 'Member',
+        ]);
+
+
+        $component = livewire(EditUser::class, ['record' => $nonteamLeader->id]);
+
+        // Check that the team_id field is enabled
+        $component->assertFormFieldIsEnabled('team_id');
+
+        // Verify that attempting to change the team works
+        $anotherTeam = Team::factory()->create(['name' => 'Team Beta']);
+
+        $component
+            ->fillForm([
+                'team_id' => $anotherTeam->id,
+            ])
+            ->call('save');
+
+        // Verify the team assignment has changed
+        expect($nonteamLeader->fresh()->team_id)->toBe($anotherTeam->id);
     });
 });
 

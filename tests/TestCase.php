@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enums\SystemRoles;
 use App\Models\Team;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use App\Models\User;
@@ -34,9 +35,11 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         /** @var \App\Models\User $user */
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'system_role' => SystemRoles::SuperAdmin,
+        ]);
 
-        $user->assignRole('super_admin');
+        // $user->assignRole('super_admin');
 
         /** @var \App\Models\Team $team */
         $team = Team::factory()->create([
