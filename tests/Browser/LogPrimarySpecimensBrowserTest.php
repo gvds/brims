@@ -86,8 +86,9 @@ beforeEach(function (): void {
 
 it('can add and remove aliquots via the browser', function (): void {
     $page = visit(route('filament.project.pages.log-primary-specimens', $parameters = ['tenant' => $this->project->id]))
+        ->inDarkMode()
         ->assertSee('Scan Project-Subject-Event Barcode')
-        ->type('pse_barcode', $this->pseBarcode)
+        ->fill('form.pse_barcode', $this->pseBarcode)
         ->press('Validate Barcode');
 
     $page->assertSee('Aliquot 1')
