@@ -68,6 +68,10 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->getId() === 'project' && session()->missing('currentProject')) {
+            return false;
+        }
+
         return true;
     }
 
