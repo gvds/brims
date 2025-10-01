@@ -52,10 +52,10 @@ class ProjectPanelProvider extends PanelProvider
             ->path('project')
             ->tenant(Project::class, ownershipRelationship: 'project')
             ->tenantMiddleware([
-                \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+                SyncShieldTenant::class,
             ], isPersistent: true)
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make(),
             ])
             ->colors([
                 'primary' => Color::Violet,
@@ -87,12 +87,6 @@ class ProjectPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
-            ])
-            ->tenantMiddleware([
-                SyncShieldTenant::class,
-            ], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ])

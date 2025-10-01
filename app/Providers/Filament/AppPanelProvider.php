@@ -58,23 +58,15 @@ class AppPanelProvider extends PanelProvider
                     }
                 }
             )
-            // ->renderHook(
-            //     PanelsRenderHook::TOPBAR_LOGO_AFTER,
-            //     function () {
-            //         $currentProject = session()->has('currentProject') ? session('currentProject') : null;
-
-            //         return view('filament.topbar', ['currentProject' => $currentProject]);
-            //     }
-            // )
             ->id('app')
             ->path('')
             ->login(Login::class)
             // ->tenant(Project::class, ownershipRelationship: 'project')
             // ->tenantMiddleware([
-            //     \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+            //     SyncShieldTenant::class,
             // ], isPersistent: true)
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                // FilamentShieldPlugin::make(),
             ])
             ->multiFactorAuthentication([
                 AppAuthentication::make()
@@ -105,9 +97,6 @@ class AppPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
