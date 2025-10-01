@@ -22,7 +22,7 @@ class ProjectsTable
                     ->action(function (Project $record) {
                         if (auth()->user()->can('view', $record)) {
                             session(['currentProject' => $record]);
-                            return redirect()->route('filament.project.pages.dashboard');
+                            return redirect()->route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
                         }
                     })
                     ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
