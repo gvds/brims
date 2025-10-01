@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 
 class UserForm
 {
@@ -73,15 +74,18 @@ class UserForm
                     ->schema([
                         Select::make('team_id')
                             ->label('Team')
+                            ->hint(fn(Model $record) => $record->is_team_leader ? 'Team leaders cannot change teams' : null)
                             ->relationship('team')
                             ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                             ->requiredWith('team_role')
                             ->searchable()
                             ->preload()
-                            ->default(null),
+                            ->default(null)
+                            ->disabled(fn(Model $record) => $record->is_team_leader), // Team leaders cannot change teams
                         Select::make('team_role')
                             ->options(TeamRoles::class)
-                            ->requiredWith('team_id'),
+                            ->requiredWith('team_id')
+                            ->disabled(fn(Model $record) => $record->is_team_leader), // Team leaders cannot change roles
                     ]),
                 Grid::make([
                     'default' => 1,
@@ -93,22 +97,6 @@ class UserForm
                             ->options(SystemRoles::class)
                             ->required()
                             ->visible(fn() => auth()->user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
-                        // Select::make('roles')
-                        //     ->label('Role')
-                        //     ->relationship(
-                        //         titleAttribute: 'name',
-                        //         modifyQueryUsing: function ($query) {
-                        //             $query->whereNull('roles.project_id');
-                        //             if (!auth()->user()->hasRole('super_admin')) {
-                        //                 $query->whereNot('name', 'super_admin');
-                        //             }
-                        //         }
-                        //     )
-                        //     ->getOptionLabelFromRecordUsing(fn(Model $record) => Str::title(Str::replace('_', ' ', $record->name)))
-                        //     ->preload()
-                        //     ->required()
-                        //     ->multiple(),
-                        //     ->default(4),
                         Toggle::make('active')
                             ->required()
                             ->default(true)

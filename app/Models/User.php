@@ -158,6 +158,13 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
         return $this->belongsTo(Team::class);
     }
 
+    public function isTeamLeader(): Attribute
+    {
+        return new Attribute(
+            get: fn(): bool => $this->team && $this->id === $this->team->leader_id,
+        );
+    }
+
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'project_member')->withPivot(['id', 'role'])->withTimestamps();
