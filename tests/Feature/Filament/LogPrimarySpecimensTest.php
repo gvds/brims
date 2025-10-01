@@ -35,7 +35,7 @@ beforeEach(function (): void {
     // Attach user to project with site
     $this->project->members()->attach($this->user->id, [
         'site_id' => $this->project->sites->first()->id,
-        'role' => 'admin',
+        'role' => 'Admin',
     ]);
 
     // Create labware for the project
