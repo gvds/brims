@@ -131,22 +131,14 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     //         ->implode('');
     // }
 
-    // public function teams(): BelongsToMany
-    // {
-    //     // return $this->belongsToMany(Team::class);
-    //     return $this->belongsToMany(Project::class, 'project_member');
-    // }
-
     public function getTenants(Panel $panel): Collection
     {
         return $this->projects;
-        // return $this->teams;
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
         return $this->projects()->whereKey($tenant)->exists();
-        // return $this->teams()->whereKey($tenant)->exists();
     }
 
     protected function fullname(): Attribute
