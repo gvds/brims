@@ -15,8 +15,8 @@
 /public/hot
 /public/js
 /public/css
-/public/fonts
-/public/storage
+/public/fonts/**/
+public/storage
 /storage/*.key
 /vendor
 /database/testing*

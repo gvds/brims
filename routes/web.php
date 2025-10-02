@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ScheduleController;
 use App\Livewire\SetNewAccountPassword;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,8 @@ Route::get(
 Route::get('/ptest', function () {
     $specimen = \App\Models\Specimen::find(640);
     dd($specimen->project);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/schedule/{week}', [ScheduleController::class, 'generate']);
 });
