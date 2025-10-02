@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use App\Models\ProjectMember;
 use App\Models\Site;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
@@ -11,6 +13,7 @@ use Filament\Actions\DetachBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +63,15 @@ class MembersRelationManager extends RelationManager
                 TextColumn::make('team.name')
                     ->label('Team'),
                 TextColumn::make('projectSite.name')
-                    ->label('Site')
+                    ->label('Site'),
+                SelectColumn::make('substitute')
+                    ->options(
+                        fn(User $record) => User::whereNot('id', $record->id)
+                            ->where('active', true)
+                            // ->whereRelation('project_member','site_id', $record->site_id)
+                            ->get()
+                            ->pluck(fn(User $user) => "{$user->firstname} {$user->lastname}", 'id')
+                    )
             ])
             ->headerActions([
                 AttachAction::make()
@@ -96,6 +107,8 @@ class MembersRelationManager extends RelationManager
                             ),
                     ]),
                 // ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id or $this->ownerRecord->leader_id === auth()->id()),
+                // Action::make('substitute')
+                //     ->action(fn(User $record) =>)
                 DetachAction::make()
                     ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(
