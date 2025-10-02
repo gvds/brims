@@ -70,6 +70,9 @@ class ProjectPanelProvider extends PanelProvider
                 NavigationItem::make('Main Panel')
                     ->url('/')
                     ->icon('heroicon-o-home'),
+                NavigationItem::make('Generate Schedule')
+                    ->url('/schedule/thisweek', $shouldOpenInNewTab = true)
+                    ->icon('heroicon-o-calendar'),
             ])
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')
             // ->widgets([
