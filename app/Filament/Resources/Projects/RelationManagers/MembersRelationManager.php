@@ -64,14 +64,54 @@ class MembersRelationManager extends RelationManager
                     ->label('Team'),
                 TextColumn::make('projectSite.name')
                     ->label('Site'),
-                SelectColumn::make('substitute')
-                    ->options(
-                        fn(User $record) => User::whereNot('id', $record->id)
-                            ->where('active', true)
-                            // ->whereRelation('project_member','site_id', $record->site_id)
-                            ->get()
-                            ->pluck(fn(User $user) => "{$user->firstname} {$user->lastname}", 'id')
-                    )
+                TextColumn::make('projectSubstitute.fullname')
+                    ->label('Substitute')
+                    ->action(
+                        Action::make('selectSubstitute')
+                            ->label('Select Substitute')
+                            ->icon('heroicon-o-user-plus')
+                            ->form([
+                                Select::make('substitute_id')
+                                    ->label('Select Substitute')
+                                    ->placeholder('Choose a substitute...')
+                                    ->options(function (User $record) {
+                                        // Get the current user's site from the pivot
+                                        $userSiteId = $record->pivot->site_id;
+
+                                        if (!$userSiteId) {
+                                            return [];
+                                        }
+
+                                        // Get all project members from the same site, excluding the current user
+                                        return $this->ownerRecord->members()
+                                            ->wherePivot('site_id', $userSiteId)
+                                            ->where('users.id', '!=', $record->id)
+                                            ->get()
+                                            ->pluck('fullname', 'id')
+                                            ->toArray();
+                                    })
+                                    ->searchable()
+                                    ->allowHtml(false)
+                                    ->preload()
+                                    ->nullable(),
+                            ])
+                            ->action(function (User $record, array $data): void {
+                                // Update the substitute_id in the project_member pivot table
+                                $this->ownerRecord->members()
+                                    ->updateExistingPivot($record->id, [
+                                        'substitute_id' => $data['substitute_id'],
+                                    ]);
+                            })
+                            ->fillForm(function (User $record): array {
+                                return [
+                                    'substitute_id' => $record->pivot->substitute_id,
+                                ];
+                            })
+                            ->modalHeading(fn(User $record): string => "Select Substitute for {$record->fullname}")
+                            ->modalDescription('Choose a substitute from members of the same project site.')
+                            ->modalSubmitActionLabel('Save Substitute')
+                            ->modalCancelActionLabel('Cancel')
+                    ),
             ])
             ->headerActions([
                 AttachAction::make()
@@ -108,7 +148,7 @@ class MembersRelationManager extends RelationManager
                     ]),
                 // ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id or $this->ownerRecord->leader_id === auth()->id()),
                 // Action::make('substitute')
-                //     ->action(fn(User $record) =>)
+                //     ->action(fn(User $record) => dd($record)),
                 DetachAction::make()
                     ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(

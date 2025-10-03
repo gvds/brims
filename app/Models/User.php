@@ -181,4 +181,16 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
             'site_id'
         );
     }
+
+    public function projectSubstitute(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            User::class,
+            ProjectMember::class,
+            'user_id',
+            'id',
+            'id',
+            'substitute_id'
+        );
+    }
 }

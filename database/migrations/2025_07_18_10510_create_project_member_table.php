@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Project::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Site::class)->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(User::class, 'substitute_id')->nullable()->constrained()->nullOnDelete();
             $table->string('role', 20);
             $table->timestamps();
         });
