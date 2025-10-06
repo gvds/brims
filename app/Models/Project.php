@@ -57,7 +57,7 @@ class Project extends Model implements HasName
 
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'project_member')->withPivot(['id', 'role', 'site_id'])->withTimestamps();
+        return $this->belongsToMany(User::class, 'project_member')->withPivot(['id', 'role', 'site_id', 'substitute_id'])->withTimestamps();
     }
 
     public function specimentypes(): HasMany

@@ -70,7 +70,7 @@ class MembersRelationManager extends RelationManager
                         Action::make('selectSubstitute')
                             ->label('Select Substitute')
                             ->icon('heroicon-o-user-plus')
-                            ->form([
+                            ->schema([
                                 Select::make('substitute_id')
                                     ->label('Select Substitute')
                                     ->placeholder('Choose a substitute...')
@@ -91,7 +91,6 @@ class MembersRelationManager extends RelationManager
                                             ->toArray();
                                     })
                                     ->searchable()
-                                    ->allowHtml(false)
                                     ->preload()
                                     ->nullable(),
                             ])
