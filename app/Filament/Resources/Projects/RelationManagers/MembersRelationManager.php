@@ -62,8 +62,15 @@ class MembersRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('team.name')
                     ->label('Team'),
-                TextColumn::make('projectSite.name')
-                    ->label('Site'),
+                TextColumn::make('site_name')
+                    ->label('Site')
+                    ->getStateUsing(function (User $record) {
+                        if (!$record->pivot->site_id) {
+                            return null;
+                        }
+
+                        return Site::find($record->pivot->site_id)?->name;
+                    }),
                 TextColumn::make('projectSubstitute.fullname')
                     ->label('Substitute')
                     ->action(
