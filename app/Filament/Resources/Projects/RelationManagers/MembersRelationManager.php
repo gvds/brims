@@ -141,13 +141,11 @@ class MembersRelationManager extends RelationManager
                             ->required()
                             ->disabled(fn(User $record): bool => $record->id === $this->ownerRecord->leader_id),
                         Select::make('site_id')
+                            ->label('Site')
                             ->options(
                                 Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
                             ),
                     ]),
-                // ->visible(fn(User $record) => $record->id !== $this->ownerRecord->leader_id or $this->ownerRecord->leader_id === auth()->id()),
-                // Action::make('substitute')
-                //     ->action(fn(User $record) => dd($record)),
                 DetachAction::make()
                     ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(
@@ -168,7 +166,7 @@ class MembersRelationManager extends RelationManager
                 //         if ($record->pivot->role == 'Admin' && $project_admin_count === 1) {
                 //             Notification::make()
                 //                 ->title('Project requires at least one admin')
-                //                 ->body('A project must have at least one member with administrative permissions. Please assign either a Leader or Admin role to another member before removing this one.')
+                //                 ->body('A project must have at least one member with administrative permissions. Please assign the Admin role to another member before removing this one.')
                 //                 ->duration(10000)
                 //                 ->danger()
                 //                 ->color('danger')
