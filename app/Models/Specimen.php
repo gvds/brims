@@ -86,23 +86,11 @@ class Specimen extends Pivot
         );
     }
 
-    // public function project(): HasOneThrough
-    // {
-    //     return $this->hasOneThrough(
-    //         Project::class,
-    //         Subject::class,
-    //         'id', // Foreign key on subjects table
-    //         'id', // Foreign key on projects table
-    //         'subject_event_id', // Local key on specimens table
-    //         'project_id' // Local key on subjects table
-    //     );
-    // }
-
     public function project(): HasOneThrough
     {
         return $this->hasOneThrough(
             Project::class,
-            SpecimenType::class,
+            Specimentype::class,
             'id', // Foreign key on specimentypes table
             'id', // Foreign key on projects table
             'specimenType_id', // Local key on specimens table
