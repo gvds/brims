@@ -3,10 +3,13 @@
 namespace App\Filament\Project\Resources\Specimens\Schemas;
 
 use App\Enums\SpecimenStatus;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Factories\Relationship;
 
 class SpecimenForm
 {
@@ -14,6 +17,10 @@ class SpecimenForm
     {
         return $schema
             ->components([
+                TextInput::make('barcode')
+                    ->required()
+                    ->unique(table: 'specimens', column: 'barcode', ignoreRecord: true)
+                    ->maxLength(20),
                 TextInput::make('subject_event_id')
                     ->required()
                     ->numeric(),
@@ -39,25 +46,25 @@ class SpecimenForm
                     ->required()
                     ->numeric()
                     ->default(0),
-                TextInput::make('loggedBy')
+                Select::make('loggedBy_id')
+                    ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
                     ->rules([
                         'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut])
-                    ])
-                    ->numeric(),
-                DateTimePicker::make('loggedAt'),
-                TextInput::make('loggedOutBy')
+                    ]),
+                DatePicker::make('loggedAt'),
+                Select::make('loggedOutBy')
+                    ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
                     ->rules([
                         'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut])
-                    ])
-                    ->numeric(),
-                TextInput::make('usedBy')
+                    ]),
+                Select::make('usedBy')
+                    ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
                     ->rules([
                         'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used])
-                    ])
-                    ->numeric(),
-                DateTimePicker::make('usedAt'),
-                TextInput::make('parentSpecimenID')
-                    ->numeric()
+                    ]),
+                DatePicker::make('usedAt'),
+                Select::make('parentSpecimen_id')
+                    ->relationship(name: 'parentSpecimen', titleAttribute: 'barcode')
                     ->default(null),
             ]);
     }

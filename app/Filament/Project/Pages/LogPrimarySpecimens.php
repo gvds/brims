@@ -217,7 +217,10 @@ class LogPrimarySpecimens extends Page implements HasForms
         $this->subjectEvent = SubjectEvent::find($subject_event_id);
         $this->subject = Subject::find($subject_id);
 
-        $loggedSpecimenTypes = Specimen::where('subject_event_id', $this->subjectEvent->id)->whereRelation('specimentype', 'primary', true)->get()->groupBy('specimenType_id');
+        $loggedSpecimenTypes = Specimen::where('subject_event_id', $this->subjectEvent->id)
+            ->whereRelation('specimentype', 'primary', true)
+            ->get()
+            ->groupBy('specimenType_id');
         $specimens = [];
 
         if ($loggedSpecimenTypes->count() !== 0) {
