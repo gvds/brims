@@ -20,6 +20,8 @@ class SubjectResource extends Resource
 {
     protected static ?string $model = Subject::class;
 
+    public static ?int $navigationSort = 2;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     #[\Override]

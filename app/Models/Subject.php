@@ -53,12 +53,7 @@ class Subject extends Model
     {
         return $this->belongsTo(Project::class);
     }
-    // public function events(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Event::class, 'subject_event', 'subject_id', 'event_id')
-    //         ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
-    //         ->withTimestamps();
-    // }
+
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'subject_event', 'subject_id', 'event_id')
@@ -69,14 +64,8 @@ class Subject extends Model
 
     public function subjectEvents(): HasMany
     {
-        return $this->hasMany(SubjectEvent::class)
-            // ->join('events', 'subject_event.event_id', '=', 'events.id')
-            // ->join('arms', 'events.arm_id', '=', 'arms.id')
-            // ->orderBy('arms.arm_num', 'asc')
-            // ->orderBy('event_order', 'asc')
-            ->orderBy('iteration', 'asc');
+        return $this->hasMany(SubjectEvent::class);
     }
-
 
     public function enrol(): void
     {
@@ -138,17 +127,6 @@ class Subject extends Model
         }
     }
 
-    // public function addEventIteration(Event $event, CarbonImmutable $eventDate): void
-    // {
-    //     $this->events()->attach($event, [
-    //         'iteration' => $event->iteration + 1,
-    //         'status' => 0,
-    //         'labelstatus' => 0,
-    //         'eventDate' => $eventDate,
-    //         'minDate' => $eventDate->subDays($event->offset_ante_window),
-    //         'maxDate' => $eventDate->addDays($event->offset_post_window),
-    //     ]);
-    // }
     protected function casts(): array
     {
         return [

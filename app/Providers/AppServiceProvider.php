@@ -3,15 +3,11 @@
 namespace App\Providers;
 
 use App\Enums\SystemRoles;
-use App\Listeners\SetTeamOnLogin;
 use Filament\Forms\Components\TextInput;
 use App\Models\Permission;
 use App\Models\Role;
-use Illuminate\Foundation\Http\Kernel;
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,13 +32,11 @@ class AppServiceProvider extends ServiceProvider
             ->setPermissionClass(Permission::class)
             ->setRoleClass(Role::class);
 
-        // Livewire::addPersistentMiddleware([
-        //     SetTeamOnLogin::class,
-        // ]);
         Gate::before(
             fn($user): ?true => $user->system_role == SystemRoles::SuperAdmin ? true : null
         );
 
+        // Remove leading and trailing whitespace from all TextInput components
         TextInput::configureUsing(function (TextInput $component): void {
             $component->trim();
         });

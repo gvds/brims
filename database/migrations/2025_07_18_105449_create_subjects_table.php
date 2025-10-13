@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table): void {
             $table->id();
             $table->string('subjectID', 10)->unique();
-            $table->foreignIdFor(Project::class)->constrained();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Site::class)->constrained();
             $table->foreignIdFor(User::class)->constrained();
             $table->string('firstname', 20)->nullable();

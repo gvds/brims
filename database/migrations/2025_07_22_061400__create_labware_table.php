@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('labware', function (Blueprint $table): void {
             $table->id();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->string('name', 30);
             $table->string('barcodeFormat', 50);
-            $table->foreignIdFor(Project::class)->nullable();
             $table->timestamps();
         });
 

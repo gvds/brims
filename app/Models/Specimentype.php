@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Specimentype extends Model
 {
@@ -18,10 +19,10 @@ class Specimentype extends Model
         return $this->belongsTo(Project::class);
     }
 
-    // public function event_samples()
-    // {
-    //     return $this->hasMany(event_sample::class);
-    // }
+    public function specimens(): HasMany
+    {
+        return $this->hasMany(Specimen::class);
+    }
 
     public function labware(): BelongsTo
     {

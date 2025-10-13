@@ -50,12 +50,14 @@ class ProjectPanelProvider extends PanelProvider
             )
             ->id('project')
             ->path('project')
-            ->tenant(Project::class, ownershipRelationship: 'project')
+            ->tenant(Project::class)
             ->tenantMiddleware([
                 SyncShieldTenant::class,
             ], isPersistent: true)
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Authorisation')
+                    ->registerNavigation(1),
             ])
             ->colors([
                 'primary' => Color::Violet,
@@ -69,10 +71,12 @@ class ProjectPanelProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make('Main Panel')
                     ->url('/')
-                    ->icon('heroicon-o-home'),
+                    ->icon('heroicon-o-home')
+                    ->sort(0),
                 NavigationItem::make('Generate Schedule')
                     ->url('/schedule/thisweek', $shouldOpenInNewTab = true)
-                    ->icon('heroicon-o-calendar'),
+                    ->icon('heroicon-o-calendar')
+                    ->sort(3),
             ])
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')
             // ->widgets([

@@ -14,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('sites', function (Blueprint $table): void {
             $table->id();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->string('name', 20);
             $table->string('description');
-            $table->foreignIdFor(Project::class)->constrained();
             $table->timestamps();
         });
     }

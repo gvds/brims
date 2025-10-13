@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->foreignIdFor(Study::class)->constrained();
-            $table->foreignIdFor(AssayDefinition::class, 'assaydefinition_id')->constrained();
             $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(AssayDefinition::class, 'assaydefinition_id')->constrained();
             $table->string('technologyPlatform', 50);
             $table->json('additional_fields')->nullable();
             $table->string('assayfile', 150)->nullable();

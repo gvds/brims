@@ -16,8 +16,8 @@ return new class extends Migration
     {
         Schema::create('project_member', function (Blueprint $table): void {
             $table->id();
-            $table->foreignIdFor(Project::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Site::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(User::class, 'substitute_id')->nullable()->constrained()->nullOnDelete();
             $table->string('role', 20);

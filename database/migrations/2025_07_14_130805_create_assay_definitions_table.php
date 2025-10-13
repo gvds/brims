@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('assay_definitions', function (Blueprint $table): void {
             $table->id();
+            $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained();
             $table->string('name', 50);
             $table->text('description');
             $table->boolean('active')->default(true);
-            $table->foreignIdFor(User::class)->constrained();
             $table->string('measurementType', 50);
             $table->string('measurementTypeTermAccessionNumber', 50)->nullable();
             $table->string('measurementTypeTermSourceReference', 50)->nullable();

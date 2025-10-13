@@ -120,17 +120,6 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
         $this->save();
     }
 
-    /**
-     * Get the user's initials
-     */
-    // public function initials(): string
-    // {
-    //     return Str::of($this->name)
-    //         ->explode(' ')
-    //         ->map(fn(string $name) => Str::of($name)->substr(0, 1))
-    //         ->implode('');
-    // }
-
     public function getTenants(Panel $panel): Collection
     {
         return $this->projects;

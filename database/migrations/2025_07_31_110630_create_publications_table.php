@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('publications', function (Blueprint $table): void {
             $table->id();
-            $table->foreignIdFor(Project::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->string('pubmed_id')->nullable()->unique();
             $table->string('doi')->nullable()->unique();
             $table->text('title');

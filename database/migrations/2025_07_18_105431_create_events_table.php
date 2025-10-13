@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table): void {
             $table->id();
             $table->string('name', 50);
-            $table->foreignIdFor(Arm::class)->constrained();
+            $table->foreignIdFor(Arm::class)->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('redcap_event_id')->nullable();
             $table->boolean('autolog')->default(0);
             $table->unsignedMediumInteger('offset')->unsigned()->nullable();

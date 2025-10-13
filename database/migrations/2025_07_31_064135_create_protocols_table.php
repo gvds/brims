@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('protocols', function (Blueprint $table): void {
             $table->id();
             $table->string('name')->unique();
-            $table->foreignIdFor(Team::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained();
             $table->string('type');
             $table->string('type_term_accession_number')->nullable();
             $table->string('type_term_reference')->nullable();

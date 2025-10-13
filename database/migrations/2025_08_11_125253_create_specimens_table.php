@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use App\Models\Site;
 use App\Models\Specimen;
 use App\Models\Specimentype;
@@ -19,10 +20,12 @@ return new class extends Migration
         Schema::create('specimens', function (Blueprint $table) {
             $table->id();
             $table->string('barcode', 20);
-            $table->foreignIdFor(SubjectEvent::class, 'subject_event_id')->constrained()->onDelete('cascade');
+            $table->foreignIdFor(SubjectEvent::class, 'subject_event_id')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Specimentype::class, 'specimenType_id')->constrained();
             $table->foreignIdFor(Site::class, 'site_id')->constrained();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('status')->default(0)->constrained();
+            $table->foreignIdFor(Specimen::class, 'parentSpecimen_id')->nullable()->constrained('specimens');
             // $table->foreignIdFor(Location::class)->constrained();
             $table->unsignedTinyInteger('aliquot');
             $table->double('volume', 8, 2)->nullable();
@@ -33,7 +36,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'loggedOutBy_id')->nullable()->constrained();
             $table->foreignIdFor(User::class, 'usedBy_id')->nullable()->constrained();
             $table->dateTime('usedAt')->nullable()->nullable();
-            $table->foreignIdFor(Specimen::class, 'parentSpecimen_id')->nullable()->constrained('specimens');
             $table->timestamps();
         });
     }

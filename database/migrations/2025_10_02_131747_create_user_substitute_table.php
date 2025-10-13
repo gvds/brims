@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('user_substitute', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained('users')->onDelete('cascade');
-            $table->foreignIdFor(User::class, 'substitute_user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignIdFor(Project::class)->constrained('projects')->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained('users')->cascadeOnDelete();
+            $table->foreignIdFor(User::class, 'substitute_user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignIdFor(Project::class)->constrained('projects')->cascadeOnDelete();
             $table->timestamps();
         });
     }

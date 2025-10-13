@@ -65,6 +65,11 @@ class Project extends Model implements HasName
         return $this->hasMany(Specimentype::class);
     }
 
+    public function specimens(): HasMany
+    {
+        return $this->hasMany(Specimen::class);
+    }
+
     public function labware(): HasMany
     {
         return $this->hasMany(Labware::class);
@@ -77,6 +82,7 @@ class Project extends Model implements HasName
 
     public function getFilamentName(): string
     {
-        return $this->name ?? "Project #{$this->id}";
+        // return $this->name ?? "Project {$this->identifier}";
+        return '';
     }
 }

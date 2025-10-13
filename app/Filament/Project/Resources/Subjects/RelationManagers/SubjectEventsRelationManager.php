@@ -72,9 +72,15 @@ class SubjectEventsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            // ->recordTitleAttribute('event.name')
-            // ->modifyQueryUsing(fn(Builder $query) => $query->join('arms', 'events.arm_id', '=', 'arms.id'))
-            // ->modifyQueryUsing(fn(Builder $query) => dd($query->get()))
+            ->modifyQueryUsing(
+                fn(Builder $query) => $query
+                    ->join('events', 'subject_event.event_id', '=', 'events.id')
+                    ->join('arms', 'events.arm_id', '=', 'arms.id')
+                    ->select('subject_event.*')
+                    ->orderBy('arms.arm_num', 'asc')
+                    ->orderBy('events.event_order', 'asc')
+                    ->orderBy('subject_event.iteration', 'asc')
+            )
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),
@@ -82,7 +88,8 @@ class SubjectEventsRelationManager extends RelationManager
                 TextColumn::make('event.name'),
                 TextColumn::make('status'),
                 TextColumn::make('eventDate')
-                    ->date('Y-m-d'),
+                    ->date('Y-m-d')
+                    ->extraAttributes(fn(SubjectEvent $record) => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
                 TextColumn::make('minDate')
                     ->date('Y-m-d'),
                 TextColumn::make('maxDate')
@@ -108,12 +115,6 @@ class SubjectEventsRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultKeySort(false)
-            // ->defaultSort(
-            //     fn(Builder $query) => $query
-            //     ->orderBy('arm_num', 'asc')
-            // ->orderBy('event.event_order', 'asc')
-            // ->orderBy('iteration', 'asc')
-            // )
             ->filters([
                 //
             ])
@@ -135,9 +136,7 @@ class SubjectEventsRelationManager extends RelationManager
                     )
                     ->action(function ($livewire, $record, $data): void {
                         $eventDate = new CarbonImmutable($data['eventDate']);
-                        // $subject = $livewire->getOwnerRecord();
                         $record->addEventIteration($eventDate);
-                        // $subject->addEventIteration($record, $eventDate);
                     })
                     ->visible(
                         fn($record, $livewire): bool => $record->event->repeatable &&

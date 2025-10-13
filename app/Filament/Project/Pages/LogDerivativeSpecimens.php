@@ -92,6 +92,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                     ->label('Parent Specimen Barcode')
                     ->helperText('Scan the barcode')
                     ->statePath('parent_barcode')
+                    ->scopedExists(Specimen::class, 'barcode')
                     ->autofocus()
                     ->extraAttributes([
                         'class' => 'w-full md:w-80',
@@ -184,7 +185,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
         $this->validate([
             'parent_barcode' => [
                 'required',
-                // new \App\Rules\ValidPSE,
+                // 'exists:specimens,barcode',
             ],
         ]);
 

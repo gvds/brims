@@ -18,6 +18,8 @@ class SpecimenResource extends Resource
 {
     protected static ?string $model = Specimen::class;
 
+    public static ?int $navigationSort = 3;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'barcode';

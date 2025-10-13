@@ -9,6 +9,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 #[ScopedBy([SubjectEventScope::class])]
@@ -28,6 +29,11 @@ class SubjectEvent extends Pivot
         return $this->belongsTo(Event::class)->with('arm');
     }
 
+    public function arm(): HasOneThrough
+    {
+        return $this->hasOneThrough(Arm::class, Event::class, 'id', 'id', 'event_id', 'arm_id');
+    }
+
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
@@ -40,7 +46,7 @@ class SubjectEvent extends Pivot
 
     public function addEventIteration(CarbonImmutable $eventDate): void
     {
-        $subjectEvent = new SubjectEvent([
+        SubjectEvent::create([
             'event_id' => $this->event_id,
             'subject_id' => $this->subject_id,
             'iteration' => $this->iteration + 1,
@@ -50,7 +56,6 @@ class SubjectEvent extends Pivot
             'minDate' => $eventDate->subDays($this->event->offset_ante_window),
             'maxDate' => $eventDate->addDays($this->event->offset_post_window),
         ]);
-        $subjectEvent->save();
     }
 
     public function log($data): void
