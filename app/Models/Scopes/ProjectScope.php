@@ -13,7 +13,7 @@ class ProjectScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->user()->hasRole('super_admin')) return;
+        if (!auth()->user() || auth()->user()->hasRole('super_admin')) return;
 
         session()->get('currentProject') ? $builder->where('projects.id', session()->get('currentProject')?->id) : $builder;
     }

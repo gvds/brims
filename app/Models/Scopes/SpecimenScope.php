@@ -20,7 +20,7 @@ class SpecimenScope implements Scope
                 fn($query) =>
                 $query->where('project_id', session()->get('currentProject')->id)
             ) : $builder;
-        if (auth()->user()->system_role === SystemRoles::SuperAdmin) return;
+        if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
         $builder->where('site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id);
     }
 }

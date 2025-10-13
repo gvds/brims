@@ -19,7 +19,7 @@ class SpecimenSeeder extends Seeder
     {
         SubjectEvent::with('subject.project')->where('status', 3)->each(function (SubjectEvent $subjectEvent): void {
             $project = $subjectEvent->subject->project->load('members');
-            Specimentype::where('project_id', $project->id)->where('primary', true)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
+            Specimentype::withoutGlobalScopes()->where('project_id', $project->id)->where('primary', true)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
                 Specimen::factory()
                     ->count($specimenType->aliquots)
                     ->for($subjectEvent)
@@ -31,6 +31,7 @@ class SpecimenSeeder extends Seeder
                     })
                     ->create([
                         'site_id' => $subjectEvent->subject->site_id,
+                        'project_id' => $project->id,
                         'volume' => $specimenType->defaultVolume,
                         'volumeUnit' => $specimenType->volumeUnit,
                         'loggedBy_id' => fake()->randomElement($project->members->pluck('id')),
@@ -41,7 +42,7 @@ class SpecimenSeeder extends Seeder
                     ]);
             });
 
-            Specimentype::with('parentSpecimenType')->where('project_id', $project->id)->where('primary', false)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
+            Specimentype::withoutGlobalScopes()->with('parentSpecimenType')->where('project_id', $project->id)->where('primary', false)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
                 $parentSpecimenType = $specimenType->parentSpecimenType;
 
                 if ($parentSpecimenType->pooled) {
@@ -61,6 +62,7 @@ class SpecimenSeeder extends Seeder
                         })
                         ->create([
                             'site_id' => $subjectEvent->subject->site_id,
+                            'project_id' => $project->id,
                             'volume' => $specimenType->defaultVolume,
                             'volumeUnit' => $specimenType->volumeUnit,
                             'loggedBy_id' => fake()->randomElement($project->members->pluck('id')),
