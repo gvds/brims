@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AssayDefinitionScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[ScopedBy([AssayDefinitionScope::class])]
 class AssayDefinition extends Model
 {
     /** @use HasFactory<\Database\Factories\AssayDefinitionFactory> */

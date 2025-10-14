@@ -2,6 +2,7 @@
 
 namespace App\Models\Scopes;
 
+use App\Enums\SystemRoles;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -13,9 +14,8 @@ class SubjectScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        return;
         session()->get('currentProject') ? $builder->where('project_id', session()->get('currentProject')->id) : $builder;
-        // if (!auth()->user() || auth()->user()->hasRole('super_admin')) return;
-        // $builder->where('site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id);
+        if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
+        $builder->where('site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id);
     }
 }

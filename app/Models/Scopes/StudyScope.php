@@ -2,6 +2,7 @@
 
 namespace App\Models\Scopes;
 
+use App\Enums\SystemRoles;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -13,7 +14,7 @@ class StudyScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        // if (auth()->user()->hasRole('super_admin')) return;
+        if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
 
         $builder->where('project_id', session()->get('currentProject')?->id);
     }
