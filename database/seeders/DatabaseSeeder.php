@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         Artisan::call('shield:generate --all --panel=project --option=permissions --no-interaction');
         $this->call([
-            RoleSeeder::class,
             UserSeeder::class,
             AssayDefinitionSeeder::class,
             ProjectSeeder::class,
+            RoleSeeder::class,
             SpecimentypeSeeder::class,
             EventSeeder::class,
             SubjectSeeder::class,

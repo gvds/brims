@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\SystemRoles;
 use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
                     'telephone' => '27 (21) 938-9949',
                     'homesite' => 'SU_ZA',
                     'password' => Hash::make('password'),
+                    'system_role' => SystemRoles::SuperAdmin,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
