@@ -11,14 +11,16 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class AssayDefinitionPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
+        return true;
         return $authUser->can('ViewAny:AssayDefinition');
     }
 
     public function view(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
+        return true;
         return $authUser->can('View:AssayDefinition');
     }
 
@@ -41,5 +43,4 @@ class AssayDefinitionPolicy
     {
         return $authUser->can('Reorder:AssayDefinition');
     }
-
 }

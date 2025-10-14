@@ -11,14 +11,16 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class TeamPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
+        return true;
         return $authUser->can('ViewAny:Team');
     }
 
     public function view(AuthUser $authUser, Team $team): bool
     {
+        return true;
         return $authUser->can('View:Team');
     }
 
@@ -41,5 +43,4 @@ class TeamPolicy
     {
         return $authUser->can('Reorder:Team');
     }
-
 }

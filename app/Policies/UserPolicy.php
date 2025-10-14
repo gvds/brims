@@ -8,14 +8,16 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UserPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
+        return true;
         return $authUser->can('ViewAny:User');
     }
 
     public function view(AuthUser $authUser): bool
     {
+        return true;
         return $authUser->can('View:User');
     }
 
@@ -38,5 +40,4 @@ class UserPolicy
     {
         return $authUser->can('Reorder:User');
     }
-
 }
