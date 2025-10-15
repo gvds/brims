@@ -423,14 +423,14 @@ describe('LogDerivativeSpecimens Specimen Submission', function (): void {
         $specimen1 = Specimen::where('barcode', 'DV1111')->first();
         expect($specimen1)->not->toBeNull();
         expect($specimen1->volume)->toBe(1.5);
-        expect($specimen1->aliquot)->toBe(0);
+        expect($specimen1->aliquot)->toBe(1);
         expect($specimen1->parentSpecimen_id)->not->toBeNull();
 
         // Verify second specimen
         $specimen2 = Specimen::where('barcode', 'DV2222')->first();
         expect($specimen2)->not->toBeNull();
         expect($specimen2->volume)->toBe(1.8);
-        expect($specimen2->aliquot)->toBe(1);
+        expect($specimen2->aliquot)->toBe(2);
         expect($specimen2->parentSpecimen_id)->not->toBeNull();
     });
 

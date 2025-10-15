@@ -370,7 +370,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
             'volume' => 4.5,
             'subject_event_id' => $this->subjectEvent->id,
             'specimenType_id' => $specimenTypeId,
-            'aliquot' => 0,
+            'aliquot' => 1,
             'status' => SpecimenStatus::Logged,
             'loggedBy_id' => $this->user->id,
             'site_id' => $this->project->sites->first()->id,
@@ -379,7 +379,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
         assertDatabaseHas(Specimen::class, [
             'barcode' => 'SP5678',
             'volume' => 3.2,
-            'aliquot' => 1,
+            'aliquot' => 2,
         ]);
     });
 

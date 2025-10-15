@@ -270,7 +270,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             'barcode' => $specimenData['barcode'],
                             'volume' => $specimenData['volume'],
                             'volumeUnit' => $specimenType->volumeUnit,
-                            'aliquot' => $aliquot,
+                            'aliquot' => $aliquot + 1,
                             'specimenType_id' => $specimenType_id,
                             'subject_event_id' => $this->subjectEvent->id,
                             'site_id' => $this->userSiteId,
