@@ -31,15 +31,20 @@ class ValidPSE implements ValidationRule
 
         $subject = Subject::find($subject_id);
 
-        $subjectEvent = SubjectEvent::find($subject_event_id);
-
         if (!$subject) {
             $fail('The Subject ID in the barcode does not match any Subject record in the current project.');
             return;
         }
 
+        $subjectEvent = SubjectEvent::find($subject_event_id);
+
+        if (!$subjectEvent) {
+            $fail('The Event ID in the barcode does not match any Event record in the current project.');
+            return;
+        }
+
         if ($subjectEvent->subject_id != $subject_id) {
-            $fail('The Subject ID in the barcode does not match the Subject Event record.');
+            $fail('The Event and Subject IDs in the barcode do not belong to each other.');
             return;
         }
     }

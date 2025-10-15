@@ -94,7 +94,7 @@ class LogPrimarySpecimens extends Page implements HasForms
                 TextInput::make('pse_barcode')
                     ->label('Project Subject Event Barcode')
                     ->helperText('Scan the barcode')
-                    // ->rules([new \App\Rules\ValidPSE()])
+                    ->rules([new \App\Rules\ValidPSE()])
                     ->statePath('pse_barcode')
                     ->autofocus()
                     // ->live(onBlur: true)

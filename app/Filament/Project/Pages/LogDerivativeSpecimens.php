@@ -22,6 +22,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class LogDerivativeSpecimens extends Page implements HasForms
 {
@@ -184,6 +185,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
         $this->validate([
             'parent_barcode' => [
                 'required',
+                Rule::exists('specimens', 'barcode')->where('project_id', session('currentProject')->id),
                 // 'exists:specimens,barcode',
             ],
         ]);
