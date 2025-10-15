@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\DB;
 
 class LogDerivativeSpecimens extends Page implements HasForms
 {
-
     use InteractsWithForms;
 
     protected static ?int $navigationSort = 102;
@@ -152,7 +151,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                                     ->modalSubmitAction(fn(Action $action): \Filament\Actions\Action => $action->label('Delete')),
                             ])
                             ->grow(false),
-                        Fieldset::make($type->id)
+                        Fieldset::make($type->name)
                             ->schema($aliquotFields)
                             ->columns([
                                 'default' => 1,
@@ -271,10 +270,11 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             'barcode' => $specimenData['barcode'],
                             'volume' => $specimenData['volume'],
                             'volumeUnit' => $specimenType->volumeUnit,
-                            'aliquot' => $aliquot + 1,
+                            'aliquot' => $aliquot,
                             'specimenType_id' => $specimenType_id,
                             'subject_event_id' => $this->subjectEvent->id,
                             'site_id' => $this->userSiteId,
+                            'project_id' => session('currentProject')->id,
                             'status' => SpecimenStatus::Logged,
                             'loggedBy_id' => $this->user->id,
                             'loggedAt' => now(),

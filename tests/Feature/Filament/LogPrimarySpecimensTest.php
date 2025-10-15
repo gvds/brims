@@ -178,6 +178,7 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
             ->for($this->primarySpecimenTypes->first(), 'specimenType')
             ->for($this->project->sites->first(), 'site')
             ->create([
+                'project_id' => $this->project->id,
                 'barcode' => 'EX1234',
                 'volume' => 3.5,
                 'aliquot' => 0,
@@ -313,6 +314,7 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
             ->for($this->primarySpecimenTypes->first(), 'specimenType')
             ->for($this->project->sites->first(), 'site')
             ->create([
+                'project_id' => $this->project->id,
                 'barcode' => 'LG1234',
                 'aliquot' => 0, // Use 0-based index for array access
                 'status' => SpecimenStatus::Logged,
@@ -363,6 +365,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
             ->assertNotified('Specimens Logged');
 
         assertDatabaseHas(Specimen::class, [
+            'project_id' => $this->project->id,
             'barcode' => 'SP1234',
             'volume' => 4.5,
             'subject_event_id' => $this->subjectEvent->id,
@@ -405,6 +408,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
             ->for($this->project->sites->first(), 'site')
             ->for($this->user, 'loggedBy')
             ->create([
+                'project_id' => $this->project->id,
                 'barcode' => 'EXISTING123',
                 'aliquot' => 0,
                 'status' => SpecimenStatus::Logged,
