@@ -60,6 +60,7 @@ class ProjectPanelProvider extends PanelProvider
                     ->navigationGroup('Authorisation')
                     ->registerNavigation(1),
             ])
+            ->globalSearch(false)
             ->colors([
                 'primary' => Color::Violet,
             ])

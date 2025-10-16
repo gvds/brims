@@ -75,6 +75,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->profile(EditProfile::class)
             ->passwordReset()
+            ->globalSearch(false)
             ->colors([
                 'primary' => Color::Sky,
             ])
