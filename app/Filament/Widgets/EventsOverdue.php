@@ -22,36 +22,32 @@ class EventsOverdue extends TableWidget
     {
         return $table
             ->description('Click on a row to access the project')
-            ->query(function (): Builder {
-                return Project::query()
-                    ->whereRelation('members', 'user_id', auth()->id())
-                    ->whereHas('subjects.subjectEvents', function (Builder $query) {
-                        $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                            ->where('maxDate', '<', today())
-                            ->whereRelation('subject', 'user_id', '=', auth()->id());
-                    });
-            })
+            ->query(fn(): Builder => Project::query()
+                ->whereRelation('members', 'user_id', auth()->id())
+                ->whereHas('subjects.subjectEvents', function (Builder $query): void {
+                    $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                        ->where('maxDate', '<', today())
+                        ->whereRelation('subject', 'user_id', '=', auth()->id());
+                }))
             ->columns([
                 TextColumn::make('title')
                     ->label('Project')
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
-                        return redirect()->route('filament.project.pages.dashboard', parameters: ['tenant' => $record->id]);
+                        return to_route('filament.project.pages.dashboard', parameters: ['tenant' => $record->id]);
                     })
                     ->color('primary')
                     ->weight('bold')
                     ->size('md'),
                 TextColumn::make('overdue_events_count')
                     ->label('Events')
-                    ->getStateUsing(function (Project $record) {
-                        return SubjectEvent::whereHas('subject', function (Builder $query) use ($record) {
-                            $query->where('project_id', $record->id)
-                                ->where('user_id', auth()->id());
-                        })
-                            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                            ->where('maxDate', '<', today())
-                            ->count();
-                    }),
+                    ->getStateUsing(fn(Project $record) => SubjectEvent::whereHas('subject', function (Builder $query) use ($record): void {
+                        $query->where('project_id', $record->id)
+                            ->where('user_id', auth()->id());
+                    })
+                        ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                        ->where('maxDate', '<', today())
+                        ->count()),
             ])
             ->emptyStateHeading('')
             ->paginated(false);

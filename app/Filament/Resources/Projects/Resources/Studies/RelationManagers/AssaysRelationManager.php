@@ -99,7 +99,7 @@ class AssaysRelationManager extends RelationManager
                                 $fields[] = Select::make($fieldname)
                                     ->label($field['label'] ?? null)
                                     ->options(fn() => collect($field['field_options'] ?? [])
-                                        ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]))
+                                        ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
                                     ->required($field['required'] ?? false);
                             }
                             if ($field['field_type'] === 'radio') {
@@ -108,7 +108,7 @@ class AssaysRelationManager extends RelationManager
                                         Radio::make($fieldname)
                                             ->label($field['label'] ?? null)
                                             ->options(fn() => collect($field['field_options'] ?? [])
-                                                ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]))
+                                                ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
                                             ->inline()
                                             ->required($field['required'] ?? false)
                                     ]);
@@ -119,7 +119,7 @@ class AssaysRelationManager extends RelationManager
                                         CheckboxList::make($fieldname)
                                             ->label($field['label'] ?? null)
                                             ->options(fn() => collect($field['field_options'] ?? [])
-                                                ->mapWithKeys(fn($option) => [$option['option_value'] => $option['option_label']]))
+                                                ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
                                             ->required($field['required'] ?? false)
                                     ]);
                             }

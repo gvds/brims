@@ -27,6 +27,7 @@ use App\Filament\Resources\Projects\RelationManagers\SpecimentypesRelationManage
 use App\Models\Labware;
 use App\Models\Project;
 use App\Models\Specimentype;
+use Illuminate\Support\Sleep;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -607,7 +608,7 @@ describe('Business Logic Validation', function (): void {
     it('preserves timestamps on specimen type operations', function (): void {
         $originalCreatedAt = $this->primarySpecimentype->created_at;
 
-        sleep(1); // Ensure time difference
+        Sleep::sleep(1); // Ensure time difference
 
         $this->primarySpecimentype->update([
             'name' => 'Timestamp Test Sample',

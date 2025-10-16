@@ -36,7 +36,7 @@ class EventsDue extends TableWidget
                     ->label('Project')
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
-                        return redirect()->route('filament.project.pages.dashboard', parameters: ['tenant' => $record->id]);
+                        return to_route('filament.project.pages.dashboard', parameters: ['tenant' => $record->id]);
                     })
                     ->color('primary')
                     ->weight('bold')

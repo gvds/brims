@@ -32,7 +32,7 @@ class SpecimensTable
                     ->searchable(
                         query: function (Builder $query, string $search): Builder {
                             $matchingStatuses = collect(SpecimenStatus::cases())
-                                ->filter(fn($status) => str_contains(strtolower($status->getLabel()), strtolower($search)))
+                                ->filter(fn($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
                                 ->map(fn($status) => $status->value);
 
                             return $query->whereIn('status', $matchingStatuses);

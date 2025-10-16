@@ -26,6 +26,7 @@ use App\Filament\Resources\Projects\Resources\Arms\RelationManagers\EventsRelati
 use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Project;
+use Illuminate\Support\Sleep;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -558,7 +559,7 @@ describe('Business Logic Validation', function (): void {
     it('preserves timestamps on event operations', function (): void {
         $originalCreatedAt = $this->baselineEvent->created_at;
 
-        sleep(1); // Ensure time difference
+        Sleep::sleep(1); // Ensure time difference
 
         $this->baselineEvent->update([
             'name' => 'Timestamp Test Event',

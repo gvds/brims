@@ -26,7 +26,7 @@ class SetNewAccountPassword extends Component implements HasActions, HasSchemas
     {
         $this->user = User::find(basename(request()->getPathInfo()));
         if (!is_null($this->user->email_verified_at)) {
-            redirect()->route('filament.app.auth.login');
+            to_route('filament.app.auth.login');
         }
         $this->form->fill();
     }
@@ -60,7 +60,7 @@ class SetNewAccountPassword extends Component implements HasActions, HasSchemas
         ]);
 
         Auth::login($this->user);
-        redirect()->route('filament.app.pages.dashboard');
+        to_route('filament.app.pages.dashboard');
     }
 
     #[Layout('components.layouts.guest')]

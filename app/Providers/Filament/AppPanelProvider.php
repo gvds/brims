@@ -53,7 +53,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->renderHook(
                 PanelsRenderHook::PAGE_START,
-                function () {
+                function (): void {
                     if (session()->has('currentProject')) {
                         session()->forget('currentProject');
                     }

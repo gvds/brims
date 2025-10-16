@@ -136,7 +136,7 @@ class PDF_Label extends PDF_Code128
 	// Give the line height for a given font size
 	function _Get_Height_Chars($pt)
 	{
-		$a = array(6 => 2, 7 => 2.5, 8 => 3, 9 => 4, 10 => 5, 11 => 6, 12 => 7, 13 => 8, 14 => 9, 15 => 10);
+		$a = [6 => 2, 7 => 2.5, 8 => 3, 9 => 4, 10 => 5, 11 => 6, 12 => 7, 13 => 8, 14 => 9, 15 => 10];
 		if (!isset($a[$pt]))
 			$this->Error('Invalid font size: ' . $pt);
 		return $this->_Convert_Metric($a[$pt], 'mm');
@@ -196,7 +196,8 @@ class PDF_Label extends PDF_Code128
 		$this->MultiCell($this->_Width - $this->_Padding, $this->_Line_Height, $text, 0, 'L');
 	}
 
-	function _putcatalog()
+	#[\Override]
+    function _putcatalog()
 	{
 		parent::_putcatalog();
 		// Disable the page scaling option in the printing dialog

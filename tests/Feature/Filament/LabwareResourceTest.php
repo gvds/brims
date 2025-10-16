@@ -50,7 +50,7 @@ describe('LabwareResource Table Functionality', function (): void {
     it('can display labware in relation manager table', function (): void {
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCanSeeTableRecords($this->labware);
     });
@@ -58,7 +58,7 @@ describe('LabwareResource Table Functionality', function (): void {
     it('can search labware by name in relation manager', function (): void {
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->searchTable($this->labware->first()->name)
             ->assertCanSeeTableRecords($this->labware->take(1))
@@ -68,7 +68,7 @@ describe('LabwareResource Table Functionality', function (): void {
     it('displays all required table columns', function (): void {
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCanSeeTableRecords($this->labware)
             ->assertCanRenderTableColumn('name')
@@ -81,7 +81,7 @@ describe('LabwareResource Table Functionality', function (): void {
 
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->selectTableRecords($labwareToDelete->pluck('id')->toArray())
             ->callAction(TestAction::make(DeleteBulkAction::class)->table()->bulk())
@@ -100,7 +100,7 @@ describe('LabwareResource Table Functionality', function (): void {
 
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCountTableRecords(0);
     });
@@ -115,7 +115,7 @@ describe('LabwareResource Table Functionality', function (): void {
 
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCountTableRecords(18); // Should show total count across pages
     });
@@ -140,7 +140,7 @@ describe('LabwareResource Business Rules', function (): void {
         // Verify the labware with specimen types is still displayed
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCanSeeTableRecords([$labware]);
     });
@@ -154,7 +154,7 @@ describe('LabwareResource Business Rules', function (): void {
         // Relation manager should show project labware and global labware, but not other project labware
         $component = livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => 'App\Filament\Resources\Projects\Pages\ViewProject',
+            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
         ]);
 
         // Project labware should be visible
@@ -197,7 +197,7 @@ describe('LabwareResource Data Integrity', function (): void {
         ]);
 
         expect($labware->name)->toBe('Test Tube Set A');
-        expect(strlen($labware->name))->toBeLessThanOrEqual(30);
+        expect(strlen((string) $labware->name))->toBeLessThanOrEqual(30);
     });
 
     it('handles barcode format constraints properly', function (): void {
@@ -207,6 +207,6 @@ describe('LabwareResource Data Integrity', function (): void {
         ]);
 
         expect($labware->barcodeFormat)->toBe('ABC[0-9]{5}DEF');
-        expect(strlen($labware->barcodeFormat))->toBeLessThanOrEqual(50);
+        expect(strlen((string) $labware->barcodeFormat))->toBeLessThanOrEqual(50);
     });
 });

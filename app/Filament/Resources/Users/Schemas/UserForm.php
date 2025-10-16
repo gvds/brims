@@ -74,18 +74,18 @@ class UserForm
                     ->schema([
                         Select::make('team_id')
                             ->label('Team')
-                            ->hint(fn(?Model $record) => $record?->is_team_leader ? 'Team leaders cannot change teams' : null)
+                            ->hint(fn(?Model $record): ?string => $record?->is_team_leader ? 'Team leaders cannot change teams' : null)
                             ->relationship('team')
                             ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                             ->requiredWith('team_role')
                             ->searchable()
                             ->preload()
                             ->default(null)
-                            ->disabled(fn(?Model $record, $operation) => $operation === 'edit' && $record?->is_team_leader), // Team leaders cannot change teams
+                            ->disabled(fn(?Model $record, $operation): bool => $operation === 'edit' && $record?->is_team_leader), // Team leaders cannot change teams
                         Select::make('team_role')
                             ->options(TeamRoles::class)
                             ->requiredWith('team_id')
-                            ->disabled(fn(?Model $record, $operation) => $operation === 'edit' && $record?->is_team_leader), // Team leaders cannot change roles
+                            ->disabled(fn(?Model $record, $operation): bool => $operation === 'edit' && $record?->is_team_leader), // Team leaders cannot change roles
                     ]),
                 Grid::make([
                     'default' => 1,
@@ -96,7 +96,7 @@ class UserForm
                             ->label('System Role')
                             ->options(SystemRoles::class)
                             ->required()
-                            ->visible(fn() => auth()->user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
+                            ->visible(fn(): bool => auth()->user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
                         Toggle::make('active')
                             ->required()
                             ->default(true)

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Codedge\Fpdf\Fpdf\Fpdf;
+use Illuminate\Support\Facades\Date;
 
 class ScheduleController extends Controller
 {
@@ -19,13 +19,13 @@ class ScheduleController extends Controller
             $currentProject = session('currentProject');
 
             if (!in_array($week, ['thisweek', 'nextweek'])) {
-                return redirect()->back()->with('error', 'Invalid schedule week specified');
+                return back()->with('error', 'Invalid schedule week specified');
             }
 
             if ($week == 'nextweek') { // Next week's schedule
-                $startdate = Carbon::parse('next monday');
+                $startdate = Date::parse('next monday');
             } else { // This week's schedule
-                $startdate = Carbon::parse('monday this week');
+                $startdate = Date::parse('monday this week');
             }
 
             $hstartdate = $startdate->format("d/m/Y"); // formatted for header

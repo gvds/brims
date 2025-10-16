@@ -108,11 +108,9 @@ class MembersRelationManager extends RelationManager
                                         'substitute_id' => $data['substitute_id'],
                                     ]);
                             })
-                            ->fillForm(function (User $record): array {
-                                return [
-                                    'substitute_id' => $record->pivot->substitute_id,
-                                ];
-                            })
+                            ->fillForm(fn(User $record): array => [
+                                'substitute_id' => $record->pivot->substitute_id,
+                            ])
                             ->modalHeading(fn(User $record): string => "Select Substitute for {$record->fullname}")
                             ->modalDescription('Choose a substitute from members of the same project site.')
                             ->modalSubmitActionLabel('Save Substitute')

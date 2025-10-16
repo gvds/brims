@@ -23,11 +23,11 @@ Route::get(
 //     xdebug_info();
 // });
 
-Route::get('/ptest', function () {
-    $specimen = \App\Models\Specimen::find(640);
-    dd($specimen->project);
-});
+// Route::get('/ptest', function (): void {
+//     $specimen = \App\Models\Specimen::find(640);
+//     dd($specimen->project);
+// });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function (): void {
     Route::get('/schedule/{week}', [ScheduleController::class, 'generate']);
 });

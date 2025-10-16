@@ -89,7 +89,7 @@ class SubjectEventsRelationManager extends RelationManager
                 TextColumn::make('status'),
                 TextColumn::make('eventDate')
                     ->date('Y-m-d')
-                    ->extraAttributes(fn(SubjectEvent $record) => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
+                    ->extraAttributes(fn(SubjectEvent $record): array => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
                 TextColumn::make('minDate')
                     ->date('Y-m-d'),
                 TextColumn::make('maxDate')

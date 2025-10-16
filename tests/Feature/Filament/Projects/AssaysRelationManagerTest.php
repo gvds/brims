@@ -55,6 +55,7 @@ beforeEach(function (): void {
     $this->assayDefinition = AssayDefinition::factory()->create([
         'name' => 'Test Assay Definition',
         'user_id' => $this->adminuser->id,
+        'team_id' => $this->team->id,
         'active' => true,
     ]);
 
@@ -76,9 +77,8 @@ describe('Assays Relation Manager Configuration', function (): void {
     it('has correct relationship configuration', function (): void {
         $reflection = new ReflectionClass($this->relationManager);
         $relationshipProperty = $reflection->getProperty('relationship');
-        $relationshipProperty->setAccessible(true);
 
-        expect($relationshipProperty->getValue())->toBe('assays');
+        expect($relationshipProperty->getDefaultValue())->toBe('assays');
     });
 
     it('is not read-only', function (): void {
@@ -231,7 +231,7 @@ describe('Assay Creation and Validation', function (): void {
 
     it('validates required fields', function (): void {
         // Name is required
-        expect(function () {
+        expect(function (): void {
             Assay::factory()->create([
                 'study_id' => $this->study->id,
                 'assaydefinition_id' => $this->assayDefinition->id,
@@ -242,7 +242,7 @@ describe('Assay Creation and Validation', function (): void {
         })->toThrow(Exception::class);
 
         // TechnologyPlatform is required
-        expect(function () {
+        expect(function (): void {
             Assay::factory()->create([
                 'study_id' => $this->study->id,
                 'assaydefinition_id' => $this->assayDefinition->id,
@@ -488,6 +488,7 @@ describe('AssayDefinition Integration', function (): void {
         $anotherDefinition = AssayDefinition::factory()->create([
             'name' => 'Another Assay Definition',
             'user_id' => $this->adminuser->id,
+            'team_id' => $this->team->id,
             'active' => true,
             'technologyType' => 'ELISA',
         ]);
@@ -509,6 +510,7 @@ describe('AssayDefinition Integration', function (): void {
         $customDefinition = AssayDefinition::factory()->create([
             'name' => 'Custom Fields Definition',
             'user_id' => $this->adminuser->id,
+            'team_id' => $this->team->id,
             'active' => true,
             'additional_fields' => [
                 [
@@ -563,6 +565,7 @@ describe('AssayDefinition Integration', function (): void {
         $simpleDefinition = AssayDefinition::factory()->create([
             'name' => 'Simple Definition',
             'user_id' => $this->adminuser->id,
+            'team_id' => $this->team->id,
             'active' => true,
             'additional_fields' => null,
         ]);

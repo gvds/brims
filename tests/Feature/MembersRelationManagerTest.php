@@ -7,7 +7,7 @@ use App\Models\User;
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 
-it('can render the members relation manager', function () {
+it('can render the members relation manager', function (): void {
     $team = Team::factory()->create();
     $user = User::factory()->create();
 
@@ -19,7 +19,7 @@ it('can render the members relation manager', function () {
     ])->assertSuccessful();
 });
 
-it('displays existing team members', function () {
+it('displays existing team members', function (): void {
     $team = Team::factory()->create();
     $teamAdminUser = User::factory()->create([
         'team_id' => $team->id,
@@ -41,7 +41,7 @@ it('displays existing team members', function () {
         ->assertCanSeeTableRecords([$teamAdminUser, $memberUser]);
 });
 
-it('shows user details in the table', function () {
+it('shows user details in the table', function (): void {
     $team = Team::factory()->create();
     $user = User::factory()->create([
         'team_id' => $team->id,
@@ -67,7 +67,7 @@ it('shows user details in the table', function () {
         ->assertSee('555-0123');
 });
 
-it('can filter by active status', function () {
+it('can filter by active status', function (): void {
     $team = Team::factory()->create();
     $activeUser = User::factory()->create([
         'team_id' => $team->id,
@@ -96,7 +96,7 @@ it('can filter by active status', function () {
         ->assertCanNotSeeTableRecords([$inactiveUser]);
 });
 
-it('can filter by homesite', function () {
+it('can filter by homesite', function (): void {
     $team = Team::factory()->create();
     $user1 = User::factory()->create([
         'team_id' => $team->id,
@@ -119,7 +119,7 @@ it('can filter by homesite', function () {
         ->assertCanNotSeeTableRecords([$user2]);
 });
 
-it('can edit existing team members', function () {
+it('can edit existing team members', function (): void {
     $team = Team::factory()->create();
     $member = User::factory()->create([
         'team_id' => $team->id,
@@ -151,7 +151,7 @@ it('can edit existing team members', function () {
     expect($member->team_role)->toBe(TeamRoles::Admin->value);
 });
 
-it('can delete team members', function () {
+it('can delete team members', function (): void {
     $team = Team::factory()->create();
     $member = User::factory()->create([
         'team_id' => $team->id,
@@ -171,7 +171,7 @@ it('can delete team members', function () {
     $this->assertModelMissing($member);
 });
 
-it('only shows members for the specific team', function () {
+it('only shows members for the specific team', function (): void {
     $team1 = Team::factory()->create();
     $team2 = Team::factory()->create();
 
@@ -198,7 +198,7 @@ it('only shows members for the specific team', function () {
         ->assertCanNotSeeTableRecords([$team2Member, $noTeamMember]);
 });
 
-it('displays team role correctly', function () {
+it('displays team role correctly', function (): void {
     $team = Team::factory()->create();
     $adminUser = User::factory()->create([
         'team_id' => $team->id,
@@ -219,7 +219,7 @@ it('displays team role correctly', function () {
         ->assertSee('Member');
 });
 
-it('shows active status correctly', function () {
+it('shows active status correctly', function (): void {
     $team = Team::factory()->create();
     $activeUser = User::factory()->create([
         'team_id' => $team->id,
@@ -241,7 +241,7 @@ it('shows active status correctly', function () {
     $component->assertCanSeeTableRecords([$activeUser, $inactiveUser]);
 });
 
-it('can search members by name', function () {
+it('can search members by name', function (): void {
     $team = Team::factory()->create();
     $user1 = User::factory()->create([
         'team_id' => $team->id,
@@ -268,7 +268,7 @@ it('can search members by name', function () {
         ->assertCanNotSeeTableRecords([$user1]);
 });
 
-it('can search members by username', function () {
+it('can search members by username', function (): void {
     $team = Team::factory()->create();
     $user1 = User::factory()->create([
         'team_id' => $team->id,
@@ -290,7 +290,7 @@ it('can search members by username', function () {
         ->assertCanNotSeeTableRecords([$user2]);
 });
 
-it('can search members by email', function () {
+it('can search members by email', function (): void {
     $team = Team::factory()->create();
     $user1 = User::factory()->create([
         'team_id' => $team->id,

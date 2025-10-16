@@ -57,9 +57,7 @@ describe('Studies Relation Manager Configuration', function (): void {
     it('has correct relationship configuration', function (): void {
         $reflection = new ReflectionClass($this->relationManager);
         $relationshipProperty = $reflection->getProperty('relationship');
-        $relationshipProperty->setAccessible(true);
         $relatedResourceProperty = $reflection->getProperty('relatedResource');
-        $relatedResourceProperty->setAccessible(true);
 
         expect($relationshipProperty->getValue())->toBe('studies');
         expect($relatedResourceProperty->getValue())->toBe(App\Filament\Resources\Projects\Resources\Studies\StudyResource::class);
@@ -209,7 +207,7 @@ describe('Study Creation and Validation', function (): void {
         ]);
 
         // Attempting to create second study with same identifier should fail
-        expect(function () use ($identifier) {
+        expect(function () use ($identifier): void {
             Study::factory()->create([
                 'project_id' => $this->project->id,
                 'identifier' => $identifier,
@@ -268,7 +266,7 @@ describe('Study Data Integrity', function (): void {
         ]);
 
         expect($study->description)->toBe($longDescription);
-        expect(strlen($study->description))->toBeGreaterThan(1000);
+        expect(strlen((string) $study->description))->toBeGreaterThan(1000);
     });
 
     it('preserves identifier case sensitivity', function (): void {
@@ -320,7 +318,7 @@ describe('Study Lifecycle Management', function (): void {
         $originalUpdatedAt = $this->existingStudy->updated_at;
 
         // Wait a moment to ensure timestamp difference
-        sleep(1);
+        \Illuminate\Support\Sleep::sleep(1);
 
         $this->existingStudy->update(['title' => 'Modified Title']);
 
@@ -466,7 +464,7 @@ describe('Business Logic Validation', function (): void {
 
     it('enforces required field validation', function (): void {
         // Identifier is required
-        expect(function () {
+        expect(function (): void {
             Study::factory()->create([
                 'project_id' => $this->project->id,
                 'identifier' => null,
@@ -475,7 +473,7 @@ describe('Business Logic Validation', function (): void {
         })->toThrow(Exception::class);
 
         // Title is required
-        expect(function () {
+        expect(function (): void {
             Study::factory()->create([
                 'project_id' => $this->project->id,
                 'identifier' => 'VALID_ID_001',
