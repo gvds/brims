@@ -19,8 +19,8 @@ class ProjectScope implements Scope
 
         $userProjectIDs = ProjectMember::where('user_id', auth()->id())->pluck('project_id');
 
-        // $builder->where('team_id', auth()->user()->team_id)->orWhereIn('id', $userProjectIDs);
-        $builder->where('team_id', auth()->user()->team_id);
+        $builder->where('team_id', auth()->user()->team_id)->orWhereIn('id', $userProjectIDs);
+        // $builder->where('team_id', auth()->user()->team_id);
 
         session()->get('currentProject') ? $builder->where('projects.id', session()->get('currentProject')?->id) : $builder;
     }

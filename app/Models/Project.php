@@ -82,7 +82,6 @@ class Project extends Model implements HasName
 
     public function getFilamentName(): string
     {
-        // return $this->name ?? "Project {$this->identifier}";
-        return '';
+        return $this->title;
     }
 }
