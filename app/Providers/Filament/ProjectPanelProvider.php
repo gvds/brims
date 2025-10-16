@@ -51,6 +51,7 @@ class ProjectPanelProvider extends PanelProvider
             ->id('project')
             ->path('project')
             ->tenant(Project::class)
+            ->tenantMenu(false)
             ->tenantMiddleware([
                 SyncShieldTenant::class,
             ], isPersistent: true)
