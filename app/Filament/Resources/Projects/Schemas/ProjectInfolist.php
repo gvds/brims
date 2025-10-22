@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
+use Dom\Text;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
@@ -30,6 +31,11 @@ class ProjectInfolist
                             ->date('Y-m-d'),
                         TextEntry::make('public_release_date')
                             ->date('Y-m-d'),
+                        TextEntry::make('subjectID_prefix')
+                            ->label('Subject ID Format')
+                            ->formatStateUsing(fn($record) => $record->subjectID_prefix . str_repeat('#', $record->subjectID_digits)),
+                        TextEntry::make('storageProjectName')
+                            ->label('Storage Project Name'),
                     ])
                     ->extraAttributes(['class' => 'min-w-full']),
                 TextEntry::make('description')

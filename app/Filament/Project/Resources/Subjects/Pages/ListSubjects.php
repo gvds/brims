@@ -18,6 +18,9 @@ class ListSubjects extends ListRecords
             CreateAction::make(),
             ImportAction::make()
                 ->importer(SubjectImporter::class)
+                ->options([
+                    'project' => session('currentProject'),
+                ]),
         ];
     }
 }
