@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[ScopedBy([ProjectScope::class])]
 class Project extends Model implements HasName
@@ -78,6 +79,11 @@ class Project extends Model implements HasName
     public function publications(): HasMany
     {
         return $this->hasMany(Publication::class);
+    }
+
+    public function import_value_mappings(): HasOne
+    {
+        return $this->hasOne(ImportValueMapping::class);
     }
 
     public function getFilamentName(): string

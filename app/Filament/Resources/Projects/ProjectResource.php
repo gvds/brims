@@ -52,6 +52,7 @@ class ProjectResource extends Resource
             RelationManagers\LabwareRelationManager::class,
             RelationManagers\SpecimentypesRelationManager::class,
             RelationManagers\PublicationsRelationManager::class,
+            RelationManagers\ImportValueMappingsRelationManager::class,
         ];
     }
 
