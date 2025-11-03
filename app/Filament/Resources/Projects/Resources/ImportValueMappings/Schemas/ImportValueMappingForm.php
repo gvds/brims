@@ -2,17 +2,14 @@
 
 namespace App\Filament\Resources\Projects\Resources\ImportValueMappings\Schemas;
 
-use App\Models\Arm;
-use App\Models\Site;
-use Dom\Text;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
+use App\Enums\EventStatus;
+use App\Enums\SpecimenStatus;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ImportValueMappingForm
 {
@@ -26,9 +23,13 @@ class ImportValueMappingForm
             ],
             'SubjectEvent' => [
                 'event' => 'arm',
-                // 'status' => '',
+                'status' => EventStatus::class,
             ],
-            // 'Specimen' => 'Specimen',
+            'Specimen' => [
+                'site' => '',
+                'specimentype' => '',
+                'status' => SpecimenStatus::class,
+            ],
         ];
         $sections = [];
         foreach ($models as $model => $fields) {
@@ -37,27 +38,38 @@ class ImportValueMappingForm
                     function () use ($fields, $projectId) {
                         $fieldsets = [];
                         foreach ($fields as $fieldname => $relation) {
-                            if ($relation === '') {
-                                // $options = Site::where('project_id', $projectId)->pluck('name');
-                                $options = DB::table($fieldname . 's')
-                                    ->where('project_id', $projectId)
-                                    ->pluck('name');
-                            } else {
-                                $options = DB::table($fieldname . 's')
-                                    ->join($relation . 's', $relation . '_id', '=', $relation . 's.id')
-                                    ->where($relation . 's.project_id', $projectId)
-                                    ->pluck($fieldname . 's.name');
+                            switch (TRUE) {
+                                case strstr($relation, 'App\Enums'):
+                                    $options = [];
+                                    foreach ($relation::cases() as $case) {
+                                        $options[] = $case->name;
+                                    }
+                                    break;
+                                case $relation === '':
+                                    $options = DB::table($fieldname . 's')
+                                        ->where('project_id', $projectId)
+                                        ->pluck('name');
+                                    break;
+                                default:
+                                    $options = DB::table($fieldname . 's')
+                                        ->join($relation . 's', $relation . '_id', '=', $relation . 's.id')
+                                        ->where($relation . 's.project_id', $projectId)
+                                        ->pluck($fieldname . 's.name');
                             }
-                            //
-                            // $options = Site::where('project_id', $projectId)->pluck('name');
                             $inputs = [];
                             foreach ($options as $sitekey => $option) {
                                 $inputs[] = TextInput::make($option);
                             }
                             $fieldsets[$fieldname] =
-                                Fieldset::make($fieldname)
+                                Fieldset::make(Str::of($fieldname)->plural()->title())
                                 ->schema($inputs)
-                                ->columns(5);
+                                ->columns([
+                                    'default' => 1,
+                                    'sm' => 3,
+                                    'lg' => 4,
+                                    'xl' => 6,
+                                    '2xl' => 8,
+                                ]);
                         }
                         return $fieldsets;
                     }
@@ -65,6 +77,7 @@ class ImportValueMappingForm
                 ->columns(1);
         }
         return $schema
-            ->components($sections);
+            ->components($sections)
+            ->columns(1);
     }
 }

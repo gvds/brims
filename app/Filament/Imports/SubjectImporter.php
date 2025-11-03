@@ -23,18 +23,18 @@ class SubjectImporter extends Importer
                 ->rules(fn() => [
                     'required',
                     'unique:subjects,subjectID',
-                    'regex:/^' . $this->options['project']->subjectID_prefix . '\d{' . $this->options['project']->subjectID_digits . '}$/'
+                    // 'regex:/^' . $this->options['project']->subjectID_prefix . '\d{' . $this->options['project']->subjectID_digits . '}$/'
                 ]),
             ImportColumn::make('site')
                 ->requiredMapping()
-                ->relationship()
+                ->relationship(resolveUsing: 'name')
                 // ->helperText(fn() => 'Must be one of the sites associated with the current project (' . $this->options['project']->sites->pluck('name')->join(', ') . ').')
-                ->rules(['required'])
-                ->castStateUsing(fn($state) => Site::where('name', $state)->where('project_id', $this->options['project'])->first()?->id),
-            // ImportColumn::make('user')
-            //     ->requiredMapping()
-            //     ->relationship()
-            //     ->rules(['required']),
+                ->rules(['required']),
+            // ->castStateUsing(fn($state) => Site::where('name', $state)->where('project_id', $this->options['project'])->first()?->id),
+            ImportColumn::make('user')
+                ->requiredMapping()
+                ->relationship(resolveUsing: 'username')
+                ->rules(['required']),
             ImportColumn::make('firstname')
                 ->rules(['max:20']),
             ImportColumn::make('lastname')
@@ -43,9 +43,9 @@ class SubjectImporter extends Importer
             ImportColumn::make('enrolDate')
                 ->rules(['date']),
             ImportColumn::make('arm')
-                ->relationship()
-                ->rules(['required'])
-                ->castStateUsing(fn($state) => Arm::where('name', $state)->where('project_id', $this->options['project'])->first()?->id),
+                ->relationship(resolveUsing: 'name')
+                ->rules(['required']),
+            // ->castStateUsing(fn($state) => Arm::where('name', $state)->where('project_id', $this->options['project'])->first()?->id),
             ImportColumn::make('armBaselineDate')
                 ->rules(['date']),
             ImportColumn::make('status')
