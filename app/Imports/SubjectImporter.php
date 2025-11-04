@@ -7,11 +7,13 @@ use App\Models\Arm;
 use App\Models\Site;
 use App\Models\Subject;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
 // class SubjectImporter implements ToCollection, WithHeadingRow
-class SubjectImporter implements ToModel, WithHeadingRow
+class SubjectImporter implements ToModel, WithHeadingRow, WithValidation
 {
     public function __construct(public int $project_id)
     {
@@ -40,7 +42,12 @@ class SubjectImporter implements ToModel, WithHeadingRow
         return [
             'subjectid' => [
                 'required',
-                'unique:subjects,subjectID,NULL,id,project_id,' . $this->project_id
+                'unique:subjects,subjectID',
+                // 'unique:subjects,subjectID,NULL,id,project_id,' . $this->project_id
+            ],
+            'site_id' => [
+                'required',
+                Rule::exists('sites', 'id')->where('project_id', $this->project_id)
             ],
 
         ];
