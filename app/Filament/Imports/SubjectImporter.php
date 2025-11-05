@@ -50,6 +50,7 @@ class SubjectImporter extends Importer
             ImportColumn::make('enrolDate')
                 ->rules(['date']),
             ImportColumn::make('arm')
+                ->requiredMapping()
                 ->relationship(resolveUsing: 'name')
                 ->rules(['required']),
             ImportColumn::make('armBaselineDate')
