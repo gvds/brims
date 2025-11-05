@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('subjectID_prefix', 10);
             $table->unsignedTinyInteger('subjectID_digits');
             $table->string('storageProjectName', 40)->nullable();
+            $table->unsignedInteger('last_subject_number')->default(0);
             // $table->foreignIdFor(Label::class)->nullable()->constrained();
             $table->timestamps();
         });

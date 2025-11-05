@@ -18,16 +18,18 @@ class SubjectSeeder extends Seeder
     public function run(): void
     {
         Project::with(['members', 'arms'])->withoutGlobalScopes()->get()->each(function ($project): void {
+            $last_subject_number = $project->last_subject_number;
+            $subject_count = 6;
             $subjects = Subject::factory()
-                ->count(6)
+                ->count($subject_count)
                 ->for($project)
-                ->sequence(function (Sequence $sequence) use ($project) {
+                ->sequence(function (Sequence $sequence) use ($project, $last_subject_number) {
                     $member = $project->members->random();
                     return [
                         'user_id' => $member->id,
                         'site_id' => $member->pivot->site_id,
                         'arm_id' => $project->arms->first()->id,
-                        'subjectID' => $project->subjectID_prefix . Str::padLeft($sequence->index + 1, $project->subjectID_digits, '0'),
+                        'subjectID' => $project->subjectID_prefix . Str::padLeft($last_subject_number + $sequence->index + 1, $project->subjectID_digits, '0'),
                         'status' => 1,
                     ];
                 })
@@ -49,16 +51,17 @@ class SubjectSeeder extends Seeder
                 ]));
             });
 
+            $last_subject_number += $subject_count;
             $subjects = Subject::factory()
                 ->count(3)
                 ->for($project)
-                ->sequence(function (Sequence $sequence) use ($project) {
+                ->sequence(function (Sequence $sequence) use ($project, $last_subject_number) {
                     $member = $project->members->random();
                     return [
                         'user_id' => $member->id,
                         'site_id' => $member->pivot->site_id,
                         'arm_id' => $project->arms->first()->id,
-                        'subjectID' => $project->subjectID_prefix . Str::padLeft($sequence->index + 1 + 6, $project->subjectID_digits, '0'),
+                        'subjectID' => $project->subjectID_prefix . Str::padLeft($last_subject_number + $sequence->index + 1, $project->subjectID_digits, '0'),
                         'firstname' => null,
                         'lastname' => null,
                         'address' => null,
