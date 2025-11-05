@@ -26,7 +26,6 @@ class ImportValueMappingForm
                 'status' => EventStatus::class,
             ],
             'Specimen' => [
-                'site' => '',
                 'specimentype' => '',
                 'status' => SpecimenStatus::class,
             ],
