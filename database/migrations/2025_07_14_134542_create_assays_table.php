@@ -27,6 +27,8 @@ return new class extends Migration
             $table->text('uri')->nullable();
             $table->string('location')->nullable();
             $table->timestamps();
+
+            $table->unique(['study_id', 'name']);
         });
     }
 

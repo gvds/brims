@@ -28,6 +28,9 @@ return new class extends Migration
             $table->boolean('repeatable')->default(0);
             $table->boolean('active')->default(1);
             $table->timestamps();
+
+            $table->unique(['arm_id', 'name']);
+            $table->unique(['arm_id', 'event_order']);
         });
     }
 

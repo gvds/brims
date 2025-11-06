@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('technologyTypeTermSourceReference', 50)->nullable();
             $table->json('additional_fields')->nullable();
             $table->timestamps();
+
+            $table->unique(['team_id', 'name']);
         });
     }
 

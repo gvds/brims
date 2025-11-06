@@ -17,10 +17,12 @@ return new class extends Migration
             $table->foreignIdFor(Team::class)
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->string('type', 100)->unique();
+            $table->string('type', 100);
             $table->string('type_term_accession_number')->nullable();
             $table->string('type_term_reference', 50)->nullable();
             $table->timestamps();
+
+            $table->unique(['team_id', 'type']);
         });
     }
 

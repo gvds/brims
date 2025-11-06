@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('components_type_term_accession_number');
             $table->string('components_type_term_reference');
             $table->timestamps();
+
+            $table->unique(['team_id', 'name']);
         });
     }
 

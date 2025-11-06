@@ -21,6 +21,9 @@ return new class extends Migration
             $table->boolean('manual_enrol')->default(0);
             $table->string('switcharms', 100)->nullable();
             $table->timestamps();
+
+            $table->unique(['project_id', 'name']);
+            $table->unique(['project_id', 'arm_num']);
         });
     }
 

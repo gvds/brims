@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('studyfile', 150)->nullable();
             $table->string('studyfilename')->nullable();
             $table->timestamps();
+
+            $table->unique(['project_id', 'identifier']);
+            $table->unique(['project_id', 'title']);
         });
     }
 

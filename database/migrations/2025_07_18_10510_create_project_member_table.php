@@ -22,6 +22,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'substitute_id')->nullable()->constrained()->nullOnDelete();
             $table->string('role', 20);
             $table->timestamps();
+
+            $table->unique(['project_id', 'user_id']);
         });
     }
 

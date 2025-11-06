@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'substitute_user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignIdFor(Project::class)->constrained('projects')->cascadeOnDelete();
             $table->timestamps();
+
+            $table->unique(['user_id', 'substitute_user_id', 'project_id']);
         });
     }
 

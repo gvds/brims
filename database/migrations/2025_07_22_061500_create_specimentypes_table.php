@@ -32,6 +32,8 @@ return new class extends Migration
             $table->foreignIdFor(Specimentype::class, 'parentSpecimenType_id')->nullable();
             $table->boolean('active')->default(1);
             $table->timestamps();
+
+            $table->unique(['project_id', 'name']);
         });
     }
 
