@@ -10,7 +10,7 @@ class ImportValueMapping extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'mappings' => 'json',
+        'mappings' => 'array',
     ];
 
     public function project(): BelongsTo

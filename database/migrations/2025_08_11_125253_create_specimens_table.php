@@ -29,7 +29,7 @@ return new class extends Migration
             // $table->foreignIdFor(Location::class)->constrained();
             $table->unsignedTinyInteger('aliquot');
             $table->double('volume', 8, 2)->nullable();
-            $table->string('volumeUnit')->nullable();
+            $table->string('volumeUnit', 5)->nullable();
             $table->unsignedTinyInteger('thawcount')->default(0);
             $table->foreignIdFor(User::class, 'loggedBy_id')->constrained();
             $table->dateTime('loggedAt');

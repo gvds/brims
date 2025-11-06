@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Projects\Pages;
 
+use App\Filament\Imports\SpecimenImporter;
+use App\Filament\Imports\SubjectEventImporter;
 use App\Filament\Imports\SubjectImporter;
 use App\Filament\Resources\Projects\ProjectResource;
 use Filament\Actions\ActionGroup;
@@ -28,14 +30,14 @@ class ViewProject extends ViewRecord
                 ImportAction::make('subject_event_import')
                     ->label('Import Subject Events')
                     ->color("gray")
-                    ->importer(SubjectImporter::class)
+                    ->importer(SubjectEventImporter::class)
                     ->options([
                         'project' => $this->record,
                     ]),
                 ImportAction::make('specimen_import')
                     ->label('Import Specimens')
                     ->color("gray")
-                    ->importer(SubjectImporter::class)
+                    ->importer(SpecimenImporter::class)
                     ->options([
                         'project' => $this->record,
                     ]),

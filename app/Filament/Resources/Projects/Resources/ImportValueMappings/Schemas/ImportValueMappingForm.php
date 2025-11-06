@@ -4,12 +4,18 @@ namespace App\Filament\Resources\Projects\Resources\ImportValueMappings\Schemas;
 
 use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;
-use Dom\Text;
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ImportValueMappingForm
@@ -31,60 +37,66 @@ class ImportValueMappingForm
                 'status' => SpecimenStatus::class,
             ],
         ];
-        $sections = [
-            TextInput::make('name')
+
+        $elements = [
+            Select::make('model')
+                ->options(array_combine(array_keys($models), array_keys($models)))
+                ->default('Subject')
+                ->live()
                 ->required()
-                ->maxLength(50)
-                ->extraAttributes(['class' => 'max-w-200']),
+                ->extraAttributes(['class' => 'max-w-200'])
         ];
-        foreach ($models as $model => $fields) {
-            $sections[] = Section::make($model)
-                ->schema(
-                    function () use ($fields, $projectId) {
-                        $fieldsets = [];
-                        foreach ($fields as $fieldname => $relation) {
-                            switch (TRUE) {
-                                case strstr($relation, 'App\Enums'):
-                                    $options = [];
-                                    foreach ($relation::cases() as $case) {
-                                        $options[] = $case->name;
-                                    }
-                                    break;
-                                case $relation === '':
-                                    $options = DB::table($fieldname . 's')
-                                        ->where('project_id', $projectId)
-                                        ->pluck('name');
-                                    break;
-                                default:
-                                    $options = DB::table($fieldname . 's')
-                                        ->join($relation . 's', $relation . '_id', '=', $relation . 's.id')
-                                        ->where($relation . 's.project_id', $projectId)
-                                        ->pluck($fieldname . 's.name');
+
+        $elements[] = Fieldset::make('Value Mappings')
+            ->schema(function (Get $get) use ($models, $projectId) {
+                $model = $get('model');
+                if (!$model || !isset($models[$model])) {
+                    return [];
+                }
+
+                $keyvalues = [];
+                foreach ($models[$model] as $fieldname => $relation) {
+                    switch (true) {
+                        case strstr($relation, 'App\Enums'):
+                            $options = [];
+                            foreach ($relation::cases() as $case) {
+                                $options[] = $case->name;
                             }
-                            $inputs = [];
-                            foreach ($options as $sitekey => $option) {
-                                $inputs[] = TextInput::make($option);
-                            }
-                            $fieldsets[$fieldname] =
-                                Fieldset::make(Str::of($fieldname)->plural()->title())
-                                ->schema($inputs)
-                                ->columns([
-                                    'default' => 1,
-                                    'sm' => 3,
-                                    'lg' => 4,
-                                    'xl' => 6,
-                                    '2xl' => 8,
-                                ]);
-                        }
-                        return $fieldsets;
+                            break;
+                        case $relation === '':
+                            $options = DB::table($fieldname . 's')
+                                ->where('project_id', $projectId)
+                                ->pluck('name');
+                            break;
+                        default:
+                            $options = DB::table($fieldname . 's')
+                                ->join($relation . 's', $relation . '_id', '=', $relation . 's.id')
+                                ->where($relation . 's.project_id', $projectId)
+                                ->pluck($fieldname . 's.name');
                     }
-                )
-                ->columns(1);
-        }
+                    $default = [];
+                    foreach ($options as $option) {
+                        $default[$option] = '';
+                    }
+                    $keyvalues[] = KeyValue::make(Str::of($fieldname)->plural()->title())
+                        ->keyLabel('Database Value')
+                        ->valueLabel('Import Value')
+                        ->default($default)
+                        ->addable(false)
+                        ->deletable(false)
+                        ->editableKeys(false);
+                }
+
+                return $keyvalues;
+            })
+            ->columns(1);
+
         return $schema
             ->components(
-                $sections
+                Grid::make(1)
+                    ->schema($elements)
             )
-            ->columns(1);
+            ->columns(1)
+            ->extraAttributes(['class' => 'max-w-max min-w-1/3']);
     }
 }
