@@ -3,13 +3,11 @@
 namespace App\Filament\Imports;
 
 use App\Enums\SubjectStatus;
-use App\Models\Arm;
-use App\Models\Site;
 use App\Models\Subject;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
-use Illuminate\Support\Facades\Log;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Number;
 use Illuminate\Validation\Rule;
 
@@ -70,6 +68,16 @@ class SubjectImporter extends Importer
         $subject = new Subject();
         $subject->project_id = $this->options['project']->id;
         return $subject;
+    }
+
+    public static function getOptionsFormComponents(): array
+    {
+        return [
+            Select::make('importValueMapping')
+                ->label('Import Value Mapping')
+                ->relationship('importValueMappings', 'name')
+                ->nullable()
+        ];
     }
 
     public static function getCompletedNotificationBody(Import $import): string
