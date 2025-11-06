@@ -81,9 +81,9 @@ class Project extends Model implements HasName
         return $this->hasMany(Publication::class);
     }
 
-    public function import_value_mappings(): HasOne
+    public function importValueMappings(): HasMany
     {
-        return $this->hasOne(ImportValueMapping::class);
+        return $this->hasMany(ImportValueMapping::class);
     }
 
     public function getFilamentName(): string

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Projects\Resources\ImportValueMappings\Schemas;
 
 use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;
+use Dom\Text;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
@@ -30,7 +31,12 @@ class ImportValueMappingForm
                 'status' => SpecimenStatus::class,
             ],
         ];
-        $sections = [];
+        $sections = [
+            TextInput::make('name')
+                ->required()
+                ->maxLength(50)
+                ->extraAttributes(['class' => 'max-w-200']),
+        ];
         foreach ($models as $model => $fields) {
             $sections[] = Section::make($model)
                 ->schema(
@@ -76,7 +82,9 @@ class ImportValueMappingForm
                 ->columns(1);
         }
         return $schema
-            ->components($sections)
+            ->components(
+                $sections
+            )
             ->columns(1);
     }
 }

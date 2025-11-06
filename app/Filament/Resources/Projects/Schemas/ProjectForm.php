@@ -13,19 +13,19 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectForm
 {
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Tabs::make('Tabs')
-                    ->tabs([
-                    Tab::make('Project Details')
+                Section::make('Project Details')
                     ->schema([
                         TextInput::make('title')
                             ->required()
@@ -74,17 +74,10 @@ class ProjectForm
                                     ->visibleOn('edit')
                             ]),
                     ]),
-                    Tab::make('Import Value Mappings')
-                // Section::make('Import Value Mappings')
-                    ->relationship('import_value_mappings')
-                    ->schema(
-                        fn(Schema $schema) => ImportValueMappingForm::configure($schema)
-                    )
-                    ->columnSpan(2)
             ])
-            ->columns(3)
+            ->columns(1)
             ->extraAttributes([
-                'class' => 'w-full',
+                'class' => 'w-1/3',
             ]);
     }
 }

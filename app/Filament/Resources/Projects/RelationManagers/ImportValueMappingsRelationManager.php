@@ -9,7 +9,7 @@ use Filament\Tables\Table;
 
 class ImportValueMappingsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'import_value_mappings';
+    protected static string $relationship = 'importValueMappings';
 
     protected static ?string $relatedResource = ImportValueMappingResource::class;
 

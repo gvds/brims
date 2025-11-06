@@ -16,4 +16,9 @@ class EditImportValueMapping extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getParentResource()::getUrl('view', ['record' => $this->record->project_id]);
+    }
 }
