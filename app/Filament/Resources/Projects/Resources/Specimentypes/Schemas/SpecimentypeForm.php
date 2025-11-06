@@ -42,8 +42,8 @@ class SpecimentypeForm
                             ->relationship(
                                 name: 'parentSpecimenType',
                                 titleAttribute: 'name',
-                                modifyQueryUsing: fn(Builder $query) => $query
-                                    ->where('project_id', session('currentProject')->id)
+                                modifyQueryUsing: fn(Builder $query, $livewire) => $query
+                                    ->where('project_id', $livewire->ownerRecord->id)
                                     ->when($SpecimentypeModel, fn(Builder $query) => $query->where('id', '!=', $SpecimentypeModel->id))
                             )
                             ->searchable()
