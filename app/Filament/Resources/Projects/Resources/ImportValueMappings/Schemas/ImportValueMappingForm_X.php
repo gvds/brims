@@ -11,7 +11,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class ImportValueMappingForm_XS
+class ImportValueMappingForm_X
 {
     public static function configure(Schema $schema): Schema
     {
