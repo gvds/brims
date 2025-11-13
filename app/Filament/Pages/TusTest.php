@@ -5,7 +5,6 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class TusTest extends Page
 {
@@ -15,11 +14,9 @@ class TusTest extends Page
 
     public $infos = [];
 
-    public $uppyResult = null;
+    // public $txt = null;
 
-    public $txt = null;
-
-    public $project = null;
+    // public $project = null;
 
     public $savedfilename = null;
 
@@ -31,37 +28,32 @@ class TusTest extends Page
 
     public function mount(): void
     {
-        $this->project = session('currentProject');
+        // $this->project = session('currentProject');
         $this->getFileMetadata();
     }
 
     private function getFileMetadata(): void
     {
         $this->files = Storage::disk('s3')->files();
-        foreach ($this->files as $file) {
-            // Storage::disk('s3')->delete($file);
-            // Storage::disk('s3')->setVisibility($file, 'private');
-            // dump(Storage::disk('s3')->getVisibility($file));
-            if (Str::endsWith($file, '.info')) {
-                $this->infos[] = json_decode(Storage::disk('s3')->get($file));
-            }
-        }
+        //     foreach ($this->files as $file) {
+        //         // Storage::disk('s3')->delete($file);
+        //         // Storage::disk('s3')->setVisibility($file, 'public');
+        //         if (Str::endsWith($file, '.info')) {
+        //             dump($file);
+        //             dump(Storage::disk('s3')->getVisibility($file));
+        //             dump(Storage::disk('s3')->path($file));
+
+        //             dump(Storage::disk('s3')->url($file, now()->addMinutes(1)));
+        //             dump(Storage::disk('s3')->checksum($file));
+        //             // dump(Storage::disk('s3')->temporaryUrl($file, now()->addMinutes(1)));
+        //         }
+        //     }
     }
 
     public function processform(): void
     {
         Log::notice($this->uppyResult);
         $this->getFileMetadata();
-    }
-
-    public function setUppyResult($result): void
-    {
-        $this->uppyResult = $result;
-        $this->resultArray = json_decode($result, true);
-        // $this->savedfilename = $resultArray[0]['name'] ?? null;
-        // $this->filetype = $resultArray[0]['type'] ?? null;
-        // preg_match('/(\w+)\+/', $resultArray[0]['uploadURL'], $matches);
-        // $this->filename = $matches[1] ?? null;
     }
 
     public function download($file, $filename)

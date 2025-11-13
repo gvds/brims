@@ -5,7 +5,7 @@
     <div x-cloak x-data="tusUploader()">
 
         <!-- Debug Section -->
-        <div class="mb-3 p-3 bg-blue-50 border border-blue-300 rounded-md">
+        {{-- <div class="mb-3 p-3 bg-blue-50 border border-blue-300 rounded-md">
             <div class="flex items-center gap-3">
                 <span class="text-sm font-medium text-blue-800">Debug:</span>
                 <button
@@ -24,7 +24,7 @@
                     Log to Console
                 </button>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Incomplete Uploads Section -->
         <div class="mb-5 p-4 border border-orange-300 rounded-md bg-orange-50" x-show="incompleteUploads.length > 0" style="display: none;">
@@ -222,7 +222,6 @@
             <div>{{ $filetype }}</div>
             <div>{{ $savedfilename }}</div>
         </div>
-        <div>@dump($resultArray)</div>
     </div>
 
     @script
@@ -315,26 +314,26 @@
                                 tusEntries[fingerprint][type] = value;
                             }
                         }
-                    } else if (value) {
-                        // Check if value is JSON with uploadUrl (direct numeric key format)
-                        try {
-                            const parsedData = JSON.parse(value);
-                            if (parsedData && parsedData.uploadUrl) {
-                                const fingerprint = key;
+                    // } else if (value) {
+                    //     // Check if value is JSON with uploadUrl (direct numeric key format)
+                    //     try {
+                    //         const parsedData = JSON.parse(value);
+                    //         if (parsedData && parsedData.uploadUrl) {
+                    //             const fingerprint = key;
 
-                                if (!tusEntries[fingerprint]) {
-                                    tusEntries[fingerprint] = {};
-                                }
+                    //             if (!tusEntries[fingerprint]) {
+                    //                 tusEntries[fingerprint] = {};
+                    //             }
 
-                                // Store the parsed data fields
-                                tusEntries[fingerprint].url = parsedData.uploadUrl;
-                                tusEntries[fingerprint].size = parsedData.size;
-                                tusEntries[fingerprint].metadata = parsedData.metadata;
-                                tusEntries[fingerprint].creationTime = parsedData.creationTime;
-                            }
-                        } catch (e) {
-                            // Not JSON or doesn't have uploadUrl, skip
-                        }
+                    //             // Store the parsed data fields
+                    //             tusEntries[fingerprint].url = parsedData.uploadUrl;
+                    //             tusEntries[fingerprint].size = parsedData.size;
+                    //             tusEntries[fingerprint].metadata = parsedData.metadata;
+                    //             tusEntries[fingerprint].creationTime = parsedData.creationTime;
+                    //         }
+                    //     } catch (e) {
+                    //         // Not JSON or doesn't have uploadUrl, skip
+                    //     }
                     }
                 }
 
@@ -434,130 +433,142 @@
             },
 
             resumeIncompleteUpload(incomplete) {
-                console.log('Resuming upload:', incomplete);
+                const uploadId = Date.now() + Math.random();
 
-                // Create a file input to let user select the file again
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.accept = '*/*';
+                // Add to active uploads
+                this.uploads.push({
+                    id: uploadId,
+                    filename: incomplete.metadata.filename || 'Unknown file',
+                    status: 'resuming',
+                    progress: Math.round((incomplete.offset / incomplete.size) * 100),
+                    bytesUploaded: incomplete.offset,
+                    bytesTotal: incomplete.size,
+                    url: null
+                });
 
-                fileInput.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (!file) {
-                        console.log('No file selected');
-                        return;
-                    }
-
-                    // Verify file matches the incomplete upload
-                    if (file.size !== incomplete.size) {
-                        alert(`File size mismatch!\nExpected: ${this.formatBytes(incomplete.size)}\nSelected: ${this.formatBytes(file.size)}\n\nPlease select the correct file.`);
-                        return;
-                    }
-
-                    if (file.name !== incomplete.metadata.filename) {
-                        const proceed = confirm(`File name mismatch!\nExpected: ${incomplete.metadata.filename}\nSelected: ${file.name}\n\nThe file size matches. Continue anyway?`);
-                        if (!proceed) {
-                            return;
+                // Create a File object from the incomplete upload
+                // Note: We need to use the upload URL to resume
+                const upload = new tus.Upload(null, {
+                    endpoint: this.tusEndpoint,
+                    uploadUrl: incomplete.uploadUrl,
+                    retryDelays: [0, 3000, 5000, 10000, 20000],
+                    metadata: incomplete.metadata,
+                    onError: (error) => {
+                        console.error('TUS resume error:', error);
+                        const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                        if (uploadIndex !== -1) {
+                            this.uploads[uploadIndex].status = 'error';
                         }
-                    }
-
-                    const uploadId = Date.now() + Math.random();
-
-                    // Add to active uploads
-                    this.uploads.push({
-                        id: uploadId,
-                        filename: file.name,
-                        status: 'resuming',
-                        progress: Math.round((incomplete.offset / incomplete.size) * 100),
-                        bytesUploaded: incomplete.offset,
-                        bytesTotal: file.size,
-                        url: null
-                    });
-
-                    // Create TUS upload instance with the file
-                    const upload = new tus.Upload(file, {
-                        endpoint: this.tusEndpoint,
-                        uploadUrl: incomplete.uploadUrl,
-                        retryDelays: [0, 3000, 5000, 10000, 20000],
-                        metadata: {
-                            filename: file.name,
-                            filetype: file.type,
-                            additional: this.$wire.txt || ''
-                        },
-                        onError: (error) => {
-                            console.error('TUS resume error:', error);
-                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                            if (uploadIndex !== -1) {
-                                this.uploads[uploadIndex].status = 'error';
-                            }
-                            this.$wire.call('uploadError', {
-                                filename: file.name,
-                                error: error.message
-                            });
-                        },
-                        onProgress: (bytesUploaded, bytesTotal) => {
-                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                            if (uploadIndex !== -1) {
-                                const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
-                                this.uploads[uploadIndex].progress = percentage;
-                                this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
-                                this.uploads[uploadIndex].bytesTotal = bytesTotal;
-                                this.uploads[uploadIndex].status = 'uploading';
-                            }
-                        },
-                        onSuccess: () => {
-                            console.log('✓ Upload resumed and completed:', incomplete.uploadUrl);
-                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                            if (uploadIndex !== -1) {
-                                this.uploads[uploadIndex].status = 'completed';
-                                this.uploads[uploadIndex].progress = 100;
-                                this.uploads[uploadIndex].url = incomplete.uploadUrl;
-                            }
-
-                            // Remove from incomplete list
-                            this.removeIncompleteUpload(incomplete.uploadUrl);
-
-                            // Notify Livewire component
-                            this.$wire.call('uploadComplete', {
-                                filename: file.name,
-                                filetype: file.type,
-                                url: incomplete.uploadUrl,
-                                metadata: {
-                                    filename: file.name,
-                                    filetype: file.type,
-                                    additional: this.$wire.txt || ''
-                                }
-                            });
+                        this.$wire.call('uploadError', {
+                            filename: incomplete.metadata.filename,
+                            error: error.message
+                        });
+                    },
+                    onProgress: (bytesUploaded, bytesTotal) => {
+                        const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                        if (uploadIndex !== -1) {
+                            const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
+                            this.uploads[uploadIndex].progress = percentage;
+                            this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
+                            this.uploads[uploadIndex].bytesTotal = bytesTotal;
+                            this.uploads[uploadIndex].status = 'uploading';
                         }
-                    });
+                    },
+                    onSuccess: () => {
+                        console.log('TUS upload resumed and completed:', incomplete.uploadUrl);
+                        const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                        if (uploadIndex !== -1) {
+                            this.uploads[uploadIndex].status = 'completed';
+                            this.uploads[uploadIndex].progress = 100;
+                            this.uploads[uploadIndex].url = incomplete.uploadUrl;
+                        }
 
-                    // Store the upload instance
-                    this.uploadInstances[uploadId] = upload;
+                        // Remove from incomplete list
+                        this.removeIncompleteUpload(incomplete.uploadUrl);
 
-                    // Start resuming the upload
-                    console.log('Starting resume from offset:', incomplete.offset);
-                    upload.start();
-                };
+                        // Notify Livewire component
+                        this.$wire.call('uploadComplete', {
+                            filename: incomplete.metadata.filename,
+                            filetype: incomplete.metadata.filetype,
+                            url: incomplete.uploadUrl,
+                            metadata: incomplete.metadata
+                        });
+                    }
+                });
 
-                // Trigger file selection
-                fileInput.click();
+                // Store the upload instance
+                this.uploadInstances[uploadId] = upload;
+
+                // Start resuming the upload
+                upload.start();
             },
 
             removeIncompleteUpload(uploadUrl) {
+                console.log('Removing incomplete upload:', uploadUrl);
+
                 // Remove from incomplete uploads list
                 this.incompleteUploads = this.incompleteUploads.filter(u => u.uploadUrl !== uploadUrl);
 
-                // Clean up localStorage entries
-                for (let i = localStorage.length - 1; i >= 0; i--) {
+                // Clean up localStorage entries - need to handle both formats
+                const keysToRemove = [];
+
+                for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (key && key.startsWith('tus::') && localStorage.getItem(key) === uploadUrl) {
-                        const fingerprint = key.replace('tus::', '').replace('::upload_url', '');
-                        localStorage.removeItem(`tus::${fingerprint}::upload_url`);
-                        localStorage.removeItem(`tus::${fingerprint}::upload_offset`);
-                        localStorage.removeItem(`tus::${fingerprint}::upload_metadata`);
-                        break;
+                    if (!key) continue;
+
+                    const value = localStorage.getItem(key);
+
+                    // Format 1: tus:: prefixed keys
+                    if (key.startsWith('tus::')) {
+                        // Check if the value matches the uploadUrl or if it's JSON containing the uploadUrl
+                        let shouldRemove = false;
+
+                        if (value === uploadUrl) {
+                            shouldRemove = true;
+                        } else {
+                            try {
+                                const parsed = JSON.parse(value);
+                                if (parsed && parsed.uploadUrl === uploadUrl) {
+                                    shouldRemove = true;
+                                }
+                            } catch (e) {
+                                // Not JSON, skip
+                            }
+                        }
+
+                        if (shouldRemove) {
+                            const parts = key.split('::');
+                            if (parts.length >= 2) {
+                                const fingerprint = parts[1];
+                                // Remove all related keys for this fingerprint
+                                keysToRemove.push(`tus::${fingerprint}::upload_url`);
+                                keysToRemove.push(`tus::${fingerprint}::upload_offset`);
+                                keysToRemove.push(`tus::${fingerprint}::upload_metadata`);
+                                keysToRemove.push(key); // Also remove the current key
+                            }
+                        }
+                    }
+                    // Format 2: Direct numeric/fingerprint keys with JSON values
+                    else if (value) {
+                        try {
+                            const parsed = JSON.parse(value);
+                            if (parsed && parsed.uploadUrl === uploadUrl) {
+                                keysToRemove.push(key);
+                                console.log('Found matching entry to remove:', key);
+                            }
+                        } catch (e) {
+                            // Not JSON, skip
+                        }
                     }
                 }
+
+                // Remove all identified keys
+                keysToRemove.forEach(key => {
+                    console.log('Removing localStorage key:', key);
+                    localStorage.removeItem(key);
+                });
+
+                console.log('✓ Removed', keysToRemove.length, 'localStorage key(s)');
             },
 
             clearIncompleteUploads() {
