@@ -30,15 +30,14 @@ class TusTest extends Page
 
     public function mount(): void
     {
-        // $this->project = session('currentProject');
         $this->getFileMetadata();
     }
 
     private function getFileMetadata(): void
     {
         $this->files = Storage::disk('s3')->files();
+        $this->infos = [];
         foreach ($this->files as $file) {
-            //         // Storage::disk('s3')->delete($file);
             Storage::disk('s3')->setVisibility($file, 'public');
             if (Str::endsWith($file, '.info')) {
                 $response = Http::withHeaders([
@@ -53,7 +52,6 @@ class TusTest extends Page
 
     public function processform(): void
     {
-        Log::notice($this->uppyResult);
         $this->getFileMetadata();
     }
 

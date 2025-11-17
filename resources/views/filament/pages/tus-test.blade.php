@@ -205,7 +205,7 @@
         <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($infos as $info)
-                <li class='mt-1'>
+                <li class='mt-1' wire:key='"{{ $info['ID'] }}'>
                     @continue(empty($info))
                     <span class='text-emerald-500 font-semibold cursor-pointer'
                     wire:click="download('{{$info['Storage']['Key']}}', '{{$info['MetaData']['filename']}}')">{{$info['MetaData']['filename']}}</span>
