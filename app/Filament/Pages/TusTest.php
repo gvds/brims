@@ -3,8 +3,10 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TusTest extends Page
 {
@@ -35,19 +37,18 @@ class TusTest extends Page
     private function getFileMetadata(): void
     {
         $this->files = Storage::disk('s3')->files();
-        //     foreach ($this->files as $file) {
-        //         // Storage::disk('s3')->delete($file);
-        //         // Storage::disk('s3')->setVisibility($file, 'public');
-        //         if (Str::endsWith($file, '.info')) {
-        //             dump($file);
-        //             dump(Storage::disk('s3')->getVisibility($file));
-        //             dump(Storage::disk('s3')->path($file));
-
-        //             dump(Storage::disk('s3')->url($file, now()->addMinutes(1)));
-        //             dump(Storage::disk('s3')->checksum($file));
-        //             // dump(Storage::disk('s3')->temporaryUrl($file, now()->addMinutes(1)));
-        //         }
-        //     }
+        foreach ($this->files as $file) {
+            //         // Storage::disk('s3')->delete($file);
+            Storage::disk('s3')->setVisibility($file, 'public');
+            if (Str::endsWith($file, '.info')) {
+                $response = Http::withHeaders([
+                    'Accept-Encoding' => 'gzip, deflate'
+                ])->withOptions([
+                    'decode_content' => false,
+                ])->get(Storage::disk('s3')->url($file));
+                $this->infos[] = json_decode($response->body(), true);
+            }
+        }
     }
 
     public function processform(): void

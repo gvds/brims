@@ -202,20 +202,20 @@
             </ul>
         </div>
 
-        {{-- <div class="mt-5 border border-gray-500 p-3">
+        <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($infos as $info)
                 <li class='mt-1'>
                     @continue(empty($info))
                     <span class='text-emerald-500 font-semibold cursor-pointer'
-                    wire:click="download('{{$info->Storage->Key}}', '{{$info->MetaData->filename}}')">{{$info->MetaData->filename}}</span>
-                    [{{$info->MetaData->filetype}}] <span
+                    wire:click="download('{{$info['Storage']['Key']}}', '{{$info['MetaData']['filename']}}')">{{$info['MetaData']['filename']}}</span>
+                    [{{$info['MetaData']['filetype']}}] <span
                     class="bg-red-300 border border-red-800 text-red-900 text-sm font-semibold py-0 px-2 rounded-md cursor-pointer"
-                    wire:click="delete('{{$info->Storage->Key}}')">DELETE</span>
+                    wire:click="delete('{{$info['Storage']['Key']}}')">DELETE</span>
                 </li>
                 @endforeach
             </ul>
-        </div> --}}
+        </div>
         <div class="mt-5 border border-gray-500 p-3">
             TUS Result:
             <div>{{ $filename }}</div>
