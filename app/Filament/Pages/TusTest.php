@@ -33,30 +33,43 @@ class TusTest extends Page
         $this->getFileMetadata();
     }
 
+    public function getInfo($file)
+    {
+        return Http::withHeaders([
+            'Accept-Encoding' => 'gzip, deflate',
+        ])->withOptions([
+            'decode_content' => false,
+        ])->get(Storage::disk('s3')->url($file));
+    }
+
+    public function fileExists($fileName): bool
+    {
+        return Storage::disk('s3')->exists($fileName);
+    }
+
     private function getFileMetadata(): void
     {
         $this->files = Storage::disk('s3')->files();
         $this->infos = [];
         foreach ($this->files as $file) {
-            Storage::disk('s3')->setVisibility($file, 'public');
+            // Storage::disk('s3')->setVisibility($file, 'public');
+            // dump(Storage::disk('s3')->getVisibility($file));
             if (Str::endsWith($file, '.info')) {
-                $response = Http::withHeaders([
-                    'Accept-Encoding' => 'gzip, deflate'
-                ])->withOptions([
-                    'decode_content' => false,
-                ])->get(Storage::disk('s3')->url($file));
-                $this->infos[] = json_decode($response->body(), true);
+                Storage::disk('s3')->setVisibility($file, 'public');
+                $this->infos[] = json_decode($this->getInfo($file)->body(), true);
             }
         }
+        // dd($this->infos);
     }
 
-    public function processform(): void
-    {
-        $this->getFileMetadata();
-    }
+    // public function processform(): void
+    // {
+    //     $this->getFileMetadata();
+    // }
 
     public function download($file, $filename)
     {
+        // return Storage::disk('s3')->response($file);
         return Storage::disk('s3')->download($file, $filename);
     }
 

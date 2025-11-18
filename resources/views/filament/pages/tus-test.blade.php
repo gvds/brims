@@ -43,7 +43,7 @@
                             </button>
                             <button
                                 type="button"
-                                @click="removeIncompleteUpload(incomplete.uploadUrl)"
+                                @click="deleteIncompleteUpload(incomplete.uploadUrl)"
                                 class="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
                             >
                                 Remove
@@ -92,11 +92,11 @@
 
         <!-- Upload Progress & Controls -->
         <div class='p-4 mt-5 border border-gray-300 rounded-md bg-white' x-show="uploads.length > 0">
-            <h3 class="font-semibold mb-3">Upload Progress</h3>
+            <h3 class="font-semibold mb-3 text-gray-600">Upload Progress</h3>
             <template x-for="upload in uploads" :key="upload.id">
                 <div class="mb-4 p-3 border border-gray-200 rounded">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="font-medium text-sm" x-text="upload.filename"></span>
+                        <span class="font-medium text-sm text-gray-600" x-text="upload.filename"></span>
                         <div class="flex items-center gap-2">
                             <span class="text-xs px-2 py-1 rounded"
                                   :class="{
@@ -171,7 +171,6 @@
             </template>
         </div>
 
-
         <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($files as $file)
@@ -181,7 +180,7 @@
                 @endforeach
             </ul>
         </div>
-        @dump($infos)
+@dump($infos)
         <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($infos as $info)
@@ -196,6 +195,7 @@
                 @endforeach
             </ul>
         </div>
+
         <div class="mt-5 border border-gray-500 p-3">
             TUS Result:
             <div>{{ $filename }}</div>
@@ -252,7 +252,7 @@
                     const key = localStorage.key(i);
                     const value = localStorage.getItem(key);
 
-                    // Check if this is a TUS entry (either tus:: prefix or JSON with uploadUrl)
+                    // Check if this is a TUS entry (tus:: prefix)
                     if (key && key.startsWith('tus::')) {
                         // TUS library format: tus::fingerprint::type
                         const parts = key.split('::');
@@ -355,6 +355,7 @@
                 // Find the existing entry in incompleteUploads
                 const existingIndex = this.incompleteUploads.findIndex(u => u.fingerprint === fingerprint);
 
+                console.log(this.incompleteUploads)
                 try {
                     const response = await fetch(uploadUrl, {
                         method: 'HEAD',
@@ -503,11 +504,15 @@
                 fileInput.click();
             },
 
-            removeIncompleteUpload(uploadUrl) {
-                console.log('Removing incomplete upload:', uploadUrl);
-
+            deleteIncompleteUpload(uploadUrl) {
                 // Call Livewire method to delete from TUS server and storage
                 this.$wire.call('deleteIncompleteUpload', uploadUrl);
+
+                this.removeIncompleteUpload(uploadUrl);
+            },
+
+            removeIncompleteUpload(uploadUrl) {
+                console.log('Removing incomplete upload:', uploadUrl);
 
                 // Remove from incomplete uploads list
                 this.incompleteUploads = this.incompleteUploads.filter(u => u.uploadUrl !== uploadUrl);
@@ -564,9 +569,9 @@
 
             clearIncompleteUploads() {
                 if (confirm('Are you sure you want to clear all incomplete uploads? This cannot be undone.')) {
-                    // Remove all from localStorage
+                    // Delete all from server and remove from localStorage
                     this.incompleteUploads.forEach(incomplete => {
-                        this.removeIncompleteUpload(incomplete.uploadUrl);
+                        this.deleteIncompleteUpload(incomplete.uploadUrl);
                     });
 
                     // Clear the list
@@ -624,6 +629,9 @@
                 const upload = new tus.Upload(file, {
                     endpoint: this.tusEndpoint,
                     retryDelays: [0, 3000, 5000, 10000, 20000],
+                    // uploadDataDuringCreation: true,
+                    chunkSize: 33554432, // 32MB
+                    // parallelUploads: Math.ceil(file.size / 33554432),
                     metadata: {
                         filename: file.name,
                         filetype: file.type,
@@ -660,7 +668,8 @@
                             this.uploads[uploadIndex].status = 'completed';
                             this.uploads[uploadIndex].progress = 100;
                             this.uploads[uploadIndex].url = upload.url;
-                        }
+                            this.removeIncompleteUpload(upload.url);
+                            }
 
                         // Notify Livewire component
                         this.$wire.call('uploadComplete', {
