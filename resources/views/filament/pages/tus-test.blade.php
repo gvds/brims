@@ -25,9 +25,9 @@
             <div class="space-y-2">
                 <template x-for="incomplete in incompleteUploads" :key="incomplete.uploadUrl">
                     <div class="flex justify-between items-center p-3 bg-white border border-orange-200 rounded">
-                        <div class="flex-1">
+                        <div class="flex-1 text-gray-500">
                             <div class="font-medium text-sm" x-text="incomplete.metadata.filename || 'Unknown file'"></div>
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs">
                                 <span x-text="incomplete.size > 0 ? formatBytes(incomplete.size) : 'Size unknown'"></span>
                                 <span x-show="incomplete.offset && incomplete.size > 0"> - <span x-text="Math.round((incomplete.offset / incomplete.size) * 100)"></span>% uploaded</span>
                             </div>
@@ -393,74 +393,114 @@
             },
 
             resumeIncompleteUpload(incomplete) {
-                const uploadId = Date.now() + Math.random();
+                console.log('Resuming upload:', incomplete);
 
-                // Add to active uploads
-                this.uploads.push({
-                    id: uploadId,
-                    filename: incomplete.metadata.filename || 'Unknown file',
-                    status: 'resuming',
-                    progress: Math.round((incomplete.offset / incomplete.size) * 100),
-                    bytesUploaded: incomplete.offset,
-                    bytesTotal: incomplete.size,
-                    url: null
-                });
+                // Create a file input to let user select the file again
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '*/*';
 
-                // Create a File object from the incomplete upload
-                // Note: We need to use the upload URL to resume
-                const upload = new tus.Upload(null, {
-                    endpoint: this.tusEndpoint,
-                    uploadUrl: incomplete.uploadUrl,
-                    retryDelays: [0, 3000, 5000, 10000, 20000],
-                    metadata: incomplete.metadata,
-                    onError: (error) => {
-                        console.error('TUS resume error:', error);
-                        const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                        if (uploadIndex !== -1) {
-                            this.uploads[uploadIndex].status = 'error';
-                        }
-                        this.$wire.call('uploadError', {
-                            filename: incomplete.metadata.filename,
-                            error: error.message
-                        });
-                    },
-                    onProgress: (bytesUploaded, bytesTotal) => {
-                        const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                        if (uploadIndex !== -1) {
-                            const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
-                            this.uploads[uploadIndex].progress = percentage;
-                            this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
-                            this.uploads[uploadIndex].bytesTotal = bytesTotal;
-                            this.uploads[uploadIndex].status = 'uploading';
-                        }
-                    },
-                    onSuccess: () => {
-                        console.log('TUS upload resumed and completed:', incomplete.uploadUrl);
-                        const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                        if (uploadIndex !== -1) {
-                            this.uploads[uploadIndex].status = 'completed';
-                            this.uploads[uploadIndex].progress = 100;
-                            this.uploads[uploadIndex].url = incomplete.uploadUrl;
-                        }
-
-                        // Remove from incomplete list
-                        this.removeIncompleteUpload(incomplete.uploadUrl);
-
-                        // Notify Livewire component
-                        this.$wire.call('uploadComplete', {
-                            filename: incomplete.metadata.filename,
-                            filetype: incomplete.metadata.filetype,
-                            url: incomplete.uploadUrl,
-                            metadata: incomplete.metadata
-                        });
+                fileInput.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        console.log('No file selected');
+                        return;
                     }
-                });
 
-                // Store the upload instance
-                this.uploadInstances[uploadId] = upload;
+                    // Verify file matches the incomplete upload
+                    if (file.size !== incomplete.size) {
+                        alert(`File size mismatch!\nExpected: ${this.formatBytes(incomplete.size)}\nSelected: ${this.formatBytes(file.size)}\n\nPlease select the correct file.`);
+                        return;
+                    }
 
-                // Start resuming the upload
-                upload.start();
+                    if (file.name !== incomplete.metadata.filename) {
+                        const proceed = confirm(`File name mismatch!\nExpected: ${incomplete.metadata.filename}\nSelected: ${file.name}\n\nThe file size matches. Continue anyway?`);
+                        if (!proceed) {
+                            return;
+                        }
+                    }
+
+                    const uploadId = Date.now() + Math.random();
+
+                    // Add to active uploads
+                    this.uploads.push({
+                        id: uploadId,
+                        filename: file.name,
+                        status: 'resuming',
+                        progress: Math.round((incomplete.offset / incomplete.size) * 100),
+                        bytesUploaded: incomplete.offset,
+                        bytesTotal: file.size,
+                        url: null
+                    });
+
+                    // Get additional metadata from form
+                    const additionalMetadata = this.$refs.form?.querySelector('[name="Additional"]')?.value || '';
+
+                    // Create TUS upload instance with the file
+                    const upload = new tus.Upload(file, {
+                        endpoint: this.tusEndpoint,
+                        uploadUrl: incomplete.uploadUrl,
+                        retryDelays: [0, 3000, 5000, 10000, 20000],
+                        metadata: {
+                            filename: file.name,
+                            filetype: file.type,
+                            additional: additionalMetadata
+                        },
+                        onError: (error) => {
+                            console.error('TUS resume error:', error);
+                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                            if (uploadIndex !== -1) {
+                                this.uploads[uploadIndex].status = 'error';
+                            }
+                            this.$wire.call('uploadError', {
+                                filename: file.name,
+                                error: error.message
+                            });
+                        },
+                        onProgress: (bytesUploaded, bytesTotal) => {
+                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                            if (uploadIndex !== -1) {
+                                const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
+                                this.uploads[uploadIndex].progress = percentage;
+                                this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
+                                this.uploads[uploadIndex].bytesTotal = bytesTotal;
+                                this.uploads[uploadIndex].status = 'uploading';
+                            }
+                        },
+                        onSuccess: () => {
+                            console.log('✓ Upload resumed and completed:', incomplete.uploadUrl);
+                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                            if (uploadIndex !== -1) {
+                                this.uploads[uploadIndex].status = 'completed';
+                                this.uploads[uploadIndex].progress = 100;
+                                this.uploads[uploadIndex].url = incomplete.uploadUrl;
+                            }
+
+                            // Remove from incomplete list
+                            this.removeIncompleteUpload(incomplete.uploadUrl);
+
+                            // Notify Livewire component
+                            this.$wire.call('uploadComplete', {
+                                filename: file.name,
+                                filetype: file.type,
+                                url: incomplete.uploadUrl,
+                                metadata: {
+                                    additional: additionalMetadata
+                                }
+                            });
+                        }
+                    });
+
+                    // Store the upload instance
+                    this.uploadInstances[uploadId] = upload;
+
+                    // Start resuming the upload
+                    console.log('Starting resume from offset:', incomplete.offset);
+                    upload.start();
+                };
+
+                // Trigger file selection
+                fileInput.click();
             },
 
             removeIncompleteUpload(uploadUrl) {
