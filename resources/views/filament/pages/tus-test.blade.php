@@ -4,28 +4,6 @@
 
     <div x-cloak x-data="tusUploader()">
 
-        <!-- Debug Section -->
-        {{-- <div class="mb-3 p-3 bg-blue-50 border border-blue-300 rounded-md">
-            <div class="flex items-center gap-3">
-                <span class="text-sm font-medium text-blue-800">Debug:</span>
-                <button
-                    type="button"
-                    @click="findIncompleteUploads()"
-                    class="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                    Refresh Incomplete Uploads
-                </button>
-                <span class="text-xs text-blue-700" x-text="`Found: ${incompleteUploads.length} incomplete upload(s)`"></span>
-                <button
-                    type="button"
-                    @click="console.log('localStorage:', localStorage); console.log('incompleteUploads:', incompleteUploads)"
-                    class="text-xs px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-                >
-                    Log to Console
-                </button>
-            </div>
-        </div> --}}
-
         <!-- Incomplete Uploads Section -->
         <div class="mb-5 p-4 border border-orange-300 rounded-md bg-orange-50" x-show="incompleteUploads.length > 0" style="display: none;">
             <div class="flex justify-between items-center mb-3">
@@ -83,6 +61,7 @@
 
         </form>
 
+        <!-- Upload Dropzone -->
         <div class="rounded-md w-1/3 border bg-gray-100 p-5 mt-5">
             <div
                 id="drag-drop-area"
@@ -111,6 +90,7 @@
             </div>
         </div>
 
+        <!-- Upload Progress & Controls -->
         <div class='p-4 mt-5 border border-gray-300 rounded-md bg-white' x-show="uploads.length > 0">
             <h3 class="font-semibold mb-3">Upload Progress</h3>
             <template x-for="upload in uploads" :key="upload.id">
@@ -201,7 +181,7 @@
                 @endforeach
             </ul>
         </div>
-
+        @dump($infos)
         <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($infos as $info)
@@ -314,26 +294,6 @@
                                 tusEntries[fingerprint][type] = value;
                             }
                         }
-                    // } else if (value) {
-                    //     // Check if value is JSON with uploadUrl (direct numeric key format)
-                    //     try {
-                    //         const parsedData = JSON.parse(value);
-                    //         if (parsedData && parsedData.uploadUrl) {
-                    //             const fingerprint = key;
-
-                    //             if (!tusEntries[fingerprint]) {
-                    //                 tusEntries[fingerprint] = {};
-                    //             }
-
-                    //             // Store the parsed data fields
-                    //             tusEntries[fingerprint].url = parsedData.uploadUrl;
-                    //             tusEntries[fingerprint].size = parsedData.size;
-                    //             tusEntries[fingerprint].metadata = parsedData.metadata;
-                    //             tusEntries[fingerprint].creationTime = parsedData.creationTime;
-                    //         }
-                    //     } catch (e) {
-                    //         // Not JSON or doesn't have uploadUrl, skip
-                    //     }
                     }
                 }
 
@@ -506,6 +466,9 @@
             removeIncompleteUpload(uploadUrl) {
                 console.log('Removing incomplete upload:', uploadUrl);
 
+                // Call Livewire method to delete from TUS server and storage
+                this.$wire.call('deleteIncompleteUpload', uploadUrl);
+
                 // Remove from incomplete uploads list
                 this.incompleteUploads = this.incompleteUploads.filter(u => u.uploadUrl !== uploadUrl);
 
@@ -546,18 +509,6 @@
                                 keysToRemove.push(`tus::${fingerprint}::upload_metadata`);
                                 keysToRemove.push(key); // Also remove the current key
                             }
-                        }
-                    }
-                    // Format 2: Direct numeric/fingerprint keys with JSON values
-                    else if (value) {
-                        try {
-                            const parsed = JSON.parse(value);
-                            if (parsed && parsed.uploadUrl === uploadUrl) {
-                                keysToRemove.push(key);
-                                console.log('Found matching entry to remove:', key);
-                            }
-                        } catch (e) {
-                            // Not JSON, skip
                         }
                     }
                 }

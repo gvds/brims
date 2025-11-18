@@ -98,4 +98,55 @@ class TusTest extends Page
             ->danger()
             ->send();
     }
+
+    public function deleteIncompleteUpload(string $uploadUrl): void
+    {
+        Log::info('Deleting incomplete TUS upload', ['url' => $uploadUrl]);
+
+        // Extract file key from upload URL (last part of URL path)
+        $urlParts = parse_url($uploadUrl);
+        $pathParts = explode('/', trim($urlParts['path'] ?? '', '/'));
+        $fileKey = end($pathParts);
+        $fileName = Str::of($fileKey)->explode('+')->first();
+
+        $storageDeleted = false;
+        $partDeleted = false;
+
+        if ($fileName) {
+            try {
+                $storageDeleted = Storage::disk('s3')->delete($fileName);
+                $partDeleted = Storage::disk('s3')->delete($fileName . '.part');
+                Storage::disk('s3')->delete($fileName . '.info');
+
+                Log::info('Files deleted from S3 storage', [
+                    'file_name' => $fileName,
+                    'deleted' => $storageDeleted,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to delete from S3 storage', [
+                    'file_name' => $fileName,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // Show appropriate notification
+        if ($storageDeleted || $partDeleted) {
+            \Filament\Notifications\Notification::make()
+                ->title('Upload Deleted')
+                ->body('Incomplete upload removed from storage')
+                ->success()
+                ->send();
+        } else {
+            \Filament\Notifications\Notification::make()
+                ->title('Deletion Attempt Failed')
+                ->body('Upload record removed from tracking')
+                ->danger()
+                ->send()
+                ->persistent();
+        }
+
+        // Refresh file metadata
+        $this->getFileMetadata();
+    }
 }
