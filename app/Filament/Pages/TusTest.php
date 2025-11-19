@@ -2,31 +2,76 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Assay;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class TusTest extends Page
+class TusTest extends Page  implements HasForms
 {
+    use InteractsWithSchemas;
+
     protected string $view = 'filament.pages.tus-test';
+
+    public ?array $data = [];
 
     public $files = null;
 
     public $infos = [];
 
-    public $savedfilename = null;
-
-    public $filetype = null;
-
     public $filename = null;
 
-    public $resultArray = [];
+    // public $savedfilename = null;
+
+    // public $filetype = null;
+
 
     public function mount(): void
     {
         $this->getFileMetadata();
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->required(),
+                TextInput::make('technologyPlatform')
+                    ->required(),
+                Textarea::make('description')
+                    ->default(null)
+                    ->columnSpanFull(),
+                DatePicker::make('submission_date'),
+                DatePicker::make('public_release_date'),
+            ])
+            ->columns([
+                'xs' => 1,
+                'sm' => 2,
+            ])
+            ->extraAttributes(['class' => 'w-full lg:w-2/3 xl:w-1/2'])
+            ->statePath('data');
+    }
+
+    public function create(): void
+    {
+        $data = $this->form->getState();
+
+        // Save $data to your database or perform other actions
+        // Example: MyModel::create($data);
+        Assay::create($data);
+
+        session()->flash('message', 'Form submitted successfully!');
+        $this->form->fill(); // Clear the form
     }
 
     public function getInfo($file)
@@ -64,7 +109,16 @@ class TusTest extends Page
 
     public function download($file, $filename)
     {
-        return Storage::disk('s3')->download($file, $filename);
+        if (!Storage::disk('s3')->exists($file . 'x')) {
+            Notification::make()
+                ->title('Download Failed')
+                ->body("<strong>{$filename}</strong> could not be found")
+                ->danger()
+                ->send();
+            return;
+        }
+        return Storage::disk('s3')->response($file);
+        // return Storage::disk('s3')->download($file, $filename);
     }
 
     public function delete($file)
@@ -79,15 +133,15 @@ class TusTest extends Page
         Log::info('TUS Upload completed', $data);
 
         $this->filename = $data['filename'] ?? null;
-        $this->filetype = $data['filetype'] ?? null;
-        $this->savedfilename = $data['url'] ?? null;
-        $this->resultArray[] = $data;
+        // $this->filetype = $data['filetype'] ?? null;
+        // $this->savedfilename = $data['url'] ?? null;
+        // $this->resultArray[] = $data;
 
         // Refresh file metadata from storage
         $this->getFileMetadata();
 
         // Optional: Show success notification
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Upload Complete')
             ->body("File '{$this->filename}' uploaded successfully")
             ->success()
@@ -99,9 +153,9 @@ class TusTest extends Page
         Log::error('TUS Upload error', $data);
 
         // Optional: Show error notification
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Upload Failed')
-            ->body("Failed to upload '{$data['filename']}': {$data['error']}")
+            ->body("Failed to upload <strong>{$data['filename']}</strong>: {$data['error']}")
             ->danger()
             ->send();
     }
@@ -139,13 +193,13 @@ class TusTest extends Page
 
         // Show appropriate notification
         if ($storageDeleted || $partDeleted) {
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->title('Upload Deleted')
                 ->body('Incomplete upload removed from storage')
                 ->success()
                 ->send();
         } else {
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->title('Deletion Attempt Failed')
                 ->body('Upload record removed from tracking')
                 ->danger()

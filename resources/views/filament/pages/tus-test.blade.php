@@ -55,15 +55,10 @@
         </div>
 
         <!-- Data Form -->
-        <form id="tustest-form" x-ref="form" wire:submit='' class='my-2'>
-            {{-- @csrf --}}
-            <div>Additional Metadata</div>
-            <div class="text-gray-800"><input type="text" name="Additional" class='bg-white border border-gray-300 rounded-md p-2' wire:model='txt'></div>
-
-        </form>
+        {{ $this->form }}
 
         <!-- Upload Dropzone -->
-        <div class="rounded-md w-1/3 border bg-gray-100 p-5 mt-5">
+        <div class="rounded-md w-full lg:w-2/3 xl:w-1/2 border bg-gray-100 p-5 mt-10">
             <div
                 id="drag-drop-area"
                 x-ref="dropzone"
@@ -173,7 +168,7 @@
         </div>
 
         <!-- List of files on server -->
-        <div class="mt-5 border border-gray-500 p-3">
+        {{-- <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($files as $file)
                 <li>
@@ -181,7 +176,7 @@
                 </li>
                 @endforeach
             </ul>
-        </div>
+        </div> --}}
 
         @dump($infos)
 
@@ -202,12 +197,12 @@
         </div>
 
         <!-- Upload Result Details -->
-        <div class="mt-5 border border-gray-500 p-3">
+        {{-- <div class="mt-5 border border-gray-500 p-3">
             TUS Result:
             <div>{{ $filename }}</div>
             <div>{{ $filetype }}</div>
             <div>{{ $savedfilename }}</div>
-        </div>
+        </div> --}}
     </div>
 
     @script
@@ -231,6 +226,8 @@
                     console.error('✗ Failed to load TUS library:', err);
                     this.findIncompleteUploads();
                 });
+
+                // alert(JSON.stringify(this.$wire.get('data')));
             },
 
             async waitForTus(maxAttempts = 20, interval = 100) {
@@ -422,7 +419,8 @@
                         url: null
                     });
 
-                    const additionalMetadata = this.$refs.form?.querySelector('[name="Additional"]')?.value || '';
+                    // Get identifier from Livewire component data
+                    const additionalMetadata = JSON.stringify(this.$wire.get('data'));
 
                     // Create TUS upload instance with the file
                     const upload = this.tusupload(file, uploadId, additionalMetadata, incomplete.uploadUrl);
@@ -551,8 +549,8 @@
                     return;
                 }
 
-                // Get additional metadata from form
-                const additionalMetadata = this.$refs.form?.querySelector('[name="Additional"]')?.value || '';
+                // Get additional metadata from form field named 'identifier'
+                const additionalMetadata = JSON.stringify(this.$wire.get('data'));
 
                 const upload = this.tusupload(file, uploadId, additionalMetadata);
 
@@ -576,7 +574,7 @@
                         metadata: {
                             filename: file.name,
                             filetype: file.type,
-                            additional: additionalMetadata
+                            formdata: additionalMetadata
                         },
                         onError: (error) => {
                             console.error('TUS upload error:', error);
@@ -619,7 +617,7 @@
                                 filetype: file.type,
                                 url: upload_url,
                                 metadata: {
-                                    additional: additionalMetadata
+                                    formdata: additionalMetadata
                                 }
                             });
                         }
