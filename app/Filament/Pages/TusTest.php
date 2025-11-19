@@ -16,10 +16,6 @@ class TusTest extends Page
 
     public $infos = [];
 
-    // public $txt = null;
-
-    // public $project = null;
-
     public $savedfilename = null;
 
     public $filetype = null;
@@ -42,10 +38,10 @@ class TusTest extends Page
         ])->get(Storage::disk('s3')->url($file));
     }
 
-    public function fileExists($fileName): bool
-    {
-        return Storage::disk('s3')->exists($fileName);
-    }
+    // public function fileExists($fileName): bool
+    // {
+    //     return Storage::disk('s3')->exists($fileName);
+    // }
 
     private function getFileMetadata(): void
     {
@@ -59,7 +55,6 @@ class TusTest extends Page
                 $this->infos[] = json_decode($this->getInfo($file)->body(), true);
             }
         }
-        // dd($this->infos);
     }
 
     // public function processform(): void
@@ -69,7 +64,6 @@ class TusTest extends Page
 
     public function download($file, $filename)
     {
-        // return Storage::disk('s3')->response($file);
         return Storage::disk('s3')->download($file, $filename);
     }
 

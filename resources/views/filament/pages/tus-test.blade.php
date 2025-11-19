@@ -263,19 +263,11 @@
                         // TUS library format: tus::fingerprint::type
                         const parts = key.split('::');
 
-                        if (parts.length >= 2) {
+                        if (parts.length === 3) {
                             let fingerprint, type;
 
-                            if (parts.length === 2) {
-                                fingerprint = parts[1];
-                                type = 'url';
-                            } else if (parts.length === 3) {
-                                fingerprint = parts[1];
-                                type = parts[2];
-                            } else {
-                                fingerprint = parts.slice(1).join('::');
-                                type = 'unknown';
-                            }
+                            fingerprint = parts[1];
+                            type = parts[2];
 
                             if (!tusEntries[fingerprint]) {
                                 tusEntries[fingerprint] = {};
@@ -308,30 +300,19 @@
                 // Process each fingerprint
                 for (const fingerprint of Object.keys(tusEntries)) {
                     const entry = tusEntries[fingerprint];
-
-                    // Get upload URL - could be stored as 'url' or 'upload_url'
-                    const uploadUrl = entry.url || entry.upload_url;
+                    // Get upload URL
+                    const uploadUrl = entry.url;
 
                     if (uploadUrl) {
                         const offset = parseInt(entry.upload_offset || entry.offset) || 0;
                         let metadata = {};
 
-                        // Metadata might already be an object or a JSON string
+                        // Get Metadata object
                         if (entry.metadata) {
                             if (typeof entry.metadata === 'object') {
                                 metadata = entry.metadata;
                             } else {
-                                try {
-                                    metadata = JSON.parse(entry.metadata);
-                                } catch (e) {
-                                    console.warn('Failed to parse metadata:', e);
-                                }
-                            }
-                        } else if (entry.upload_metadata) {
-                            try {
-                                metadata = JSON.parse(entry.upload_metadata);
-                            } catch (e) {
-                                console.warn('Failed to parse upload_metadata:', e);
+                                console.warn('Failed to parse metadata');
                             }
                         }
 
@@ -361,20 +342,21 @@
                 // Find the existing entry in incompleteUploads
                 const existingIndex = this.incompleteUploads.findIndex(u => u.fingerprint === fingerprint);
 
-                console.log(this.incompleteUploads)
+                // console.log(this.incompleteUploads)
                 try {
                     const response = await fetch(uploadUrl, {
                         method: 'HEAD',
                     });
 
                     if (response.ok) {
-                        const uploadOffset = parseInt(response.headers.get('Upload-Offset')) || 0;
-                        const uploadLength = parseInt(response.headers.get('Upload-Length')) || 0;
+                        const uploadOffset = parseInt(response.headers.get('upload-offset')) || 0;
+                        const uploadLength = parseInt(response.headers.get('upload-length')) || 0;
 
                         // Update existing entry with server data
                         if (existingIndex !== -1) {
                             if (uploadLength > 0 && uploadOffset < uploadLength) {
                                 // Update with real server data
+
                                 this.incompleteUploads[existingIndex].offset = uploadOffset;
                                 this.incompleteUploads[existingIndex].size = uploadLength;
                                 console.log('✓ Verified incomplete:', metadata.filename, `(${uploadOffset}/${uploadLength} bytes)`);
@@ -440,63 +422,10 @@
                         url: null
                     });
 
-                    // Get additional metadata from form
                     const additionalMetadata = this.$refs.form?.querySelector('[name="Additional"]')?.value || '';
 
                     // Create TUS upload instance with the file
-                    const upload = new tus.Upload(file, {
-                        endpoint: this.tusEndpoint,
-                        uploadUrl: incomplete.uploadUrl,
-                        retryDelays: [0, 3000, 5000, 10000, 20000],
-                        metadata: {
-                            filename: file.name,
-                            filetype: file.type,
-                            additional: additionalMetadata
-                        },
-                        onError: (error) => {
-                            console.error('TUS resume error:', error);
-                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                            if (uploadIndex !== -1) {
-                                this.uploads[uploadIndex].status = 'error';
-                            }
-                            this.$wire.call('uploadError', {
-                                filename: file.name,
-                                error: error.message
-                            });
-                        },
-                        onProgress: (bytesUploaded, bytesTotal) => {
-                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                            if (uploadIndex !== -1) {
-                                const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
-                                this.uploads[uploadIndex].progress = percentage;
-                                this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
-                                this.uploads[uploadIndex].bytesTotal = bytesTotal;
-                                this.uploads[uploadIndex].status = 'uploading';
-                            }
-                        },
-                        onSuccess: () => {
-                            console.log('✓ Upload resumed and completed:', incomplete.uploadUrl);
-                            const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-                            if (uploadIndex !== -1) {
-                                this.uploads[uploadIndex].status = 'completed';
-                                this.uploads[uploadIndex].progress = 100;
-                                this.uploads[uploadIndex].url = incomplete.uploadUrl;
-                            }
-
-                            // Remove from incomplete list
-                            this.removeIncompleteUpload(incomplete.uploadUrl);
-
-                            // Notify Livewire component
-                            this.$wire.call('uploadComplete', {
-                                filename: file.name,
-                                filetype: file.type,
-                                url: incomplete.uploadUrl,
-                                metadata: {
-                                    additional: additionalMetadata
-                                }
-                            });
-                        }
-                    });
+                    const upload = this.tusupload(file, uploadId, additionalMetadata, incomplete.uploadUrl);
 
                     // Store the upload instance
                     this.uploadInstances[uploadId] = upload;
@@ -532,22 +461,17 @@
 
                     const value = localStorage.getItem(key);
 
-                    // Format 1: tus:: prefixed keys
                     if (key.startsWith('tus::')) {
                         // Check if the value matches the uploadUrl or if it's JSON containing the uploadUrl
                         let shouldRemove = false;
 
-                        if (value === uploadUrl) {
-                            shouldRemove = true;
-                        } else {
-                            try {
-                                const parsed = JSON.parse(value);
-                                if (parsed && parsed.uploadUrl === uploadUrl) {
-                                    shouldRemove = true;
-                                }
-                            } catch (e) {
-                                // Not JSON, skip
+                        try {
+                            const parsed = JSON.parse(value);
+                            if (parsed && parsed.uploadUrl === uploadUrl) {
+                                shouldRemove = true;
                             }
+                        } catch (e) {
+                            // Not JSON, skip
                         }
 
                         if (shouldRemove) {
@@ -627,73 +551,79 @@
                     return;
                 }
 
-                const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-
                 // Get additional metadata from form
                 const additionalMetadata = this.$refs.form?.querySelector('[name="Additional"]')?.value || '';
 
-                const upload = new tus.Upload(file, {
-                    endpoint: this.tusEndpoint,
-                    retryDelays: [0, 3000, 5000, 10000, 20000],
-                    // uploadDataDuringCreation: true,
-                    chunkSize: 33554432, // 32MB
-                    // parallelUploads: Math.ceil(file.size / 33554432),
-                    metadata: {
-                        filename: file.name,
-                        filetype: file.type,
-                        additional: additionalMetadata,
-                    },
-                    onError: (error) => {
-                        console.error('TUS upload error:', error);
-                        if (uploadIndex !== -1) {
-                            this.uploads[uploadIndex].status = 'error';
-                        }
-
-                        // Check if CORS error
-                        if (error.message && error.message.includes('CORS')) {
-                            alert('CORS Error: The TUS server at ' + this.tusEndpoint + ' is blocking cross-origin requests. Please configure CORS headers on the server.');
-                        }
-
-                        this.$wire.call('uploadError', {
-                            filename: file.name,
-                            error: error.message
-                        });
-                    },
-                    onProgress: (bytesUploaded, bytesTotal) => {
-                        if (uploadIndex !== -1) {
-                            const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
-                            this.uploads[uploadIndex].progress = percentage;
-                            this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
-                            this.uploads[uploadIndex].bytesTotal = bytesTotal;
-                            this.uploads[uploadIndex].status = 'uploading';
-                        }
-                    },
-                    onSuccess: () => {
-                        console.log('TUS upload completed:', upload.url);
-                        if (uploadIndex !== -1) {
-                            this.uploads[uploadIndex].status = 'completed';
-                            this.uploads[uploadIndex].progress = 100;
-                            this.uploads[uploadIndex].url = upload.url;
-                            this.removeIncompleteUpload(upload.url);
-                            }
-
-                        // Notify Livewire component
-                        this.$wire.call('uploadComplete', {
-                            filename: file.name,
-                            filetype: file.type,
-                            url: upload.url,
-                            metadata: {
-                                additional: additionalMetadata
-                            }
-                        });
-                    }
-                });
+                const upload = this.tusupload(file, uploadId, additionalMetadata);
 
                 // Store the upload instance for pause/resume
                 this.uploadInstances[uploadId] = upload;
 
                 // Start the upload
                 upload.start();
+            },
+
+            tusupload(file, uploadId, additionalMetadata, upload_url = null) {
+                console.log('Starting TUS upload for:', file.name);
+                const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
+                return new tus.Upload(file, {
+                        endpoint: this.tusEndpoint,
+                        uploadUrl: upload_url,
+                        retryDelays: [0, 3000, 5000, 10000, 20000],
+                        // uploadDataDuringCreation: true,
+                        // chunkSize: 33554432, // 32MB
+                        // parallelUploads: Math.ceil(file.size / 33554432),
+                        metadata: {
+                            filename: file.name,
+                            filetype: file.type,
+                            additional: additionalMetadata
+                        },
+                        onError: (error) => {
+                            console.error('TUS upload error:', error);
+                            if (uploadIndex !== -1) {
+                                this.uploads[uploadIndex].status = 'error';
+                            }
+
+                            // Check if CORS error
+                            if (error.message && error.message.includes('CORS')) {
+                                alert('CORS Error: The TUS server at ' + this.tusEndpoint + ' is blocking cross-origin requests. Please configure CORS headers on the server.');
+                            }
+
+                            this.$wire.call('uploadError', {
+                                filename: file.name,
+                                error: error.message
+                            });
+                        },
+                        onProgress: (bytesUploaded, bytesTotal) => {
+                            if (uploadIndex !== -1) {
+                                const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
+                                this.uploads[uploadIndex].progress = percentage;
+                                this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
+                                this.uploads[uploadIndex].bytesTotal = bytesTotal;
+                                this.uploads[uploadIndex].status = 'uploading';
+                            }
+                        },
+                        onSuccess: () => {
+                            console.log('✓ Upload resumed and completed:', upload_url);
+                            if (uploadIndex !== -1) {
+                                this.uploads[uploadIndex].status = 'completed';
+                                this.uploads[uploadIndex].progress = 100;
+                                this.uploads[uploadIndex].url = upload_url;
+                            }
+
+                            // Remove from incomplete list
+                            this.removeIncompleteUpload(upload_url);
+                            // Notify Livewire component
+                            this.$wire.call('uploadComplete', {
+                                filename: file.name,
+                                filetype: file.type,
+                                url: upload_url,
+                                metadata: {
+                                    additional: additionalMetadata
+                                }
+                            });
+                        }
+                    });
             },
 
             pauseUpload(uploadId) {
@@ -721,7 +651,6 @@
             cancelUpload(uploadId) {
                 const upload = this.uploadInstances[uploadId];
                 const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-
                 if (upload && uploadIndex !== -1) {
                     upload.abort(true); // true = delete the upload from server
                     this.uploads[uploadIndex].status = 'cancelled';
