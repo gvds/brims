@@ -11,13 +11,10 @@ use App\Filament\Resources\Projects\Resources\Studies\Schemas\StudyInfolist;
 use App\Filament\Resources\Projects\Resources\Studies\Tables\StudiesTable;
 use App\Models\Study;
 use BackedEnum;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class StudyResource extends Resource
 {
