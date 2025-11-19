@@ -54,6 +54,7 @@
             </div>
         </div>
 
+        <!-- Data Form -->
         <form id="tustest-form" x-ref="form" wire:submit='' class='my-2'>
             {{-- @csrf --}}
             <div>Additional Metadata</div>
@@ -171,6 +172,7 @@
             </template>
         </div>
 
+        <!-- List of files on server -->
         <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($files as $file)
@@ -180,7 +182,10 @@
                 @endforeach
             </ul>
         </div>
-@dump($infos)
+
+        @dump($infos)
+
+        <!-- File Access and Management -->
         <div class="mt-5 border border-gray-500 p-3">
             <ul>
                 @foreach ($infos as $info)
@@ -196,6 +201,7 @@
             </ul>
         </div>
 
+        <!-- Upload Result Details -->
         <div class="mt-5 border border-gray-500 p-3">
             TUS Result:
             <div>{{ $filename }}</div>
