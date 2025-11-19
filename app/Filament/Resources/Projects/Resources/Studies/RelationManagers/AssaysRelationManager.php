@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Resources\Studies\RelationManagers;
 
+use App\Filament\Resources\Assays\AssayResource;
 use App\Models\AssayDefinition;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\Storage;
 class AssaysRelationManager extends RelationManager
 {
     protected static string $relationship = 'assays';
+
+    protected static ?string $relatedResource = AssayResource::class;
 
     #[\Override]
     public function isReadOnly(): bool
