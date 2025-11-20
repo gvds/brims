@@ -25,13 +25,7 @@ class CreateAssay extends CreateRecord
 
     public $filename = null;
 
-    // protected function getHeaderActions(): array
-    // {
-    //     return [
-    //         Action::make('return')
-    //             ->url(''),
-    //     ];
-    // }
+    #[\Override]
     public function mount(): void
     {
         $this->getFileMetadata();

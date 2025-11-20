@@ -50,9 +50,9 @@ class AssayResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListAssays::route('/'),
-            'create' => CreateAssay::route('/create'),
-            'edit' => EditAssay::route('/{record}/edit'),
+            // 'index' => ListAssays::route('/'),
+            // 'create' => CreateAssay::route('/create'),
+            // 'edit' => EditAssay::route('/{record}/edit'),
         ];
     }
 }

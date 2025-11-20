@@ -21,17 +21,19 @@ class AssayForm
             ->components([
                 TextInput::make('name')
                     ->required()
+                    ->live()
                     ->maxLength(100),
                 Select::make('assaydefinition_id')
                     ->relationship('assaydefinition', 'name')
                     ->label('Assay Definition')
                     ->required()
-                    ->reactive()
+                    ->live()
                     ->afterStateUpdated(function ($state, callable $set): void {
                         $set('additional_fields', []);
                     }),
                 TextInput::make('technologyPlatform')
                     ->required()
+                    ->live()
                     ->maxLength(50),
                 // FileUpload::make('assayfile')
                 //     ->label('Assay File')
