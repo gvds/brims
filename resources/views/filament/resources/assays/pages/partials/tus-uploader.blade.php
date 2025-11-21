@@ -1,5 +1,4 @@
 <div x-cloak x-data="tusUploader()" class="w-full">
-
     <!-- Incomplete Uploads Section -->
     <div class="mb-5 p-4 border border-orange-300 rounded-md bg-orange-50" x-show="incompleteUploads.length > 0" style="display: none;">
         <div class="flex justify-between items-center mb-3">
@@ -49,7 +48,6 @@
             </template>
         </div>
     </div>
-
     <!-- Upload Dropzone -->
     <div class="font-semibold text-sm">Assay Files</div>
     <div class="rounded-md border bg-gray-100 p-4 mt-1">
@@ -501,6 +499,8 @@
 
                     this.removeIncompleteUpload(upload_url);
                     this.$wire.call('uploadComplete', {
+                        assayId: {{ $assay->id }},
+                        uploadId: uploadId,
                         filename: file.name,
                         filetype: file.type,
                         url: upload_url,

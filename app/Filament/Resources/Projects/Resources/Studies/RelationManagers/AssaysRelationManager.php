@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Projects\Resources\Studies\RelationManagers;
 
 use App\Filament\Resources\Assays\Schemas\AssayForm;
 use App\Filament\Resources\Assays\Tables\AssaysTable;
+use App\Models\Assay;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -105,6 +106,18 @@ class AssaysRelationManager extends RelationManager
         Log::info('TUS Upload completed', $data);
 
         $this->filename = $data['filename'] ?? null;
+        $uploadId = $data['uploadId'] ?? null;
+        $assayId = $data['assayId'] ?? null;
+
+        if ($assayId && $uploadId) {
+            $assay = Assay::find($assayId);
+            if ($assay) {
+                $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];
+                $assayFiles[] = $uploadId;
+                $assay->assayfiles = $assayFiles;
+                $assay->save();
+            }
+        }
 
         $this->getFileMetadata();
 

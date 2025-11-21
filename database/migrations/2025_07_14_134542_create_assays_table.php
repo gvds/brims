@@ -22,7 +22,8 @@ return new class extends Migration
             $table->foreignIdFor(AssayDefinition::class, 'assaydefinition_id')->constrained();
             $table->string('technologyPlatform', 50);
             $table->json('additional_fields')->nullable();
-            $table->string('assayfile', 150)->nullable();
+            $table->json('assayfile')->nullable();
+            // $table->string('assayfile', 150)->nullable();
             $table->string('assayfilename')->nullable();
             $table->text('uri')->nullable();
             $table->string('location')->nullable();

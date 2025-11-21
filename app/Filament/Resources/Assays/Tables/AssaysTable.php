@@ -28,6 +28,11 @@ class AssaysTable
                     ->searchable(),
                 TextColumn::make('location')
                     ->searchable(),
+                TextColumn::make('assayfiles')
+                    ->label('Files')
+                    ->badge()
+                    ->getStateUsing(fn($record) => is_array($record->assayfiles) ? count($record->assayfiles) : 0)
+                    ->color(fn($state) => $state > 0 ? 'success' : 'gray'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -54,8 +59,9 @@ class AssaysTable
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->modalContentFooter(function () use ($relationManager) {
+                    ->modalContentFooter(function ($record) use ($relationManager) {
                         return view('filament.resources.assays.pages.partials.tus-uploader', [
+                            'assay' => $record,
                             'infos' => $relationManager ? $relationManager->infos : [],
                         ]);
                     })
