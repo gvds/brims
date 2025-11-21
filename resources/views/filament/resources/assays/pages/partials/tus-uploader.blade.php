@@ -162,19 +162,25 @@
     </div>
 
     <!-- File Access and Management -->
-    <div class="mt-5 border border-gray-500 p-3">
-        <ul>
-            @foreach ($infos ?? [] as $info)
-            <li class='mt-1' wire:key='"{{ $info['ID'] }}'>
-                @continue(empty($info))
-                <span class='text-emerald-500 font-semibold cursor-pointer'
-                wire:click="download('{{$info['Storage']['Key']}}', '{{$info['MetaData']['filename']}}')">{{$info['MetaData']['filename']}}</span>
-                [{{$info['MetaData']['filetype']}}] <span
-                class="bg-red-300 border border-red-800 text-red-900 text-sm font-semibold py-0 px-2 rounded-md cursor-pointer"
-                wire:click="delete('{{$info['Storage']['Key']}}')">DELETE</span>
-            </li>
-            @endforeach
-        </ul>
+    <div class="mt-5 border border-gray-500 p-3" x-data="{ uploadedFiles: $wire.entangle('infos') }">
+        <h3 class="font-semibold mb-2 text-gray-700">Uploaded Files</h3>
+        <template x-if="uploadedFiles && uploadedFiles.length > 0">
+            <ul>
+                <template x-for="(info, index) in uploadedFiles" :key="info?.ID || index">
+                    <li class='mt-1' x-show="info && Object.keys(info).length > 0">
+                        <span class='text-emerald-500 font-semibold cursor-pointer'
+                              @click="$wire.call('download', info.Storage?.Key, info.MetaData?.filename)"
+                              x-text="info.MetaData?.filename || 'Unknown'"></span>
+                        <span x-text="'[' + (info.MetaData?.filetype || 'unknown') + ']'"></span>
+                        <span class="bg-red-300 border border-red-800 text-red-900 text-sm font-semibold py-0 px-2 rounded-md cursor-pointer"
+                              @click="$wire.call('delete', info.Storage?.Key)">DELETE</span>
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template x-if="!uploadedFiles || uploadedFiles.length === 0">
+            <p class="text-sm text-gray-500 italic">No files uploaded yet.</p>
+        </template>
     </div>
 </div>
 

@@ -2,27 +2,16 @@
 
 namespace App\Filament\Resources\Projects\Resources\Studies\RelationManagers;
 
-use App\Filament\Resources\Assays\AssayResource;
 use App\Filament\Resources\Assays\Schemas\AssayForm;
 use App\Filament\Resources\Assays\Tables\AssaysTable;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use Nette\Utils\Html;
 
 class AssaysRelationManager extends RelationManager
 {
@@ -48,71 +37,19 @@ class AssaysRelationManager extends RelationManager
         return AssayForm::configure($schema);
     }
 
+    // #[\Override]
+    // public function infolist(Schema $schema): Schema
+    // {
+    //     return AssayInfolist::configure($schema);
+    // }
+
+    #[\Override]
     public function table(Table $table): Table
     {
-        // return AssaysTable::configure($table);
-        return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('study.title')
-                    ->sortable(),
-                TextColumn::make('assaydefinition.name')
-                    ->sortable(),
-                TextColumn::make('technologyPlatform')
-                    ->searchable(),
-                TextColumn::make('location')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                CreateAction::make()
-                    ->mutateDataUsing(function (array $data): array {
-                        $data['study_id'] = $this->getOwnerRecord()->id;
-                        $data['user_id'] = auth()->id();
-
-                        return $data;
-                    })
-                    // ->modalContentFooter(view('filament.resources.assays.pages.partials.tus-uploader', [
-                    //     'infos' => $this->infos,
-                    // ]))
-                    ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
-                // ->slideOver(),
-            ])
-            ->recordActions([
-                ViewAction::make()
-                    ->modalContentFooter(view('filament.resources.assays.pages.partials.tus-uploader', [
-                        'infos' => $this->infos,
-                    ])),
-                EditAction::make()
-                    ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
-                DeleteAction::make()
-                    ->using(function (Model $record): void {
-                        if (isset($record->assayfile)) {
-                            Storage::disk('s3')->delete($record->assayfile);
-                        }
-                        $record->delete();
-                    })
-                    ->modalHeading(fn($record) => new HtmlString('Delete Assay<br/>' . $record->name))
-                    ->modalDescription(new HtmlString("This will delete all associated data files.<br/>Are you sure you want to delete this assay?")),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return AssaysTable::configure($table, $this);
     }
 
+    #[\Override]
     public function mount(): void
     {
         parent::mount();
@@ -128,7 +65,7 @@ class AssaysRelationManager extends RelationManager
         ])->get(Storage::disk('s3')->url($file));
     }
 
-    private function getFileMetadata(): void
+    public function getFileMetadata(): void
     {
         $this->files = Storage::disk('s3')->files();
         $this->infos = [];

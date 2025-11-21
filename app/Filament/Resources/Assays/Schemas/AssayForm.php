@@ -85,33 +85,41 @@ class AssayForm
                                     ->required($field['required'] ?? false);
                             }
                             if ($field['field_type'] === 'radio') {
-                                $fields[] = Fieldset::make()
-                                    ->schema([
-                                        Radio::make($fieldname)
-                                            ->label($field['label'] ?? null)
-                                            ->options(fn() => collect($field['field_options'] ?? [])
-                                                ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
-                                            ->inline()
-                                            ->required($field['required'] ?? false)
-                                    ]);
+                                $fields[] = Radio::make($fieldname)
+                                    // ->label($field['label'] ?? null)
+                                    ->options(fn() => collect($field['field_options'] ?? [])
+                                        ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
+                                    ->inline()
+                                    // ->extraInputAttributes(['class' => 'text-sm bg-emerald-600'])
+                                    ->extraAttributes(
+                                        fn(string $operation) => in_array($operation, ['edit', 'create']) ?
+                                            ['class' => 'border border-stone-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 p-2'] :
+                                            ['class' => 'border border-stone-200 dark:border-zinc-700 bg-stone-50 dark:bg-zinc-900 shadow-xs rounded-lg p-2']
+                                    )
+                                    ->required($field['required'] ?? false);
                             }
                             if ($field['field_type'] === 'checkboxlist') {
-                                $fields[] = Fieldset::make()
-                                    ->schema([
-                                        CheckboxList::make($fieldname)
-                                            ->label($field['label'] ?? null)
-                                            ->options(fn() => collect($field['field_options'] ?? [])
-                                                ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
-                                            ->required($field['required'] ?? false)
-                                    ]);
+                                $fields[] = CheckboxList::make($fieldname)
+                                    // ->label($field['label'] ?? null)
+                                    ->options(fn() => collect($field['field_options'] ?? [])
+                                        ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
+                                    ->extraAttributes(
+                                        fn(string $operation) => in_array($operation, ['edit', 'create']) ?
+                                            ['class' => 'mt-1 border border-stone-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 px-3 pb-2'] :
+                                            ['class' => 'mt-1 border border-stone-200 dark:border-zinc-700 rounded-lg bg-stone-50 dark:bg-zinc-900 shadow-xs px-3 pb-2']
+                                    )
+                                    ->columns(2)
+                                    ->required($field['required'] ?? false);
                             }
                             if ($field['field_type'] === 'checkbox') {
-                                $fields[] = Fieldset::make()
-                                    ->schema([
-                                        Checkbox::make($fieldname)
-                                            ->label($field['label'] ?? null)
-                                            ->required($field['required'] ?? false)
-                                    ]);
+                                $fields[] = Checkbox::make($fieldname)
+                                    ->label($field['label'] ?? null)
+                                    ->extraAttributes(
+                                        fn(string $operation) => in_array($operation, ['edit', 'create']) ?
+                                            ['class' => 'border border-stone-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 p-2'] :
+                                            ['class' => 'border border-stone-200 dark:border-zinc-700 bg-stone-50 dark:bg-zinc-900 shadow-xs rounded-lg p-2']
+                                    )
+                                    ->required($field['required'] ?? false);
                             }
                             // Add more field types as needed
                         }
