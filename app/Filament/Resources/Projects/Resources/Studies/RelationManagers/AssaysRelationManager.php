@@ -20,7 +20,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Nette\Utils\Html;
 
 class AssaysRelationManager extends RelationManager
 {
@@ -88,34 +90,21 @@ class AssaysRelationManager extends RelationManager
                 // ->slideOver(),
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->modalContentFooter(view('filament.resources.assays.pages.partials.tus-uploader', [
+                        'infos' => $this->infos,
+                    ])),
                 EditAction::make()
-                    ->using(function (Model $record, array $data): Model {
-
-                        $record->update($data);
-
-                        return $record;
-                    })
-                    // ->modalContentFooter(view('filament.resources.assays.pages.partials.tus-uploader', [
-                    //     'infos' => $this->infos,
-                    // ]))
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
-                // EditAction::make()
-                //     ->using(function (Model $record, array $data): Model {
-                //         if (isset($record->assayfile) && $data['assayfile'] != $record->assayfile) {
-                //             Storage::disk('assayfiles')->delete($record->assayfile);
-                //         }
-                //         $record->update($data);
-
-                //         return $record;
-                //     }),
                 DeleteAction::make()
                     ->using(function (Model $record): void {
                         if (isset($record->assayfile)) {
                             Storage::disk('s3')->delete($record->assayfile);
                         }
                         $record->delete();
-                    }),
+                    })
+                    ->modalHeading(fn($record) => new HtmlString('Delete Assay<br/>' . $record->name))
+                    ->modalDescription(new HtmlString("This will delete all associated data files.<br/>Are you sure you want to delete this assay?")),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
