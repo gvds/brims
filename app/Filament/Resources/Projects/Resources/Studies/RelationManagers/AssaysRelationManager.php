@@ -34,14 +34,15 @@ class AssaysRelationManager extends RelationManager
     #[\Override]
     public function form(Schema $schema): Schema
     {
-        return AssayForm::configure($schema);
+        return AssayForm::configure($schema, 1);
     }
 
-    // #[\Override]
-    // public function infolist(Schema $schema): Schema
-    // {
-    //     return AssayInfolist::configure($schema);
-    // }
+    #[\Override]
+    public function infolist(Schema $schema): Schema
+    {
+        return AssayForm::configure($schema, 2);
+        // return AssayInfolist::configure($schema);
+    }
 
     #[\Override]
     public function table(Table $table): Table

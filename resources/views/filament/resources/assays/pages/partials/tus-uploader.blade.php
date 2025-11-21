@@ -52,11 +52,11 @@
 
     <!-- Upload Dropzone -->
     <div class="font-semibold text-sm">Assay Files</div>
-    <div class="rounded-md border bg-gray-100 p-5 mt-1">
+    <div class="rounded-md border bg-gray-100 p-4 mt-1">
         <div
             id="drag-drop-area"
             x-ref="dropzone"
-            class="bg-gray-100 border-2 border-dashed border-gray-400 rounded-md p-8 text-center cursor-pointer hover:border-gray-600 transition-colors"
+            class="bg-gray-100 border-2 border-dashed border-gray-400 rounded-md p-4 text-center cursor-pointer hover:border-gray-600 transition-colors"
             @dragover.prevent="dragOver = true"
             @dragleave.prevent="dragOver = false"
             @drop.prevent="handleDrop($event)"
@@ -163,7 +163,7 @@
 
     <!-- File Access and Management -->
     <div class="mt-5 border border-gray-500 p-3" x-data="{ uploadedFiles: $wire.entangle('infos') }">
-        <h3 class="font-semibold mb-2 text-gray-700">Uploaded Files</h3>
+        <h3 class="font-semibold mb-2 text-gray-500 dark:text-gray-400">Uploaded Files</h3>
         <template x-if="uploadedFiles && uploadedFiles.length > 0">
             <ul>
                 <template x-for="(info, index) in uploadedFiles" :key="info?.ID || index">
