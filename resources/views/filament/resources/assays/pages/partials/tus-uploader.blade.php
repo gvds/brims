@@ -171,7 +171,7 @@
                               x-text="info.MetaData?.filename || 'Unknown'"></span>
                         <span x-text="'[' + (info.MetaData?.filetype || 'unknown') + ']'"></span>
                         <span class="bg-red-300 border border-red-800 text-red-900 text-sm font-semibold py-0 px-2 rounded-md cursor-pointer"
-                              @click="$wire.call('delete', info.Storage?.Key)">DELETE</span>
+                              @click="$wire.call('delete', info.Storage?.Key, {{ $assay }})">DELETE</span>
                     </li>
                 </template>
             </ul>
@@ -349,8 +349,9 @@
                     url: null
                 });
 
-                const additionalMetadata = JSON.stringify(this.$wire.get('data'));
-                const upload = this.tusupload(file, uploadId, additionalMetadata, incomplete.uploadUrl);
+                // const additionalMetadata = JSON.stringify(this.$wire.get('data'));
+                // const upload = this.tusupload(file, uploadId, additionalMetadata, incomplete.uploadUrl);
+                const upload = this.tusupload(file, uploadId);
                 this.uploadInstances[uploadId] = upload;
                 upload.start();
             };
@@ -448,34 +449,36 @@
                 return;
             }
 
-            const additionalMetadata = JSON.stringify(this.$wire.get('data'));
-            const upload = this.tusupload(file, uploadId, additionalMetadata);
+            const upload = this.tusupload(file, uploadId);
             this.uploadInstances[uploadId] = upload;
             upload.start();
         },
 
-        tusupload(file, uploadId, additionalMetadata, upload_url = null) {
+        tusupload(file, uploadId) {
             const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
-            return new tus.Upload(file, {
+            const alpineContext = this; // Save Alpine context
+
+            const tusUpload = new tus.Upload(file, {
                 endpoint: this.tusEndpoint,
-                uploadUrl: upload_url,
                 retryDelays: [0, 3000, 5000, 10000, 20000],
                 metadata: {
                     filename: file.name,
                     filetype: file.type,
-                    formdata: additionalMetadata
                 },
+                // onUploadUrlAvailable: function() {
+                //     console.log('📍 Upload URL available:', tusUpload.url);
+                // },
                 onError: (error) => {
                     console.error('TUS upload error:', error);
                     if (uploadIndex !== -1) {
-                        this.uploads[uploadIndex].status = 'error';
+                        alpineContext.uploads[uploadIndex].status = 'error';
                     }
 
                     if (error.message && error.message.includes('CORS')) {
-                        alert('CORS Error: The TUS server at ' + this.tusEndpoint + ' is blocking cross-origin requests. Please configure CORS headers on the server.');
+                        alert('CORS Error: The TUS server at ' + alpineContext.tusEndpoint + ' is blocking cross-origin requests. Please configure CORS headers on the server.');
                     }
 
-                    this.$wire.call('uploadError', {
+                    alpineContext.$wire.call('uploadError', {
                         filename: file.name,
                         error: error.message
                     });
@@ -483,33 +486,37 @@
                 onProgress: (bytesUploaded, bytesTotal) => {
                     if (uploadIndex !== -1) {
                         const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
-                        this.uploads[uploadIndex].progress = percentage;
-                        this.uploads[uploadIndex].bytesUploaded = bytesUploaded;
-                        this.uploads[uploadIndex].bytesTotal = bytesTotal;
-                        this.uploads[uploadIndex].status = 'uploading';
+                        alpineContext.uploads[uploadIndex].progress = percentage;
+                        alpineContext.uploads[uploadIndex].bytesUploaded = bytesUploaded;
+                        alpineContext.uploads[uploadIndex].bytesTotal = bytesTotal;
+                        alpineContext.uploads[uploadIndex].status = 'uploading';
                     }
                 },
-                onSuccess: () => {
-                    console.log('✓ Upload completed:', upload_url);
+                onSuccess: function() {
+                    // Access the URL from the tusUpload instance
+                    const uploadUrl = tusUpload.url;
+                    console.log('✓ Upload completed! URL:', uploadUrl);
+
                     if (uploadIndex !== -1) {
-                        this.uploads[uploadIndex].status = 'completed';
-                        this.uploads[uploadIndex].progress = 100;
-                        this.uploads[uploadIndex].url = upload_url;
+                        alpineContext.uploads[uploadIndex].status = 'completed';
+                        alpineContext.uploads[uploadIndex].progress = 100;
+                        alpineContext.uploads[uploadIndex].url = uploadUrl;
                     }
 
-                    this.removeIncompleteUpload(upload_url);
-                    this.$wire.call('uploadComplete', {
+                    if (uploadUrl) {
+                        alpineContext.removeIncompleteUpload(uploadUrl);
+                    }
+
+                    alpineContext.$wire.call('uploadComplete', {
                         assayId: {{ $assay->id }},
-                        uploadId: uploadId,
                         filename: file.name,
                         filetype: file.type,
-                        url: upload_url,
-                        metadata: {
-                            formdata: additionalMetadata
-                        }
+                        uploadUrl: uploadUrl,
                     });
                 }
             });
+
+            return tusUpload;
         },
 
         pauseUpload(uploadId) {

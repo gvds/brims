@@ -94,10 +94,26 @@ class AssaysRelationManager extends RelationManager
         return Storage::disk('s3')->download($file, $filename);
     }
 
-    public function delete($file)
+    public function delete($storedFilename, $assay)
     {
-        Storage::disk('s3')->delete($file);
-        Storage::disk('s3')->delete($file . '.info');
+        $assay = Assay::find($assay['id']);
+
+        if ($assay) {
+            $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];
+            $assayFiles = array_values(array_filter($assayFiles, fn($f) => $f !== $storedFilename));
+            $assay->assayfiles = $assayFiles;
+            $assay->save();
+
+            Log::info('Removed filename from assay', [
+                'assay_id' => $assay->id,
+                'removed_filename' => $storedFilename
+            ]);
+        }
+
+        // Delete the file and its metadata from S3
+        Storage::disk('s3')->delete($storedFilename);
+        Storage::disk('s3')->delete($storedFilename . '.info');
+
         $this->getFileMetadata();
     }
 
@@ -106,16 +122,31 @@ class AssaysRelationManager extends RelationManager
         Log::info('TUS Upload completed', $data);
 
         $this->filename = $data['filename'] ?? null;
-        $uploadId = $data['uploadId'] ?? null;
+        $uploadUrl = $data['uploadUrl'] ?? null;
         $assayId = $data['assayId'] ?? null;
 
-        if ($assayId && $uploadId) {
+        if ($assayId && $uploadUrl) {
+            // Extract stored filename from upload URL
+            $urlParts = parse_url($uploadUrl);
+            $pathParts = explode('/', trim($urlParts['path'] ?? '', '/'));
+            $fileKey = end($pathParts);
+            $storedFilename = Str::of($fileKey)->explode('+')->first();
+
             $assay = Assay::find($assayId);
-            if ($assay) {
+            if ($assay && $storedFilename) {
                 $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];
-                $assayFiles[] = $uploadId;
-                $assay->assayfiles = $assayFiles;
-                $assay->save();
+
+                if (!in_array($storedFilename, $assayFiles)) {
+                    $assayFiles[] = $storedFilename;
+                    $assay->assayfiles = $assayFiles;
+                    $assay->save();
+
+                    Log::info('Added stored filename to assay', [
+                        'assay_id' => $assay->id,
+                        'stored_filename' => $storedFilename,
+                        'original_filename' => $this->filename
+                    ]);
+                }
             }
         }
 
