@@ -62,7 +62,7 @@ class AssaysTable
                     ->modalContentFooter(function ($record) use ($relationManager) {
                         return view('filament.resources.assays.pages.partials.tus-uploader', [
                             'assay' => $record,
-                            'infos' => $relationManager ? $relationManager->infos : [],
+                            'infos' => $relationManager->infos,
                         ]);
                     })
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),

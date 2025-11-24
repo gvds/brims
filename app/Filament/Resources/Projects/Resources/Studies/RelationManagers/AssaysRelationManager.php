@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Resources\Studies\RelationManagers;
 
+use App\Filament\Resources\Assays\AssayResource;
 use App\Filament\Resources\Assays\Schemas\AssayForm;
 use App\Filament\Resources\Assays\Tables\AssaysTable;
 use App\Models\Assay;
@@ -69,13 +70,27 @@ class AssaysRelationManager extends RelationManager
 
     public function getFileMetadata(): void
     {
+        $assays = $this->getOwnerRecord()->assays()->get();
+        $assayfiles = [];
+        foreach ($assays as $assay) {
+            if (is_array($assay->assayfiles)) {
+                foreach ($assay->assayfiles as $file) {
+                    $assayfiles[] = $file . '.info';
+                }
+            }
+        }
+
         $this->files = Storage::disk('s3')->files();
         $this->infos = [];
         foreach ($this->files as $file) {
-            if (Str::endsWith($file, '.info')) {
-                Storage::disk('s3')->setVisibility($file, 'public');
-                $this->infos[] = json_decode($this->getInfo($file)->body(), true);
+            if (! in_array($file, $assayfiles)) {
+                continue;
             }
+            // if (Str::endsWith($file, '.info')) {
+            Storage::disk('s3')->setVisibility($file, 'public');
+            $info = json_decode($this->getInfo($file)->body(), true);
+            $this->infos[$info['MetaData']['assay_id']][] = $info;
+            // }
         }
     }
 
@@ -94,9 +109,9 @@ class AssaysRelationManager extends RelationManager
         return Storage::disk('s3')->download($file, $filename);
     }
 
-    public function delete($storedFilename, $assay)
+    public function delete($storedFilename, $assay_id)
     {
-        $assay = Assay::find($assay['id']);
+        $assay = Assay::find($assay_id);
 
         if ($assay) {
             $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];

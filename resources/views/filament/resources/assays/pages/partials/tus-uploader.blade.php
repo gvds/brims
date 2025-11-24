@@ -162,21 +162,20 @@
     <!-- File Access and Management -->
     <div class="mt-5 border border-gray-500 p-3" x-data="{ uploadedFiles: $wire.entangle('infos') }">
         <h3 class="font-semibold mb-2 text-gray-500 dark:text-gray-400">Uploaded Files</h3>
-        <template x-if="uploadedFiles && uploadedFiles.length > 0">
+        <template x-if="uploadedFiles && uploadedFiles[{{ $assay->id }}] && uploadedFiles[{{ $assay->id }}].length > 0">
             <ul>
-                <template x-for="(info, index) in uploadedFiles" :key="info?.ID || index">
-                    <li class='mt-1' x-show="info && Object.keys(info).length > 0">
+                <template x-for="(info, index) in uploadedFiles[{{ $assay->id }}]" :key="index">
+                    <li class='flex justify-between mt-1' x-show="info && Object.keys(info).length > 0">
                         <span class='text-emerald-500 font-semibold cursor-pointer'
-                              @click="$wire.call('download', info.Storage?.Key, info.MetaData?.filename)"
-                              x-text="info.MetaData?.filename || 'Unknown'"></span>
-                        <span x-text="'[' + (info.MetaData?.filetype || 'unknown') + ']'"></span>
+                            @click="$wire.call('download', info.Storage?.Key, info.MetaData?.filename)"
+                            x-text="info.MetaData?.filename || 'Unknown'"></span>
                         <span class="bg-red-300 border border-red-800 text-red-900 text-sm font-semibold py-0 px-2 rounded-md cursor-pointer"
-                              @click="$wire.call('delete', info.Storage?.Key, {{ $assay }})">DELETE</span>
+                            @click="$wire.call('delete', info.Storage?.Key, {{ $assay->id }})">DELETE</span>
                     </li>
                 </template>
             </ul>
         </template>
-        <template x-if="!uploadedFiles || uploadedFiles.length === 0">
+        <template x-if="!uploadedFiles || !uploadedFiles[{{ $assay->id }}] || uploadedFiles[{{ $assay->id }}].length === 0">
             <p class="text-sm text-gray-500 italic">No files uploaded yet.</p>
         </template>
     </div>
@@ -349,9 +348,7 @@
                     url: null
                 });
 
-                // const additionalMetadata = JSON.stringify(this.$wire.get('data'));
-                // const upload = this.tusupload(file, uploadId, additionalMetadata, incomplete.uploadUrl);
-                const upload = this.tusupload(file, uploadId);
+                const upload = this.tusupload(file, uploadId, incomplete.uploadUrl);
                 this.uploadInstances[uploadId] = upload;
                 upload.start();
             };
@@ -372,10 +369,10 @@
                 const key = localStorage.key(i);
                 if (!key) continue;
 
-                const value = localStorage.getItem(key);
 
                 if (key.startsWith('tus::')) {
                     let shouldRemove = false;
+                    const value = localStorage.getItem(key);
 
                     try {
                         const parsed = JSON.parse(value);
@@ -454,16 +451,21 @@
             upload.start();
         },
 
-        tusupload(file, uploadId) {
+        tusupload(file, uploadId, upload_url = null) {
             const uploadIndex = this.uploads.findIndex(u => u.id === uploadId);
             const alpineContext = this; // Save Alpine context
 
             const tusUpload = new tus.Upload(file, {
                 endpoint: this.tusEndpoint,
+                uploadUrl: upload_url,
                 retryDelays: [0, 3000, 5000, 10000, 20000],
+                // uploadDataDuringCreation: true,
+                // chunkSize: 33554432, // 32MB
+                // parallelUploads: Math.ceil(file.size / 33554432),
                 metadata: {
                     filename: file.name,
                     filetype: file.type,
+                    assay_id: {{ $assay->id }},
                 },
                 // onUploadUrlAvailable: function() {
                 //     console.log('📍 Upload URL available:', tusUpload.url);

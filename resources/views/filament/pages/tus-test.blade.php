@@ -457,11 +457,11 @@
                     const key = localStorage.key(i);
                     if (!key) continue;
 
-                    const value = localStorage.getItem(key);
 
                     if (key.startsWith('tus::')) {
                         // Check if the value matches the uploadUrl or if it's JSON containing the uploadUrl
                         let shouldRemove = false;
+                        const value = localStorage.getItem(key);
 
                         try {
                             const parsed = JSON.parse(value);
