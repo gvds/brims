@@ -31,6 +31,7 @@ class Assay extends Model
     {
         return [
             'additional_fields' => 'json',
+            'assayfiles' => 'array',
         ];
     }
 }
