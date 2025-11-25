@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
-            $table->string('name', 200);
+            $table->string('model', 200);
             $table->json('mappings')->nullable();
             $table->timestamps();
         });

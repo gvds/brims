@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Projects\Resources\ImportValueMappings\Tables;
 
-use Dom\Text;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -26,6 +26,9 @@ class ImportValueMappingsTable
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                CreateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
