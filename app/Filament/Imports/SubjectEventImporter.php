@@ -9,9 +9,10 @@ use Closure;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
-use Filament\Schemas\Components\Utilities\Get;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Number;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SubjectEventImporter extends Importer
 {
@@ -23,23 +24,21 @@ class SubjectEventImporter extends Importer
             ImportColumn::make('subject')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'subjectID')
-                ->rules(['required']),
+                ->rules(['required', 'exists:subjects,subjectID']),
             ImportColumn::make('event')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'name')
-                ->rules([
+                ->rules(fn($options) => [
                     'required',
-                    fn(Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
-                        $exists = SubjectEvent::whereHas('subject', function ($query) use ($get) {
-                            $query->where('subjectID', $get('subject'));
-                        })->whereHas('event', function ($query) use ($value) {
-                            $query->where('name', $value);
-                        })->exists();
+                    function (string $attribute, $value, Closure $fail) use ($options) {
+                        $exists = \App\Models\Event::where('name', $value)
+                            ->whereHas('arm', fn($query) => $query->where('project_id', $options['project']->id))
+                            ->exists();
 
-                        if ($exists) {
-                            $fail('The combination of subject ' . $get('subject') . ' and event ' . $value . ' already exists.');
+                        if (!$exists) {
+                            $fail("The event '{$value}' does not exist in this project.");
                         }
-                    }
+                    },
                 ]),
             ImportColumn::make('iteration')
                 ->requiredMapping()
@@ -47,27 +46,64 @@ class SubjectEventImporter extends Importer
                 ->rules(['required', 'integer']),
             ImportColumn::make('status')
                 ->requiredMapping()
-                ->numeric()
                 ->rules([
                     'required',
-                    Rule::enum(EventStatus::class)
-                ]),
+                    Rule::enum(EventStatus::class),
+                ])
+                ->castStateUsing(function ($state) {
+                    try {
+                        return constant(EventStatus::class . '::' . $state)->value;
+                    } catch (\Throwable $th) {
+                        throw ValidationException::withMessages([
+                            'status' => "The status '{$state}' is not valid."
+                        ]);
+                    }
+                }),
             ImportColumn::make('labelstatus')
                 ->requiredMapping()
-                ->numeric()
                 ->rules([
                     'required',
-                    Rule::enum(LabelStatus::class)
-                ]),
+                    Rule::enum(LabelStatus::class),
+                ])
+                ->castStateUsing(function ($state) {
+                    try {
+                        return constant(LabelStatus::class . '::' . $state)->value;
+                    } catch (\Throwable $th) {
+                        throw ValidationException::withMessages([
+                            'labelstatus' => "The label status '{$state}' is not valid."
+                        ]);
+                    }
+                }),
             ImportColumn::make('eventDate')
-                ->rules(['date']),
+                ->rules(['nullable', 'date']),
             ImportColumn::make('minDate')
-                ->rules(['date', 'beforeOrEqual:eventDate']),
+                ->rules(['nullable', 'date', 'before_or_equal:eventDate']),
             ImportColumn::make('maxDate')
-                ->rules(['date', 'afterOrEqual:eventDate']),
+                ->rules(['nullable', 'date', 'after_or_equal:eventDate']),
             ImportColumn::make('logDate')
-                ->rules(['date', 'afterOrEqual:eventDate']),
+                ->rules(['nullable', 'date', 'after_or_equal:eventDate']),
         ];
+    }
+
+    protected function afterValidate(): void
+    {
+        $subjectID = $this->data['subject'];
+        $iteration = $this->data['iteration'];
+        $event = $this->data['event'];
+
+        if (!$subjectID) {
+            return;
+        }
+
+        $exists = SubjectEvent::whereHas('subject', fn($query) => $query->where('subjectID', $subjectID))
+            ->whereHas('event', fn($query) => $query->where('name', $event)->where('iteration', $iteration))
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'event' => "The combination of subject {$subjectID} event {$event} iteration {$iteration} already exists."
+            ]);
+        }
     }
 
     public function resolveRecord(): SubjectEvent

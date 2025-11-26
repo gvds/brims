@@ -29,6 +29,8 @@ return new class extends Migration
             $table->date('maxDate')->nullable();
             $table->date('logDate')->nullable();
             $table->timestamps();
+
+            $table->unique(['subject_id', 'event_id', 'iteration'], 'subject_event_iteration_unique');
         });
     }
 
