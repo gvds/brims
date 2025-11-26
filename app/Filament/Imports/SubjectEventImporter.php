@@ -9,7 +9,6 @@ use Closure;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Number;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -24,13 +23,22 @@ class SubjectEventImporter extends Importer
             ImportColumn::make('subject')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'subjectID')
-                ->rules(['required', 'exists:subjects,subjectID']),
+                ->rules(fn($options) => [
+                    'required',
+                    function (string $attribute, $value, Closure $fail) use ($options) {
+                        if (! \App\Models\Subject::where('subjectID', $value)
+                            ->where('project_id', $options['project']->id)
+                            ->exists()) {
+                            $fail("The {$attribute} '{$value}' does not exist in this project.");
+                        }
+                    },
+                ]),
             ImportColumn::make('event')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'name')
                 ->rules(fn($options) => [
                     'required',
-                    function (string $attribute, $value, Closure $fail) use ($options) {
+                    function ($value, Closure $fail) use ($options) {
                         $exists = \App\Models\Event::where('name', $value)
                             ->whereHas('arm', fn($query) => $query->where('project_id', $options['project']->id))
                             ->exists();
