@@ -70,15 +70,15 @@ class SubjectImporter extends Importer
         return $subject;
     }
 
-    public static function getOptionsFormComponents(): array
-    {
-        return [
-            Select::make('importValueMapping')
-                ->label('Import Value Mapping')
-                ->relationship('importValueMappings', 'name')
-                ->nullable()
-        ];
-    }
+    // public static function getOptionsFormComponents(): array
+    // {
+    //     return [
+    //         Select::make('importValueMapping')
+    //             ->label('Import Value Mapping')
+    //             ->relationship('importValueMappings', 'model')
+    //             ->nullable()
+    //     ];
+    // }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
@@ -89,10 +89,5 @@ class SubjectImporter extends Importer
         }
 
         return $body;
-    }
-
-    public function getJobBackoff(): int|array|null
-    {
-        return [2, 2, 2, 2];
     }
 }
