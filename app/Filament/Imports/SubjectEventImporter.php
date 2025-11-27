@@ -20,9 +20,10 @@ class SubjectEventImporter extends Importer
     public static function getColumns(): array
     {
         return [
-            ImportColumn::make('subject')
+            ImportColumn::make('subjectID')
+                ->label('Subject ID')
                 ->requiredMapping()
-                ->relationship(resolveUsing: 'subjectID')
+                ->relationship(name: 'subject', resolveUsing: 'subjectID')
                 ->rules(fn($options) => [
                     'required',
                     function (string $attribute, $value, Closure $fail) use ($options) {
@@ -95,7 +96,7 @@ class SubjectEventImporter extends Importer
 
     protected function afterValidate(): void
     {
-        $subjectID = $this->data['subject'];
+        $subjectID = $this->data['subjectID'];
         $iteration = $this->data['iteration'];
         $event = $this->data['event'];
 

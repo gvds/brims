@@ -37,6 +37,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'usedBy_id')->nullable()->constrained();
             $table->dateTime('usedAt')->nullable()->nullable();
             $table->timestamps();
+
+            $table->unique(['barcode', 'project_id'], 'specimens_unique_barcode_project');
         });
     }
 

@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\EventStatus;
 use App\Http\Controllers\ScheduleController;
 use App\Livewire\SetNewAccountPassword;
 use Illuminate\Support\Facades\Route;
