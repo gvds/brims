@@ -10,6 +10,7 @@ use Filament\Actions\Imports\Models\Import;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Number;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SubjectImporter extends Importer
 {
@@ -46,6 +47,7 @@ class SubjectImporter extends Importer
                 ->rules(['max:30']),
             ImportColumn::make('address'),
             ImportColumn::make('enrolDate')
+                ->requiredMapping()
                 ->rules(['date']),
             ImportColumn::make('arm')
                 ->requiredMapping()
@@ -55,11 +57,18 @@ class SubjectImporter extends Importer
                 ->rules(['date']),
             ImportColumn::make('status')
                 ->requiredMapping()
-                ->numeric()
                 ->rules([
                     'required',
                     Rule::enum(SubjectStatus::class)
-                ]),
+                ])->castStateUsing(function ($state) {
+                    try {
+                        return constant(SubjectStatus::class . '::' . $state)->value;
+                    } catch (\Throwable $th) {
+                        throw ValidationException::withMessages([
+                            'status' => "The status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(SubjectStatus::cases(), 'name')) . '.',
+                        ]);
+                    }
+                }),
         ];
     }
 

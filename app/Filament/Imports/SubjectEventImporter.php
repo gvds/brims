@@ -64,7 +64,7 @@ class SubjectEventImporter extends Importer
                         return constant(EventStatus::class . '::' . $state)->value;
                     } catch (\Throwable $th) {
                         throw ValidationException::withMessages([
-                            'status' => "The status '{$state}' is not valid."
+                            'status' => "The event status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(EventStatus::cases(), 'name')) . '.',
                         ]);
                     }
                 }),
@@ -79,7 +79,7 @@ class SubjectEventImporter extends Importer
                         return constant(LabelStatus::class . '::' . $state)->value;
                     } catch (\Throwable $th) {
                         throw ValidationException::withMessages([
-                            'labelstatus' => "The label status '{$state}' is not valid."
+                            'labelstatus' => "The label status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(LabelStatus::cases(), 'name')) . '.',
                         ]);
                     }
                 }),
