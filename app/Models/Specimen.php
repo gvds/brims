@@ -6,12 +6,13 @@ use App\Enums\SpecimenStatus;
 use App\Models\Scopes\SpecimenScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
 #[ScopedBy([SpecimenScope::class])]
-class Specimen extends Pivot
+class Specimen extends Model
 {
     use HasFactory;
 
@@ -52,6 +53,13 @@ class Specimen extends Pivot
     public function usedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'usedBy_id');
+    }
+
+    public function studies(): BelongsToMany
+    {
+        return $this->belongsToMany(Study::class, 'study_specimens')
+            // ->using(StudySpecimen::class)
+            ->withTimestamps();
     }
 
     public function logOut(): void

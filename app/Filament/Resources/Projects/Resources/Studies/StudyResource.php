@@ -46,6 +46,7 @@ class StudyResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\SpecimensRelationManager::class,
             RelationManagers\AssaysRelationManager::class,
         ];
     }
