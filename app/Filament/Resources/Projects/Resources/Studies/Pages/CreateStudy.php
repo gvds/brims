@@ -8,4 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateStudy extends CreateRecord
 {
     protected static string $resource = StudyResource::class;
+
+    protected static bool $canCreateAnother = false;
 }
