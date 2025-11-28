@@ -18,7 +18,9 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 
 class SpecimensRelationManager extends RelationManager
 {
@@ -90,7 +92,9 @@ class SpecimensRelationManager extends RelationManager
                 TextColumn::make('barcode')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('subjectEvent.id')
+                TextColumn::make('subjectEvent.event.name')
+                    ->label(new HtmlString("Event : iteration"))
+                    ->formatStateUsing(fn($state, $record) => new HtmlString("$state : {$record->subjectEvent->iteration}"))
                     ->searchable(),
                 TextColumn::make('specimenType.name')
                     ->searchable(),
