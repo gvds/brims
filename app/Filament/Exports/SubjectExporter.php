@@ -2,6 +2,7 @@
 
 namespace App\Filament\Exports;
 
+use App\Enums\SubjectStatus;
 use App\Models\Subject;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
@@ -27,7 +28,8 @@ class SubjectExporter extends Exporter
             ExportColumn::make('enrolDate'),
             ExportColumn::make('arm.name'),
             ExportColumn::make('armBaselineDate'),
-            ExportColumn::make('status'),
+            ExportColumn::make('status')
+                ->formatStateUsing(fn(SubjectStatus $state): string => $state->name),
         ];
     }
 

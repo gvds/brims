@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Projects\Pages;
 
+use App\Filament\Exports\SpecimenExporter;
+use App\Filament\Exports\SubjectEventExporter;
 use App\Filament\Exports\SubjectExporter;
 use App\Filament\Imports\SpecimenImporter;
 use App\Filament\Imports\SubjectEventImporter;
@@ -12,6 +14,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Colors\Color;
 
 class ViewProject extends ViewRecord
 {
@@ -46,17 +49,27 @@ class ViewProject extends ViewRecord
             ])
                 ->label('Data Import')
                 ->button()
-                ->color('info'),
+                ->color(Color::Indigo),
             ActionGroup::make([
                 ExportAction::make('subject_export')
                     ->label('Export Subjects')
                     ->color("gray")
                     ->exporter(SubjectExporter::class)
                     ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
+                ExportAction::make('subject_event_export')
+                    ->label('Export Subject Events')
+                    ->color("gray")
+                    ->exporter(SubjectEventExporter::class)
+                    ->modifyQueryUsing(fn($query) => $query->whereHas('subject', fn($query) => $query->where('project_id', $this->record->id))),
+                ExportAction::make('specimen_export')
+                    ->label('Export Specimens')
+                    ->color("gray")
+                    ->exporter(SpecimenExporter::class)
+                    ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
             ])
                 ->label('Data Export')
                 ->button()
-                ->color('success'),
+                ->color(Color::Indigo),
         ];
     }
 }
