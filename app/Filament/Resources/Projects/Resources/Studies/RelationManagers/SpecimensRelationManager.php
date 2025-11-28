@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Resources\Studies\RelationManagers;
 
+use App\Filament\Exports\StudySpecimenExporter;
 use App\Filament\Imports\StudySpecimenImporter;
 use App\Models\Site;
 use App\Models\Specimen;
@@ -10,6 +11,7 @@ use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Actions\Imports\Models\Import;
 use Filament\Forms\Components\Select;
@@ -173,6 +175,10 @@ class SpecimensRelationManager extends RelationManager
                         ];
                     })
                     ->color(Color::Indigo),
+                ExportAction::make()
+                    ->label('Export Specimens')
+                    ->exporter(StudySpecimenExporter::class)
+                    ->color(Color::Indigo)
             ])
             ->recordActions([
                 // EditAction::make(),

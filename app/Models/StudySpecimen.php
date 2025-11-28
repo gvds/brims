@@ -8,5 +8,4 @@ class StudySpecimen extends Pivot
 {
 
     protected $table = 'study_specimens';
-    //
 }
