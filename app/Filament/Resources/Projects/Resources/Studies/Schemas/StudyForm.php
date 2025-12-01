@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Projects\Resources\Studies\Schemas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class StudyForm
@@ -26,6 +27,8 @@ class StudyForm
                     ->default(null),
                 TextInput::make('studyfilename')
                     ->default(null),
+                Toggle::make('specimen_locked')
+                    ->helperText('When locked, the assay cannot be edited and specimens cannot be added or deleted.'),
             ])
             ->columns([
                 'xs' => 1,

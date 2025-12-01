@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('public_release_date')->nullable();
             $table->string('studyfile', 150)->nullable();
             $table->string('studyfilename')->nullable();
+            $table->boolean('locked')->default(false);
             $table->timestamps();
 
             $table->unique(['project_id', 'identifier']);

@@ -13,15 +13,12 @@ use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
-use Filament\Actions\Imports\Models\Import;
 use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 
 class SpecimensRelationManager extends RelationManager
@@ -165,6 +162,7 @@ class SpecimensRelationManager extends RelationManager
                             ->required(),
                     ])
                     ->multiple()
+                    ->hidden(fn(): bool => $this->ownerRecord->locked)
                     ->attachAnother(false),
                 ImportAction::make()
                     ->importer(StudySpecimenImporter::class)
@@ -174,6 +172,7 @@ class SpecimensRelationManager extends RelationManager
                             'project' => $this->ownerRecord->project,
                         ];
                     })
+                    ->hidden(fn(): bool => $this->ownerRecord->locked)
                     ->color(Color::Indigo),
                 ExportAction::make()
                     ->label('Export Specimens')
@@ -182,12 +181,14 @@ class SpecimensRelationManager extends RelationManager
             ])
             ->recordActions([
                 // EditAction::make(),
-                DetachAction::make(),
+                DetachAction::make()
+                    ->hidden(fn(): bool => $this->ownerRecord->locked),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DetachBulkAction::make(),
-                ]),
+                ])
+                    ->hidden(fn(): bool => $this->ownerRecord->locked),
             ]);
     }
 }

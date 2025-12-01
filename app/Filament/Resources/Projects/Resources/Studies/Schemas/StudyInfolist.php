@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Resources\Studies\Schemas;
 
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
@@ -12,10 +13,17 @@ class StudyInfolist
     {
         return $schema
             ->components([
-                Grid::make(2)
+                Grid::make(3)
                     ->schema([
                         TextEntry::make('title'),
                         TextEntry::make('identifier'),
+                        IconEntry::make('locked')
+                            ->label('Specimen Lock')
+                            ->trueIcon('heroicon-o-lock-closed')
+                            ->falseIcon('heroicon-o-lock-open')
+                            ->trueColor('warning')
+                            ->falseColor('success')
+                            ->helperText('When locked, specimens cannot be added or deleted.'),
                     ])
                     ->columnSpan(2),
                 Grid::make(2)

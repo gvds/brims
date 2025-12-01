@@ -18,12 +18,17 @@ class StudySpecimenExporter extends Exporter
             ExportColumn::make('barcode'),
             ExportColumn::make('specimenType.name'),
             ExportColumn::make('site.name'),
+            ExportColumn::make('subjectEvent.event.arm.name')
+                ->label('Arm'),
             ExportColumn::make('subjectEvent.event.name')
-                ->label('Event Name'),
+                ->label('Event'),
             ExportColumn::make('subjectEvent.iteration')
                 ->label('Event Iteration'),
             ExportColumn::make('subjectEvent.subject.subjectID')
                 ->label('SubjectID'),
+            ExportColumn::make('loggedAt')
+                ->label('Logged Date')
+                ->formatStateUsing(fn(string $state): string => date('Y-m-d', strtotime($state))),
         ];
     }
 

@@ -9,6 +9,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
@@ -115,7 +116,6 @@ class AssayForm
                         )
                         ->required($field['required'] ?? false);
                 }
-                // Add more field types as needed
             }
             return $fields;
         };
