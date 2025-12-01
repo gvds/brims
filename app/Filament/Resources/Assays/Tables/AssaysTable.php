@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Assays\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Notifications\Notification;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +71,25 @@ class AssaysTable
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
                 EditAction::make()
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
+                Action::make('download_all_files')
+                    ->label('Download All Files')
+                    ->icon('heroicon-o-arrow-down-on-square-stack')
+                    ->color(Color::Indigo)
+                    ->action(function (Model $record) {
+                        $temporarySignedUrls = [];
+                        if (empty($record->assayfiles)) {
+                            return;
+                        }
+                        foreach ($record->assayfiles as $file) {
+                            $expiration = now()->addMinutes(60); // URL valid for 60 minutes
+                            $temporarySignedUrls[] = Storage::disk('s3')->temporaryUrl($file, $expiration);
+                        }
+                        Notification::make()
+                            ->title('Download Links Generated')
+                            ->body('Click the links below to download your files:<br/><br/>' . implode('<br/><br/>', array_map(fn($url) => "<a href=\"{$url}\" target=\"_blank\">{$url}</a>", $temporarySignedUrls)))
+                            ->success()
+                            ->sendToDatabase(auth()->user());
+                    }),
                 DeleteAction::make()
                     ->using(function (Model $record): void {
                         if (isset($record->assayfile)) {

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Projects\Resources\Studies\RelationManagers;
 
-use App\Filament\Resources\Assays\AssayResource;
 use App\Filament\Resources\Assays\Schemas\AssayForm;
 use App\Filament\Resources\Assays\Tables\AssaysTable;
 use App\Models\Assay;
