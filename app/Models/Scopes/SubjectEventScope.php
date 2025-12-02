@@ -16,6 +16,6 @@ class SubjectEventScope implements Scope
     {
         session()->get('currentProject') ? $builder->whereRelation('subject', 'project_id', session()->get('currentProject')->id) : $builder;
         if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
-        $builder->where('site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id);
+        session()->get('currentProject') ? $builder->whereRelation('subject', 'site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id) : $builder;
     }
 }

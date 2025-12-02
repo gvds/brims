@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class SpecimenPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Specimen');
@@ -41,5 +41,4 @@ class SpecimenPolicy
     {
         return $authUser->can('Reorder:Specimen');
     }
-
 }

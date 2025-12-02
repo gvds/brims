@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Projects\RelationManagers;
 
 use App\Models\ProjectMember;
+use App\Models\Role;
 use App\Models\Site;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -138,10 +139,11 @@ class MembersRelationManager extends RelationManager
                 EditAction::make()
                     ->schema([
                         Select::make('role')
-                            ->options([
-                                'Admin' => 'Admin',
-                                'Member' => 'Member',
-                            ])
+                            ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
+                            // ->options([
+                            //     'Admin' => 'Admin',
+                            //     'Member' => 'Member',
+                            // ])
                             ->required()
                             ->disabled(fn(User $record): bool => $record->id === $this->ownerRecord->leader_id),
                         Select::make('site_id')
@@ -149,7 +151,34 @@ class MembersRelationManager extends RelationManager
                             ->options(
                                 Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
                             ),
-                    ]),
+                    ])
+                    ->before(function (User $record, array $data): void {
+                        foreach ($record->roles as $role) {
+                            $record->removeRole($role);
+                        }
+                    })
+                    ->after(function (User $record, array $data): void {
+                        // If the site_id has changed, and the current substitute is not in the new site, clear it
+                        if (isset($data['site_id']) && $data['site_id'] != $record->pivot->site_id) {
+                            $newSiteId = $data['site_id'];
+                            $currentSubstituteId = $record->pivot->substitute_id;
+
+                            if ($currentSubstituteId) {
+                                $substituteSiteId = ProjectMember::where('project_id', $this->ownerRecord->id)
+                                    ->where('user_id', $currentSubstituteId)
+                                    ->value('site_id');
+
+                                if ($substituteSiteId != $newSiteId) {
+                                    // Clear the substitute_id
+                                    $this->ownerRecord->members()
+                                        ->updateExistingPivot($record->id, [
+                                            'substitute_id' => null,
+                                        ]);
+                                }
+                            }
+                        }
+                        $record->assignRole($data['role']);
+                    }),
                 DetachAction::make()
                     ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(

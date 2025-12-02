@@ -23,6 +23,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -86,7 +87,12 @@ class SubjectEventsRelationManager extends RelationManager
                     ->label('ID'),
                 TextColumn::make('event.arm.name'),
                 TextColumn::make('event.name'),
-                TextColumn::make('status'),
+                TextColumn::make('status')
+                    ->hidden(fn(): bool => auth()->user()->can('ModifyStatus')),
+                SelectColumn::make('status')
+                    ->options(EventStatus::class)
+                    ->label('Status')
+                    ->visible(fn(): bool => auth()->user()->can('ModifyStatus')),
                 TextColumn::make('eventDate')
                     ->date('Y-m-d')
                     ->extraAttributes(fn(SubjectEvent $record): array => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
@@ -103,7 +109,10 @@ class SubjectEventsRelationManager extends RelationManager
                     ->label('Repeatable'),
                 TextColumn::make('iteration')
                     ->numeric(),
-                TextColumn::make('labelstatus')
+                // TextColumn::make('labelstatus')
+                //     ->label('Label Status'),
+                SelectColumn::make('labelstatus')
+                    ->options(LabelStatus::class)
                     ->label('Label Status'),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -157,6 +166,12 @@ class SubjectEventsRelationManager extends RelationManager
                                 ->beforeOrEqual('today')
                                 ->afterOrEqual(fn($livewire) => $livewire->getOwnerRecord()->armBaselineDate)
                                 ->label('Log Date'),
+                            Select::make('eventStatus')
+                                ->label('Event Status')
+                                ->options([
+                                    EventStatus::Logged->value => 'Logged',
+                                    EventStatus::Missed->value => 'Missed',
+                                ]),
                         ]
                     )
                     ->action(function ($record, $data): void {

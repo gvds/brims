@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 #[ScopedBy([SubjectEventScope::class])]
 class SubjectEvent extends Pivot
 {
+
     protected $guarded = ['id'];
 
     /**
@@ -61,7 +62,7 @@ class SubjectEvent extends Pivot
     public function log($data): void
     {
         $this->update([
-            'status' => EventStatus::Logged,
+            'status' => $data['eventStatus'],
             'labelstatus' => LabelStatus::Generated,
             'logDate' => $data['logDate'],
         ]);
