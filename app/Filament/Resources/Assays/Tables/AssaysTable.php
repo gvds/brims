@@ -7,6 +7,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
@@ -75,13 +76,25 @@ class AssaysTable
                     ->label('Download All Files')
                     ->icon('heroicon-o-arrow-down-on-square-stack')
                     ->color(Color::Indigo)
-                    ->action(function (Model $record) {
+                    ->button()
+                    ->hidden(fn(Model $record): bool => empty($record->assayfiles))
+                    ->schema([
+                        TextInput::make('expiration_days')
+                            ->label('Link Expiration (days)')
+                            ->default(1)
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(7)
+                            ->required(),
+                    ])
+                    ->modalWidth('sm')
+                    ->action(function (Model $record, array $data): void {
                         $temporarySignedUrls = [];
                         if (empty($record->assayfiles)) {
                             return;
                         }
                         foreach ($record->assayfiles as $file) {
-                            $expiration = now()->addMinutes(60); // URL valid for 60 minutes
+                            $expiration = now()->addDays($data['expiration_days']); // URL valid for specified days
                             $temporarySignedUrls[] = Storage::disk('s3')->temporaryUrl($file, $expiration);
                         }
                         Notification::make()
@@ -92,8 +105,8 @@ class AssaysTable
                     }),
                 DeleteAction::make()
                     ->using(function (Model $record): void {
-                        if (isset($record->assayfile)) {
-                            Storage::disk('s3')->delete($record->assayfile);
+                        foreach ($record->assayfiles as $file) {
+                            Storage::disk('s3')->delete($file);
                         }
                         $record->delete();
                     })
