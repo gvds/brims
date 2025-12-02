@@ -33,7 +33,7 @@ class StudyInfolist
                         TextEntry::make('public_release_date')
                             ->date('Y-m-d'),
                     ]),
-                TextEntry::make('studyfile'),
+                // TextEntry::make('studyfile'),
                 // TextEntry::make('studyfilename'),
             ])
             ->columns(2)

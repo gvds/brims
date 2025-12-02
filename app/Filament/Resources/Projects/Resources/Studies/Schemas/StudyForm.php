@@ -23,10 +23,10 @@ class StudyForm
                     ->columnSpanFull(),
                 DatePicker::make('submission_date'),
                 DatePicker::make('public_release_date'),
-                TextInput::make('studyfile')
-                    ->default(null),
-                TextInput::make('studyfilename')
-                    ->default(null),
+                // TextInput::make('studyfile')
+                //     ->default(null),
+                // TextInput::make('studyfilename')
+                //     ->default(null),
                 Toggle::make('specimen_locked')
                     ->helperText('When locked, the assay cannot be edited and specimens cannot be added or deleted.'),
             ])

@@ -26,9 +26,9 @@ class StudiesTable
                 TextColumn::make('public_release_date')
                     ->date('Y-m-d')
                     ->sortable(),
-                TextColumn::make('studyfile')
-                    ->label('Study File')
-                    ->searchable(),
+                // TextColumn::make('studyfile')
+                //     ->label('Study File')
+                //     ->searchable(),
                 IconColumn::make('locked')
                     ->boolean()
                     ->label('Specimen Lock')
