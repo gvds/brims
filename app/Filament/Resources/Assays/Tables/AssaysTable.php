@@ -77,6 +77,7 @@ class AssaysTable
                     ->icon('heroicon-o-arrow-down-on-square-stack')
                     ->color(Color::Indigo)
                     ->button()
+                    ->extraAttributes(['class' => 'h-7 text-xs opacity-70'])
                     ->hidden(fn(Model $record): bool => empty($record->assayfiles))
                     ->schema([
                         TextInput::make('expiration_days')
@@ -88,20 +89,30 @@ class AssaysTable
                             ->required(),
                     ])
                     ->modalWidth('sm')
-                    ->action(function (Model $record, array $data): void {
-                        $temporarySignedUrls = [];
+                    ->action(function (Model $record, array $data) {
                         if (empty($record->assayfiles)) {
                             return;
                         }
+
+                        $temporarySignedUrls = [];
                         foreach ($record->assayfiles as $file) {
-                            $expiration = now()->addDays($data['expiration_days']); // URL valid for specified days
+                            $expiration = now()->addDays($data['expiration_days']);
                             $temporarySignedUrls[] = Storage::disk('s3')->temporaryUrl($file, $expiration);
                         }
-                        Notification::make()
-                            ->title('Download Links Generated')
-                            ->body('Click the links below to download your files:<br/><br/>' . implode('<br/><br/>', array_map(fn($url) => "<a href=\"{$url}\" target=\"_blank\">{$url}</a>", $temporarySignedUrls)))
-                            ->success()
-                            ->sendToDatabase(auth()->user());
+
+                        $content = "Assay File Download Links for: {$record->name}\n";
+                        $content .= "Generated: " . now()->format('Y-m-d H:i:s') . "\n";
+                        $content .= "Links expire: " . now()->addDays($data['expiration_days'])->format('Y-m-d H:i:s') . "\n";
+                        $content .= str_repeat('-', 50) . "\n\n";
+                        $content .= implode("\n\n", $temporarySignedUrls);
+
+                        $filename = 'download_links_' . str($record->name)->slug() . '_' . now()->format('Ymd_His') . '.txt';
+
+                        return response()->streamDownload(function () use ($content) {
+                            echo $content;
+                        }, $filename, [
+                            'Content-Type' => 'text/plain',
+                        ]);
                     }),
                 DeleteAction::make()
                     ->using(function (Model $record): void {
