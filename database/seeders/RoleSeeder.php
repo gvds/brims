@@ -16,12 +16,12 @@ class RoleSeeder extends Seeder
     {
         Project::each(function (Project $project): void {
             Role::create([
-                'name' => 'admin',
+                'name' => 'Admin',
                 'guard_name' => 'web',
                 'project_id' => $project->id,
             ]);
             Role::create([
-                'name' => 'member',
+                'name' => 'Member',
                 'guard_name' => 'web',
                 'project_id' => $project->id,
             ]);

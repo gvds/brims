@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Project;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             AssayDefinitionSeeder::class,
             ProjectSeeder::class,
             RoleSeeder::class,
+            ProjectMembersSeeder::class,
             SpecimentypeSeeder::class,
             EventSeeder::class,
             SubjectSeeder::class,
