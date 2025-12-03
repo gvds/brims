@@ -1,33 +1,22 @@
 <?php
 
-namespace App\Filament\Resources\Teams\RelationManagers;
+namespace App\Filament\project\Resources\Projects\Schemas;
 
-use App\Filament\Resources\Projects\Schemas\ProjectForm;
-use App\Filament\Resources\Projects\Tables\ProjectsTable;
-use App\Models\Project;
-use Filament\Actions\CreateAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class ProjectsRelationManager extends RelationManager
+class ProjectForm
 {
-    protected static string $relationship = 'projects';
-
-    public function form(Schema $schema): Schema
+    public static function configure(Schema $schema): Schema
     {
-        // return ProjectForm::configure($schema)->extraAttributes(['class' => 'w-full']);
         return $schema
             ->components([
                 Section::make('Project Details')
@@ -83,61 +72,6 @@ class ProjectsRelationManager extends RelationManager
             ->columns(1)
             ->extraAttributes([
                 'class' => 'w-1/3',
-            ]);
-    }
-
-    public function table(Table $table): Table
-    {
-        return $table
-            // ->striped()
-            ->columns([
-                TextColumn::make('title')
-                    ->searchable()
-                    ->action(function (Project $record) {
-                        if (auth()->user()->can('view', $record)) {
-                            session(['currentProject' => $record]);
-                            setPermissionsTeamId($record->id);
-                            return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
-                        }
-                    })
-                    ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
-                TextColumn::make('team.name')
-                    ->searchable(),
-                TextColumn::make('leader.fullname')
-                    ->searchable(['firstname', 'lastname']),
-                TextColumn::make('submission_date')
-                    ->date('Y-m-d')
-                    ->sortable(),
-                TextColumn::make('public_release_date')
-                    ->date('Y-m-d')
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->defaultSort('title')
-            ->filters([
-                //
-            ])
-            ->recordUrl(
-                null
-            )
-            ->recordActions([
-                ViewAction::make()
-                    ->label('Administration')
-                    ->icon('heroicon-o-eye')
-                    ->button()
-                    ->extraAttributes(['class' => 'bg-sky-200 dark:text-gray-900 py-1 hover:invert']),
-            ])
-            ->toolbarActions([
-                // BulkActionGroup::make([
-                //     DeleteBulkAction::make(),
-                // ]),
             ]);
     }
 }
