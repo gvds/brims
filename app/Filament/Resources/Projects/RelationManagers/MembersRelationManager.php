@@ -17,6 +17,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class MembersRelationManager extends RelationManager
 {
@@ -58,8 +60,7 @@ class MembersRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('fullname')
                     ->searchable(),
-                TextColumn::make('role')
-                    ->searchable(),
+                TextColumn::make('pivot.role.name'),
                 TextColumn::make('team.name')
                     ->label('Team'),
                 TextColumn::make('site_name')
@@ -73,6 +74,9 @@ class MembersRelationManager extends RelationManager
                     }),
                 TextColumn::make('projectSubstitute.fullname')
                     ->label('Substitute')
+                    ->icon('heroicon-o-pencil')
+                    ->badge()
+                    ->placeholder(fn() => new HtmlString(Blade::render('<x-heroicon-o-pencil class="w-4 h-4 inline mr-1" />' . 'None')))
                     ->action(
                         Action::make('selectSubstitute')
                             ->label('Select Substitute')
@@ -123,11 +127,12 @@ class MembersRelationManager extends RelationManager
                     ->recordSelectSearchColumns(['firstname', 'lastname'])
                     ->schema(fn(AttachAction $action): array => [
                         $action->getRecordSelect(),
-                        Select::make('role')
-                            ->options([
-                                'Admin' => 'Admin',
-                                'Member' => 'Member',
-                            ])
+                        Select::make('role_id')
+                            ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
+                            // ->options([
+                            //     'Admin' => 'Admin',
+                            //     'Member' => 'Member',
+                            // ])
                             ->required(),
                         Select::make('site_id')
                             ->options(
@@ -138,7 +143,8 @@ class MembersRelationManager extends RelationManager
             ->recordActions([
                 EditAction::make()
                     ->schema([
-                        Select::make('role')
+                        Select::make('role_id')
+                            ->label('Role')
                             ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
                             // ->options([
                             //     'Admin' => 'Admin',
@@ -177,7 +183,12 @@ class MembersRelationManager extends RelationManager
                                 }
                             }
                         }
-                        $record->assignRole($data['role']);
+
+                        $role = Role::find($data['role_id']);
+                        if ($role) {
+                            setPermissionsTeamId($this->ownerRecord->id);
+                            $record->syncRoles($role);
+                        }
                     }),
                 DetachAction::make()
                     ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),

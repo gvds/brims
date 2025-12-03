@@ -156,7 +156,7 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'project_member')->withPivot(['id', 'role'])->withTimestamps();
+        return $this->belongsToMany(Project::class, 'project_member')->withPivot(['id', 'role_id'])->withTimestamps();
     }
 
     public function projectSite(): HasOneThrough

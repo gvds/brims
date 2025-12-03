@@ -16,8 +16,8 @@ class SetUserTeam
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-        if (!empty($request->user())) {
-            setPermissionsTeamId(session('team_id'));
+        if (session()->has('currentProject')) {
+            setPermissionsTeamId(session('currentProject')->id);
         }
         // return $next($request);
         return $response;

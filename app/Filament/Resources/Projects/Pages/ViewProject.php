@@ -20,6 +20,15 @@ class ViewProject extends ViewRecord
 {
     protected static string $resource = ProjectResource::class;
 
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        // Set the permissions team ID based on the current project
+        setPermissionsTeamId($this->record->id);
+        dump($this->record->id);
+    }
+
     protected function getHeaderActions(): array
     {
         return [

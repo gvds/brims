@@ -19,6 +19,7 @@ class ProjectsTable
                     ->action(function (Project $record) {
                         if (auth()->user()->can('view', $record)) {
                             session(['currentProject' => $record]);
+                            setPermissionsTeamId($record->id);
                             return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
                         }
                     })
