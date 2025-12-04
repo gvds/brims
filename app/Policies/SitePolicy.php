@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class SitePolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Site');
@@ -37,9 +37,13 @@ class SitePolicy
         return $authUser->can('Delete:Site');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Site');
+    }
+
     public function reorder(AuthUser $authUser, Site $site): bool
     {
         return $authUser->can('Reorder:Site');
     }
-
 }

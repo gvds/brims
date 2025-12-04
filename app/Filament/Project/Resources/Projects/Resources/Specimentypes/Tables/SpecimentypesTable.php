@@ -45,7 +45,8 @@ class SpecimentypesTable
                 TextColumn::make('transferDestinations')
                     ->formatStateUsing(fn($state) => collect($state)->implode(', '))
                     ->listWithLineBreaks()
-                    ->searchable(isIndividual: true, isGlobal: false),
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->size('xs'),
                 IconColumn::make('active')
                     ->boolean(),
                 TextColumn::make('created_at')

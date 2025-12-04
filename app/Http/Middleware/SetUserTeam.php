@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetUserTeam
@@ -16,9 +17,12 @@ class SetUserTeam
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-        if (session()->has('currentProject')) {
+        if (!empty(Auth::user()) && session()->has('currentProject')) {
             setPermissionsTeamId(session('currentProject')->id);
         }
+
+        if (!empty(Auth::user())) {
+        Auth::user()->unsetRelation('roles')->unsetRelation('permissions');
         // return $next($request);
         return $response;
     }

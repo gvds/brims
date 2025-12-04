@@ -37,6 +37,11 @@ class StudyPolicy
         return $authUser->can('Delete:Study');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Study');
+    }
+
     public function reorder(AuthUser $authUser, Study $study): bool
     {
         return $authUser->can('Reorder:Study');

@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class PublicationPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Publication');
@@ -37,9 +37,13 @@ class PublicationPolicy
         return $authUser->can('Delete:Publication');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Publication');
+    }
+
     public function reorder(AuthUser $authUser, Publication $publication): bool
     {
         return $authUser->can('Reorder:Publication');
     }
-
 }

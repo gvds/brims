@@ -37,6 +37,11 @@ class SpecimenPolicy
         return $authUser->can('Delete:Specimen');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Specimen');
+    }
+
     public function reorder(AuthUser $authUser, Specimen $specimen): bool
     {
         return $authUser->can('Reorder:Specimen');

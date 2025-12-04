@@ -18,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
 class MembersRelationManager extends RelationManager
@@ -119,10 +120,12 @@ class MembersRelationManager extends RelationManager
                             ->modalDescription('Choose a substitute from members of the same project site.')
                             ->modalSubmitActionLabel('Save Substitute')
                             ->modalCancelActionLabel('Cancel')
+                            ->authorize('setSubstitute', ProjectMember::class),
                     ),
             ])
             ->headerActions([
                 AttachAction::make()
+                    ->authorize('attach', ProjectMember::class)
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['firstname', 'lastname'])
                     ->schema(fn(AttachAction $action): array => [
@@ -191,6 +194,7 @@ class MembersRelationManager extends RelationManager
                         }
                     }),
                 DetachAction::make()
+                    ->authorize('detach', ProjectMember::class)
                     ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(
                 //     function (User $record, DetachAction $action) {
@@ -225,7 +229,8 @@ class MembersRelationManager extends RelationManager
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DetachBulkAction::make(),
+                    DetachBulkAction::make()
+                        ->authorize('detach', ProjectMember::class),
                 ]),
             ])
             ->checkIfRecordIsSelectableUsing(

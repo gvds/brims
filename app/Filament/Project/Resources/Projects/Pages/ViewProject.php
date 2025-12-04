@@ -25,8 +25,7 @@ class ViewProject extends ViewRecord
         parent::mount($record);
 
         // Set the permissions team ID based on the current project
-        setPermissionsTeamId($this->record->id);
-        dump($this->record->id);
+        // setPermissionsTeamId($this->record->id);
     }
 
     protected function getHeaderActions(): array

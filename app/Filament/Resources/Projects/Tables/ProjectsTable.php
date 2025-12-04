@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Projects\Tables;
 use App\Models\Project;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 
 class ProjectsTable
@@ -34,10 +35,10 @@ class ProjectsTable
                     ->button()
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
-                        setPermissionsTeamId($record->id);
+                        // setPermissionsTeamId($record->id);
                         return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
                     })
-                    ->extraAttributes(['class' => 'bg-sky-200 dark:text-gray-900 py-1 hover:invert']),
-            ]);
+                    ->extraAttributes(['class' => 'bg-sky-200 border border-sky-500 shadow-sm text-gray-900 py-0 leading-6 hover:invert [&_svg]:text-black']),
+            ], position: RecordActionsPosition::BeforeCells);
     }
 }

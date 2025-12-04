@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class EventPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Event');
@@ -37,9 +37,13 @@ class EventPolicy
         return $authUser->can('Delete:Event');
     }
 
-    public function reorder(AuthUser $authUser, Event $event): bool
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Event');
+    }
+
+    public function reorder(AuthUser $authUser): bool
     {
         return $authUser->can('Reorder:Event');
     }
-
 }

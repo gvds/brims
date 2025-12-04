@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class ArmPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Arm');
@@ -37,9 +37,13 @@ class ArmPolicy
         return $authUser->can('Delete:Arm');
     }
 
-    public function reorder(AuthUser $authUser, Arm $arm): bool
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Arm');
+    }
+
+    public function reorder(AuthUser $authUser): bool
     {
         return $authUser->can('Reorder:Arm');
     }
-
 }

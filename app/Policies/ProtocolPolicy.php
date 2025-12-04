@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class ProtocolPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Protocol');
@@ -37,9 +37,13 @@ class ProtocolPolicy
         return $authUser->can('Delete:Protocol');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Protocol');
+    }
+
     public function reorder(AuthUser $authUser, Protocol $protocol): bool
     {
         return $authUser->can('Reorder:Protocol');
     }
-
 }

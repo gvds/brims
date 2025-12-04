@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class SpecimentypePolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Specimentype');
@@ -37,9 +37,13 @@ class SpecimentypePolicy
         return $authUser->can('Delete:Specimentype');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Specimentype');
+    }
+
     public function reorder(AuthUser $authUser, Specimentype $specimentype): bool
     {
         return $authUser->can('Reorder:Specimentype');
     }
-
 }

@@ -43,4 +43,9 @@ class TeamPolicy
     {
         return $authUser->can('Reorder:Team');
     }
+
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Team');
+    }
 }

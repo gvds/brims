@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class StudydesignPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Studydesign');
@@ -37,9 +37,12 @@ class StudydesignPolicy
         return $authUser->can('Delete:Studydesign');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Studydesign');
+    }
     public function reorder(AuthUser $authUser, Studydesign $studydesign): bool
     {
         return $authUser->can('Reorder:Studydesign');
     }
-
 }

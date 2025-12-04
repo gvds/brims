@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class SubjectPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Subject');
@@ -37,9 +37,13 @@ class SubjectPolicy
         return $authUser->can('Delete:Subject');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Subject');
+    }
+
     public function reorder(AuthUser $authUser, Subject $subject): bool
     {
         return $authUser->can('Reorder:Subject');
     }
-
 }

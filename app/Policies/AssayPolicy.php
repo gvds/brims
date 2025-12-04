@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class AssayPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Assay');
@@ -37,9 +37,13 @@ class AssayPolicy
         return $authUser->can('Delete:Assay');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Assay');
+    }
+
     public function reorder(AuthUser $authUser, Assay $assay): bool
     {
         return $authUser->can('Reorder:Assay');
     }
-
 }
