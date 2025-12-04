@@ -2,7 +2,7 @@
 
 namespace App\Filament\project\Resources\Projects\RelationManagers;
 
-use App\Filament\Resources\Projects\Resources\Studies\StudyResource;
+use App\Filament\project\Resources\Projects\Resources\Studies\StudyResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;

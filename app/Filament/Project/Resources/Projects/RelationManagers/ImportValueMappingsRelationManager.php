@@ -4,7 +4,7 @@ namespace App\Filament\project\Resources\Projects\RelationManagers;
 
 use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;
-use App\Filament\Resources\Projects\Resources\ImportValueMappings\Tables\ImportValueMappingsTable;
+use App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Tables\ImportValueMappingsTable;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;

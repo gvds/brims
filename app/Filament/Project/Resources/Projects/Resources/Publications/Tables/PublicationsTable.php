@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Publications\Tables;
+namespace App\Filament\project\Resources\Projects\Resources\Publications\Tables;
 
 use Dom\Text;
 use Filament\Actions\BulkActionGroup;

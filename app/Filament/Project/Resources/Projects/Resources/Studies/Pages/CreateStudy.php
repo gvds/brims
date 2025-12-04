@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Studies\Pages;
+namespace App\Filament\project\Resources\Projects\Resources\Studies\Pages;
 
-use App\Filament\Resources\Projects\Resources\Studies\StudyResource;
+use App\Filament\project\Resources\Projects\Resources\Studies\StudyResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateStudy extends CreateRecord

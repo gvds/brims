@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\ImportValueMappings;
+namespace App\Filament\project\Resources\Projects\Resources\ImportValueMappings;
 
-use App\Filament\Resources\Projects\ProjectResource;
-use App\Filament\Resources\Projects\Resources\ImportValueMappings\Pages\CreateImportValueMapping;
-use App\Filament\Resources\Projects\Resources\ImportValueMappings\Pages\EditImportValueMapping;
-use App\Filament\Resources\Projects\Resources\ImportValueMappings\Schemas\ImportValueMappingForm;
-use App\Filament\Resources\Projects\Resources\ImportValueMappings\Tables\ImportValueMappingsTable;
+use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Pages\CreateImportValueMapping;
+use App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Pages\EditImportValueMapping;
+use App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Schemas\ImportValueMappingForm;
+use App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Tables\ImportValueMappingsTable;
 use App\Models\ImportValueMapping;
 use BackedEnum;
 use Filament\Resources\Resource;

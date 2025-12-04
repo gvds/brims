@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\ImportValueMappings\Tables;
+namespace App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;

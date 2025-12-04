@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Assays\Tables;
+namespace App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -8,7 +8,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;

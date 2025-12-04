@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Publications\Schemas;
+namespace App\Filament\project\Resources\Projects\Resources\Publications\Schemas;
 
 use App\Enums\PublicationStatus;
-use Closure;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class PublicationForm

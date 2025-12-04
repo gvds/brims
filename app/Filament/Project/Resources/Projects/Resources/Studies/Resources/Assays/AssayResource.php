@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\Assays;
+namespace App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays;
 
-use App\Filament\Resources\Assays\Pages\CreateAssay;
-use App\Filament\Resources\Assays\Pages\EditAssay;
-use App\Filament\Resources\Assays\Pages\ListAssays;
-use App\Filament\Resources\Assays\Schemas\AssayForm;
-use App\Filament\Resources\Assays\Tables\AssaysTable;
+use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\CreateAssay;
+use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\EditAssay;
+use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\ListAssays;
+use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas\AssayForm;
+use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Tables\AssaysTable;
+use App\Filament\project\Resources\Projects\Resources\Studies\StudyResource;
 use App\Models\Assay;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,6 +21,9 @@ class AssayResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $parentResource = StudyResource::class;
+
+    protected static ?string $tenantOwnershipRelationshipName = 'project';
 
     public static function shouldRegisterNavigation(): bool
     {

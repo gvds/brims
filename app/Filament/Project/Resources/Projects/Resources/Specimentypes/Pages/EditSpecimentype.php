@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Specimentypes\Pages;
+namespace App\Filament\project\Resources\Projects\Resources\Specimentypes\Pages;
 
-use App\Filament\Resources\Projects\Resources\Specimentypes\SpecimentypeResource;
+use App\Filament\project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;

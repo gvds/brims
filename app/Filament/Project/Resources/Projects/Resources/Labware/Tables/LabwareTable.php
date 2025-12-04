@@ -3,7 +3,6 @@
 namespace App\Filament\project\Resources\Projects\Resources\Labware\Tables;
 
 use App\Models\Labware;
-use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;

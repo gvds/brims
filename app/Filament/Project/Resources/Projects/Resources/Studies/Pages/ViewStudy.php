@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Studies\Pages;
+namespace App\Filament\project\Resources\Projects\Resources\Studies\Pages;
 
-use App\Filament\Resources\Projects\ProjectResource;
-use App\Filament\Resources\Projects\Resources\Studies\StudyResource;
+use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Filament\project\Resources\Projects\Resources\Studies\StudyResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;

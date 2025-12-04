@@ -2,8 +2,8 @@
 
 namespace App\Filament\project\Resources\Projects\RelationManagers;
 
-use App\Filament\Resources\Projects\Resources\Specimentypes\Schemas\SpecimentypeForm;
-use App\Filament\Resources\Projects\Resources\Specimentypes\Tables\SpecimentypesTable;
+use App\Filament\project\Resources\Projects\Resources\Specimentypes\Schemas\SpecimentypeForm;
+use App\Filament\project\Resources\Projects\Resources\Specimentypes\Tables\SpecimentypesTable;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

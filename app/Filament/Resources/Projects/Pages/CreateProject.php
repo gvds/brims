@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Pages;
+namespace App\Filament\Resources\Projects\Pages;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Filament\Resources\Projects\ProjectResource;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 

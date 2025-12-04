@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Specimentypes\Schemas;
+namespace App\Filament\project\Resources\Projects\Resources\Specimentypes\Schemas;
 
 use App\Enums\StorageDestinations;
 use Filament\Forms\Components\Repeater;
@@ -14,7 +14,6 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class SpecimentypeForm
 {

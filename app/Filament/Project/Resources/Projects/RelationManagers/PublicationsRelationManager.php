@@ -2,9 +2,9 @@
 
 namespace App\Filament\project\Resources\Projects\RelationManagers;
 
-use App\Filament\Resources\Projects\Resources\Publications\PublicationResource;
-use App\Filament\Resources\Projects\Resources\Publications\Schemas\PublicationForm;
-use App\Filament\Resources\Projects\Resources\Publications\Tables\PublicationsTable;
+use App\Filament\project\Resources\Projects\Resources\Publications\PublicationResource;
+use App\Filament\project\Resources\Projects\Resources\Publications\Schemas\PublicationForm;
+use App\Filament\project\Resources\Projects\Resources\Publications\Tables\PublicationsTable;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

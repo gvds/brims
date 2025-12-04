@@ -26,6 +26,6 @@ class Labware extends Model
 
     public function specimenTypes(): HasMany
     {
-        return $this->hasMany(SpecimenType::class);
+        return $this->hasMany(Specimentype::class);
     }
 }

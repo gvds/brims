@@ -2,19 +2,15 @@
 
 namespace App\Filament\project\Resources\Projects;
 
-use App\Filament\project\Resources\Projects\Pages\CreateProject;
 use App\Filament\project\Resources\Projects\Pages\EditProject;
-use App\Filament\project\Resources\Projects\Pages\ListProjects;
 use App\Filament\project\Resources\Projects\Pages\ViewProject;
 use App\Filament\project\Resources\Projects\Schemas\ProjectForm;
 use App\Filament\project\Resources\Projects\Schemas\ProjectInfolist;
-use App\Filament\project\Resources\Projects\Tables\ProjectsTable;
 use App\Models\Project;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class ProjectResource extends Resource
 {
@@ -34,11 +30,11 @@ class ProjectResource extends Resource
         return ProjectInfolist::configure($schema);
     }
 
-    #[\Override]
-    public static function table(Table $table): Table
-    {
-        return ProjectsTable::configure($table);
-    }
+    // #[\Override]
+    // public static function table(Table $table): Table
+    // {
+    //     return ProjectsTable::configure($table);
+    // }
 
     #[\Override]
     public static function getRelations(): array
@@ -58,8 +54,8 @@ class ProjectResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListProjects::route('/'),
-            'create' => CreateProject::route('/create'),
+            // 'index' => ListProjects::route('/'),
+            // 'create' => CreateProject::route('/create'),
             'view' => ViewProject::route('/{record}'),
             'edit' => EditProject::route('/{record}/edit'),
         ];

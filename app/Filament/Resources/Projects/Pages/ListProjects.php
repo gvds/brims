@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Pages;
+namespace App\Filament\Resources\Projects\Pages;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Filament\Resources\Projects\ProjectResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,7 +13,7 @@ class ListProjects extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }
