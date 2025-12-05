@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Resources\Sites;
+namespace App\Filament\project\Resources\Projects\Resources\Sites;
 
-use App\Filament\Resources\Projects\ProjectResource;
-use App\Filament\Resources\Projects\Resources\Sites\Pages\CreateSite;
-use App\Filament\Resources\Projects\Resources\Sites\Pages\EditSite;
-use App\Filament\Resources\Projects\Resources\Sites\Schemas\SiteForm;
-use App\Filament\Resources\Projects\Resources\Sites\Tables\SitesTable;
+use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Filament\project\Resources\Projects\Resources\Sites\Pages\CreateSite;
+use App\Filament\project\Resources\Projects\Resources\Sites\Pages\EditSite;
+use App\Filament\project\Resources\Projects\Resources\Sites\Schemas\SiteForm;
+use App\Filament\project\Resources\Projects\Resources\Sites\Tables\SitesTable;
 use App\Models\Site;
 use BackedEnum;
 use Filament\Resources\Resource;
