@@ -25,6 +25,7 @@ class ViewArm extends ViewRecord
                 ->color('gray')
                 ->url(fn(): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id, 'activeRelationManager' => 4, 'relation' => 3])),
             Action::make('edit')
+                ->authorize('update', Arm::class)
                 ->fillForm(fn(Arm $record): array => $record->toArray())
                 ->schema([
                     Grid::make()

@@ -31,6 +31,7 @@ class ArmsRelationManager extends RelationManager
             ->headerActions([
                 // CreateAction::make(),
                 Action::make('create')
+                    ->authorize('create', Arm::class)
                     ->schema([
                         Grid::make()
                             ->columns(2)

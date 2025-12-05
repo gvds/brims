@@ -9,12 +9,16 @@ use App\Filament\Imports\SpecimenImporter;
 use App\Filament\Imports\SubjectEventImporter;
 use App\Filament\Imports\SubjectImporter;
 use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Models\Specimen;
+use App\Models\Subject;
+use App\Models\SubjectEvent;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Gate;
 
 class ViewProject extends ViewRecord
 {
@@ -34,6 +38,7 @@ class ViewProject extends ViewRecord
             EditAction::make(),
             ActionGroup::make([
                 ImportAction::make('subject_import')
+                    ->authorize(['create', 'update'], Subject::class)
                     ->label('Import Subjects')
                     ->color("gray")
                     ->importer(SubjectImporter::class)
@@ -41,6 +46,7 @@ class ViewProject extends ViewRecord
                         'project' => $this->record,
                     ]),
                 ImportAction::make('subject_event_import')
+                    ->authorize(['create', 'update'], SubjectEvent::class)
                     ->label('Import Subject Events')
                     ->color("gray")
                     ->importer(SubjectEventImporter::class)
@@ -48,6 +54,7 @@ class ViewProject extends ViewRecord
                         'project' => $this->record,
                     ]),
                 ImportAction::make('specimen_import')
+                    ->authorize(['create', 'update'], Specimen::class)
                     ->label('Import Specimens')
                     ->color("gray")
                     ->importer(SpecimenImporter::class)
@@ -60,16 +67,19 @@ class ViewProject extends ViewRecord
                 ->color(Color::Indigo),
             ActionGroup::make([
                 ExportAction::make('subject_export')
+                    ->visible(fn(): bool => Gate::allows('viewAny', Subject::class))
                     ->label('Export Subjects')
                     ->color("gray")
                     ->exporter(SubjectExporter::class)
                     ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
                 ExportAction::make('subject_event_export')
+                    ->visible(fn(): bool => Gate::allows('viewAny', SubjectEvent::class))
                     ->label('Export Subject Events')
                     ->color("gray")
                     ->exporter(SubjectEventExporter::class)
                     ->modifyQueryUsing(fn($query) => $query->whereHas('subject', fn($query) => $query->where('project_id', $this->record->id))),
                 ExportAction::make('specimen_export')
+                    ->visible(fn(): bool => Gate::allows('viewAny', Specimen::class))
                     ->label('Export Specimens')
                     ->color("gray")
                     ->exporter(SpecimenExporter::class)
