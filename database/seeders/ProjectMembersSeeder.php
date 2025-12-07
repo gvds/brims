@@ -24,7 +24,7 @@ class ProjectMembersSeeder extends Seeder
                         $roles = Role::where('project_id', $project->id)->pluck('id', 'name');
                         $project->load('sites');
                         $project->members()->attach($team->leader->id, [
-                            'role' => $roles['Admin'],
+                            'role_id' => $roles['Admin'],
                             'site_id' => $project->sites->random(1)->first()->id,
                         ]);
                         User::whereNot('id', $team->leader->id)
@@ -34,7 +34,7 @@ class ProjectMembersSeeder extends Seeder
                                 fn(User $user) => $project
                                     ->members()
                                     ->attach($user->id, [
-                                        'role' => $roles['Member'],
+                                        'role_id' => $roles['Member'],
                                         'site_id' => $project->sites->random(1)->first()->id,
                                     ])
                             );

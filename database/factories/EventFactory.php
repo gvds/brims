@@ -17,7 +17,7 @@ class EventFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->word(),
+            'name' => fake()->unique()->word(),
             'offset_ante_window' => fake()->numberBetween(0, 3),
             'offset_post_window' => fake()->numberBetween(0, 5),
             'name_labels' => fake()->numberBetween(1, 3),
