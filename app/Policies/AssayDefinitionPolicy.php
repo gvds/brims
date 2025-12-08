@@ -15,17 +15,18 @@ class AssayDefinitionPolicy
     public function viewAny(AuthUser $authUser): bool
     {
         return true;
-        return $authUser->can('ViewAny:AssayDefinition');
+        // return $authUser->can('ViewAny:AssayDefinition');
     }
 
     public function view(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
         return true;
-        return $authUser->can('View:AssayDefinition');
+        // return $authUser->can('View:AssayDefinition');
     }
 
     public function create(AuthUser $authUser): bool
     {
+
         return $authUser->can('Create:AssayDefinition');
     }
 

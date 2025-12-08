@@ -5,7 +5,9 @@ namespace App\Filament\Resources\AssayDefinitions;
 use App\Filament\Resources\AssayDefinitions\Pages\CreateAssayDefinition;
 use App\Filament\Resources\AssayDefinitions\Pages\EditAssayDefinition;
 use App\Filament\Resources\AssayDefinitions\Pages\ListAssayDefinitions;
+use App\Filament\Resources\AssayDefinitions\Pages\ViewAssayDefinition;
 use App\Filament\Resources\AssayDefinitions\Schemas\AssayDefinitionForm;
+use App\Filament\Resources\AssayDefinitions\Schemas\AssayDefinitionInfolist;
 use App\Filament\Resources\AssayDefinitions\Tables\AssayDefinitionsTable;
 use App\Models\AssayDefinition;
 use BackedEnum;
@@ -24,6 +26,12 @@ class AssayDefinitionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return AssayDefinitionForm::configure($schema);
+    }
+
+    #[\Override]
+    public static function infolist(Schema $schema): Schema
+    {
+        return AssayDefinitionInfolist::configure($schema);
     }
 
     #[\Override]
@@ -46,6 +54,7 @@ class AssayDefinitionResource extends Resource
             'index' => ListAssayDefinitions::route('/'),
             'create' => CreateAssayDefinition::route('/create'),
             'edit' => EditAssayDefinition::route('/{record}/edit'),
+            'view' => ViewAssayDefinition::route('/{record}/view'),
         ];
     }
 }
