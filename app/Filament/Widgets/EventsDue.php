@@ -16,6 +16,8 @@ class EventsDue extends TableWidget
 
     use HasWidgetShield;
 
+    // protected static ?string $heading = 'Events Due';
+
     public function table(Table $table): Table
     {
         return $table

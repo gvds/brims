@@ -92,15 +92,15 @@ class ProjectsRelationManager extends RelationManager
             // ->striped()
             ->columns([
                 TextColumn::make('title')
-                    ->searchable()
-                    ->action(function (Project $record) {
-                        if (auth()->user()->can('view', $record)) {
-                            session(['currentProject' => $record]);
-                            setPermissionsTeamId($record->id);
-                            return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
-                        }
-                    })
-                    ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
+                    ->searchable(),
+                // ->action(function (Project $record) {
+                //     if (auth()->user()->can('view', $record)) {
+                //         session(['currentProject' => $record]);
+                //         setPermissionsTeamId($record->id);
+                //         return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
+                //     }
+                // })
+                // ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
                 TextColumn::make('team.name')
                     ->searchable(),
                 TextColumn::make('leader.fullname')
@@ -129,10 +129,6 @@ class ProjectsRelationManager extends RelationManager
             )
             ->recordActions([
                 ViewAction::make()
-                    ->label('Administration')
-                    ->icon('heroicon-o-eye')
-                    ->button()
-                    ->extraAttributes(['class' => 'bg-sky-200 dark:text-gray-900 py-1 hover:invert']),
             ])
             ->toolbarActions([
                 // BulkActionGroup::make([

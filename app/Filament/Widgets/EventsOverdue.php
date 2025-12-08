@@ -16,7 +16,7 @@ class EventsOverdue extends TableWidget
 
     use HasWidgetShield;
 
-    protected static ?string $heading = 'Overdue Events';
+    // protected static ?string $heading = 'Overdue Events';
 
     public function table(Table $table): Table
     {

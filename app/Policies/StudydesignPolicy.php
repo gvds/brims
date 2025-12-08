@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\SystemRoles;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Studydesign;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -14,6 +15,7 @@ class StudydesignPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
+        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
         return $authUser->can('ViewAny:Studydesign');
     }
 

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ProjectEventsOverdue extends TableWidget
 {
-    protected static ?string $heading = 'Overdue Events';
+    // protected static ?string $heading = 'Overdue Events';
 
     use HasWidgetShield;
 

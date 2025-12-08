@@ -181,7 +181,9 @@ return [
             ],
         ],
         'exclude' => [
-            //
+            App\Filament\Resources\Teams\TeamResource::class,
+            App\Filament\Resources\Projects\ProjectResource::class,
+            App\Filament\project\Resources\Projects\ProjectResource::class,
         ],
     ],
 
@@ -235,9 +237,7 @@ return [
     |
     */
 
-    'custom_permissions' => [
-        'ModifyStatus:SubjectEvent' => 'Modify Event Status',
-    ],
+    'custom_permissions' => [],
 
     /*
     |--------------------------------------------------------------------------

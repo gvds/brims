@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Artisan::call('shield:generate --all --panel=project --option=permissions --relationships --no-interaction');
+        Artisan::call('shield:generate --all --panel=project --option=permissions --no-interaction');
         $this->call([
             UserSeeder::class,
             AssayDefinitionSeeder::class,
