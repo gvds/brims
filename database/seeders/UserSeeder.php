@@ -3,13 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\SystemRoles;
-use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -41,12 +38,6 @@ class UserSeeder extends Seeder
                 'team_id' => $team->id,
                 'team_role' => 'Admin',
             ]);
-            // DB::table('model_has_roles')->insert([
-            //     'role_id' => 1,
-            //     'model_type' => User::class,
-            //     'model_id' => $user->id,
-            //     'project_id' => $team->id,
-            // ]);
 
             $user2 = User::factory()
                 ->create([
@@ -66,12 +57,6 @@ class UserSeeder extends Seeder
                 'team_id' => $team2->id,
                 'team_role' => 'Admin',
             ]);
-            // DB::table('model_has_roles')->insert([
-            //     'role_id' => 1,
-            //     'model_type' => User::class,
-            //     'model_id' => $user2->id,
-            //     'project_id' => $team2->id,
-            // ]);
         }
 
         $teams = Team::all();
@@ -84,8 +69,5 @@ class UserSeeder extends Seeder
             ->create([
                 'team_role' => 'Member',
             ]);
-        // $users->each(function ($user) {
-        //     $user->assignRole('User');
-        // });
     }
 }

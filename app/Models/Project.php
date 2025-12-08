@@ -92,4 +92,11 @@ class Project extends Model implements HasName
     {
         return $this->title;
     }
+
+    /** @return HasMany<\App\Models\Role, self> */
+    public function roles(): HasMany
+    {
+        return $this->hasMany(\App\Models\Role::class);
+    }
+
 }

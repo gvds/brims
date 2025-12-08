@@ -58,8 +58,8 @@ class ProjectPanelProvider extends PanelProvider
             ], isPersistent: true)
             ->plugins([
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Authorisation')
-                    ->registerNavigation(1),
+                    ->navigationGroup('Authorisation'),
+                // ->registerNavigation(1),
             ])
             ->globalSearch(false)
             ->colors([

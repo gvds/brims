@@ -28,20 +28,6 @@ class ProjectSeeder extends Seeder
                     'leader_id' => $team->leader->id,
                 ]);
             $projects->each(function (Project $project) use ($team): void {
-                // $project->load('sites');
-                // $project->members()->attach($team->leader->id, [
-                //     'role' => 'Admin',
-                //     'site_id' => $project->sites->random(1)->first()->id,
-                // ]);
-                // User::whereNot('id', $team->leader->id)
-                //     ->get()
-                //     ->random(3)
-                //     ->each(fn(User $user) => $project
-                //         ->members()
-                //         ->attach($user->id, [
-                //             'role' => 'Member',
-                //             'site_id' => $project->sites->random(1)->first()->id,
-                //         ]));
                 $arms = Arm::factory()
                     ->count(3)
                     ->for($project)

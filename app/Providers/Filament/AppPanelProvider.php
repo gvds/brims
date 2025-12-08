@@ -58,13 +58,7 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('')
             ->login(Login::class)
-            // ->tenant(Project::class, ownershipRelationship: 'project')
-            // ->tenantMiddleware([
-            //     SyncShieldTenant::class,
-            // ], isPersistent: true)
-            ->plugins([
-                // FilamentShieldPlugin::make(),
-            ])
+            ->plugins([])
             ->multiFactorAuthentication([
                 AppAuthentication::make()
                     ->recoverable(),

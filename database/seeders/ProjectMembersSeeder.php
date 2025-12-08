@@ -27,16 +27,21 @@ class ProjectMembersSeeder extends Seeder
                             'role_id' => $roles['Admin'],
                             'site_id' => $project->sites->random(1)->first()->id,
                         ]);
+                        setPermissionsTeamId($project->id);
+                        $team->leader->assignRole('Admin');
                         User::whereNot('id', $team->leader->id)
                             ->get()
                             ->random(3)
                             ->each(
-                                fn(User $user) => $project
-                                    ->members()
-                                    ->attach($user->id, [
-                                        'role_id' => $roles['Member'],
-                                        'site_id' => $project->sites->random(1)->first()->id,
-                                    ])
+                                function (User $user) use ($project, $roles) {
+                                    $project
+                                        ->members()
+                                        ->attach($user->id, [
+                                            'role_id' => $roles['Member'],
+                                            'site_id' => $project->sites->random(1)->first()->id,
+                                        ]);
+                                    $user->assignRole('Member');
+                                }
                             );
                     }
                 );
