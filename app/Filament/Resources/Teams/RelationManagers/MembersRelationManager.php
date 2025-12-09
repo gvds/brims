@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Teams\RelationManagers;
 
 use App\Enums\TeamRoles;
-use App\Models\Team;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -23,6 +22,11 @@ use Filament\Tables\Table;
 class MembersRelationManager extends RelationManager
 {
     protected static string $relationship = 'members';
+
+    public function isReadOnly(): bool
+    {
+        return false; // This allows editing actions
+    }
 
     public function form(Schema $schema): Schema
     {

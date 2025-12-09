@@ -14,11 +14,17 @@ class ProtocolsRelationManager extends RelationManager
 
     protected static ?string $relatedResource = ProtocolResource::class;
 
+
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function table(Table $table): Table
     {
         return ProtocolsTable::configure($table)
             ->headerActions([
-                CreateAction::make(), // Uncomment if you want to allow creating projects directly from the team relation manager
+                CreateAction::make(),
             ]);
     }
 }
