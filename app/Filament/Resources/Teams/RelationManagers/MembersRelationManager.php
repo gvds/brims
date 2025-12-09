@@ -18,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class MembersRelationManager extends RelationManager
 {
@@ -40,16 +41,16 @@ class MembersRelationManager extends RelationManager
                     ->validationMessages([
                         'regex' => 'The :attribute may contain only lower-case letters, periods and numbers and must start with a letter.',
                     ]),
+                TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
                 TextInput::make('firstname')
                     ->required()
                     ->maxLength(50),
                 TextInput::make('lastname')
                     ->required()
                     ->maxLength(50),
-                TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
                 Select::make('team_role')
                     ->options(fn(): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
                     ->required(),
@@ -117,7 +118,12 @@ class MembersRelationManager extends RelationManager
                 DeleteAction::make(),
             ])
             ->toolbarActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data): array {
+                        $data['team_id'] = $this->ownerRecord->id;
+                        $data['password'] = bcrypt(Str::password(32));
+                        return $data;
+                    }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
