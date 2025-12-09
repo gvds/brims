@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Teams\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Schemas\Components\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -21,6 +21,10 @@ class TeamsTable
                     ->lineClamp(2),
                 TextColumn::make('leader.fullname')
                     ->searchable(['firstname', 'lastname']),
+                TextColumn::make('members_count')
+                    ->counts('members')
+                    ->label('Members')
+                    ->alignCenter(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -34,12 +38,13 @@ class TeamsTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }
