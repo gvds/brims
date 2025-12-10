@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Pages;
+namespace App\Filament\Admin\Pages;
 
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -13,12 +13,14 @@ class Dashboard extends BaseDashboard
 
     public static string | BackedEnum | null $navigationIcon = Heroicon::ComputerDesktop;
 
+
     #[\Override]
     public function getColumns(): int | array
     {
         return [
             'default' => 1,
-            '2xl' => 2,
+            'xl' => 2,
+            '2xl' => 3
         ];
     }
 }

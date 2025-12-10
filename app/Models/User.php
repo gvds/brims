@@ -68,8 +68,14 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() === 'project' && session()->missing('currentProject')) {
-            return false;
+        // if ($panel->getId() === 'project' && session()->missing('currentProject')) {
+        if ($panel->getId() === 'project') {
+            // return false;
+            return session()->has('currentProject');
+        }
+
+        if ($panel->getId() === 'admin') {
+            return in_array($this->system_role, [SystemRoles::SysAdmin, SystemRoles::SuperAdmin]);
         }
 
         return true;

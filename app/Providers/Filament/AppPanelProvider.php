@@ -6,6 +6,7 @@ use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Pages\Login;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -82,6 +83,10 @@ class AppPanelProvider extends PanelProvider
                         'record' => Auth::user()->team_id,
                     ]))
                     ->icon('heroicon-o-user-group'),
+                NavigationItem::make('Admin')
+                    ->url('/admin')
+                    ->icon('heroicon-o-wrench')
+                    ->visible(fn(): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')

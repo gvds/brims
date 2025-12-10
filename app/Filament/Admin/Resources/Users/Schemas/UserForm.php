@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Users\Schemas;
+namespace App\Filament\Admin\Resources\Users\Schemas;
 
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
@@ -10,6 +10,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class UserForm
 {
@@ -96,7 +97,7 @@ class UserForm
                             ->label('System Role')
                             ->options(SystemRoles::class)
                             ->required()
-                            ->visible(fn(): bool => auth()->user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
+                            ->visible(fn(): bool => Auth::user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
                         Toggle::make('active')
                             ->required()
                             ->default(true)
