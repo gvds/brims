@@ -22,7 +22,8 @@ class SetUserTeam
         }
 
         if (!empty(Auth::user())) {
-        Auth::user()->unsetRelation('roles')->unsetRelation('permissions');
+            Auth::user()->unsetRelation('roles')->unsetRelation('permissions');
+        }
         // return $next($request);
         return $response;
     }
