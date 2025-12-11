@@ -14,6 +14,7 @@ class RolePolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
+        return true;
         return $authUser->can('ViewAny:Role');
     }
 

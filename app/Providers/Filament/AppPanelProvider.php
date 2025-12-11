@@ -82,10 +82,12 @@ class AppPanelProvider extends PanelProvider
                     ->url(fn(): string => route('filament.app.resources.teams.view', [
                         'record' => Auth::user()->team_id,
                     ]))
-                    ->icon('heroicon-o-user-group'),
+                    ->icon('heroicon-o-user-group')
+                    ->sort(2),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
+                    ->sort(10)
                     ->visible(fn(): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
             ])
             ->databaseNotifications()

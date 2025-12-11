@@ -20,10 +20,4 @@ class CreateAssayDefinition extends CreateRecord
         $data['user_id'] = Auth::id();
         return $data;
     }
-
-    // #[\Override]
-    // protected function getRedirectUrl(): string
-    // {
-    //     return static::getResource()::getUrl('index');
-    // }
 }

@@ -16,10 +16,4 @@ class EditAssayDefinition extends EditRecord
             DeleteAction::make(),
         ];
     }
-
-    // #[\Override]
-    // protected function getRedirectUrl(): string
-    // {
-    //     return static::getResource()::getUrl('index');
-    // }
 }

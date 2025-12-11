@@ -12,31 +12,42 @@ class UserPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('ViewAny:User');
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('ViewAny:User');
     }
 
     public function view(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('View:User');
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('View:User');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('Create:User');
         return $authUser->can('Create:User');
     }
 
     public function update(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('Update:User');
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('Update:User');
     }
 
     public function delete(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('Delete:User');
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('Delete:User');
+    }
+
+    public function setSubstitute(AuthUser $authUser): bool
+    {
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('SetSubstitute:ProjectMember');
+    }
+
+    public function attach(AuthUser $authUser): bool
+    {
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('Attach:ProjectMember');
+    }
+
+    public function detach(AuthUser $authUser): bool
+    {
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('Detach:ProjectMember');
     }
 }

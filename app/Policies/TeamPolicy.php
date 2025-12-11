@@ -15,26 +15,26 @@ class TeamPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
+        return true;
     }
 
     public function view(AuthUser $authUser, Team $team): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
+        return $authUser->system_role === SystemRoles::SysAdmin || $authUser->team_id === $team->id;
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
+        return $authUser->system_role === SystemRoles::SysAdmin;
     }
 
     public function update(AuthUser $authUser, Team $team): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
+        return $authUser->system_role === SystemRoles::SysAdmin || ($authUser->team_id === $team->id && $authUser->team_role === 'Admin');
     }
 
     public function delete(AuthUser $authUser, Team $team): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
+        return $authUser->system_role === SystemRoles::SysAdmin;
     }
 }
