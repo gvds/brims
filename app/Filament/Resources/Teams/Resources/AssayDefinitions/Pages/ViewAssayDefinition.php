@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\AssayDefinitions\Pages;
+namespace App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages;
 
-use App\Filament\Resources\AssayDefinitions\AssayDefinitionResource;
+use App\Filament\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
@@ -16,7 +16,7 @@ class ViewAssayDefinition extends ViewRecord
         return [
             Action::make('return')
                 ->color('gray')
-                ->url(fn(): string => AssayDefinitionResource::getUrl('index')),
+                ->url(fn(): string => static::getResource()::getUrl('index')),
             EditAction::make(),
         ];
     }

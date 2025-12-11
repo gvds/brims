@@ -26,12 +26,13 @@ class AssayDefinitionPolicy
 
     public function create(AuthUser $authUser): bool
     {
-
+        return true;
         return $authUser->can('Create:AssayDefinition');
     }
 
     public function update(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
+        return true;
         return $authUser->can('Update:AssayDefinition');
     }
 

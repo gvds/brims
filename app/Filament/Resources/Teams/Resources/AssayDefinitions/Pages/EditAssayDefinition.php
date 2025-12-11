@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\AssayDefinitions\Pages;
+namespace App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages;
 
-use App\Filament\Resources\AssayDefinitions\AssayDefinitionResource;
+use App\Filament\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -17,9 +17,9 @@ class EditAssayDefinition extends EditRecord
         ];
     }
 
-    #[\Override]
-    protected function getRedirectUrl(): string
-    {
-        return static::getResource()::getUrl('index');
-    }
+    // #[\Override]
+    // protected function getRedirectUrl(): string
+    // {
+    //     return static::getResource()::getUrl('index');
+    // }
 }
