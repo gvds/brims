@@ -4,33 +4,37 @@ namespace App\Filament\Widgets;
 
 use App\Enums\EventStatus;
 use App\Models\Project;
+use App\Models\ProjectMember;
 use App\Models\SubjectEvent;
-use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class EventsDue extends TableWidget
 {
 
-    use HasWidgetShield;
+    // use HasWidgetShield;
 
     // protected static ?string $heading = 'Events Due';
 
     public function table(Table $table): Table
     {
+        $substitutees = ProjectMember::where('substitute_id', Auth::id())
+            ->pluck('user_id');
+
         return $table
             ->description('Click on a row to access the project')
             ->query(
                 fn(): Builder => Project::query()
-                    ->whereRelation('members', 'user_id', auth()->id())
+                    ->whereRelation('members', 'user_id', Auth::id())
                     ->whereHas(
                         'subjects.subjectEvents',
                         fn(Builder $query) => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today())
-                            ->whereRelation('subject', 'user_id', '=', auth()->id())
+                            ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
                     )
             )
             ->columns([
@@ -49,7 +53,7 @@ class EventsDue extends TableWidget
                         fn(Project $record) => SubjectEvent::whereHas(
                             'subject',
                             fn(Builder $query) => $query->where('project_id', $record->id)
-                                ->where('user_id', auth()->id())
+                                ->where('user_id', Auth::id())
                         )
                             ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('minDate', '<=', today())
