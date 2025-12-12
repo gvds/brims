@@ -11,7 +11,6 @@ use App\Models\Subject;
 use Filament\Facades\Filament;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class SubjectPolicy
 {
@@ -19,10 +18,11 @@ class SubjectPolicy
 
     private function evaluateModelPermission($authUser, string $permission, Model $model): bool
     {
-        $userIDList = ProjectMember::where('substitute_id', Auth::id())
-            ->pluck('user_id')
+        $userIDList = $authUser->substitutees()
+            ->where('project_id', session('currentProject')->id)
+            ->pluck('users.id')
+            ->push($authUser->id)
             ->toArray();
-        array_push($userIDList, $authUser->id);
 
         $conditions = [
             $authUser->system_role === SystemRoles::SysAdmin,
