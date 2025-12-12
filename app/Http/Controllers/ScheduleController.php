@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ProjectMember;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Codedge\Fpdf\Fpdf\Fpdf;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 
 class ScheduleController extends Controller
@@ -56,11 +58,12 @@ class ScheduleController extends Controller
             $this->fpdf->SetFillColor(220, 220, 220);
 
             // Get ids of current user and users for whom this user is substituting
-            $currentSubstitutees = auth()->user()->substitutees;
-            $userIDList = [auth()->user()->id];
-            // foreach ($currentSubstitutees as $substitutee) {
-            //     array_push($userIDList, $substitutee->id);
-            // }
+            $substitutees = ProjectMember::where('substitute_id', Auth::id())
+                ->pluck('user_id');
+            $userIDList = [Auth::id()];
+            foreach ($substitutees as $substitutee) {
+                array_push($userIDList, $substitutee->id);
+            }
 
             // Schedule events
             SubjectEvent::whereHas(

@@ -14,36 +14,37 @@ class LabwarePolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Labware');
+        return evaluate_permission($authUser, 'ViewAny:Labware');
     }
 
     public function view(AuthUser $authUser, Labware $labware): bool
     {
-        return $authUser->can('View:Labware');
+        return evaluate_permission($authUser, 'View:Labware');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Labware');
+        return evaluate_permission($authUser, 'Create:Labware');
     }
 
     public function update(AuthUser $authUser, Labware $labware): bool
     {
-        return $authUser->can('Update:Labware');
+
+        return evaluate_permission($authUser, 'Update:Labware');
     }
 
     public function delete(AuthUser $authUser, Labware $labware): bool
     {
-        return $authUser->can('Delete:Labware');
+        return evaluate_permission($authUser, 'Delete:Labware');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Labware');
+        return evaluate_permission($authUser, 'DeleteAny:Labware');
     }
 
     public function reorder(AuthUser $authUser, Labware $labware): bool
     {
-        return $authUser->can('Reorder:Labware');
+        return evaluate_permission($authUser, 'Reorder:Labware');
     }
 }

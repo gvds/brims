@@ -28,22 +28,21 @@ class AssayDefinitionPolicy
 
     public function create(AuthUser $authUser): bool
     {
-
-        return $authUser->can('Create:AssayDefinition') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Create:AssayDefinition');
     }
 
     public function update(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return $authUser->can('Update:AssayDefinition') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Update:AssayDefinition');
     }
 
     public function delete(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return $authUser->can('Delete:AssayDefinition') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Delete:AssayDefinition');
     }
 
     public function reorder(AuthUser $authUser, AssayDefinition $assayDefinition): bool
     {
-        return $authUser->can('Reorder:AssayDefinition') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Reorder:AssayDefinition');
     }
 }

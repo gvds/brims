@@ -14,32 +14,31 @@ class RolePolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return true;
-        return $authUser->can('ViewAny:Role');
+        return evaluate_permission($authUser, 'ViewAny:Role');
     }
 
     public function view(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('View:Role');
+        return evaluate_permission($authUser, 'View:Role');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Role');
+        return evaluate_permission($authUser, 'Create:Role');
     }
 
     public function update(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('Update:Role');
+        return evaluate_permission($authUser, 'Update:Role');
     }
 
     public function delete(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('Delete:Role');
+        return evaluate_permission($authUser, 'Delete:Role');
     }
 
     public function reorder(AuthUser $authUser, Role $role): bool
     {
-        return $authUser->can('Reorder:Role');
+        return evaluate_permission($authUser, 'Reorder:Role');
     }
 }

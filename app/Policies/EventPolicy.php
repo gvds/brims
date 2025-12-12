@@ -14,36 +14,36 @@ class EventPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Event');
+        return evaluate_permission($authUser, 'ViewAny:Event');
     }
 
     public function view(AuthUser $authUser, Event $event): bool
     {
-        return $authUser->can('View:Event');
+        return evaluate_permission($authUser, 'View:Event');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Event');
+        return evaluate_permission($authUser, 'Create:Event');
     }
 
     public function update(AuthUser $authUser, Event $event): bool
     {
-        return $authUser->can('Update:Event');
+        return evaluate_permission($authUser, 'Update:Event');
     }
 
     public function delete(AuthUser $authUser, Event $event): bool
     {
-        return $authUser->can('Delete:Event');
+        return evaluate_permission($authUser, 'Delete:Event');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Event');
+        return evaluate_permission($authUser, 'DeleteAny:Event');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:Event');
+        return evaluate_permission($authUser, 'Reorder:Event');
     }
 }

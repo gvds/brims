@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\SystemRoles;
+use App\Enums\TeamRoles;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\HasName;
@@ -157,6 +158,13 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     {
         return new Attribute(
             get: fn(): bool => $this->team && $this->id === $this->team->leader_id,
+        );
+    }
+
+    protected function isTeamAdmin(): Attribute
+    {
+        return new Attribute(
+            get: fn(): bool => $this->team && $this->team_role === TeamRoles::Admin->value,
         );
     }
 

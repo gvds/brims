@@ -14,36 +14,36 @@ class SpecimentypePolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Specimentype');
+        return evaluate_permission($authUser, 'ViewAny:Specimentype');
     }
 
     public function view(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return $authUser->can('View:Specimentype');
+        return evaluate_permission($authUser, 'View:Specimentype');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Specimentype');
+        return evaluate_permission($authUser, 'Create:Specimentype');
     }
 
     public function update(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return $authUser->can('Update:Specimentype');
+        return evaluate_permission($authUser, 'Update:Specimentype');
     }
 
     public function delete(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return $authUser->can('Delete:Specimentype');
+        return evaluate_permission($authUser, 'Delete:Specimentype');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Specimentype');
+        return evaluate_permission($authUser, 'DeleteAny:Specimentype');
     }
 
     public function reorder(AuthUser $authUser, Specimentype $specimentype): bool
     {
-        return $authUser->can('Reorder:Specimentype');
+        return evaluate_permission($authUser, 'Reorder:Specimentype');
     }
 }

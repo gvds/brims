@@ -14,36 +14,37 @@ class AssayPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Assay');
+        return true;
+        // return $authUser->can('ViewAny:Assay');
     }
 
     public function view(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->can('View:Assay');
+        return evaluate_permission($authUser, 'View:Assay');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Assay');
+        return evaluate_permission($authUser, 'Create:Assay');
     }
 
     public function update(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->can('Update:Assay');
+        return evaluate_permission($authUser, 'Update:Assay');
     }
 
     public function delete(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->can('Delete:Assay');
+        return evaluate_permission($authUser, 'Delete:Assay');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Assay');
+        return evaluate_permission($authUser, 'DeleteAny:Assay');
     }
 
     public function reorder(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->can('Reorder:Assay');
+        return evaluate_permission($authUser, 'Reorder:Assay');
     }
 }

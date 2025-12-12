@@ -22,26 +22,26 @@ class ProtocolPolicy
 
     public function view(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('View:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'View:Protocol');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Create:Protocol');
     }
 
     public function update(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('Update:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Update:Protocol');
     }
 
     public function delete(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('Delete:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'Delete:Protocol');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
+        return evaluate_permission($authUser, 'DeleteAny:Protocol');
     }
 }

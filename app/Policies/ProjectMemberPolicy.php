@@ -11,30 +11,30 @@ class ProjectMemberPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('ViewAny:ProjectMember');
-    }
+    // public function viewAny(AuthUser $authUser): bool
+    // {
+    //     return $authUser->can('ViewAny:ProjectMember');
+    // }
 
-    public function view(AuthUser $authUser): bool
-    {
-        return $authUser->can('View:ProjectMember');
-    }
+    // public function view(AuthUser $authUser): bool
+    // {
+    //     return $authUser->can('View:ProjectMember');
+    // }
 
-    public function create(AuthUser $authUser): bool
-    {
-        return $authUser->can('Create:ProjectMember');
-    }
+    // public function create(AuthUser $authUser): bool
+    // {
+    //     return $authUser->can('Create:ProjectMember');
+    // }
 
-    public function update(AuthUser $authUser): bool
-    {
-        return $authUser->can('Update:ProjectMember');
-    }
+    // public function update(AuthUser $authUser): bool
+    // {
+    //     return $authUser->can('Update:ProjectMember');
+    // }
 
-    public function delete(AuthUser $authUser): bool
-    {
-        return $authUser->can('Delete:ProjectMember');
-    }
+    // public function delete(AuthUser $authUser): bool
+    // {
+    //     return $authUser->can('Delete:ProjectMember');
+    // }
 
     // public function attach(AuthUser $authUser): bool
     // {
