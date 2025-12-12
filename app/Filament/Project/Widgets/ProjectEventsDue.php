@@ -19,9 +19,8 @@ class ProjectEventsDue extends TableWidget
 
     public function table(Table $table): Table
     {
-        $substitutees = ProjectMember::where('substitute_id', Auth::id())
-            ->pluck('user_id');
-
+        $substitutees = Auth::user()->substitutees()
+            ->pluck('users.id');
         return $table
             ->description('Click on a row to access the subject record')
             ->query(

@@ -58,12 +58,9 @@ class ScheduleController extends Controller
             $this->fpdf->SetFillColor(220, 220, 220);
 
             // Get ids of current user and users for whom this user is substituting
-            $substitutees = ProjectMember::where('substitute_id', Auth::id())
-                ->pluck('user_id');
-            $userIDList = [Auth::id()];
-            foreach ($substitutees as $substitutee) {
-                array_push($userIDList, $substitutee->id);
-            }
+            $userIDList = Auth::user()->substitutees()
+                ->pluck('users.id')
+                ->push(Auth::id());
 
             // Schedule events
             SubjectEvent::whereHas(

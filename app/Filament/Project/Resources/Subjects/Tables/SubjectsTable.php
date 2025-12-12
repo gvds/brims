@@ -5,7 +5,6 @@ namespace App\Filament\Project\Resources\Subjects\Tables;
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
-use App\Models\ProjectMember;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -20,8 +19,9 @@ class SubjectsTable
 {
     public static function configure(Table $table): Table
     {
-        $substitutees = ProjectMember::where('substitute_id', Auth::id())
-            ->pluck('user_id');
+        $substitutees = Auth::user()->substitutees()
+            ->where('project_id', session('currentProject')->id)
+            ->pluck('users.id');
 
         return $table
             ->modifyQueryUsing(function ($query) use ($substitutees) {
