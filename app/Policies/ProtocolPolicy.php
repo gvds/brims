@@ -16,37 +16,32 @@ class ProtocolPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin, TeamRoles::Admin]);
-        return $authUser->can('ViewAny:Protocol');
+        return true;
+        // $authUser->can('ViewAny:Protocol')
     }
 
     public function view(AuthUser $authUser, Protocol $protocol): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin, TeamRoles::Admin]);
-        return $authUser->can('View:Protocol');
+        return $authUser->can('View:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin, TeamRoles::Admin]);
-        return $authUser->can('Create:Protocol');
+        return $authUser->can('Create:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
     }
 
     public function update(AuthUser $authUser, Protocol $protocol): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin, TeamRoles::Admin]);
-        return $authUser->can('Update:Protocol');
+        return $authUser->can('Update:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
     }
 
     public function delete(AuthUser $authUser, Protocol $protocol): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin, TeamRoles::Admin]);
-        return $authUser->can('Delete:Protocol');
+        return $authUser->can('Delete:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin, TeamRoles::Admin]);
-        return $authUser->can('DeleteAny:Protocol');
+        return $authUser->can('DeleteAny:Protocol') || $authUser->system_role === SystemRoles::SysAdmin->value || $authUser->team_role === TeamRoles::Admin->value;
     }
 }

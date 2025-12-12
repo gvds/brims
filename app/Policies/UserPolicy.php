@@ -23,7 +23,6 @@ class UserPolicy
     public function create(AuthUser $authUser): bool
     {
         return $authUser->system_role === SystemRoles::SysAdmin || $authUser->can('Create:User');
-        return $authUser->can('Create:User');
     }
 
     public function update(AuthUser $authUser): bool
