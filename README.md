@@ -12,6 +12,6 @@ BRIMS is a multi-site, research study management system that integrates a number
 - Integration with REDCap for data capture
 - Management of study assay data storage along with its meta-data
 
-BRIMS is a web-based application developed in in PHP using the Laravel framework with Filament UI framemwork
+BRIMS is a web-based application developed using the Laravel PHP framework with Filament UI framemwork
 
 This application is still under development and is not yet ready for deployment
