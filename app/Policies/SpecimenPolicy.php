@@ -14,36 +14,36 @@ class SpecimenPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Specimen');
+        return evaluate_permission($authUser, 'ViewAny:Specimen');
     }
 
     public function view(AuthUser $authUser, Specimen $specimen): bool
     {
-        return $authUser->can('View:Specimen');
+        return evaluate_permission($authUser, 'View:Specimen');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Specimen');
+        return evaluate_permission($authUser, 'Create:Specimen');
     }
 
     public function update(AuthUser $authUser, Specimen $specimen): bool
     {
-        return $authUser->can('Update:Specimen');
+        return evaluate_permission($authUser, 'Update:Specimen');
     }
 
     public function delete(AuthUser $authUser, Specimen $specimen): bool
     {
-        return $authUser->can('Delete:Specimen');
+        return evaluate_permission($authUser, 'Delete:Specimen');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Specimen');
+        return evaluate_permission($authUser, 'DeleteAny:Specimen');
     }
 
     public function reorder(AuthUser $authUser, Specimen $specimen): bool
     {
-        return $authUser->can('Reorder:Specimen');
+        return evaluate_permission($authUser, 'Reorder:Specimen');
     }
 }

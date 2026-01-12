@@ -26,7 +26,7 @@ class MembersRelationManager extends RelationManager
 
     public function isReadOnly(): bool
     {
-        return false; // This allows editing actions
+        return false;
     }
 
     public function form(Schema $schema): Schema

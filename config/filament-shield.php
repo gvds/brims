@@ -179,6 +179,9 @@ return [
                 'update',
                 'delete',
             ],
+            App\Models\ProjectMember::class => [
+                'setSubstitute',
+            ],
         ],
         'exclude' => [
             App\Filament\Resources\Teams\TeamResource::class,
@@ -203,6 +206,9 @@ return [
         'prefix' => 'view',
         'exclude' => [
             \Filament\Pages\Dashboard::class,
+            \App\Filament\Pages\Dashboard::class,
+            \App\Filament\Project\Pages\Dashboard::class,
+            \App\Filament\Admin\Pages\Dashboard::class,
         ],
     ],
 
@@ -223,6 +229,8 @@ return [
         'exclude' => [
             \Filament\Widgets\AccountWidget::class,
             \Filament\Widgets\FilamentInfoWidget::class,
+            \App\Filament\Widgets\EventsDue::class,
+            \App\Filament\Widgets\EventsOverdue::class,
         ],
     ],
 
@@ -237,7 +245,11 @@ return [
     |
     */
 
-    'custom_permissions' => [],
+    'custom_permissions' => [
+        'Attach:ProjectMember' => 'Attach Project Member',
+        'Detach:ProjectMember' => 'Detach Project Member',
+        'SetSubstitute:ProjectMember' => 'Set Substitute for Project Member',
+    ],
 
     /*
     |--------------------------------------------------------------------------

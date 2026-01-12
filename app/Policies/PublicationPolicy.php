@@ -14,36 +14,36 @@ class PublicationPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Publication');
+        return evaluate_permission($authUser, 'ViewAny:Publication');
     }
 
     public function view(AuthUser $authUser, Publication $publication): bool
     {
-        return $authUser->can('View:Publication');
+        return evaluate_permission($authUser, 'View:Publication');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Publication');
+        return evaluate_permission($authUser, 'Create:Publication');
     }
 
     public function update(AuthUser $authUser, Publication $publication): bool
     {
-        return $authUser->can('Update:Publication');
+        return evaluate_permission($authUser, 'Update:Publication');
     }
 
     public function delete(AuthUser $authUser, Publication $publication): bool
     {
-        return $authUser->can('Delete:Publication');
+        return evaluate_permission($authUser, 'Delete:Publication');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Publication');
+        return evaluate_permission($authUser, 'DeleteAny:Publication');
     }
 
     public function reorder(AuthUser $authUser, Publication $publication): bool
     {
-        return $authUser->can('Reorder:Publication');
+        return evaluate_permission($authUser, 'Reorder:Publication');
     }
 }

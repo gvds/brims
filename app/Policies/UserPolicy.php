@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Enums\SystemRoles;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -12,31 +11,43 @@ class UserPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('ViewAny:User');
+        return evaluate_permission($authUser, 'ViewAny:User');
     }
 
     public function view(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('View:User');
+
+        return evaluate_permission($authUser, 'View:User');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('Create:User');
+        return evaluate_permission($authUser, 'Create:User');
     }
 
     public function update(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('Update:User');
+        return evaluate_permission($authUser, 'Update:User');
     }
 
     public function delete(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('Delete:User');
+        return evaluate_permission($authUser, 'Delete:User');
+    }
+
+    public function setSubstitute(AuthUser $authUser): bool
+    {
+        return evaluate_permission($authUser, 'SetSubstitute:ProjectMember');
+    }
+
+    public function attach(AuthUser $authUser): bool
+    {
+
+        return evaluate_permission($authUser, 'Attach:ProjectMember');
+    }
+
+    public function detach(AuthUser $authUser): bool
+    {
+        return evaluate_permission($authUser, 'Detach:ProjectMember');
     }
 }

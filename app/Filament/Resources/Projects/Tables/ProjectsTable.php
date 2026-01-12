@@ -2,17 +2,25 @@
 
 namespace App\Filament\Resources\Projects\Tables;
 
+use App\Enums\TeamRoles;
 use App\Models\Project;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                if (Auth::user()->team_role !== TeamRoles::Admin) {
+                    $query->whereRelation('members', 'users.id', '=', Auth::id()); // Regular users see only their posts
+                }
+            })
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),

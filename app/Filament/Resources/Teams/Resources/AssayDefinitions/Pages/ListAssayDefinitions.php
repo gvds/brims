@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\AssayDefinitions\Pages;
+namespace App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages;
 
-use App\Filament\Resources\AssayDefinitions\AssayDefinitionResource;
+use App\Filament\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 

@@ -14,36 +14,37 @@ class ArmPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Arm');
+
+        return evaluate_permission($authUser, 'ViewAny:Arm');
     }
 
     public function view(AuthUser $authUser, Arm $arm): bool
     {
-        return $authUser->can('View:Arm');
+        return evaluate_permission($authUser, 'View:Arm');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Arm');
+        return evaluate_permission($authUser, 'Create:Arm');
     }
 
     public function update(AuthUser $authUser, Arm $arm): bool
     {
-        return $authUser->can('Update:Arm');
+        return evaluate_permission($authUser, 'Update:Arm');
     }
 
     public function delete(AuthUser $authUser, Arm $arm): bool
     {
-        return $authUser->can('Delete:Arm');
+        return evaluate_permission($authUser, 'Delete:Arm');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Arm');
+        return evaluate_permission($authUser, 'DeleteAny:Arm');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:Arm');
+        return evaluate_permission($authUser, 'Reorder:Arm');
     }
 }

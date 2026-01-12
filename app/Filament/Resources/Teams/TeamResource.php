@@ -2,25 +2,31 @@
 
 namespace App\Filament\Resources\Teams;
 
-use App\Filament\Resources\Teams\Pages\CreateTeam;
 use App\Filament\Resources\Teams\Pages\EditTeam;
-use App\Filament\Resources\Teams\Pages\ListTeams;
 use App\Filament\Resources\Teams\Pages\ViewTeam;
 use App\Filament\Resources\Teams\Schemas\TeamForm;
 use App\Filament\Resources\Teams\Schemas\TeamInfolist;
-use App\Filament\Resources\Teams\Tables\TeamsTable;
 use App\Models\Team;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class TeamResource extends Resource
 {
     protected static ?string $model = Team::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static bool $shouldRegisterNavigation = false;
+
+    #[\Override]
+    public static function getIndexUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null, bool $shouldGuessMissingParameters = false): string
+    {
+        return static::getUrl('view', ['record' => Auth::user()->team_id]);
+    }
 
     #[\Override]
     public static function form(Schema $schema): Schema
@@ -34,11 +40,11 @@ class TeamResource extends Resource
         return TeamInfolist::configure($schema);
     }
 
-    #[\Override]
-    public static function table(Table $table): Table
-    {
-        return TeamsTable::configure($table);
-    }
+    // #[\Override]
+    // public static function table(Table $table): Table
+    // {
+    //     return TeamsTable::configure($table);
+    // }
 
     #[\Override]
     public static function getRelations(): array
@@ -48,14 +54,15 @@ class TeamResource extends Resource
             RelationManagers\ProjectsRelationManager::class,
             RelationManagers\ProtocolsRelationManager::class,
             RelationManagers\StudyDesignsRelationManager::class,
+            RelationManagers\AssayDefinitionsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListTeams::route('/'),
-            'create' => CreateTeam::route('/create'),
+            // 'index' => ListTeams::route('/'),
+            // 'create' => CreateTeam::route('/create'),
             'edit' => EditTeam::route('/{record}/edit'),
             'view' => ViewTeam::route('/{record}'),
         ];

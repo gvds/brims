@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\SystemRoles;
+use App\Enums\TeamRoles;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Studydesign;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -15,36 +16,35 @@ class StudydesignPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return in_array($authUser->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]);
-        return $authUser->can('ViewAny:Studydesign');
+        return true;
     }
 
     public function view(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return $authUser->can('View:Studydesign');
+        return evaluate_permission($authUser, 'View:Studydesign');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Studydesign');
+        return evaluate_permission($authUser, 'Create:Studydesign');
     }
 
     public function update(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return $authUser->can('Update:Studydesign');
+        return evaluate_permission($authUser, 'Update:Studydesign');
     }
 
     public function delete(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return $authUser->can('Delete:Studydesign');
+        return evaluate_permission($authUser, 'Delete:Studydesign');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Studydesign');
+        return evaluate_permission($authUser, 'DeleteAny:Studydesign');
     }
     public function reorder(AuthUser $authUser, Studydesign $studydesign): bool
     {
-        return $authUser->can('Reorder:Studydesign');
+        return evaluate_permission($authUser, 'Reorder:Studydesign');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Project\Widgets;
 
 use App\Enums\EventStatus;
+use App\Models\ProjectMember;
 use App\Models\SubjectEvent;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Support\Icons\Heroicon;
@@ -10,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectEventsDue extends TableWidget
 {
@@ -17,14 +19,16 @@ class ProjectEventsDue extends TableWidget
 
     public function table(Table $table): Table
     {
+        $substitutees = Auth::user()->substitutees()
+            ->pluck('users.id');
         return $table
-            ->description('Click on a row to access the subject details')
+            ->description('Click on a row to access the subject record')
             ->query(
                 fn(): Builder => SubjectEvent::query()
                     ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                     ->where('minDate', '<=', today())
                     ->where('maxDate', '>=', today())
-                    ->whereRelation('subject', 'user_id', auth()->id())
+                    ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
             )
             ->columns([
                 TextColumn::make('subject.fullname')

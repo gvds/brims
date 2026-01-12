@@ -14,36 +14,36 @@ class StudyPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Study');
+        return evaluate_permission($authUser, 'ViewAny:Study');
     }
 
     public function view(AuthUser $authUser, Study $study): bool
     {
-        return $authUser->can('View:Study');
+        return evaluate_permission($authUser, 'View:Study');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Study');
+        return evaluate_permission($authUser, 'Create:Study');
     }
 
     public function update(AuthUser $authUser, Study $study): bool
     {
-        return $authUser->can('Update:Study');
+        return evaluate_permission($authUser, 'Update:Study');
     }
 
     public function delete(AuthUser $authUser, Study $study): bool
     {
-        return $authUser->can('Delete:Study');
+        return evaluate_permission($authUser, 'Delete:Study');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:Study');
+        return evaluate_permission($authUser, 'DeleteAny:Study');
     }
 
     public function reorder(AuthUser $authUser, Study $study): bool
     {
-        return $authUser->can('Reorder:Study');
+        return evaluate_permission($authUser, 'Reorder:Study');
     }
 }

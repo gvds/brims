@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\AssayDefinitions\Schemas;
+namespace App\Filament\Resources\Teams\Resources\AssayDefinitions\Schemas;
 
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;

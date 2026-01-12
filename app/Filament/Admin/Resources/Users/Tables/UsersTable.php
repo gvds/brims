@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Users\Tables;
+namespace App\Filament\Admin\Resources\Users\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 class UsersTable
@@ -20,23 +19,25 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('username')
-                    ->searchable(),
+                    ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('fullname')
                     ->label('Name')
-                    ->searchable(['firstname', 'lastname']),
-                TextColumn::make('team.name'),
+                    ->searchable(['firstname', 'lastname'], isIndividual: true, isGlobal: false),
+                TextColumn::make('team.name')
+                    ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('team_role')
-                    ->label('Team Role'),
+                    ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('email')
-                    ->searchable(),
+                    ->label('Email address')
+                    ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('telephone')
-                    ->prefix('+')
-                    ->searchable(),
+                    ->prefix('+'),
+                // ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('homesite')
                     ->label('Home Site'),
                 TextColumn::make('system_role')
                     ->label('System Role')
-                    ->searchable(),
+                    ->searchable(isIndividual: true, isGlobal: false),
                 IconColumn::make('active')
                     ->boolean(),
                 TextColumn::make('created_at')
@@ -71,10 +72,9 @@ class UsersTable
                     ->placeholder('All Teams')
                     ->default(null),
             ])
-            ->deferFilters(false)
             ->recordActions([
                 EditAction::make(),
-                Impersonate::make()
+                Impersonate::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

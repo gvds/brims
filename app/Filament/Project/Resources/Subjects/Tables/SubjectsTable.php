@@ -3,6 +3,8 @@
 namespace App\Filament\Project\Resources\Subjects\Tables;
 
 use App\Enums\SubjectStatus;
+use App\Enums\SystemRoles;
+use App\Enums\TeamRoles;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -11,12 +13,23 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SubjectsTable
 {
     public static function configure(Table $table): Table
     {
+        $substitutees = Auth::user()->substitutees()
+            ->where('project_id', session('currentProject')->id)
+            ->pluck('users.id');
+
         return $table
+            ->modifyQueryUsing(function ($query) use ($substitutees) {
+                if (Auth::user()->team_role !== TeamRoles::Admin && !in_array(Auth::user()->system_role, [SystemRoles::SysAdmin, SystemRoles::SuperAdmin])) {
+                    $query->where('user_id', Auth::id())
+                        ->orWhereIn('user_id', $substitutees);
+                }
+            })
             ->columns([
                 TextColumn::make('subjectID')
                     ->label('Subject ID')

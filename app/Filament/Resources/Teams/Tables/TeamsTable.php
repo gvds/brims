@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Teams\Tables;
 
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Schemas\Components\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 

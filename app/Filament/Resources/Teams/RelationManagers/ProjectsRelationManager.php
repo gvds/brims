@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Teams\RelationManagers;
 
+use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -121,6 +122,9 @@ class ProjectsRelationManager extends RelationManager
             ->recordUrl(
                 null
             )
+            ->headerActions([
+                CreateAction::make(),
+            ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
