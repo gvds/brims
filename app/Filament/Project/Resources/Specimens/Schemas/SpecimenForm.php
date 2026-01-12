@@ -4,12 +4,10 @@ namespace App\Filament\Project\Resources\Specimens\Schemas;
 
 use App\Enums\SpecimenStatus;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Factories\Relationship;
 
 class SpecimenForm
 {
@@ -22,17 +20,16 @@ class SpecimenForm
                     ->unique(table: 'specimens', column: 'barcode', ignoreRecord: true)
                     ->maxLength(20),
                 TextInput::make('subject_event_id')
+                    ->label('Subject Event'),
+                Select::make('specimenType_id')
+                    ->relationship(name: 'specimenType', titleAttribute: 'name')
+                    ->required(),
+                Select::make('site_id')
+                    ->relationship(name: 'site', titleAttribute: 'name')
+                    ->required(),
+                Select::make('status')
+                    ->options(SpecimenStatus::class)
                     ->required()
-                    ->numeric(),
-                TextInput::make('specimenType_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('site_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('status')
-                    ->required()
-                    ->numeric()
                     ->default(0),
                 TextInput::make('aliquot')
                     ->required()
@@ -52,13 +49,14 @@ class SpecimenForm
                         'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut])
                     ]),
                 DatePicker::make('loggedAt'),
-                Select::make('loggedOutBy')
-                    ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
+                Select::make('loggedOutBy_id')
+                    ->label('Logged Out By')
+                    ->relationship(name: 'loggedOutBy', titleAttribute: 'firstname')
                     ->rules([
                         'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut])
                     ]),
-                Select::make('usedBy')
-                    ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
+                Select::make('usedBy_id')
+                    ->relationship(name: 'usedBy', titleAttribute: 'firstname')
                     ->rules([
                         'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used])
                     ]),
