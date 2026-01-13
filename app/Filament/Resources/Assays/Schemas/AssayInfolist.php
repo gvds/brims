@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas;
+namespace App\Filament\Resources\Assays\Schemas;
 
 use Dom\Text;
 use Filament\Infolists\Components\TextEntry;
