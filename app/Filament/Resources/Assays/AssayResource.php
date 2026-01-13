@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays;
+namespace App\Filament\Resources\Assays;
 
 use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\CreateAssay;
 use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\EditAssay;
