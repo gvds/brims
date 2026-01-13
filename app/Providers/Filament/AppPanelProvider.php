@@ -80,10 +80,11 @@ class AppPanelProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make('Team')
                     ->url(fn(): string => route('filament.app.resources.teams.view', [
-                        'record' => Auth::user()->team_id ?? '',
+                        'record' => Auth::user()->team_id,
                     ]))
                     ->icon('heroicon-o-user-group')
-                    ->sort(2),
+                    ->sort(2)
+                    ->visible(Auth::user()->team_id !== null),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
