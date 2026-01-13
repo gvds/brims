@@ -84,7 +84,7 @@ class AppPanelProvider extends PanelProvider
                     ]))
                     ->icon('heroicon-o-user-group')
                     ->sort(2)
-                    ->visible(!is_null(Auth::user()->team_id)),
+                    ->visible(fn(): bool => Auth::user()->team_id !== null),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
