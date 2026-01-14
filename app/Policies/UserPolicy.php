@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Enums\SystemRoles;
+use App\Models\User;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -25,9 +27,10 @@ class UserPolicy
         return evaluate_permission($authUser, 'Create:User');
     }
 
-    public function update(AuthUser $authUser): bool
+    public function update(AuthUser $authUser, User $user): bool
     {
-        return evaluate_permission($authUser, 'Update:User');
+        return evaluate_permission($authUser, 'Update:User') &&
+            $user->system_role !== SystemRoles::SuperAdmin;
     }
 
     public function delete(AuthUser $authUser): bool

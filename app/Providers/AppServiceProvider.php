@@ -39,7 +39,8 @@ class AppServiceProvider extends ServiceProvider
         // ]);
 
         Gate::before(
-            fn($user): ?true => in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]) ? true : null
+            fn($user): ?true => in_array($user->system_role, [SystemRoles::SuperAdmin]) ? true : null
+            // fn($user): ?true => in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]) ? true : null
         );
 
         // Remove leading and trailing whitespace from all TextInput components

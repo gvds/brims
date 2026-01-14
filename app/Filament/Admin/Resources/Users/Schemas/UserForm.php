@@ -95,9 +95,13 @@ class UserForm
                     ->schema([
                         Select::make('system_role')
                             ->label('System Role')
-                            ->options(SystemRoles::class)
+                            ->options(function (): array {
+                                $roles = collect(SystemRoles::cases())->mapWithKeys(fn($role) => [$role->value => $role->getLabel()]);
+                                $roles = Auth::user()->system_role !== SystemRoles::SuperAdmin ? $roles->except(SystemRoles::SuperAdmin->value) : $roles;
+                                return $roles->all();
+                            })
                             ->required()
-                            ->visible(fn(): bool => Auth::user()->system_role === SystemRoles::SuperAdmin), // Only super admins can assign system roles
+                            ->visible(fn(): bool => in_array(Auth::user()->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin])), // Only super admins and sys admins can assign system roles
                         Toggle::make('active')
                             ->required()
                             ->default(true)

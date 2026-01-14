@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Users\Tables;
 
+use App\Enums\SystemRoles;
+use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -10,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 class UsersTable
@@ -74,7 +77,9 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Impersonate::make(),
+                // ->hidden(fn(User $record) => $record->system_role === SystemRoles::SuperAdmin && Auth::user()->system_role !== SystemRoles::SuperAdmin),
+                Impersonate::make()
+                    ->hidden(fn(User $record) => $record->system_role === SystemRoles::SuperAdmin),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
