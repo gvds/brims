@@ -17,7 +17,7 @@ class SpecimenPolicy
         return evaluate_permission($authUser, 'ViewAny:Specimen');
     }
 
-    public function view(AuthUser $authUser, Specimen $specimen): bool
+    public function view(AuthUser $authUser, Specimen|string $specimen): bool
     {
         return evaluate_permission($authUser, 'View:Specimen');
     }
@@ -27,12 +27,12 @@ class SpecimenPolicy
         return evaluate_permission($authUser, 'Create:Specimen');
     }
 
-    public function update(AuthUser $authUser, Specimen $specimen): bool
+    public function update(AuthUser $authUser, Specimen|string $specimen): bool
     {
         return evaluate_permission($authUser, 'Update:Specimen');
     }
 
-    public function delete(AuthUser $authUser, Specimen $specimen): bool
+    public function delete(AuthUser $authUser, Specimen|string $specimen): bool
     {
         return evaluate_permission($authUser, 'Delete:Specimen');
     }
@@ -42,7 +42,7 @@ class SpecimenPolicy
         return evaluate_permission($authUser, 'DeleteAny:Specimen');
     }
 
-    public function reorder(AuthUser $authUser, Specimen $specimen): bool
+    public function reorder(AuthUser $authUser, Specimen|string $specimen): bool
     {
         return evaluate_permission($authUser, 'Reorder:Specimen');
     }
