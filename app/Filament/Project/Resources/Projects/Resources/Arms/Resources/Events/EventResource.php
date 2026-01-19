@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events;
 
-use App\Filament\project\Resources\Projects\Resources\Arms\ArmResource;
-use App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\Pages\CreateEvent;
-use App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\Pages\EditEvent;
-use App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\Schemas\EventForm;
-use App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\Tables\EventsTable;
+use App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\Pages\CreateEvent;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\Pages\EditEvent;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\Schemas\EventForm;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\Tables\EventsTable;
 use App\Models\Event;
 use BackedEnum;
 use Filament\Resources\Resource;

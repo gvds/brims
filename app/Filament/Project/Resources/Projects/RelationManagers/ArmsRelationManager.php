@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\RelationManagers;
+namespace App\Filament\Project\Resources\Projects\RelationManagers;
 
-use App\Filament\project\Resources\Projects\Resources\Arms\ArmResource;
+use App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource;
 use App\Models\Arm;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;

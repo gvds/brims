@@ -186,7 +186,7 @@ return [
         'exclude' => [
             App\Filament\Resources\Teams\TeamResource::class,
             App\Filament\Resources\Projects\ProjectResource::class,
-            App\Filament\project\Resources\Projects\ProjectResource::class,
+            App\Filament\Project\Resources\Projects\ProjectResource::class,
         ],
     ],
 

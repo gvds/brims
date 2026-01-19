@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Labware\Tables;
+namespace App\Filament\Project\Resources\Projects\Resources\Labware\Tables;
 
 use App\Models\Labware;
 use Filament\Actions\BulkActionGroup;

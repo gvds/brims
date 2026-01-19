@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Specimentypes\Tables;
+namespace App\Filament\Project\Resources\Projects\Resources\Specimentypes\Tables;
 
 use App\Models\Specimentype;
 use Filament\Actions\BulkActionGroup;

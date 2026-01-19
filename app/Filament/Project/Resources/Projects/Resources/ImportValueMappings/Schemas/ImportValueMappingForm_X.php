@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\ImportValueMappings\Schemas;
+namespace App\Filament\Project\Resources\Projects\Resources\ImportValueMappings\Schemas;
 
 use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;

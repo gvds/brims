@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
-use App\Filament\project\Resources\Projects\Resources\Arms\Pages\CreateArm;
-use App\Filament\project\Resources\Projects\Resources\Arms\Pages\EditArm;
-use App\Filament\project\Resources\Projects\Resources\Arms\Schemas\ArmForm;
-use App\Filament\project\Resources\Projects\Resources\Arms\Pages\ViewArm;
-use App\Filament\project\Resources\Projects\Resources\Arms\Schemas\ArmInfolist;
-use App\Filament\project\Resources\Projects\Resources\Arms\Tables\ArmsTable;
+use App\Filament\Project\Resources\Projects\ProjectResource;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Pages\CreateArm;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Pages\EditArm;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Schemas\ArmForm;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Pages\ViewArm;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Schemas\ArmInfolist;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Tables\ArmsTable;
 use App\Models\Arm;
 use BackedEnum;
 use Filament\Resources\Resource;

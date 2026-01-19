@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\RelationManagers;
+namespace App\Filament\Project\Resources\Projects\RelationManagers;
 
 use App\Models\ProjectMember;
 use App\Models\Role;

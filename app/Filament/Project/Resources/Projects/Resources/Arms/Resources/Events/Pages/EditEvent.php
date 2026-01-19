@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\Pages;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\Pages;
 
-use App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\EventResource;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\EventResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

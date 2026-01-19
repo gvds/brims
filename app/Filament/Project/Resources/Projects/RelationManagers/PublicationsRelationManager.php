@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\RelationManagers;
+namespace App\Filament\Project\Resources\Projects\RelationManagers;
 
-use App\Filament\project\Resources\Projects\Resources\Publications\PublicationResource;
-use App\Filament\project\Resources\Projects\Resources\Publications\Schemas\PublicationForm;
-use App\Filament\project\Resources\Projects\Resources\Publications\Tables\PublicationsTable;
+use App\Filament\Project\Resources\Projects\Resources\Publications\PublicationResource;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Schemas\PublicationForm;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Tables\PublicationsTable;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

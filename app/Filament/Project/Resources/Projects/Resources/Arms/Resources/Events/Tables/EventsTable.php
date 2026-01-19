@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms\Resources\Events\Tables;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms\Resources\Events\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;

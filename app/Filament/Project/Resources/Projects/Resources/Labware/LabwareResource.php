@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Labware;
+namespace App\Filament\Project\Resources\Projects\Resources\Labware;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
-use App\Filament\project\Resources\Projects\Resources\Labware\Pages\CreateLabware;
-use App\Filament\project\Resources\Projects\Resources\Labware\Pages\EditLabware;
-use App\Filament\project\Resources\Projects\Resources\Labware\Schemas\LabwareForm;
-use App\Filament\project\Resources\Projects\Resources\Labware\Tables\LabwareTable;
+use App\Filament\Project\Resources\Projects\ProjectResource;
+use App\Filament\Project\Resources\Projects\Resources\Labware\Pages\CreateLabware;
+use App\Filament\Project\Resources\Projects\Resources\Labware\Pages\EditLabware;
+use App\Filament\Project\Resources\Projects\Resources\Labware\Schemas\LabwareForm;
+use App\Filament\Project\Resources\Projects\Resources\Labware\Tables\LabwareTable;
 use App\Models\Labware;
 use BackedEnum;
 use Filament\Resources\Resource;

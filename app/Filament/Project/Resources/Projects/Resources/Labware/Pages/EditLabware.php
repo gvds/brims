@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Labware\Pages;
+namespace App\Filament\Project\Resources\Projects\Resources\Labware\Pages;
 
-use App\Filament\project\Resources\Projects\Resources\Labware\LabwareResource;
+use App\Filament\Project\Resources\Projects\Resources\Labware\LabwareResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

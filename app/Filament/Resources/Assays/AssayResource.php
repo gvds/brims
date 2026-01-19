@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\Assays;
 
-use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\CreateAssay;
-use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\EditAssay;
-use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\ListAssays;
-use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas\AssayForm;
-use App\Filament\project\Resources\Projects\Resources\Studies\Resources\Assays\Tables\AssaysTable;
-use App\Filament\project\Resources\Projects\Resources\Studies\StudyResource;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\CreateAssay;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\EditAssay;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Pages\ListAssays;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas\AssayForm;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Tables\AssaysTable;
+use App\Filament\Project\Resources\Projects\Resources\Studies\StudyResource;
 use App\Models\Assay;
 use BackedEnum;
 use Filament\Resources\Resource;

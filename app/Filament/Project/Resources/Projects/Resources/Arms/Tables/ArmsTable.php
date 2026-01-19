@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms\Tables;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms\Tables;
 
 use App\Models\Arm;
 use Filament\Actions\BulkActionGroup;

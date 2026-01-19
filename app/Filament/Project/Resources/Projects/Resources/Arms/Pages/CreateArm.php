@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms\Pages;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms\Pages;
 
-use App\Filament\project\Resources\Projects\Resources\Arms\ArmResource;
+use App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateArm extends CreateRecord

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Studies;
+namespace App\Filament\Project\Resources\Projects\Resources\Studies;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
-use App\Filament\project\Resources\Projects\Resources\Studies\Pages\CreateStudy;
-use App\Filament\project\Resources\Projects\Resources\Studies\Pages\EditStudy;
-use App\Filament\project\Resources\Projects\Resources\Studies\Pages\ViewStudy;
-use App\Filament\project\Resources\Projects\Resources\Studies\Schemas\StudyForm;
-use App\Filament\project\Resources\Projects\Resources\Studies\Schemas\StudyInfolist;
-use App\Filament\project\Resources\Projects\Resources\Studies\Tables\StudiesTable;
+use App\Filament\Project\Resources\Projects\ProjectResource;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Pages\CreateStudy;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Pages\EditStudy;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Pages\ViewStudy;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Schemas\StudyForm;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Schemas\StudyInfolist;
+use App\Filament\Project\Resources\Projects\Resources\Studies\Tables\StudiesTable;
 use App\Models\Study;
 use BackedEnum;
 use Filament\Resources\Resource;

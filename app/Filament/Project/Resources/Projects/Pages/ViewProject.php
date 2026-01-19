@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Pages;
+namespace App\Filament\Project\Resources\Projects\Pages;
 
 use App\Filament\Exports\SpecimenExporter;
 use App\Filament\Exports\SubjectEventExporter;
@@ -8,7 +8,7 @@ use App\Filament\Exports\SubjectExporter;
 use App\Filament\Imports\SpecimenImporter;
 use App\Filament\Imports\SubjectEventImporter;
 use App\Filament\Imports\SubjectImporter;
-use App\Filament\project\Resources\Projects\ProjectResource;
+use App\Filament\Project\Resources\Projects\ProjectResource;
 use App\Models\Specimen;
 use App\Models\Subject;
 use App\Models\SubjectEvent;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Arms\Schemas;
+namespace App\Filament\Project\Resources\Projects\Resources\Arms\Schemas;
 
 use App\Models\Arm;
 use Filament\Infolists\Components\IconEntry;

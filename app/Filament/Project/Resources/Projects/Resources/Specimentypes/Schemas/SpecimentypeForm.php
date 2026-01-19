@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Specimentypes\Schemas;
+namespace App\Filament\Project\Resources\Projects\Resources\Specimentypes\Schemas;
 
 use App\Enums\StorageDestinations;
 use Filament\Forms\Components\Repeater;

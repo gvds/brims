@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Tables;
+namespace App\Filament\Project\Resources\Projects\Tables;
 
 use App\Models\Project;
 use Filament\Actions\ViewAction;

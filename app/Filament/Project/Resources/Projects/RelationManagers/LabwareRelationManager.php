@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\RelationManagers;
+namespace App\Filament\Project\Resources\Projects\RelationManagers;
 
-use App\Filament\project\Resources\Projects\Resources\Labware\Schemas\LabwareForm;
-use App\Filament\project\Resources\Projects\Resources\Labware\Tables\LabwareTable;
+use App\Filament\Project\Resources\Projects\Resources\Labware\Schemas\LabwareForm;
+use App\Filament\Project\Resources\Projects\Resources\Labware\Tables\LabwareTable;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

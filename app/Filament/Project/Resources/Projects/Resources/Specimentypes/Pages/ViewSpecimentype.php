@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Specimentypes\Pages;
+namespace App\Filament\Project\Resources\Projects\Resources\Specimentypes\Pages;
 
-use App\Filament\project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 

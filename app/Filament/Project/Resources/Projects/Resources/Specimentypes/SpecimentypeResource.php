@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Specimentypes;
+namespace App\Filament\Project\Resources\Projects\Resources\Specimentypes;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
-use App\Filament\project\Resources\Projects\Resources\Specimentypes\Pages\CreateSpecimentype;
-use App\Filament\project\Resources\Projects\Resources\Specimentypes\Pages\EditSpecimentype;
-use App\Filament\project\Resources\Projects\Resources\Specimentypes\Pages\ViewSpecimentype;
-use App\Filament\project\Resources\Projects\Resources\Specimentypes\Schemas\SpecimentypeForm;
-use App\Filament\project\Resources\Projects\Resources\Specimentypes\Tables\SpecimentypesTable;
+use App\Filament\Project\Resources\Projects\ProjectResource;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\Pages\CreateSpecimentype;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\Pages\EditSpecimentype;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\Pages\ViewSpecimentype;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\Schemas\SpecimentypeForm;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\Tables\SpecimentypesTable;
 use App\Models\Specimentype;
 use BackedEnum;
 use Filament\Resources\Resource;

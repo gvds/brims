@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Publications;
+namespace App\Filament\Project\Resources\Projects\Resources\Publications;
 
-use App\Filament\project\Resources\Projects\ProjectResource;
-use App\Filament\project\Resources\Projects\Resources\Publications\Pages\CreatePublication;
-use App\Filament\project\Resources\Projects\Resources\Publications\Pages\EditPublication;
-use App\Filament\project\Resources\Projects\Resources\Publications\Pages\ViewPublication;
-use App\Filament\project\Resources\Projects\Resources\Publications\Schemas\PublicationForm;
-use App\Filament\project\Resources\Projects\Resources\Publications\Schemas\PublicationInfolist;
-use App\Filament\project\Resources\Projects\Resources\Publications\Tables\PublicationsTable;
+use App\Filament\Project\Resources\Projects\ProjectResource;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Pages\CreatePublication;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Pages\EditPublication;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Pages\ViewPublication;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Schemas\PublicationForm;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Schemas\PublicationInfolist;
+use App\Filament\Project\Resources\Projects\Resources\Publications\Tables\PublicationsTable;
 use App\Models\Publication;
 use BackedEnum;
 use Filament\Resources\Resource;

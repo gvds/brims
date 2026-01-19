@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects;
+namespace App\Filament\Project\Resources\Projects;
 
-use App\Filament\project\Resources\Projects\Pages\EditProject;
-use App\Filament\project\Resources\Projects\Pages\ViewProject;
-use App\Filament\project\Resources\Projects\Schemas\ProjectForm;
-use App\Filament\project\Resources\Projects\Schemas\ProjectInfolist;
+use App\Filament\Project\Resources\Projects\Pages\EditProject;
+use App\Filament\Project\Resources\Projects\Pages\ViewProject;
+use App\Filament\Project\Resources\Projects\Schemas\ProjectForm;
+use App\Filament\Project\Resources\Projects\Schemas\ProjectInfolist;
 use App\Models\Project;
 use BackedEnum;
 use Filament\Resources\Resource;

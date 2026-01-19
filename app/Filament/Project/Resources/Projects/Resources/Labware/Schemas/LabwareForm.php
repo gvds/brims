@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Labware\Schemas;
+namespace App\Filament\Project\Resources\Projects\Resources\Labware\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;

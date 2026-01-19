@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\project\Resources\Projects\Resources\Publications\Schemas;
+namespace App\Filament\Project\Resources\Projects\Resources\Publications\Schemas;
 
 use App\Enums\PublicationStatus;
 use Filament\Forms\Components\MarkdownEditor;
