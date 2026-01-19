@@ -40,7 +40,6 @@ class ProjectForm
                             )
                             ->required(),
                         Fieldset::make("Subject ID")
-                            ->contained(false)
                             ->schema([
                                 TextInput::make('subjectID_prefix')
                                     ->label('Prefix')
@@ -71,7 +70,7 @@ class ProjectForm
             ])
             ->columns(1)
             ->extraAttributes([
-                'class' => 'w-1/3',
+                'class' => 'w-1/2',
             ]);
     }
 }

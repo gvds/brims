@@ -56,7 +56,6 @@ class ProjectsRelationManager extends RelationManager
                     )
                     ->required(),
                 Fieldset::make("Subject ID")
-                    ->contained(false)
                     ->schema([
                         TextInput::make('subjectID_prefix')
                             ->label('Prefix')
