@@ -38,9 +38,11 @@ class ProjectsRelationManager extends RelationManager
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->autocomplete(false)
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('identifier')
+                    ->autocomplete(false)
                     ->required()
                     ->unique(ignoreRecord: true),
                 Textarea::make('description')

@@ -19,6 +19,7 @@ class AssayDefinitionForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->autocomplete(false)
                     ->required()
                     ->maxLength(50),
                 Textarea::make('description')

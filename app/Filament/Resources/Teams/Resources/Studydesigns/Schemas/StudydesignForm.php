@@ -12,6 +12,7 @@ class StudydesignForm
         return $schema
             ->components([
                 TextInput::make('type')
+                    ->autocomplete(false)
                     ->required(),
                 TextInput::make('type_term_accession_number')
                     ->requiredWith('type_term_reference')

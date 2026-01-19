@@ -18,9 +18,11 @@ class ProtocolForm
                     ->columns(4)
                     ->components([
                         TextInput::make('name')
+                            ->autocomplete(false)
                             ->required()
                             ->columnSpan(3),
                         TextInput::make('version')
+                            ->autocomplete(false)
                             ->required(),
                     ]),
                 TextInput::make('uri')
