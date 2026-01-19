@@ -55,7 +55,7 @@ class SubjectResource extends Resource
     {
         return [
             'index' => ListSubjects::route('/'),
-            'create' => CreateSubject::route('/create'),
+            // 'create' => CreateSubject::route('/create'),
             'view' => ViewSubject::route('/{record}'),
             'edit' => EditSubject::route('/{record}/edit'),
         ];

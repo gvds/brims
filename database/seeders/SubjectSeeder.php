@@ -73,6 +73,8 @@ class SubjectSeeder extends Seeder
                 ->create([
                     'arm_id' => $project->arms->first()->id ?? null,
                 ]);
+            $project->last_subject_number = $last_subject_number + 3;
+            $project->save();
         });
     }
 }
