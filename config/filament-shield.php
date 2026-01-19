@@ -172,13 +172,7 @@ return [
     'resources' => [
         'subject' => 'model',
         'manage' => [
-            \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class => [
-                'viewAny',
-                'view',
-                'create',
-                'update',
-                'delete',
-            ],
+            // ...existing code...
             App\Models\ProjectMember::class => [
                 'setSubstitute',
             ],
@@ -192,6 +186,7 @@ return [
             App\Filament\Admin\Resources\Users\UserResource::class,
             App\Filament\Resources\Projects\ProjectResource::class,
             App\Filament\Project\Resources\Projects\ProjectResource::class,
+            \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class,
         ],
     ],
 
