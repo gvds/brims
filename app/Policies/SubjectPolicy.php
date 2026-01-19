@@ -38,8 +38,12 @@ class SubjectPolicy
         return evaluate_permission($authUser, 'ViewAny:Subject');
     }
 
-    public function view(AuthUser $authUser, Subject $subject): bool
+    public function view(AuthUser $authUser, Subject|string $subject): bool
     {
+        if (is_string($subject)) {
+            return evaluate_permission($authUser, 'View:Subject');
+        }
+
         return $this->evaluateModelPermission($authUser, 'View:Subject', $subject);
     }
 
@@ -48,13 +52,21 @@ class SubjectPolicy
         return evaluate_permission($authUser, 'Create:Subject');
     }
 
-    public function update(AuthUser $authUser, Subject $subject): bool
+    public function update(AuthUser $authUser, Subject|string $subject): bool
     {
+        if (is_string($subject)) {
+            return evaluate_permission($authUser, 'Update:Subject');
+        }
+
         return $this->evaluateModelPermission($authUser, 'Update:Subject', $subject);
     }
 
-    public function delete(AuthUser $authUser, Subject $subject): bool
+    public function delete(AuthUser $authUser, Subject|string $subject): bool
     {
+        if (is_string($subject)) {
+            return evaluate_permission($authUser, 'Delete:Subject');
+        }
+
         return $this->evaluateModelPermission($authUser, 'Delete:Subject', $subject);
     }
 
@@ -63,7 +75,7 @@ class SubjectPolicy
         return evaluate_permission($authUser, 'DeleteAny:Subject');
     }
 
-    public function reorder(AuthUser $authUser, Subject $subject): bool
+    public function reorder(AuthUser $authUser, Subject|string $subject): bool
     {
         return evaluate_permission($authUser, 'Reorder:Subject');
     }
