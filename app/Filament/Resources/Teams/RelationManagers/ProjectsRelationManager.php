@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Teams\RelationManagers;
 
+use App\Models\Project;
+use App\Models\Role;
+use App\Models\Site;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -78,7 +81,8 @@ class ProjectsRelationManager extends RelationManager
                         DatePicker::make('public_release_date')
                             ->visibleOn(['view', 'edit']),
                     ]),
-            ]);
+            ])
+            ->columns(1);
     }
 
     public function table(Table $table): Table
@@ -123,7 +127,30 @@ class ProjectsRelationManager extends RelationManager
                 null
             )
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->after(function (Project $record): void {
+                        $site = Site::create([
+                            'project_id' => $record->id,
+                            'name' => Auth::user()->homesite,
+                            'description' => 'Project Creator\'s site',
+                        ]);
+                        $role = Role::create([
+                            'project_id' => $record->id,
+                            'name' => 'Admin',
+                            'guard_name' => 'web',
+                        ]);
+                        $record->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $site->id]);
+                        if ($record->leader_id !== Auth::user()->id) {
+                            if ($record->leader->homesite !== $site->name) {
+                                $site = Site::create([
+                                    'project_id' => $record->id,
+                                    'name' => $record->leader->homesite,
+                                    'description' => 'Project Leader\'s site',
+                                ]);
+                            }
+                            $record->members()->attach($record->leader, ['role_id' => $role->id, 'site_id' => $site->id]);
+                        }
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),

@@ -77,7 +77,8 @@ class ProjectsRelationManager extends RelationManager
                         DatePicker::make('public_release_date')
                             ->visibleOn(['view', 'edit']),
                     ]),
-            ]);
+            ])
+            ->columns(1);
     }
 
     public function table(Table $table): Table

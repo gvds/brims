@@ -24,10 +24,10 @@ class ProjectResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Schema $schema): Schema
-    {
-        return ProjectForm::configure($schema);
-    }
+    // public static function form(Schema $schema): Schema
+    // {
+    //     return ProjectForm::configure($schema);
+    // }
 
     public static function table(Table $table): Table
     {
@@ -45,8 +45,8 @@ class ProjectResource extends Resource
     {
         return [
             'index' => ListProjects::route('/'),
-            'create' => CreateProject::route('/create'),
-            'edit' => EditProject::route('/{record}/edit'),
+            // 'create' => CreateProject::route('/create'),
+            // 'edit' => EditProject::route('/{record}/edit'),
         ];
     }
 }

@@ -21,7 +21,7 @@ class ProjectPolicy
     public function view(AuthUser $authUser, Project $project): bool
     {
         // return $project->members->contains('id', $authUser->id);
-        return evaluate_permission($authUser, 'View:Project') || $project->members->contains('id', $authUser->id);
+        return evaluate_permission($authUser, 'View:Project') || $project->members->contains('id', $authUser->id) || $project->leader_id === $authUser->id;
     }
 
     public function create(AuthUser $authUser): bool
