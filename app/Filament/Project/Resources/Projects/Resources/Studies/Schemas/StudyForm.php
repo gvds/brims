@@ -14,9 +14,11 @@ class StudyForm
     {
         return $schema
             ->components([
-                TextInput::make('identifier')
-                    ->required(),
                 TextInput::make('title')
+                    ->autocomplete(false)
+                    ->required(),
+                TextInput::make('identifier')
+                    ->autocomplete(false)
                     ->required(),
                 Textarea::make('description')
                     ->default(null)

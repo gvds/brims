@@ -45,21 +45,21 @@ class SpecimenForm
                     ->default(0),
                 Select::make('loggedBy_id')
                     ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
-                    ->rules([
-                        'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut])
-                    ]),
+                    ->requiredIf(
+                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
+                        true
+                    ), 
                 DatePicker::make('loggedAt'),
                 Select::make('loggedOutBy_id')
                     ->label('Logged Out By')
                     ->relationship(name: 'loggedOutBy', titleAttribute: 'firstname')
-                    ->rules([
-                        'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut])
-                    ]),
+                    ->requiredIf(
+                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut]),
+                        true
+                    ), 
                 Select::make('usedBy_id')
                     ->relationship(name: 'usedBy', titleAttribute: 'firstname')
-                    ->rules([
-                        'requiredIf' => fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used])
-                    ]),
+                    ->requiredIf(fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used]), true), 
                 DatePicker::make('usedAt'),
                 Select::make('parentSpecimen_id')
                     ->relationship(name: 'parentSpecimen', titleAttribute: 'barcode')
