@@ -12,6 +12,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
@@ -20,6 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectsRelationManager extends RelationManager
 {
@@ -129,26 +131,39 @@ class ProjectsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->after(function (Project $record): void {
-                        $site = Site::create([
-                            'project_id' => $record->id,
-                            'name' => Auth::user()->homesite,
-                            'description' => 'Project Creator\'s site',
-                        ]);
-                        $role = Role::create([
-                            'project_id' => $record->id,
-                            'name' => 'Admin',
-                            'guard_name' => 'web',
-                        ]);
-                        $record->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $site->id]);
-                        if ($record->leader_id !== Auth::user()->id) {
-                            if ($record->leader->homesite !== $site->name) {
-                                $site = Site::create([
-                                    'project_id' => $record->id,
-                                    'name' => $record->leader->homesite,
-                                    'description' => 'Project Leader\'s site',
-                                ]);
+                        try {
+                            DB::beginTransaction();
+                            $site = Site::create([
+                                'project_id' => $record->id,
+                                'name' => Auth::user()->homesite,
+                                'description' => 'Project Creator\'s site',
+                            ]);
+                            $role = Role::create([
+                                'project_id' => $record->id,
+                                'name' => 'Admin',
+                                'guard_name' => 'web',
+                            ]);
+                            $record->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $site->id]);
+                            if ($record->leader_id !== Auth::user()->id) {
+                                if ($record->leader->homesite !== $site->name) {
+                                    $site = Site::create([
+                                        'project_id' => $record->id,
+                                        'name' => $record->leader->homesite,
+                                        'description' => 'Project Leader\'s site',
+                                    ]);
+                                }
+                                $record->members()->attach($record->leader, ['role_id' => $role->id, 'site_id' => $site->id]);
                             }
-                            $record->members()->attach($record->leader, ['role_id' => $role->id, 'site_id' => $site->id]);
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            DB::rollBack();
+                            $record->delete();
+                            Notification::make()
+                                ->title('Error setting up project!')
+                                ->body('There was an error setting up the project. ' . $th->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
                         }
                     }),
             ])
