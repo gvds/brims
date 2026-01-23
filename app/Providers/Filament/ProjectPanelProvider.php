@@ -89,6 +89,7 @@ class ProjectPanelProvider extends PanelProvider
                     ->icon('heroicon-o-calendar')
                     ->sort(3),
             ])
+            ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')
             // ->widgets([
             //     AccountWidget::class,

@@ -45,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-home')
                     ->sort(0),
             ])
+            ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
                 // AccountWidget::class,
