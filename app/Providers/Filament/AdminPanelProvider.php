@@ -43,14 +43,10 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Main Panel')
                     ->url('/')
                     ->icon('heroicon-o-home')
-                    ->sort(0),
+                    ->sort(1),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
-            ->widgets([
-                // AccountWidget::class,
-                // FilamentInfoWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
