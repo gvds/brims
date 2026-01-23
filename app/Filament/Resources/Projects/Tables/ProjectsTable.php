@@ -46,7 +46,7 @@ class ProjectsTable
                         // setPermissionsTeamId($record->id);
                         return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
                     })
-                    ->extraAttributes(['class' => 'bg-sky-200 border border-sky-500 shadow-sm text-gray-900 py-0 leading-6 hover:invert [&_svg]:text-black']),
+                    ->extraAttributes(['class' => 'bg-zinc-200 dark:bg-zinc-700 border border-zinc-500 shadow-sm text-gray-900 dark:text-gray-200 py-0 leading-6 hover:invert']),
             ], position: RecordActionsPosition::BeforeCells);
     }
 }

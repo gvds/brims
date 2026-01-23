@@ -30,12 +30,6 @@ class ProjectResource extends Resource
         return ProjectInfolist::configure($schema);
     }
 
-    // #[\Override]
-    // public static function table(Table $table): Table
-    // {
-    //     return ProjectsTable::configure($table);
-    // }
-
     #[\Override]
     public static function getRelations(): array
     {
@@ -54,8 +48,6 @@ class ProjectResource extends Resource
     public static function getPages(): array
     {
         return [
-            // 'index' => ListProjects::route('/'),
-            // 'create' => CreateProject::route('/create'),
             'view' => ViewProject::route('/{record}'),
             'edit' => EditProject::route('/{record}/edit'),
         ];
