@@ -34,7 +34,7 @@ class ProjectPanelProvider extends PanelProvider
 
         FilamentView::registerRenderHook(
             name: 'panels::head.end',
-            hook: fn(): string => Blade::render(string: "@vite('resources/js/app.js')"),
+            hook: fn (): string => Blade::render(string: "@vite('resources/js/app.js')"),
         );
     }
 
@@ -77,13 +77,13 @@ class ProjectPanelProvider extends PanelProvider
                     ->icon('heroicon-o-home')
                     ->sort(0),
                 NavigationItem::make('Project')
-                    ->url(fn(): string => route('filament.project.resources.projects.view', [
+                    ->url(fn (): string => route('filament.project.resources.projects.view', [
                         'tenant' => Filament::getTenant(),
                         'record' => Filament::getTenant(),
                     ]))
                     ->icon('heroicon-o-rectangle-stack')
                     ->sort(1)
-                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.project.resources.projects.*')),
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.project.resources.projects.*')),
                 NavigationItem::make('Generate Schedule')
                     ->url('/schedule/thisweek', $shouldOpenInNewTab = true)
                     ->icon('heroicon-o-calendar')
@@ -92,6 +92,10 @@ class ProjectPanelProvider extends PanelProvider
                     ->url('/labels/print', $shouldOpenInNewTab = true)
                     ->icon('heroicon-o-printer')
                     ->sort(4),
+                NavigationItem::make('Label Queue')
+                    ->url(fn (): string => route('filament.project.pages.label-queue', ['tenant' => Filament::getTenant()]))
+                    ->icon('heroicon-o-queue-list')
+                    ->sort(5),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')

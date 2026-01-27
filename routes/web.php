@@ -18,5 +18,5 @@ Route::get(
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/schedule/{week}', [ScheduleController::class, 'generate']);
-    Route::get('/labels/print', [LabelController::class, 'printLabels'])->name('labels.print');
+    Route::get('/labels/print', LabelController::class)->name('labels.print');
 });
