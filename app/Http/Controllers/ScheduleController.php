@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\ProjectMember;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Codedge\Fpdf\Fpdf\Fpdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 
@@ -20,7 +18,7 @@ class ScheduleController extends Controller
         try {
             $currentProject = session('currentProject');
 
-            if (!in_array($week, ['thisweek', 'nextweek'])) {
+            if (! in_array($week, ['thisweek', 'nextweek'])) {
                 return back()->with('error', 'Invalid schedule week specified');
             }
 
@@ -30,7 +28,7 @@ class ScheduleController extends Controller
                 $startdate = Date::parse('monday this week');
             }
 
-            $hstartdate = $startdate->format("d/m/Y"); // formatted for header
+            $hstartdate = $startdate->format('d/m/Y'); // formatted for header
             $enddate = $startdate->add(6, 'days');
             $henddate = $enddate->format('d/m/Y'); // formatted for header
             $header = "($hstartdate - $henddate)";
@@ -41,18 +39,18 @@ class ScheduleController extends Controller
             $this->fpdf->SetMargins(5, 5);
             $this->fpdf->AddPage();
             $this->fpdf->SetFont('Calibri', 'B', 16);
-            $this->fpdf->Cell(0, 9, $currentProject->title . " project Followup Schedule - $header", 0, 1, 'C');
+            $this->fpdf->Cell(0, 9, $currentProject->title." project Followup Schedule - $header", 0, 1, 'C');
             $this->fpdf->SetFont('Calibri', 'B', 11);
             $this->fpdf->Cell(0, 0, '', 'T', 1, 'L');
-            $this->fpdf->Cell(26, 7, "Subject", '', 0, 'C');
-            $this->fpdf->Cell(50, 7, "Name", '', 0, 'C');
-            $this->fpdf->Cell(35, 7, "Event", '', 0, 'C');
-            $this->fpdf->Cell(25, 7, "Due Date", '', 0, 'C');
-            $this->fpdf->Cell(25, 7, "Start Date", '', 0, 'C');
-            $this->fpdf->Cell(25, 7, "End Date", '', 0, 'C');
-            $this->fpdf->Cell(25, 7, "Address", '', 0, 'C');
+            $this->fpdf->Cell(26, 7, 'Subject', '', 0, 'C');
+            $this->fpdf->Cell(50, 7, 'Name', '', 0, 'C');
+            $this->fpdf->Cell(35, 7, 'Event', '', 0, 'C');
+            $this->fpdf->Cell(25, 7, 'Due Date', '', 0, 'C');
+            $this->fpdf->Cell(25, 7, 'Start Date', '', 0, 'C');
+            $this->fpdf->Cell(25, 7, 'End Date', '', 0, 'C');
+            $this->fpdf->Cell(25, 7, 'Address', '', 0, 'C');
 
-            $this->fpdf->Cell(0, 7, "", '', 1, 'L');
+            $this->fpdf->Cell(0, 7, '', '', 1, 'L');
             $this->fpdf->Cell(0, 0, '', 'T', 1, 'L');
 
             $this->fpdf->SetFillColor(220, 220, 220);
@@ -65,19 +63,19 @@ class ScheduleController extends Controller
             // Schedule events
             SubjectEvent::whereHas(
                 'subject',
-                fn($query) => $query->where('project_id', session('currentProject')->id)
+                fn ($query) => $query->where('project_id', session('currentProject')->id)
                     ->whereIn('user_id', $userIDList)
                     ->where('status', 1)
             )
-                ->whereHas('event', fn($query) => $query->where('active', true))
+                ->whereHas('event', fn ($query) => $query->where('active', true))
                 ->where('minDate', '<=', $enddate)
                 ->where('status', '<', 2)
                 ->update(['status' => 2]);
 
             $subjects = Subject::with([
-                'events' => fn($query) => $query->where('status', 2)
+                'events' => fn ($query) => $query->where('status', 2)
                     ->where('active', true)
-                    ->orderBy('eventDate')
+                    ->orderBy('eventDate'),
             ])
                 ->where('project_id', session('currentProject')->id)
                 ->where('user_id', auth()->user()->id)
@@ -103,7 +101,7 @@ class ScheduleController extends Controller
                 }
             }
 
-            $this->fpdf->Output("schedule.pdf", "I");
+            $this->fpdf->Output('schedule.pdf', 'I');
         } catch (\Throwable $th) {
             return redirect('/')->with('error', $th->getMessage());
         }

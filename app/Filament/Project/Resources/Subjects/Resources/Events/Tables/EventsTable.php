@@ -4,20 +4,16 @@ namespace App\Filament\Project\Resources\Subjects\Resources\Events\Tables;
 
 use App\Enums\EventStatus;
 use App\Enums\SubjectStatus;
-use App\Models\Event;
-use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Schemas\Components\View;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class EventsTable
 
@@ -26,7 +22,6 @@ class EventsTable
     public static function configure(Table $table): Table
     {
         return $table
-            // ->modifyQueryUsing(fn(Builder $query) => dd($query->get()))
             ->modifyQueryUsing(fn(Builder $query) => $query->join('arms', 'events.arm_id', '=', 'arms.id'))
             ->columns([
                 TextColumn::make('id'),

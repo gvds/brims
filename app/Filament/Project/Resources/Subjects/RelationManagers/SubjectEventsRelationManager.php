@@ -27,6 +27,7 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class SubjectEventsRelationManager extends RelationManager
 {
@@ -40,6 +41,12 @@ class SubjectEventsRelationManager extends RelationManager
     {
         $this->resetTable();
     }
+
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
 
     public function form(Schema $schema): Schema
     {
@@ -88,11 +95,11 @@ class SubjectEventsRelationManager extends RelationManager
                 TextColumn::make('event.arm.name'),
                 TextColumn::make('event.name'),
                 TextColumn::make('status')
-                    ->hidden(fn(): bool => auth()->user()->can('ModifyStatus')),
+                    ->hidden(fn(): bool => Auth::user()->can('ModifyStatus')),
                 SelectColumn::make('status')
                     ->options(EventStatus::class)
                     ->label('Status')
-                    ->visible(fn(): bool => auth()->user()->can('ModifyStatus')),
+                    ->visible(fn(): bool => Auth::user()->can('ModifyStatus')),
                 TextColumn::make('eventDate')
                     ->date('Y-m-d')
                     ->extraAttributes(fn(SubjectEvent $record): array => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
@@ -128,13 +135,13 @@ class SubjectEventsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                // CreateAction::make(),
+                // AssociateAction::make(),
             ])
             ->recordActions([
-                EditAction::make(),
-                DissociateAction::make(),
-                DeleteAction::make(),
+                // EditAction::make(),
+                // DissociateAction::make(),
+                // DeleteAction::make(),
                 Action::make('newItteration')
                     ->label('New Iteration')
                     ->schema(
@@ -186,10 +193,10 @@ class SubjectEventsRelationManager extends RelationManager
                     ),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DissociateBulkAction::make(),
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }

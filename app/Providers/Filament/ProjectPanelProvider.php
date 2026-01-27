@@ -4,8 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Filament\Project\Pages\Dashboard;
 use App\Models\Project;
-use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -88,6 +88,10 @@ class ProjectPanelProvider extends PanelProvider
                     ->url('/schedule/thisweek', $shouldOpenInNewTab = true)
                     ->icon('heroicon-o-calendar')
                     ->sort(3),
+                NavigationItem::make('Print Labels')
+                    ->url('/labels/print', $shouldOpenInNewTab = true)
+                    ->icon('heroicon-o-printer')
+                    ->sort(4),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')
