@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('subjectID_digits');
             $table->string('storageProjectName', 40)->nullable();
             $table->unsignedInteger('last_subject_number')->default(0);
+            $table->unsignedInteger('redcapProject_id')->nullable()->unique();
             // $table->foreignIdFor(Label::class)->nullable()->constrained();
             $table->timestamps();
         });
