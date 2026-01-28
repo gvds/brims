@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Teams\RelationManagers;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
+use Dom\Text;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
@@ -41,7 +42,9 @@ class ProjectsRelationManager extends RelationManager
                 TextInput::make('title')
                     ->autocomplete(false)
                     ->required()
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(100)
+                    ->minLength(5),
                 TextInput::make('identifier')
                     ->autocomplete(false)
                     ->required()
@@ -169,7 +172,74 @@ class ProjectsRelationManager extends RelationManager
                         }
                     }),
                 Action::make('new_redcap_project')
-                    ->action('')
+                    ->schema([
+                        Select::make('redcap_project_id')
+                            ->label('Redcap Project')
+                            ->options(function () {
+                                $query = "select app_title, project_id from redcap_projects";
+                                $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
+                                if (count($linked_redcap_projects) > 0) {
+                                    $query .= " where project_id not in (" . implode(",", $linked_redcap_projects) . ")";
+                                }
+                                $query .= " order by app_title";
+                                $redcap_projects = DB::connection('redcap')
+                                    ->select($query);
+                                return collect($redcap_projects)->pluck('app_title', 'project_id')->toArray();
+                            })
+                            ->required(),
+                        TextInput::make('title')
+                            ->autocomplete(false)
+                            ->required()
+                            ->unique()
+                            ->maxLength(100)
+                            ->minLength(5),
+                        Grid::make(2)
+                            ->schema([
+
+                                Select::make('leader_id')
+                                    ->relationship(
+                                        name: 'leader',
+                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                    )
+                                    ->getOptionLabelFromRecordUsing(
+                                        fn($record) => $record->fullname
+                                    )
+                                    ->required(),
+                                TextInput::make('identifier')
+                                    ->autocomplete(false)
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
+                            ]),
+                        Textarea::make('description')
+                            ->default(null)
+                            ->columnSpanFull(),
+                        Fieldset::make("Subject ID")
+                            ->schema([
+                                TextInput::make('subjectID_prefix')
+                                    ->label('Prefix')
+                                    ->hint('Between 2 and 10 uppercase characters')
+                                    ->required()
+                                    ->maxLength(10)
+                                    ->minLength(2)
+                                    ->regex('/^[A-Z]{2,10}$/'),
+                                TextInput::make('subjectID_digits')
+                                    ->label('Digits')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(2)
+                                    ->maxValue(8)
+                                    ->hint('The number of digits in a subject ID'),
+                            ]),
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('storageProjectName')
+                                    ->label('Storage Project Name')
+                                    ->required()
+                                    ->maxLength(40),
+                                DatePicker::make('submission_date'),
+                            ]),
+                    ])
+                    ->action(fn() => null)
             ])
             ->recordActions([
                 ViewAction::make(),

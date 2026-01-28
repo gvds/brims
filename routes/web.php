@@ -23,15 +23,15 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/labels/print', LabelController::class)->name('labels.print');
 });
 
-Route::get('/redcap', function () {
-    $query = "select app_title, project_id from redcap_projects";
-    $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
-    if (count($linked_redcap_projects) > 0) {
-        $query .= " where project_id not in (" . implode(",", $linked_redcap_projects) . ")";
-    }
-    $query .= " order by app_title";
-    $redcap_projects = DB::connection('redcap')
-        ->select($query);
-    $redcap_projects = collect($redcap_projects)->pluck('app_title', 'project_id');
-    dd($redcap_projects);
-});
+// Route::get('/redcap', function () {
+//     $query = "select app_title, project_id from redcap_projects";
+//     $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
+//     if (count($linked_redcap_projects) > 0) {
+//         $query .= " where project_id not in (" . implode(",", $linked_redcap_projects) . ")";
+//     }
+//     $query .= " order by app_title";
+//     $redcap_projects = DB::connection('redcap')
+//         ->select($query);
+//     $redcap_projects = collect($redcap_projects)->pluck('app_title', 'project_id');
+//     dd($redcap_projects);
+// });
