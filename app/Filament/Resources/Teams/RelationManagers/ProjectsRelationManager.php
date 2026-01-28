@@ -247,6 +247,7 @@ class ProjectsRelationManager extends RelationManager
                     ->action(function (array $data) {
                         DB::beginTransaction();
                         try {
+                            $data['team_id'] = Auth::user()->team_id;
                             $project = Project::create($data);
                             $project->setupREDCapProject();
                             DB::commit();
