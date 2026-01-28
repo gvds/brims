@@ -112,6 +112,26 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'redcap' => [
+            'driver' => 'mysql',
+            'url' => env('REDCAP_DATABASE_URL'),
+            'host' => env('REDCAP_DB_HOST', '127.0.0.1'),
+            'port' => env('REDCAP_DB_PORT', '3306'),
+            'database' => env('REDCAP_DB_DATABASE', 'redcap'),
+            'username' => env('REDCAP_DB_USERNAME', 'redcap'),
+            'password' => env('REDCAP_DB_PASSWORD', ''),
+            'unix_socket' => env('REDCAP_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
     ],
 
     /*
@@ -147,7 +167,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

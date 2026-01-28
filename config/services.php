@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'redcap' => [
+        'url' => env('REDCAP_URL'),
+    ],
+
 ];

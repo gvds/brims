@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Teams\RelationManagers;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -167,6 +168,8 @@ class ProjectsRelationManager extends RelationManager
                                 ->send();
                         }
                     }),
+                Action::make('new_redcap_project')
+                    ->action('')
             ])
             ->recordActions([
                 ViewAction::make(),
