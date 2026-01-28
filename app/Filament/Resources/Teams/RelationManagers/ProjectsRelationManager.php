@@ -176,7 +176,7 @@ class ProjectsRelationManager extends RelationManager
                     }),
                 Action::make('new_redcap_project')
                     ->schema([
-                        Select::make('redcap_project_id')
+                        Select::make('redcapProject_id')
                             ->label('Redcap Project')
                             ->searchable()
                             ->preload()
