@@ -145,6 +145,7 @@ class Project extends Model implements HasName
         }
 
         $redcap_arms = $this->redcap_arms($token);
+        dd($redcap_arms);
         if (isset($redcap_arms['error'])) {
             if ($redcap_arms["error"] === "You cannot export arms for classic projects") {
                 $redcap_arms = collect(json_decode('[{"arm_num":1,"name":"Arm 1"}]'));
