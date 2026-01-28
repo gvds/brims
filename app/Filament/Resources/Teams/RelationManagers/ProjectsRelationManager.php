@@ -244,7 +244,22 @@ class ProjectsRelationManager extends RelationManager
                                 DatePicker::make('submission_date'),
                             ]),
                     ])
-                    ->action(fn() => null)
+                    ->action(function (array $data) {
+                        DB::beginTransaction();
+                        try {
+                            $project = Project::create($data);
+                            $project->setupREDCapProject();
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            DB::rollBack();
+                            Notification::make()
+                                ->title('Error creating project!')
+                                ->body('There was an error creating the project. ' . $th->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),
