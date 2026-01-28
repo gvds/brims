@@ -145,7 +145,6 @@ class Project extends Model implements HasName
         }
 
         $redcap_arms = $this->redcap_arms($token);
-        dd($redcap_arms);
         if (isset($redcap_arms['error'])) {
             if ($redcap_arms["error"] === "You cannot export arms for classic projects") {
                 $redcap_arms = collect(json_decode('[{"arm_num":1,"name":"Arm 1"}]'));
@@ -157,7 +156,7 @@ class Project extends Model implements HasName
             $arm = Arm::create([
                 'project_id' => $this->id,
                 'name' => $redcap_arm->name,
-                'redcap_arm_id' => $redcap_arm->arm_id,
+                // 'redcap_arm_id' => $redcap_arm->arm_id,
                 'arm_num' => $redcap_arm->arm_num
             ]);
 
@@ -172,7 +171,7 @@ class Project extends Model implements HasName
                     'offset_ante_window' => $redcap_event->offset_min,
                     'offset_post_window' => $redcap_event->offset_max,
                     'event_order' => $event_order++,
-                    'redcap_event_id' => $redcap_event->event_id,
+                    // 'redcap_event_id' => $redcap_event->event_id,
                     'autolog' => $redcap_event->day_offset == 0 ? true : false,
                 ]);
             }
