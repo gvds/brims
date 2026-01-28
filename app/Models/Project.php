@@ -156,11 +156,13 @@ class Project extends Model implements HasName
             $arm = Arm::create([
                 'project_id' => $this->id,
                 'name' => $redcap_arm->name,
+                'redcap_arm_id' => $redcap_arm->arm_id,
                 'arm_num' => $redcap_arm->arm_num
             ]);
 
             // Create events
             $redcap_events = $this->redcap_events($token, [$arm->arm_num]);
+            $event_order = 1;
             foreach ($redcap_events as $redcap_event) {
                 Event::create([
                     'arm_id' => $arm->id,
@@ -168,6 +170,9 @@ class Project extends Model implements HasName
                     'offset' => $redcap_event->day_offset,
                     'offset_ante_window' => $redcap_event->offset_min,
                     'offset_post_window' => $redcap_event->offset_max,
+                    'event_order' => $event_order++,
+                    'redcap_event_id' => $redcap_event->event_id,
+                    'autolog' => $redcap_event->day_offset == 0 ? true : false,
                 ]);
             }
         }
@@ -214,7 +219,7 @@ class Project extends Model implements HasName
             'content' => 'arm'
         ];
         $arms = $this->curl($params, $redcap_api_token);
-        return collect(json_decode($arms));
+        return collect(json_decode($arms))->sortBy('arm_num');
     }
 
     private function redcap_events($redcap_api_token, $arms = [])
@@ -224,7 +229,7 @@ class Project extends Model implements HasName
             'arms' => $arms
         ];
         $events = $this->curl($params, $redcap_api_token);
-        return collect(json_decode($events));
+        return collect(json_decode($events))->sortBy('day_offset');
     }
 
     private function curl(array $params, $redcap_api_token)
