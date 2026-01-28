@@ -45,10 +45,17 @@ class ProjectsRelationManager extends RelationManager
                     ->unique(ignoreRecord: true)
                     ->maxLength(100)
                     ->minLength(5),
-                TextInput::make('identifier')
-                    ->autocomplete(false)
-                    ->required()
-                    ->unique(ignoreRecord: true),
+                Grid::make(2)
+                    ->schema([
+                        TextInput::make('identifier')
+                            ->autocomplete(false)
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        TextInput::make('storageProjectName')
+                            ->label('Storage Project Name')
+                            ->required()
+                            ->maxLength(40),
+                    ]),
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),
@@ -78,10 +85,6 @@ class ProjectsRelationManager extends RelationManager
                             ->maxValue(8)
                             ->hint('The number of digits in a subject ID'),
                     ]),
-                TextInput::make('storageProjectName')
-                    ->label('Storage Project Name')
-                    ->required()
-                    ->maxLength(40),
                 Grid::make(2)
                     ->schema([
                         DatePicker::make('submission_date'),
@@ -195,20 +198,14 @@ class ProjectsRelationManager extends RelationManager
                             ->minLength(5),
                         Grid::make(2)
                             ->schema([
-
-                                Select::make('leader_id')
-                                    ->relationship(
-                                        name: 'leader',
-                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
-                                    )
-                                    ->getOptionLabelFromRecordUsing(
-                                        fn($record) => $record->fullname
-                                    )
-                                    ->required(),
                                 TextInput::make('identifier')
                                     ->autocomplete(false)
                                     ->required()
                                     ->unique(ignoreRecord: true),
+                                TextInput::make('storageProjectName')
+                                    ->label('Storage Project Name')
+                                    ->required()
+                                    ->maxLength(40),
                             ]),
                         Textarea::make('description')
                             ->default(null)
@@ -232,10 +229,15 @@ class ProjectsRelationManager extends RelationManager
                             ]),
                         Grid::make(2)
                             ->schema([
-                                TextInput::make('storageProjectName')
-                                    ->label('Storage Project Name')
-                                    ->required()
-                                    ->maxLength(40),
+                                Select::make('leader_id')
+                                    ->relationship(
+                                        name: 'leader',
+                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                    )
+                                    ->getOptionLabelFromRecordUsing(
+                                        fn($record) => $record->fullname
+                                    )
+                                    ->required(),
                                 DatePicker::make('submission_date'),
                             ]),
                     ])
