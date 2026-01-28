@@ -128,7 +128,7 @@ class Project extends Model implements HasName
                 $leader_site = $site->id;
             }
         }
-        $this->members()->attach($this->leader, ['role_id' => $role->id, 'site_id' => $leader_site]);
+        $this->members()->attach($this->leader, ['role_id' => $role->id, 'site_id' => $leader_site ?? null]);
 
 
         if (Auth::user()->id !== $this->leader_id) {
@@ -141,7 +141,7 @@ class Project extends Model implements HasName
                     $user_site = Site::where('name', $dag->group_name)->where('project_id', $this->id)->first()->id;
                 }
             }
-            $this->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $user_site]);
+            $this->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $user_site ?? null]);
         }
 
         $redcap_arms = $this->redcap_arms($token);
