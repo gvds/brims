@@ -20,7 +20,7 @@ class LabelQueue extends Page implements HasTable
 {
     use Tables\Concerns\InteractsWithTable;
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     /**
      * Match parent signature which accepts a BackedEnum as well as string|null.
