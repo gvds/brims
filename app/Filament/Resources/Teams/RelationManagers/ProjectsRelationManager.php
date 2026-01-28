@@ -178,6 +178,7 @@ class ProjectsRelationManager extends RelationManager
                     ->schema([
                         Select::make('redcap_project_id')
                             ->label('Redcap Project')
+                            ->searchable()
                             ->options(function () {
                                 $query = "select app_title, project_id from redcap_projects";
                                 $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
