@@ -122,6 +122,7 @@ class Project extends Model implements HasName
             $site = Site::create([
                 'project_id' => $this->id,
                 'name' => $dag->group_name,
+                'description' => 'REDCap Data Access Group ' . $dag->group_name,
             ]);
             if ($dag->group_id == $redcap_leader[0]->group_id) {
                 $leader_site = $site->id;
