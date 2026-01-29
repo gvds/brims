@@ -20,7 +20,7 @@ class REDCap
         //
     }
 
-    private function curl(array $params, $redcap_api_token)
+    private static function curl(array $params, $redcap_api_token)
     {
 
         $fields = array(
@@ -127,7 +127,7 @@ class REDCap
         }
     }
 
-    private function getREDCapUser($redcapProject_id, $user)
+    private static function getREDCapUser($redcapProject_id, $user)
     {
         return DB::connection('redcap')->select(
             "SELECT * from redcap_user_rights left join redcap_data_access_groups on
@@ -138,7 +138,7 @@ class REDCap
         );
     }
 
-    private function getOrGenerateToken($redcap_user, $project)
+    private static function getOrGenerateToken($redcap_user, $project)
     {
         if (is_null($redcap_user[0]->api_token)) {
             for ($i = 0; $i < 5; $i++) {
@@ -162,22 +162,22 @@ class REDCap
         }
     }
 
-    private function redcap_arms($redcap_api_token)
+    private static function redcap_arms($redcap_api_token)
     {
         $params = [
             'content' => 'arm'
         ];
-        $arms = $this->curl($params, $redcap_api_token);
+        $arms = self::curl($params, $redcap_api_token);
         return collect(json_decode($arms))->sortBy('arm_num');
     }
 
-    private function redcap_events($redcap_api_token, $arms = [])
+    private static function redcap_events($redcap_api_token, $arms = [])
     {
         $params = [
             'content' => 'event',
             'arms' => $arms
         ];
-        $events = $this->curl($params, $redcap_api_token);
+        $events = self::curl($params, $redcap_api_token);
         return collect(json_decode($events))->sortBy('day_offset');
     }
 }
