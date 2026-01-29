@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Teams\RelationManagers;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
+use App\Services\REDCap;
 use Dom\Text;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -19,6 +20,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -175,19 +177,28 @@ class ProjectsRelationManager extends RelationManager
                         }
                     }),
                 Action::make('new_redcap_project')
+                    // ->color(Color::Teal)
+                    ->modalHeading('Create New REDCap-Linked Project')
                     ->schema([
                         Select::make('redcapProject_id')
-                            ->label('Redcap Project')
+                            ->label('Select Redcap Project')
                             ->searchable()
                             ->preload()
                             ->searchDebounce(500)
                             ->options(function () {
-                                $query = "select app_title, project_id from redcap_projects";
+                                // return [
+                                //     '1' => 'Test Project',
+                                //     '2' => 'Demo Project',
+                                //     '3' => 'Sample Project',
+                                //     '4' => 'Example Project',
+                                // ];
+                                $query = "SELECT app_title, redcap_projects.project_id FROM redcap_projects INNER JOIN redcap_user_rights ON redcap_projects.project_id = redcap_user_rights.project_id WHERE username = '" . Auth::user()->username . "' AND design=1 AND api_token IS NOT null";
+                                // $query = "select app_title, project_id from redcap_projects";
                                 $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
                                 if (count($linked_redcap_projects) > 0) {
-                                    $query .= " where project_id not in (" . implode(",", $linked_redcap_projects) . ")";
+                                    $query .= " AND project_id NOT IN (" . implode(",", $linked_redcap_projects) . ")";
                                 }
-                                $query .= " order by app_title";
+                                $query .= " ORDER BY app_title";
                                 $redcap_projects = DB::connection('redcap')
                                     ->select($query);
                                 return collect($redcap_projects)->pluck('app_title', 'project_id')->toArray();
@@ -249,7 +260,8 @@ class ProjectsRelationManager extends RelationManager
                         try {
                             $data['team_id'] = Auth::user()->team_id;
                             $project = Project::create($data);
-                            $project->setupREDCapProject();
+                            // $project->setupREDCapProject();
+                            REDCap::setupREDCapProject($project);
                             DB::commit();
                         } catch (\Throwable $th) {
                             DB::rollBack();
