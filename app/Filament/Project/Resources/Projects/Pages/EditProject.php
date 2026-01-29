@@ -27,8 +27,9 @@ class EditProject extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         if ($data['leader_id'] !== $record->getOriginal('leader_id')) {
-            if (!$record->members()->updateExistingPivot($data['leader_id'], ['role' => 'Admin'])) {
-                $record->members()->attach($data['leader_id'], ['role' => 'Admin']);
+            $projectAdminRole = $record->roles()->where('name', 'Admin')->first();
+            if (!$record->members()->updateExistingPivot($data['leader_id'], ['role_id' => $projectAdminRole->id])) {
+                $record->members()->attach($data['leader_id'], ['role_id' => $projectAdminRole->id]);
             }
         }
         $record->update($data);
