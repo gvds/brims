@@ -118,6 +118,10 @@ class ProjectsRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('leader.fullname')
                     ->searchable(['firstname', 'lastname']),
+                TextColumn::make('members_count')
+                    ->label('Members')
+                    ->counts('members')
+                    ->alignCenter(),
                 TextColumn::make('submission_date')
                     ->date('Y-m-d')
                     ->sortable(),
@@ -277,7 +281,15 @@ class ProjectsRelationManager extends RelationManager
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->after(function (Project $record) {
+                        $projectAdminRole = $record->roles()->where('name', 'Admin')->first();
+                        if ($record->members()->where('user_id', $record->leader_id)->count() == 0) {
+                            $record->members()->attach($record->leader_id, ['role_id' => $projectAdminRole->id]);
+                        } else {
+                            $record->members()->updateExistingPivot($record->leader_id, ['role_id' => $projectAdminRole->id]);
+                        }
+                    }),
                 DeleteAction::make()
                     ->modalHeading(fn(Project $record) => Markdown::inline("Delete Project<br><br>*$record->title*<br><br>"))
                     ->modalDescription(Markdown::inline("**All data pertaining to this project will be deleted.<br><br>Are you sure you want to proceed?**"))

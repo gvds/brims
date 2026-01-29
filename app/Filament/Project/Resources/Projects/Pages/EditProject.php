@@ -28,9 +28,10 @@ class EditProject extends EditRecord
     {
         if ($data['leader_id'] !== $record->getOriginal('leader_id')) {
             $projectAdminRole = $record->roles()->where('name', 'Admin')->first();
-            if (!$record->members()->updateExistingPivot($data['leader_id'], ['role_id' => $projectAdminRole->id])) {
+            if ($record->members()->where('user_id', $record->leader_id)->count() == 0) {
                 $record->members()->attach($data['leader_id'], ['role_id' => $projectAdminRole->id]);
-            }
+            } else
+                $record->members()->updateExistingPivot($data['leader_id'], ['role_id' => $projectAdminRole->id]);
         }
         $record->update($data);
 
