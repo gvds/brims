@@ -67,15 +67,6 @@ class REDCap
 
         $user_token = self::getOrGenerateToken($redcap_user, $project);
 
-        if ($project->leader_id !== Auth::id()) {
-            $redcap_leader = self::getREDCapUser($project->redcapProject_id, $project->leader);
-            if (empty($redcap_leader)) {
-                throw new Exception('The assigned leader\'s username was not found in the REDCap project');
-            }
-            $leader_token = self::getOrGenerateToken($redcap_user, $project);
-        }
-
-
         // Create sites entries from REDCap DAGS
         $redcap_dags = DB::connection('redcap')->select("select * from redcap_data_access_groups where project_id = " . $project->redcapProject_id);
         foreach ($redcap_dags as $dag) {
@@ -88,10 +79,16 @@ class REDCap
                 $user_site = $site->id;
             }
         }
+
         $project->members()->attach($project->user, ['role_id' => $role->id, 'site_id' => $user_site ?? null, 'redcap_token' => $user_token]);
 
-
+        // Add project leader if different from current user
         if ($project->leader_id !== Auth::id()) {
+            $redcap_leader = self::getREDCapUser($project->redcapProject_id, $project->leader);
+            if (empty($redcap_leader)) {
+                throw new Exception('The assigned leader\'s username was not found in the REDCap project');
+            }
+            $leader_token = self::getOrGenerateToken($redcap_leader, $project);
             foreach ($redcap_dags as $dag) {
                 if ($dag->group_id == $redcap_user[0]->group_id) {
                     $leader_site = Site::where('name', $dag->group_name)->where('project_id', $project->id)->first()->id;
