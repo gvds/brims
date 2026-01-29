@@ -3,7 +3,6 @@
 namespace App\Filament\Project\Resources\Projects\Pages;
 
 use App\Filament\Project\Resources\Projects\ProjectResource;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +15,6 @@ class EditProject extends EditRecord
     {
         return [
             ViewAction::make(),
-            DeleteAction::make(),
         ];
     }
 
