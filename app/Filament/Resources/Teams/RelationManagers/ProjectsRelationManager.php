@@ -262,7 +262,6 @@ class ProjectsRelationManager extends RelationManager
                         try {
                             $data['team_id'] = Auth::user()->team_id;
                             $project = Project::create($data);
-                            // $project->setupREDCapProject();
                             REDCap::setupREDCapProject($project);
                             DB::commit();
                         } catch (\Throwable $th) {
@@ -281,7 +280,10 @@ class ProjectsRelationManager extends RelationManager
                 EditAction::make(),
                 DeleteAction::make()
                     ->modalHeading(fn(Project $record) => Markdown::inline("Delete Project<br><br>*$record->title*<br><br>"))
-                    ->modalDescription(Markdown::inline("**All data pertaining to this project will be deleted.<br><br>Are you sure you want to proceed?**")),
+                    ->modalDescription(Markdown::inline("**All data pertaining to this project will be deleted.<br><br>Are you sure you want to proceed?**"))
+                    ->after(function (): void {
+                        Role::where('project_id', $this->record->id)->delete();
+                    }),
             ])
             ->toolbarActions([
                 // BulkActionGroup::make([
