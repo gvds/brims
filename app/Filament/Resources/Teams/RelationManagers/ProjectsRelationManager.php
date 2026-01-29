@@ -196,7 +196,7 @@ class ProjectsRelationManager extends RelationManager
                                 // $query = "select app_title, project_id from redcap_projects";
                                 $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
                                 if (count($linked_redcap_projects) > 0) {
-                                    $query .= " AND project_id NOT IN (" . implode(",", $linked_redcap_projects) . ")";
+                                    $query .= " AND redcap_projects.project_id NOT IN (" . implode(",", $linked_redcap_projects) . ")";
                                 }
                                 $query .= " ORDER BY app_title";
                                 $redcap_projects = DB::connection('redcap')
