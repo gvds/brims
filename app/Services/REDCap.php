@@ -67,7 +67,7 @@ class REDCap
 
         $user_token = self::getOrGenerateToken($redcap_user, $project);
 
-        if ($project->leader_id !== Auth::user()->id) {
+        if ($project->leader_id !== Auth::id()) {
             $redcap_leader = self::getREDCapUser($project->redcapProject_id, $project->leader);
             if (empty($redcap_leader)) {
                 throw new Exception('The assigned leader\'s username was not found in the REDCap project');
@@ -91,7 +91,7 @@ class REDCap
         $project->members()->attach($project->user, ['role_id' => $role->id, 'site_id' => $user_site ?? null, 'redcap_token' => $user_token]);
 
 
-        if ($project->leader_id !== Auth::user()->id) {
+        if ($project->leader_id !== Auth::id()) {
             foreach ($redcap_dags as $dag) {
                 if ($dag->group_id == $redcap_user[0]->group_id) {
                     $leader_site = Site::where('name', $dag->group_name)->where('project_id', $project->id)->first()->id;

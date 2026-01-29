@@ -18,7 +18,7 @@ class ProjectsTable
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->team_role !== TeamRoles::Admin) {
-                    $query->whereRelation('members', 'users.id', '=', Auth::id()); // Regular users see only their posts
+                    $query->whereRelation('members', 'users.id', '=', Auth::id());
                 }
             })
             ->columns([
@@ -37,7 +37,7 @@ class ProjectsTable
                 //
             ])
             ->recordActions([
-                Action::make('Access')
+                Action::make('access')
                     // ->label('Administration')
                     ->icon('heroicon-o-eye')
                     ->button()
