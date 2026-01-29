@@ -281,9 +281,7 @@ class ProjectsRelationManager extends RelationManager
                 DeleteAction::make()
                     ->modalHeading(fn(Project $record) => Markdown::inline("Delete Project<br><br>*$record->title*<br><br>"))
                     ->modalDescription(Markdown::inline("**All data pertaining to this project will be deleted.<br><br>Are you sure you want to proceed?**"))
-                    ->after(function (): void {
-                        Role::where('project_id', $this->record->id)->delete();
-                    }),
+                    ->after(fn(Project $record) => Role::where('project_id', $record->id)->delete()),
             ])
             ->toolbarActions([
                 // BulkActionGroup::make([
