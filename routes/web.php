@@ -3,6 +3,7 @@
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\ScheduleController;
 use App\Livewire\SetNewAccountPassword;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get(

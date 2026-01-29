@@ -80,7 +80,7 @@ class REDCap
             }
         }
 
-        $project->members()->attach($project->user, ['role_id' => $role->id, 'site_id' => $user_site ?? null, 'redcap_token' => $user_token]);
+        $project->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $user_site ?? null, 'redcap_token' => $user_token]);
 
         // Add project leader if different from current user
         if ($project->leader_id !== Auth::id()) {
@@ -153,7 +153,7 @@ class REDCap
                 if (!$duplicate[0]->found) {
                     break;
                 }
-                throw new Exception('Could not create unique API token for the project leader in the REDCap database');
+                throw new Exception('Could not create unique API token for the project user in the REDCap database');
             }
             DB::connection('redcap')->update(
                 "UPDATE redcap_user_rights SET api_token = '$token' WHERE

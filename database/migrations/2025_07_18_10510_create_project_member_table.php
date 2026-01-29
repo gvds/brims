@@ -16,10 +16,10 @@ return new class extends Migration
     {
         Schema::create('project_member', function (Blueprint $table): void {
             $table->id();
-            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Site::class)->nullable()->constrained()->nullOnDelete();
-            $table->foreignIdFor(User::class, 'substitute_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignIdFor(Site::class)->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignIdFor(User::class, 'substitute_id')->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
             $table->string('role_id', 20);
             $table->string('redcap_token', 32)->nullable();
             $table->timestamps();
