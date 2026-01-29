@@ -13,12 +13,12 @@ use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
 class MembersRelationManager extends RelationManager
@@ -149,10 +149,6 @@ class MembersRelationManager extends RelationManager
                         Select::make('role_id')
                             ->label('Role')
                             ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
-                            // ->options([
-                            //     'Admin' => 'Admin',
-                            //     'Member' => 'Member',
-                            // ])
                             ->required()
                             ->disabled(fn(User $record): bool => $record->id === $this->ownerRecord->leader_id),
                         Select::make('site_id')
@@ -160,6 +156,8 @@ class MembersRelationManager extends RelationManager
                             ->options(
                                 Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
                             ),
+                        TextInput::make('redcap_token')
+                            ->visible(fn(): bool => $this->ownerRecord->redcapProject_id !== null),
                     ])
                     ->before(function (User $record, array $data): void {
                         foreach ($record->roles as $role) {
