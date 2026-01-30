@@ -95,7 +95,7 @@ class Subject extends Model
         $this->update($data);
 
         if (session('currentProject')->redcapProject_id) {
-            REDCap::createREDCapRecord($this, $this->arm_id);
+            REDCap::createREDCapRecord($this);
         }
     }
 
