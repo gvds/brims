@@ -62,7 +62,7 @@ class Project extends Model implements HasName
     {
         return $this->belongsToMany(User::class, 'project_member')
             ->using(ProjectMember::class)
-            ->withPivot(['id', 'role_id', 'site_id', 'substitute_id'])
+            ->withPivot(['id', 'role_id', 'site_id', 'substitute_id', 'redcap_token'])
             ->withTimestamps();
     }
 
