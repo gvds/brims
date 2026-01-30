@@ -30,7 +30,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['arm_id', 'name']);
-            $table->unique(['arm_id', 'event_order']);
+            // $table->unique(['arm_id', 'event_order']);
         });
     }
 

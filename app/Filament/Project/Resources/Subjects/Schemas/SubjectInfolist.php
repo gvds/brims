@@ -104,7 +104,7 @@ class SubjectInfolist
                                 ->default(Date::now())
                                 ->required()
                                 ->beforeOrEqual('today')
-                                ->afterOrEqual($record->armBaselineDate)
+                                ->afterOrEqual($record->armBaselineDate ?? null)
                                 ->visible(fn(): bool => $record->status->value === SubjectStatus::Enrolled->value && $record->arm->switcharms !== null),
                         ])
                         ->action(fn($data) => $record->switchArm($data['arm_id'], $data['armBaselineDate']))

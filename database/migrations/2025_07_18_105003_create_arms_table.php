@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['project_id', 'name']);
-            $table->unique(['project_id', 'arm_num']);
+            // $table->unique(['project_id', 'arm_num']);
         });
     }
 
