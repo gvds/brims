@@ -18,4 +18,9 @@ class ProjectMember extends Pivot
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(Site::class);
+    }
 }
