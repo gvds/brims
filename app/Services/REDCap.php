@@ -186,9 +186,10 @@ class REDCap
 
     public static function createREDCapRecord(Subject $subject, int $arm_id): void
     {
+        $arm = Arm::find($arm_id);
         $params = [
             'content' => 'event',
-            'arms' => [Arm::find($arm_id)->arm_num]
+            'arms' => [$arm->arm_num]
         ];
 
         $project = session('currentProject');
@@ -200,6 +201,7 @@ class REDCap
 
         $events = self::curl($params, $token);
         $events = json_decode($events, true);
+        dd($events);
 
         if (array_key_exists('error', $events)) {
             throw new Exception('REDCap Error: ' . $events['error']);
