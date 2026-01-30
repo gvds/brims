@@ -2,18 +2,14 @@
 
 namespace App\Filament\Project\Resources\Subjects\Schemas;
 
-use Dom\Text;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Filament\Support\Assets\Font;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
-use Illuminate\Database\Eloquent\Builder;
 
 class SubjectForm
 {
@@ -36,6 +32,10 @@ class SubjectForm
                     ->label('Current Arm')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold),
+                TextEntry::make('user.fullname')
+                    ->label('Manager')
+                    ->size(TextSize::Large)
+                    ->weight(FontWeight::Bold),
                 Grid::make()
                     ->columns(2)
                     ->components([
@@ -47,16 +47,6 @@ class SubjectForm
                             ->default(null),
                     ])
                     ->columnSpanFull(),
-                Select::make('user_id')
-                    ->label('Manager')
-                    ->relationship(
-                        name: 'user',
-                        modifyQueryUsing: fn(Builder $query) => $query->whereAttachedTo(session()->get('currentProject'))
-                    )
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) => $record->fullname
-                    )
-                    ->required(),
                 DatePicker::make('enrolDate')
                     ->label('Enrolment Date')
                     ->default(now())

@@ -70,8 +70,8 @@ class ListSubjects extends ListRecords
                             ->send()
                             ->persistent();
                     }
-                }),
-            // CreateAction::make(),
+                })
+                ->modalWidth('lg'),
         ];
     }
 }

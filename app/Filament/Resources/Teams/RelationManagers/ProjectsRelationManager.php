@@ -22,7 +22,9 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Support\Markdown;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -106,6 +108,13 @@ class ProjectsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
+                IconColumn::make('redcapProject_id')
+                    ->label('REDCap Linked')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-link')
+                    ->trueColor('success')
+                    ->alignCenter(),
+                // ->url(fn (Project $record): string => {
                 // ->action(function (Project $record) {
                 //     if (auth()->user()->can('view', $record)) {
                 //         session(['currentProject' => $record]);

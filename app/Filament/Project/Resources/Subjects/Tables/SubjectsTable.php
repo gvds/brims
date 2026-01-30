@@ -2,18 +2,29 @@
 
 namespace App\Filament\Project\Resources\Subjects\Tables;
 
+use App\Enums\EventStatus;
+use App\Enums\LabelStatus;
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
+use App\Filament\Project\Resources\Subjects\Schemas\SubjectForm;
+use App\Models\Event;
+use App\Models\Subject;
 use App\Models\User;
+use App\Services\REDCap;
+use Carbon\CarbonImmutable;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SubjectsTable
 {
@@ -94,7 +105,34 @@ class SubjectsTable
             ->recordActions([
                 ViewAction::make()
                     ->visible(fn($record): bool => $record->status !== SubjectStatus::Generated),
-                EditAction::make(),
+                Action::make('enrol')
+                    ->visible(fn($record): bool => $record->status === SubjectStatus::Generated)
+                    ->schema(SubjectForm::configure(new Schema())->columns(2)->getComponents())
+                    ->action(function (array $data, Subject $record) {
+                        DB::beginTransaction();
+                        try {
+                            $record->enrol($data);
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            DB::rollBack();
+                            Notification::make()
+                                ->title('Error enrolling subject: ' . $th->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                        Notification::make()
+                            ->title('Subject enrolled successfully')
+                            ->success()
+                            ->send();
+                    }),
+                EditAction::make()
+                    ->visible(fn($record): bool => $record->status === SubjectStatus::Enrolled)
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Subject updated successfully')
+                            ->success()
+                    ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

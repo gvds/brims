@@ -6,6 +6,7 @@ use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Role;
 use App\Models\Site;
+use App\Models\Subject;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,23 +21,19 @@ class REDCap
         //
     }
 
-    private static function curl(array $params, $redcap_api_token)
+    private static function curl(array $params, $redcap_api_token, array $data = [])
     {
 
         $fields = array(
             'token'   => $redcap_api_token,
             'format'  => 'json',
-            'returnFormat' => 'json'
+            'type'    => 'flat',
+            'returnFormat' => 'json',
+            'data'    => json_encode([$data])
         );
 
         $fields = array_merge($fields, $params);
 
-        $data = array(
-            'token' => $redcap_api_token,
-            'content' => 'arm',
-            'format' => 'json',
-            'returnFormat' => 'json'
-        );
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, config('services.redcap.url'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -64,6 +61,7 @@ class REDCap
         if (empty($redcap_user)) {
             throw new Exception('The assigned current user\'s username was not found in the REDCap project');
         }
+        $redcap_user = $redcap_user[0];
 
         $user_token = self::getOrGenerateToken($redcap_user, $project);
 
@@ -75,7 +73,7 @@ class REDCap
                 'name' => $dag->group_name,
                 'description' => 'REDCap Data Access Group ' . $dag->group_name,
             ]);
-            if ($dag->group_id == $redcap_user[0]->group_id) {
+            if ($dag->group_id == $redcap_user->group_id) {
                 $user_site = $site->id;
             }
         }
@@ -88,9 +86,10 @@ class REDCap
             if (empty($redcap_leader)) {
                 throw new Exception('The assigned leader\'s username was not found in the REDCap project');
             }
+            $redcap_leader = $redcap_leader[0];
             $leader_token = self::getOrGenerateToken($redcap_leader, $project);
             foreach ($redcap_dags as $dag) {
-                if ($dag->group_id == $redcap_user[0]->group_id) {
+                if ($dag->group_id == $redcap_leader->group_id) {
                     $leader_site = Site::where('name', $dag->group_name)->where('project_id', $project->id)->first()->id;
                 }
             }
@@ -144,7 +143,7 @@ class REDCap
 
     private static function getOrGenerateToken($redcap_user, $project)
     {
-        if (is_null($redcap_user[0]->api_token)) {
+        if (is_null($redcap_user->api_token)) {
             for ($i = 0; $i < 5; $i++) {
                 $token = strtoupper(bin2hex(random_bytes(16)));
                 $duplicate = DB::connection('redcap')->select(
@@ -162,7 +161,7 @@ class REDCap
             );
             return $token;
         } else {
-            return $redcap_user[0]->api_token;
+            return $redcap_user->api_token;
         }
     }
 
@@ -183,5 +182,46 @@ class REDCap
         ];
         $events = self::curl($params, $redcap_api_token);
         return collect(json_decode($events))->sortBy('day_offset');
+    }
+
+    public static function createREDCapRecord(Subject $subject, Arm $arm): void
+    {
+        $params = [
+            'content' => 'event',
+            'arms' => [$arm->arm_num]
+        ];
+
+        $project = session('currentProject');
+
+        $token = $project->members()->where('user_id', Auth::id())->first()->pivot->redcap_token;
+        if (is_null($token)) {
+            throw new Exception('No REDCap API token found for the current user for this project');
+        }
+
+        $events = self::curl($params, $token);
+        $events = json_decode($events, true);
+
+        if (array_key_exists('error', $events)) {
+            throw new Exception('REDCap Error: ' . $events['error']);
+        }
+        $event_name = $events[0]['unique_event_name'];
+
+        $dag = strtolower($project->members()->where('user_id', Auth::id())->first()->pivot->site->name);
+
+        $params = [
+            'content' => 'record',
+        ];
+        $data = [
+            'record_id' => $subject->subjectID,
+            'redcap_event_name' => $event_name,
+            'redcap_data_access_group' => $dag,
+        ];
+        $response = self::curl($params, $token, $data);
+        $returnmsg = json_decode($response, true);
+        if (array_key_exists("error", $returnmsg)) {
+            throw new Exception($returnmsg['error']);
+        } elseif ($returnmsg['count'] === 0) {
+            throw new Exception('REDCap record was not created');
+        }
     }
 }

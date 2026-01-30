@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Projects\Tables;
 
 use App\Enums\TeamRoles;
 use App\Models\Project;
+use BladeUI\Icons\Components\Icon;
 use Filament\Actions\Action;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
@@ -30,6 +32,12 @@ class ProjectsTable
                     ->searchable(['firstname', 'lastname']),
                 TextColumn::make('team.name')
                     ->searchable(),
+                IconColumn::make('redcapProject_id')
+                    ->label('REDCap Linked')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-link')
+                    ->trueColor('success')
+                    ->alignCenter(),
             ])
             ->defaultSort('title')
             ->recordUrl(null)

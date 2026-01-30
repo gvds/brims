@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\EventStatus;
+use App\Enums\LabelStatus;
 use App\Enums\SubjectStatus;
 use App\Models\Scopes\SubjectScope;
+use App\Services\REDCap;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -67,9 +70,33 @@ class Subject extends Model
         return $this->hasMany(SubjectEvent::class);
     }
 
-    public function enrol(): void
+    public function enrol(array $data): void
     {
-        dd($this);
+        if ($this->status !== SubjectStatus::Generated) {
+            throw new \Exception('Subject is not in Generated status');
+        }
+        $armBaselineDate = new CarbonImmutable($data['enrolDate']);
+        $newevents = Event::where('arm_id', $this->arm_id)->get();
+        $newevents->each(fn($event) => $this->events()->attach(
+            $event,
+            [
+                'eventDate' => $armBaselineDate,
+                'minDate' => isset($event->offset_ante_window) ? $armBaselineDate->addDays($event->offset - $event->offset_ante_window) : null,
+                'maxDate' => isset($event->offset_post_window) ? $armBaselineDate->addDays($event->offset + $event->offset_post_window) : null,
+                'iteration' => 1,
+                'status' => $event->event_order === 1 && $event->offset === 0 ? EventStatus::Scheduled : EventStatus::Pending,
+                'labelstatus' => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
+            ]
+        ));
+
+        $data['status'] = SubjectStatus::Enrolled->value;
+        $data['armBaselineDate'] = $data['enrolDate'];
+
+        $this->update($data);
+
+        if (session('currentProject')->redcapProject_id) {
+            REDCap::createREDCapRecord($this, $this->arm_id);
+        }
     }
 
     public function switchArm(int $arm_id, string $armBaselineDate): void
@@ -94,7 +121,14 @@ class Subject extends Model
                     'minDate' => $armBaselineDate->addDays($event->offset - $event->offset_ante_window),
                     'maxDate' => $armBaselineDate->addDays($event->offset + $event->offset_post_window),
                     'iteration' => 1,
-                    'status' => 0,
+                    'status' => match ($event->autolog) {
+                        true => EventStatus::Logged,
+                        false => $event->event_order === 1 && $event->offset === 0 ? EventStatus::Scheduled : EventStatus::Pending,
+                    },
+                    'labelstatus' => match ($event->autolog) {
+                        true => LabelStatus::Generated,
+                        false => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
+                    },
                 ]
             ));
 
