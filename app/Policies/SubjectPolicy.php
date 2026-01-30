@@ -44,7 +44,7 @@ class SubjectPolicy
             return evaluate_permission($authUser, 'View:Subject');
         }
 
-        return $this->evaluateModelPermission($authUser, 'View:Subject', $subject);
+        return $this->evaluateModelPermission($authUser, 'View:Subject', $subject) && $subject->status !== \App\Enums\SubjectStatus::Generated;
     }
 
     public function create(AuthUser $authUser): bool

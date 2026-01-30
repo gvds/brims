@@ -102,6 +102,7 @@ class SubjectsTable
                     ->preload(),
             ])
             ->deferFilters(false)
+            ->recordUrl(fn($record) => $record->status !== SubjectStatus::Generated ? route('filament.project.resources.subjects.view', ['tenant' => session('currentProject'), 'record' => $record]) : null)
             ->recordActions([
                 ViewAction::make()
                     ->visible(fn($record): bool => $record->status !== SubjectStatus::Generated),
