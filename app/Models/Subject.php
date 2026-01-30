@@ -95,7 +95,7 @@ class Subject extends Model
         $this->update($data);
 
         if (session('currentProject')->redcapProject_id) {
-            REDCap::createREDCapRecord($this);
+            REDCap::createREDCapRecord($this, $this->arm_id);
         }
     }
 
@@ -104,7 +104,10 @@ class Subject extends Model
         try {
             DB::beginTransaction();
 
-            SubjectEvent::where('subject_id', $this->id)->whereRelation('event', 'arm_id', $this->arm_id)->whereIn('status', [0, 1, 2])->update(['status' => 6]);
+            SubjectEvent::where('subject_id', $this->id)
+                ->whereRelation('event', 'arm_id', $this->arm_id)
+                ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                ->update(['status' => EventStatus::Cancelled]);
 
             $this->previous_arm_id = $this->arm_id;
             $this->previousArmBaselineDate = $this->armBaselineDate;
@@ -133,7 +136,7 @@ class Subject extends Model
             ));
 
             if (session('currentProject')->redcapProject_id) {
-                REDCap::createREDCapRecord($this);
+                REDCap::createREDCapRecord($this, $arm_id);
             }
 
             DB::commit();
@@ -156,7 +159,10 @@ class Subject extends Model
             $this->previousArmBaselineDate = null;
             $this->save();
 
-            SubjectEvent::where('subject_id', $this->id)->whereRelation('event', 'arm_id', $this->arm_id)->where('status', 6)->update(['status' => 0]);
+            SubjectEvent::where('subject_id', $this->id)
+                ->whereRelation('event', 'arm_id', $this->arm_id)
+                ->where('status', EventStatus::Cancelled)
+                ->update(['status' => EventStatus::Pending]);
 
             DB::commit();
         } catch (\Throwable $th) {

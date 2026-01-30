@@ -184,11 +184,11 @@ class REDCap
         return collect(json_decode($events))->sortBy('day_offset');
     }
 
-    public static function createREDCapRecord(Subject $subject): void
+    public static function createREDCapRecord(Subject $subject, int $arm_id): void
     {
         $params = [
             'content' => 'event',
-            'arms' => [$subject->arm->arm_num]
+            'arms' => [Arm::find($arm_id)->arm_num]
         ];
 
         $project = session('currentProject');
