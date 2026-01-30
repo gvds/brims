@@ -132,6 +132,10 @@ class Subject extends Model
                 ]
             ));
 
+            if (session('currentProject')->redcapProject_id) {
+                REDCap::createREDCapRecord($this);
+            }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
