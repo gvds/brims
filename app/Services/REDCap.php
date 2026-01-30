@@ -216,7 +216,7 @@ class REDCap
         $data = [
             'record_id' => $subject->subjectID,
             'redcap_event_name' => $event_name,
-            'redcap_repeat_instance' => '1',
+            // 'redcap_repeat_instance' => '1',
             // 'redcap_data_access_group' => $dag,
         ];
         $response = self::curl($params, $token, $data);
