@@ -206,7 +206,8 @@ class REDCap
         }
         $event_name = $events[0]['unique_event_name'];
 
-        $dag = strtolower($project->members()->where('user_id', Auth::id())->first()->pivot->site->name);
+        // DAG can only be specified if user does not belong to a DAG; We would have to include this field in the enrollment form is needed
+        // $dag = strtolower($project->members()->where('user_id', Auth::id())->first()->pivot->site->name);
 
         $params = [
             'content' => 'record',
@@ -214,7 +215,7 @@ class REDCap
         $data = [
             'record_id' => $subject->subjectID,
             'redcap_event_name' => $event_name,
-            'redcap_data_access_group' => $dag,
+            // 'redcap_data_access_group' => $dag,
         ];
         $response = self::curl($params, $token, $data);
         $returnmsg = json_decode($response, true);
