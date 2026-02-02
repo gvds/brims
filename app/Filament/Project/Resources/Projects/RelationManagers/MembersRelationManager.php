@@ -135,6 +135,7 @@ class MembersRelationManager extends RelationManager
                             ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
                             ->required(),
                         Select::make('site_id')
+                            ->label('Site')
                             ->options(
                                 Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
                             ),
