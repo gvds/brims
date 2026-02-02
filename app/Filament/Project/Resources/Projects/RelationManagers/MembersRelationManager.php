@@ -131,11 +131,8 @@ class MembersRelationManager extends RelationManager
                     ->schema(fn(AttachAction $action): array => [
                         $action->getRecordSelect(),
                         Select::make('role_id')
+                            ->label("Role")
                             ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
-                            // ->options([
-                            //     'Admin' => 'Admin',
-                            //     'Member' => 'Member',
-                            // ])
                             ->required(),
                         Select::make('site_id')
                             ->options(
