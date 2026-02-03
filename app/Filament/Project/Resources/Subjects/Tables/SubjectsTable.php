@@ -2,17 +2,12 @@
 
 namespace App\Filament\Project\Resources\Subjects\Tables;
 
-use App\Enums\EventStatus;
-use App\Enums\LabelStatus;
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use App\Filament\Project\Resources\Subjects\Schemas\SubjectForm;
-use App\Models\Event;
 use App\Models\Subject;
 use App\Models\User;
-use App\Services\REDCap;
-use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -91,12 +86,7 @@ class SubjectsTable
                     ->preload(),
                 SelectFilter::make('user_id')
                     ->options(fn(): array => User::all()->pluck('fullname', 'id')->toArray())
-                    // ->relationship(
-                    //     name: 'user',
-                    //     titleAttribute: fn($record) => dd($record)
-                    //     // titleAttribute: fn($record) => $record->user->firstname . ' ' . $record->user->lastname
-                    // )
-                    // ->attribute('fullname')
+                    ->attribute('fullname')
                     ->label('Manager')
                     ->searchable()
                     ->preload(),
