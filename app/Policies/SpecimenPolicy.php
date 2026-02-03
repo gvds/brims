@@ -41,9 +41,4 @@ class SpecimenPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Specimen');
     }
-
-    public function reorder(AuthUser $authUser, Specimen|string $specimen): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Specimen');
-    }
 }

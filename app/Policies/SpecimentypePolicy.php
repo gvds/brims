@@ -41,9 +41,4 @@ class SpecimentypePolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Specimentype');
     }
-
-    public function reorder(AuthUser $authUser, Specimentype $specimentype): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Specimentype');
-    }
 }

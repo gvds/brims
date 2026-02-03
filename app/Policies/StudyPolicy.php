@@ -41,9 +41,4 @@ class StudyPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Study');
     }
-
-    public function reorder(AuthUser $authUser, Study $study): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Study');
-    }
 }

@@ -42,9 +42,4 @@ class LabwarePolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Labware');
     }
-
-    public function reorder(AuthUser $authUser, Labware $labware): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Labware');
-    }
 }

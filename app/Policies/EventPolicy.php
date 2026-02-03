@@ -41,9 +41,4 @@ class EventPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Event');
     }
-
-    public function reorder(AuthUser $authUser): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Event');
-    }
 }

@@ -74,9 +74,4 @@ class SubjectPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Subject');
     }
-
-    public function reorder(AuthUser $authUser, Subject|string $subject): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Subject');
-    }
 }

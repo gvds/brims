@@ -41,9 +41,4 @@ class PublicationPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Publication');
     }
-
-    public function reorder(AuthUser $authUser, Publication $publication): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Publication');
-    }
 }

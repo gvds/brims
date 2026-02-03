@@ -42,9 +42,4 @@ class SitePolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Site');
     }
-
-    public function reorder(AuthUser $authUser, Site $site): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Site');
-    }
 }

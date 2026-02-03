@@ -42,9 +42,4 @@ class ArmPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Arm');
     }
-
-    public function reorder(AuthUser $authUser): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Arm');
-    }
 }

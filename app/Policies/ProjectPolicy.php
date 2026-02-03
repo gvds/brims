@@ -43,9 +43,4 @@ class ProjectPolicy
     {
         return evaluate_permission($authUser, 'DeleteAny:Project');
     }
-
-    public function reorder(AuthUser $authUser, Project $project): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Project');
-    }
 }

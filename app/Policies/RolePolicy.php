@@ -36,9 +36,4 @@ class RolePolicy
     {
         return evaluate_permission($authUser, 'Delete:Role');
     }
-
-    public function reorder(AuthUser $authUser, Role $role): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:Role');
-    }
 }

@@ -40,9 +40,4 @@ class AssayDefinitionPolicy
     {
         return evaluate_permission($authUser, 'Delete:AssayDefinition');
     }
-
-    public function reorder(AuthUser $authUser, AssayDefinition $assayDefinition): bool
-    {
-        return evaluate_permission($authUser, 'Reorder:AssayDefinition');
-    }
 }
