@@ -22,3 +22,5 @@ public/storage
 /database/testing*
 Thumbs.db
 tests/Browser/Screenshots
+composer.lock
+package-lock.json
