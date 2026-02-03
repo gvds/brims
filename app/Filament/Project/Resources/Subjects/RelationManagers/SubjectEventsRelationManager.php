@@ -8,14 +8,6 @@ use App\Enums\SubjectStatus;
 use App\Models\SubjectEvent;
 use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
-use Filament\Actions\AssociateAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -94,12 +86,10 @@ class SubjectEventsRelationManager extends RelationManager
                     ->label('ID'),
                 TextColumn::make('event.arm.name'),
                 TextColumn::make('event.name'),
-                TextColumn::make('status')
-                    ->hidden(fn(): bool => Auth::user()->can('ModifyStatus')),
                 SelectColumn::make('status')
                     ->options(EventStatus::class)
                     ->label('Status')
-                    ->visible(fn(): bool => Auth::user()->can('ModifyStatus')),
+                    ->disabled(fn() => (bool) (! Auth::user()->can('Update:Subject'))),
                 TextColumn::make('eventDate')
                     ->date('Y-m-d')
                     ->extraAttributes(fn(SubjectEvent $record): array => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
@@ -120,7 +110,8 @@ class SubjectEventsRelationManager extends RelationManager
                 //     ->label('Label Status'),
                 SelectColumn::make('labelstatus')
                     ->options(LabelStatus::class)
-                    ->label('Label Status'),
+                    ->label('Label Status')
+                    ->disabled(fn() => (bool) (! Auth::user()->can('Update:Subject'))),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
