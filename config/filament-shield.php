@@ -130,7 +130,7 @@ return [
             // 'forceDeleteAny',
             // 'restoreAny',
             // 'replicate',
-            'reorder',
+            // 'reorder',
         ],
         'single_parameter_methods' => [
             'viewAny',
