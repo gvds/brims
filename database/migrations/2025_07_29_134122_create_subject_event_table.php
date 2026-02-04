@@ -31,7 +31,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['subject_id', 'event_id', 'iteration'], 'subject_event_iteration_unique');
-            $table->index(['project_id', 'labelstatus', 'eventDate'], 'subject_event_label_project_date_idx');
         });
     }
 

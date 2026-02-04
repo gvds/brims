@@ -38,25 +38,6 @@ class UserSeeder extends Seeder
                 'team_id' => $team->id,
                 'team_role' => 'Admin',
             ]);
-
-            $user2 = User::factory()
-                ->create([
-                    'username' => 'asparks',
-                    'firstname' => 'Anel',
-                    'lastname' => 'Sparks',
-                    'email' => 'asparks@sun.ac.za',
-                    'telephone' => '27 (84) 250-9890',
-                    'homesite' => 'SU_ZA',
-                    'password' => Hash::make('password'),
-                ]);
-            $team2 = Team::factory()
-                ->create([
-                    'leader_id' => $user2->id,
-                ]);
-            $user2->update([
-                'team_id' => $team2->id,
-                'team_role' => 'Admin',
-            ]);
         }
 
         $teams = Team::all();
