@@ -2,10 +2,9 @@
 
 namespace App\Filament\Project\Resources\Manifests\Schemas;
 
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class ManifestForm
 {
@@ -13,14 +12,12 @@ class ManifestForm
     {
         return $schema
             ->components([
-                // Select::make('user_id')
-                //     ->relationship('user', 'id')
-                //     ->required(),
-                // Select::make('sourceSite_id')
-                //     ->relationship('sourceSite', 'name')
-                //     ->required(),
                 Select::make('destinationSite_id')
-                    ->relationship('destinationSite', 'name')
+                    ->relationship(
+                        'destinationSite',
+                        'name',
+                        fn ($query) => $query->whereNot('id', session('currentProject')->members()->find(Auth::id())?->pivot->site_id)
+                    )
                     ->required(),
             ]);
     }

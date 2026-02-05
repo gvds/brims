@@ -2,13 +2,18 @@
 
 namespace App\Filament\Project\Resources\Manifests\RelationManagers;
 
+use App\Enums\SpecimenStatus;
+use App\Filament\Imports\ManifestItemImporter;
+use App\Models\Manifest;
 use App\Models\Specimen;
-use Dom\Text;
+use Filament\Actions\Action;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -18,6 +23,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Laravel\Pail\File;
 
 class SpecimensRelationManager extends RelationManager
 {
@@ -77,8 +84,8 @@ class SpecimensRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // CreateAction::make(),
                 AttachAction::make()
+                    ->label('Select Specimens to Add')
                     ->preloadRecordSelect()
                     ->multiple()
                     ->using(function (BelongsToMany $relationship, array $data): void {
@@ -91,18 +98,48 @@ class SpecimensRelationManager extends RelationManager
                         }
 
                         $relationship->attach($pivotData);
-                    }),
+
+                        foreach ($specimens as $specimen) {
+                            $specimen->setStatus(SpecimenStatus::PreTransfer);
+                        }
+                    })
+                    ->color('primary'),
+                ImportAction::make('importSpecimens')
+                    ->label('Upload Specimens')
+                    ->importer(ManifestItemImporter::class)
+                    ->options([
+                        'manifest_id' => $this->getOwnerRecord()->id,
+                        'project_id' => session('currentProject')->id,
+                        'sourceSite_id' => $this->getOwnerRecord()->sourceSite_id,
+                    ])
             ])
             ->recordActions([
                 ViewAction::make(),
-                // EditAction::make(),
-                DetachAction::make(),
-                // DeleteAction::make(),
+                DetachAction::make()
+                    ->before(function (Specimen $record): void {
+                        $record->priorStatusForDetach = $record->pivot->priorSpecimenStatus;
+                    })
+                    ->after(function (Specimen $record): void {
+                        $record->setStatus($record->priorStatusForDetach);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DetachBulkAction::make(),
-                    // DeleteBulkAction::make(),
+                    DetachBulkAction::make()
+                        ->using(function (Collection $records, Table $table): void {
+                            /** @var BelongsToMany $relationship */
+                            $relationship = $table->getRelationship();
+
+                            $priorStatuses = $records->mapWithKeys(fn(Specimen $record) => [
+                                $record->id => $record->pivot->priorSpecimenStatus,
+                            ]);
+
+                            $relationship->detach($records);
+
+                            foreach ($records as $record) {
+                                $record->setStatus($priorStatuses[$record->id]);
+                            }
+                        }),
                 ]),
             ]);
     }

@@ -119,4 +119,10 @@ class Specimen extends Model
             ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
             ->withTimestamps();
     }
+
+    public function setStatus(SpecimenStatus $status): void
+    {
+        $this->status = $status;
+        $this->save();
+    }
 }

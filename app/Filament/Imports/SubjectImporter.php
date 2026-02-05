@@ -79,16 +79,6 @@ class SubjectImporter extends Importer
         return $subject;
     }
 
-    // public static function getOptionsFormComponents(): array
-    // {
-    //     return [
-    //         Select::make('importValueMapping')
-    //             ->label('Import Value Mapping')
-    //             ->relationship('importValueMappings', 'model')
-    //             ->nullable()
-    //     ];
-    // }
-
     public static function getCompletedNotificationBody(Import $import): string
     {
         $body = 'Your subject import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
