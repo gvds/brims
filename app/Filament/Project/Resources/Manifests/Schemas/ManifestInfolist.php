@@ -11,31 +11,27 @@ class ManifestInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('project.title')
-                    ->label('Project'),
-                TextEntry::make('user.id')
+                TextEntry::make('user.fullname')
                     ->label('User'),
                 TextEntry::make('sourceSite.name')
                     ->label('Source site'),
+                TextEntry::make('created_at')
+                    ->dateTime('Y-m-d H:i')
+                    ->placeholder('-'),
+                TextEntry::make('shippedDate')
+                    ->date('Y-m-d')
+                    ->placeholder('-'),
+                TextEntry::make('status')
+                    ->badge(),
                 TextEntry::make('destinationSite.name')
                     ->label('Destination site'),
-                TextEntry::make('shippedDate')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('receivedBy.id')
+                TextEntry::make('receivedBy.fullname')
                     ->label('Received by')
                     ->placeholder('-'),
                 TextEntry::make('receivedDate')
-                    ->date()
+                    ->date('Y-m-d')
                     ->placeholder('-'),
-                TextEntry::make('status')
-                    ->numeric(),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-            ]);
+            ])
+            ->columns(4);
     }
 }

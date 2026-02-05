@@ -2,7 +2,6 @@
 
 use App\Models\Manifest;
 use App\Models\Specimen;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,8 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Manifest::class)->constrained('manifest')->onDelete('cascade');
             $table->foreignIdFor(Specimen::class)->constrained();
-            $table->foreignIdFor(User::class)->constrained();
-            $table->unsignedTinyInteger('priorSampleStatus');
+            $table->unsignedTinyInteger('priorSpecimenStatus');
             $table->boolean('received')->default(false);
             $table->datetime('receivedTime')->nullable();
             $table->timestamps();

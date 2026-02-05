@@ -2,7 +2,6 @@
 
 namespace App\Filament\Project\Resources\Subjects;
 
-use App\Filament\Project\Resources\Subjects\Pages\CreateSubject;
 use App\Filament\Project\Resources\Subjects\Pages\EditSubject;
 use App\Filament\Project\Resources\Subjects\Pages\ListSubjects;
 use App\Filament\Project\Resources\Subjects\Pages\ViewSubject;

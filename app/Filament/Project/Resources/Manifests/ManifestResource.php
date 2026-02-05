@@ -24,6 +24,8 @@ class ManifestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'created_at';
 
+    public static ?int $navigationSort = 5;
+
     public static function form(Schema $schema): Schema
     {
         return ManifestForm::configure($schema);
@@ -42,7 +44,7 @@ class ManifestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\SpecimensRelationManager::class,
         ];
     }
 

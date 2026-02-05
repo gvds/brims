@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\ManifestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Manifest extends Model
 {
@@ -42,8 +42,11 @@ class Manifest extends Model
         return $this->belongsTo(User::class, 'receivedBy_id');
     }
 
-    public function items(): HasMany
+    public function specimens(): BelongsToMany
     {
-        return $this->hasMany(ManifestItem::class);
+        return $this->belongsToMany(Specimen::class, 'manifest_items')
+            ->using(ManifestItem::class)
+            ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
+            ->withTimestamps();
     }
 }

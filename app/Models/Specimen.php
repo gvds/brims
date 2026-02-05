@@ -75,6 +75,7 @@ class Specimen extends Model
         $this->loggedOutBy()->disassociate();
         $this->save();
     }
+
     protected function casts(): array
     {
         return [
@@ -109,5 +110,13 @@ class Specimen extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function manifests(): BelongsToMany
+    {
+        return $this->belongsToMany(Manifest::class, 'manifest_items')
+            ->using(ManifestItem::class)
+            ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
+            ->withTimestamps();
     }
 }

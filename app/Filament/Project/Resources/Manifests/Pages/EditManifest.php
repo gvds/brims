@@ -18,4 +18,9 @@ class EditManifest extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    public function getRelationManagers(): array
+    {
+        return [];
+    }
 }
