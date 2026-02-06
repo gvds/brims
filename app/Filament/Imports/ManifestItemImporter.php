@@ -18,25 +18,28 @@ class ManifestItemImporter extends Importer
     {
         return [
             ImportColumn::make('specimen_id')
-                ->label('Specimen Barcode')
-                ->relationship(resolveUsing: fn(string $state) => Specimen::where('barcode', $state)
-                    ->where('project_id', session('currentProject')->id)
-                    ->first()?->id)
-                // ->relationship('specimen', 'barcode')
-                ->rules([
+                ->label('Barcode')
+                ->fillRecordUsing(function (ManifestItem $record, string $state, array $options) {
+                    $specimen = Specimen::where('barcode', $state)
+                        ->where('project_id', $options['project_id'])
+                        ->first();
+                    $record->specimen_id = $specimen?->id;
+                    $record->priorSpecimenStatus = $specimen?->status;
+                })
+                ->rules(fn(array $options) => [
                     'required',
-                    function ($value, $attribute, $fail) {
+                    function (string $attribute, mixed $value, \Closure $fail) use ($options) {
                         $specimen = Specimen::where('barcode', $value)
-                            ->where('project_id', session('currentProject')->id)
+                            ->where('project_id', $options['project_id'])
                             ->first();
 
                         if (! $specimen) {
                             $fail("The specimen with barcode '{$value}' does not exist in this project.");
                         } elseif (! in_array($specimen->status, [SpecimenStatus::Logged, SpecimenStatus::InStorage])) {
                             $fail("The specimen with barcode '{$value}' is not available for shipping and cannot be added to the manifest.");
-                        } elseif ($specimen->site_id !== $this->options['sourceSite_id']) {
+                        } elseif ($specimen->site_id !== $options['sourceSite_id']) {
                             $fail("The specimen with barcode '{$value}' does not belong to your site and cannot be added to the manifest.");
-                        } elseif (ManifestItem::where('specimen_id', $specimen->id)->where('manifest_id', $this->options['manifest_id'])->exists()) {
+                        } elseif (ManifestItem::where('specimen_id', $specimen->id)->where('manifest_id', $options['manifest_id'])->exists()) {
                             $fail("The specimen with barcode '{$value}' is already associated with this manifest.");
                         }
                     },
@@ -52,8 +55,8 @@ class ManifestItemImporter extends Importer
     protected function beforeSave(): void
     {
         $this->record->manifest_id = $this->options['manifest_id'];
-        $this->record->sourceSite_id = $this->options['sourceSite_id'];
-        $this->record->priorSpecimenStatus = $this->options['priorSpecimenStatus'];
+        $specimen = Specimen::find($this->record->specimen_id);
+        $this->record->priorSpecimenStatus = $specimen->status;
     }
 
     protected function afterSave(): void
