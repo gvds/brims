@@ -3,9 +3,6 @@
 namespace App\Filament\Project\Resources\Manifests\Tables;
 
 use App\Enums\ManifestStatus;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -59,12 +56,7 @@ class ManifestsTable
             ->deferFilters(false)
             ->recordActions([
                 ViewAction::make(),
-                DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions([]);
     }
 }

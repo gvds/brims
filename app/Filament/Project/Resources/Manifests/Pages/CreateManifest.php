@@ -20,7 +20,7 @@ class CreateManifest extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = Auth::id();
-        $data['sourceSite_id'] = session('currentProject')->members[Auth::id()]->pivot->site_id;
+        $data['sourceSite_id'] = session('currentProject')->members()->where('user_id', Auth::id())->first()->pivot->site_id;
 
         return $data;
     }

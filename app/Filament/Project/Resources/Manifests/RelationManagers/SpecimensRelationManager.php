@@ -2,18 +2,16 @@
 
 namespace App\Filament\Project\Resources\Manifests\RelationManagers;
 
+use App\Enums\ManifestStatus;
 use App\Enums\SpecimenStatus;
 use App\Filament\Imports\ManifestItemImporter;
-use App\Models\Manifest;
 use App\Models\Specimen;
-use Filament\Actions\Action;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
 use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -24,7 +22,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Laravel\Pail\File;
+use Illuminate\Support\Facades\Auth;
 
 class SpecimensRelationManager extends RelationManager
 {
@@ -34,6 +32,8 @@ class SpecimensRelationManager extends RelationManager
     {
         return false;
     }
+
+    protected $listeners = ['refreshSpecimensRelation' => '$refresh'];
 
     public function form(Schema $schema): Schema
     {
@@ -88,6 +88,11 @@ class SpecimensRelationManager extends RelationManager
                     ->label('Select Specimens to Add')
                     ->preloadRecordSelect()
                     ->multiple()
+                    ->recordSelectOptionsQuery(
+                        fn($query) => $query
+                            ->whereIn('status', [SpecimenStatus::Logged, SpecimenStatus::InStorage])
+                            ->where('site_id', session('currentProject')->members()->where('user_id', Auth::id())->first()->pivot->site_id)
+                    )
                     ->using(function (BelongsToMany $relationship, array $data): void {
                         $recordIds = Arr::wrap($data['recordId']);
                         $specimens = Specimen::whereIn('id', $recordIds)->get()->keyBy('id');
@@ -103,7 +108,8 @@ class SpecimensRelationManager extends RelationManager
                             $specimen->setStatus(SpecimenStatus::PreTransfer);
                         }
                     })
-                    ->color('primary'),
+                    ->color('primary')
+                    ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
                 ImportAction::make('importSpecimens')
                     ->label('Upload Specimens')
                     ->importer(ManifestItemImporter::class)
@@ -112,16 +118,15 @@ class SpecimensRelationManager extends RelationManager
                         'project_id' => session('currentProject')->id,
                         'sourceSite_id' => $this->getOwnerRecord()->sourceSite_id,
                     ])
+                    ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
             ])
             ->recordActions([
                 ViewAction::make(),
                 DetachAction::make()
                     ->before(function (Specimen $record): void {
-                        $record->priorStatusForDetach = $record->pivot->priorSpecimenStatus;
+                        $record->setStatus($record->pivot->priorSpecimenStatus);
                     })
-                    ->after(function (Specimen $record): void {
-                        $record->setStatus($record->priorStatusForDetach);
-                    }),
+                    ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -139,7 +144,8 @@ class SpecimensRelationManager extends RelationManager
                             foreach ($records as $record) {
                                 $record->setStatus($priorStatuses[$record->id]);
                             }
-                        }),
+                        })
+                        ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
                 ]),
             ]);
     }

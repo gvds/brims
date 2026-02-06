@@ -3,7 +3,6 @@
 namespace App\Filament\Project\Resources\Manifests\Pages;
 
 use App\Filament\Project\Resources\Manifests\ManifestResource;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -15,7 +14,6 @@ class EditManifest extends EditRecord
     {
         return [
             ViewAction::make(),
-            DeleteAction::make(),
         ];
     }
 
