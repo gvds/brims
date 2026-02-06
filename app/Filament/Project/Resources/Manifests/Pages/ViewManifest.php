@@ -69,6 +69,14 @@ class ViewManifest extends ViewRecord
                     }
                 }),
             DeleteAction::make()
+                ->before(function ($record) {
+                    if ($record->status !== ManifestStatus::Open) {
+                        throw new \Exception('Only manifests with status "Open" can be deleted.');
+                    }
+                    $record->specimens()->each(function ($specimen) {
+                        $specimen->setStatus($specimen->pivot->priorSpecimenStatus);
+                    });
+                })
                 ->visible(fn() => $this->record->status === ManifestStatus::Open),
         ];
     }
