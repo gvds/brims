@@ -34,11 +34,6 @@ class Specimentype extends Model
         return $this->belongsTo(Specimentype::class, 'parentSpecimenType_id', 'id');
     }
 
-    // public function virtualUnits()
-    // {
-    //     return $this->hasMany(virtualUnit::class, 'storageSampleType', 'storageSampleType');
-    //     // return $this->hasMany(virtualUnit::class, 'storageSampleType', 'storageSampleType')->where('project_id', $this->project_id);
-    // }
     protected function casts(): array
     {
         return [

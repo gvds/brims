@@ -24,7 +24,7 @@ class AssayFactory extends Factory
             'additional_fields' => fake()->optional()->randomElement([
                 null,
                 ['field1' => fake()->word(), 'field2' => fake()->numberBetween(1, 100)],
-                ['experiment_type' => fake()->word(), 'samples' => fake()->numberBetween(10, 50)],
+                ['experiment_type' => fake()->word(), 'specimens' => fake()->numberBetween(10, 50)],
             ]),
             'assayfile' => fake()->optional()->word() . '.xlsx',
             'assayfilename' => fake()->optional()->sentence(3),

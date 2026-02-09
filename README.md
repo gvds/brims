@@ -8,7 +8,7 @@ BRIMS is a multi-site, research study management system that integrates a number
 - Participant study arm allocation with automatic scheduling of follow-up events
 - Logging of events and specimens by barcode identifiers
 - Management of minus-80 and liquid N2 storage infrastructure
-- Automatic allocation and managment of sample storage/retrieval and shipment
+- Automatic allocation and managment of specimen storage/retrieval and shipment
 - Integration with REDCap for data capture
 - Management of study assay data storage along with its meta-data
 

@@ -164,7 +164,7 @@ describe('Assay Creation and Validation', function (): void {
 
     it('can create assay with additional fields', function (): void {
         $additionalFields = [
-            'sample_type' => 'blood',
+            'specimen_type' => 'blood',
             'concentration' => '100',
             'quality_score' => 'high',
         ];
@@ -293,7 +293,7 @@ describe('Dynamic Field Management', function (): void {
     it('handles JSON additional fields correctly', function (): void {
         $complexFields = [
             'experiment_date' => '2025-06-15',
-            'sample_count' => 50,
+            'specimen_count' => 50,
             'protocol_version' => '2.1',
             'quality_control' => ['passed' => true, 'score' => 95],
             'tags' => ['urgent', 'high-priority', 'validated'],
@@ -514,10 +514,10 @@ describe('AssayDefinition Integration', function (): void {
             'active' => true,
             'additional_fields' => [
                 [
-                    'field_name' => 'sample_volume',
+                    'field_name' => 'specimen_volume',
                     'field_type' => 'text',
                     'sub_type' => 'numeric',
-                    'label' => 'Sample Volume (μL)',
+                    'label' => 'Specimen Volume (μL)',
                     'required' => true,
                     'max_length' => 10,
                 ],
@@ -542,7 +542,7 @@ describe('AssayDefinition Integration', function (): void {
         ]);
 
         $assayFields = [
-            'sample_volume' => '50',
+            'specimen_volume' => '50',
             'processing_date' => '2025-06-15',
             'quality_level' => 'high',
         ];
@@ -556,7 +556,7 @@ describe('AssayDefinition Integration', function (): void {
             'additional_fields' => $assayFields,
         ]);
 
-        expect($assay->additional_fields['sample_volume'])->toBe('50');
+        expect($assay->additional_fields['specimen_volume'])->toBe('50');
         expect($assay->additional_fields['processing_date'])->toBe('2025-06-15');
         expect($assay->additional_fields['quality_level'])->toBe('high');
     });
