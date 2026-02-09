@@ -4,63 +4,46 @@ namespace App\Policies;
 
 use App\Models\Manifest;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ManifestPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $authUser): bool
     {
-        return false;
+        return evaluate_permission($authUser, 'ViewAny:Manifest');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Manifest $manifest): bool
+    public function view(User $authUser, Manifest $manifest): bool
     {
-        return false;
+        return evaluate_permission($authUser, 'View:Manifest');
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $authUser): bool
     {
-        return false;
+        return evaluate_permission($authUser, 'Create:Manifest');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Manifest $manifest): bool
+    public function update(User $authUser, Manifest $manifest): bool
     {
-        return false;
+        return evaluate_permission($authUser, 'Update:Manifest');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Manifest $manifest): bool
+    public function delete(User $authUser, Manifest $manifest): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Manifest $manifest): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Manifest $manifest): bool
-    {
-        return false;
+        return evaluate_permission($authUser, 'Delete:Manifest');
     }
 }
