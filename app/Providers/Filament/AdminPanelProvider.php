@@ -66,6 +66,10 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
             ->spa()
+            ->spaUrlExceptions([
+                '*/',
+                '*/project*',
+            ])
             ->unsavedChangesAlerts()
             ->sidebarWidth('15rem');
     }

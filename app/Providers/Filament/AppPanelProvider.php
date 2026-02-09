@@ -116,6 +116,10 @@ class AppPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
             ->spa()
+            ->spaUrlExceptions([
+                '*/admin*',
+                '*/project*',
+            ])
             ->unsavedChangesAlerts()
             ->sidebarWidth('15rem');
     }
