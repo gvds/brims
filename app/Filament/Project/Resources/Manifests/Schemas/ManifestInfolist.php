@@ -6,6 +6,7 @@ use App\Models\Specimentype;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 
 class ManifestInfolist
 {
@@ -26,7 +27,9 @@ class ManifestInfolist
                             ->date('Y-m-d')
                             ->placeholder('-'),
                         TextEntry::make('status')
-                            ->badge(),
+                            ->size('md')
+                            ->weight(FontWeight::SemiBold)
+                            ->extraAttributes(['class' => 'border border-slate-400 rounded-md px-2 py-0.5 w-max']),
                         TextEntry::make('destinationSite.name')
                             ->label('Destination site'),
                         TextEntry::make('receivedBy.fullname')

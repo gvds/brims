@@ -20,7 +20,7 @@ enum ManifestStatus: int implements HasColor, HasLabel
     {
         return match ($this) {
             self::Open => 'warning',
-            self::Shipped => 'primary',
+            self::Shipped => 'info',
             self::Received => 'success',
         };
     }
