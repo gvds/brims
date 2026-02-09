@@ -51,6 +51,14 @@ class SpecimensRelationManager extends RelationManager
             ->components([
                 TextEntry::make('barcode'),
                 TextEntry::make('aliquot'),
+                TextEntry::make('subject.subjectID')
+                    ->label('Subject ID'),
+                TextEntry::make('specimenType.name')
+                    ->label('Specimen Type'),
+                TextEntry::make('subjectEvent.arm.name')
+                    ->label('Arm'),
+                TextEntry::make('subjectEvent.event.name')
+                    ->label('Event'),
                 TextEntry::make('thawcount'),
                 TextEntry::make('volume')
                     ->formatStateUsing(fn(Specimen $record): string => "{$record->volume}{$record->volumeUnit}"),
@@ -65,6 +73,15 @@ class SpecimensRelationManager extends RelationManager
                 TextColumn::make('barcode')
                     ->searchable(),
                 TextColumn::make('aliquot'),
+                TextColumn::make('subject.subjectID')
+                    ->label('Subject ID')
+                    ->searchable(),
+                TextColumn::make('specimenType.name')
+                    ->searchable(),
+                TextColumn::make('subjectEvent.arm.name')
+                    ->searchable(),
+                TextColumn::make('subjectEvent.event.name')
+                    ->searchable(),
                 TextColumn::make('priorSpecimenStatus'),
                 IconColumn::make('received')
                     ->boolean(),
