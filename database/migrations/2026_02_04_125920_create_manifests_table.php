@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Site::class, 'sourceSite_id')->constrained();
             $table->foreignIdFor(Site::class, 'destinationSite_id')->constrained();
+            $table->json('specimenTypes');
             $table->date('shippedDate')->nullable();
             $table->foreignIdFor(User::class, 'receivedBy_id')->nullable()->constrained();
             $table->date('receivedDate')->nullable();

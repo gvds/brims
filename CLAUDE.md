@@ -445,6 +445,3 @@ $pages->assertNoJavascriptErrors()->assertNoConsoleLogs();
 | decoration-slice | box-decoration-slice |
 | decoration-clone | box-decoration-clone |
 </laravel-boost-guidelines>
-
-## Sail
-- Use Sail for all local development and testing commands. You can run Sail commands using `./vendor/bin/sail <command>`.

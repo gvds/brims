@@ -90,6 +90,7 @@ class SpecimensRelationManager extends RelationManager
                     ->multiple()
                     ->recordSelectOptionsQuery(
                         fn($query) => $query
+                            ->whereIn('specimenType_id', $this->getOwnerRecord()->specimenTypes)
                             ->whereIn('status', [SpecimenStatus::Logged, SpecimenStatus::InStorage])
                             ->where('site_id', session('currentProject')->members()->where('user_id', Auth::id())->first()->pivot->site_id)
                     )
@@ -117,6 +118,7 @@ class SpecimensRelationManager extends RelationManager
                         'manifest_id' => $this->getOwnerRecord()->id,
                         'project_id' => session('currentProject')->id,
                         'sourceSite_id' => $this->getOwnerRecord()->sourceSite_id,
+                        'specimenTypes' => $this->getOwnerRecord()->specimenTypes,
                     ])
                     ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
             ])

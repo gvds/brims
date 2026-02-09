@@ -17,6 +17,7 @@ class Manifest extends Model
         'shippedDate' => 'date',
         'receivedDate' => 'date',
         'status' => ManifestStatus::class,
+        'specimenTypes' => 'array',
     ];
 
     public function project(): BelongsTo

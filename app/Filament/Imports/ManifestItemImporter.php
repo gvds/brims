@@ -41,6 +41,8 @@ class ManifestItemImporter extends Importer
                             $fail("The specimen with barcode '{$value}' does not belong to your site and cannot be added to the manifest.");
                         } elseif (ManifestItem::where('specimen_id', $specimen->id)->where('manifest_id', $options['manifest_id'])->exists()) {
                             $fail("The specimen with barcode '{$value}' is already associated with this manifest.");
+                        } elseif (! in_array($specimen->specimenType_id, $options['specimenTypes'] ?? [])) {
+                            $fail("The specimen with barcode '{$value}' is of a type that is not allowed on this manifest.");
                         }
                     },
                 ]),
