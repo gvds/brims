@@ -78,6 +78,10 @@ class ViewManifest extends ViewRecord
                     });
                 })
                 ->visible(fn() => $this->record->status === ManifestStatus::Open),
+            Action::make('export')
+                ->action(fn($record) => $record->export())
+                ->color('info')
+                ->visible(fn($record) => $record->status !== ManifestStatus::Open),
         ];
     }
 }

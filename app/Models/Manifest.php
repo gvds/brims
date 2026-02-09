@@ -90,4 +90,34 @@ class Manifest extends Model
             ]);
         }
     }
+
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $items = $this->specimens()
+            ->with('specimenType', 'subjectEvent.event.arm', 'subjectEvent.subject')
+            ->orderBy('id')
+            ->get();
+
+        $filename = "manifest-{$this->id}.csv";
+
+        return response()->streamDownload(function () use ($items) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, ['Subject', 'Barcode', 'Arm', 'Event', 'Sample Type', 'Aliquot', 'Volume']);
+
+            foreach ($items as $item) {
+                fputcsv($handle, [
+                    $item->subjectEvent->subject->subjectID,
+                    $item->barcode,
+                    $item->subjectEvent->event->arm->name,
+                    $item->subjectEvent->event->name,
+                    $item->specimenType->name,
+                    $item->aliquot,
+                    $item->volume . $item->specimenType->volumeUnit,
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
 }
