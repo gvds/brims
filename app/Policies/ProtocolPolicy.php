@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Enums\SystemRoles;
-use App\Enums\TeamRoles;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Protocol;
 use Illuminate\Auth\Access\HandlesAuthorization;

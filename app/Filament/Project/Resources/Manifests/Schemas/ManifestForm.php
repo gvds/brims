@@ -22,7 +22,7 @@ class ManifestForm
                 Select::make('specimenTypes')
                     ->multiple()
                     ->options(fn() => session('currentProject')->specimenTypes()->pluck('name', 'id'))
-                    ->disabled(fn($record) => $record->specimens->count() > 0),
+                    ->disabled(fn($record) => $record?->specimens->count() > 0),
             ])
             ->columns(1)
             ->extraAttributes(['class' => 'min-w-md max-w-max']);
