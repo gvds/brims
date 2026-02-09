@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('manifest_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Manifest::class)->constrained('manifest')->onDelete('cascade');
+            $table->foreignIdFor(Manifest::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Specimen::class)->constrained();
             $table->unsignedTinyInteger('priorSpecimenStatus');
             $table->boolean('received')->default(false);
