@@ -20,7 +20,7 @@ class ManifestResource extends Resource
 {
     protected static ?string $model = Manifest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNumberedList;
 
     protected static ?string $recordTitleAttribute = 'created_at';
 

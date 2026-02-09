@@ -21,7 +21,7 @@ class SubjectResource extends Resource
 
     public static ?int $navigationSort = 2;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     #[\Override]
     public static function form(Schema $schema): Schema
