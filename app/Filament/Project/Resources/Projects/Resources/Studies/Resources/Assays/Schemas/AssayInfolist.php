@@ -2,9 +2,7 @@
 
 namespace App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas;
 
-use Dom\Text;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Schema;
 
 class AssayInfolist
