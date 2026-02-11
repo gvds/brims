@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => ['http://localhost'],
+    'allowed_origins' => ['http://localhost:1080', 'http://127.0.0.1:1080'],
 
     'allowed_origins_patterns' => [],
 
