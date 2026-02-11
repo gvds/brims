@@ -115,7 +115,7 @@ class AssaysTable
                     }),
                 DeleteAction::make()
                     ->using(function (Model $record): void {
-                        foreach ($record->assayfiles as $file) {
+                        foreach ($record->assayfiles ?? [] as $file) {
                             Storage::disk('s3')->delete($file);
                         }
                         $record->delete();
