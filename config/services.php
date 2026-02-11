@@ -39,4 +39,8 @@ return [
         'url' => env('REDCAP_URL'),
     ],
 
+    'tus' => [
+        'endpoint' => env('TUS_ENDPOINT'),
+    ],
+
 ];

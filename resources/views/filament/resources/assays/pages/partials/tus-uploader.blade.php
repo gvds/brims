@@ -188,7 +188,7 @@
         uploads: [],
         uploadInstances: {},
         incompleteUploads: [],
-        tusEndpoint: '{{ env("TUS_URL") }}',
+        tusEndpoint: '{{ env("TUS_ENDPOINT") }}',
         tusReady: false,
 
         init() {
