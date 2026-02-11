@@ -20,7 +20,7 @@ class AssayResource extends Resource
 
     protected static ?string $parentResource = StudyResource::class;
 
-    protected static ?string $tenantOwnershipRelationshipName = 'project';
+    protected static bool $isScopedToTenant = false;
 
     public static function shouldRegisterNavigation(): bool
     {
