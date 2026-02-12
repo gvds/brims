@@ -18,6 +18,7 @@ class ValidPSE implements ValidationRule
     {
 
         if (!preg_match("/^\d+_\d+_\d+$/", (string) $value)) {
+            // if (!preg_match("/^\d+_[A-Z]+\d+_\d+$/", (string) $value)) {
             $fail('The barcode format is invalid.');
             return;
         }
@@ -29,6 +30,7 @@ class ValidPSE implements ValidationRule
             return;
         }
 
+        // $subject = Subject::where('subjectID', $subjectID)->first();
         $subject = Subject::find($subject_id);
 
         if (!$subject) {
@@ -43,7 +45,7 @@ class ValidPSE implements ValidationRule
             return;
         }
 
-        if ($subjectEvent->subject_id != $subject_id) {
+        if ($subjectEvent->subject_id != $subject->id) {
             $fail('The Event and Subject IDs in the barcode do not belong to each other.');
             return;
         }

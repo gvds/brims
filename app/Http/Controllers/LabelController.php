@@ -42,6 +42,7 @@ class LabelController extends Controller
                 'events.name AS eventname',
                 'events.id AS event_id',
                 'subjectID',
+                'subject_id',
                 'firstname',
                 'lastname',
                 'subject_event_labels',
@@ -58,7 +59,8 @@ class LabelController extends Controller
 
         foreach ($subjectEvents as $event) {
             // Generate Name labels
-            $PSE = $event->project_id . '_' . $event->subjectID . '_' . $event->id;
+            // $PSE = $event->project_id . '_' . $event->subjectID . '_' . $event->id;
+            $PSE = $event->project_id . '_' . $event->subject_id . '_' . $event->id;
             for ($i = 0; $i < $event->name_labels; $i++) {
                 $text = sprintf("%s %s\n%s\n%s [%s]\nArm: %s", $event->firstname, $event->lastname, $PSE, $event->eventname, $event->iteration, $event->armname);
                 $this->fpdf->Add_BarLabel($text, $PSE);
@@ -66,11 +68,11 @@ class LabelController extends Controller
             // Generate Study ID labels
             for ($i = 0; $i < $event->study_id_labels; $i++) {
                 $text = sprintf('%s', $event->subjectID);
-                $this->fpdf->Add_BarLabel($text, $event->subjectID);
+                $this->fpdf->Add_BarLabel($text, $event->subject_id);
             }
             // Generate PSE labels
             for ($i = 0; $i < $event->subject_event_labels; $i++) {
-                $text = sprintf("%s\n%s [%s]\nArm: %s", $PSE, $event->eventname, $event->iteration, $event->armname);
+                $text = sprintf("%s\n%s\n%s [%s]\nArm: %s", $event->subjectID, $PSE, $event->eventname, $event->iteration, $event->armname);
                 $this->fpdf->Add_BarLabel($text, $PSE);
             }
         }
