@@ -19,6 +19,7 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -84,21 +85,24 @@ class LogDerivativeSpecimens extends Page implements HasForms
             ->get();
     }
 
-    protected function getFormSchema(): array
+    protected function form(Schema $form): Schema
     {
         if (! $this->stageOneCompleted) {
-            return [
-                TextInput::make('parent_barcode')
-                    ->label('Parent Specimen Barcode')
-                    ->helperText('Scan the barcode')
-                    ->statePath('parent_barcode')
-                    ->scopedExists(Specimen::class, 'barcode')
-                    ->autofocus()
-                    ->extraAttributes([
-                        'class' => 'w-full md:w-80',
-                        'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
-                    ]),
-            ];
+            return $form
+                ->components(
+                    [
+                        TextInput::make('parent_barcode')
+                            ->label('Parent Specimen Barcode')
+                            ->helperText('Scan the barcode')
+                            ->statePath('parent_barcode')
+                            ->scopedExists(Specimen::class, 'barcode')
+                            ->autofocus()
+                            ->extraAttributes([
+                                'class' => 'w-full md:w-80',
+                                'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
+                            ]),
+                    ]
+                );
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
             $sections = [];
@@ -176,7 +180,10 @@ class LogDerivativeSpecimens extends Page implements HasForms
                     ->extraAttributes(['class' => 'py-0']);
             }
 
-            return $sections;
+            return $form
+                ->components(
+                    [...$sections,]
+                );
         }
     }
 

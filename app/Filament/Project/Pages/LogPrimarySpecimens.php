@@ -19,6 +19,7 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -86,24 +87,27 @@ class LogPrimarySpecimens extends Page implements HasForms
             ->get();
     }
 
-    protected function getFormSchema(): array
+    protected function form(Schema $form): Schema
     {
         if (! $this->stageOneCompleted) {
             // Stage 1 - PSE Barcode scanning
-            return [
-                TextInput::make('pse_barcode')
-                    ->label('Project Subject Event Barcode')
-                    ->helperText('Scan the barcode')
-                    ->rules([new \App\Rules\ValidPSE()])
-                    ->statePath('pse_barcode')
-                    ->autofocus()
-                    // ->live(onBlur: true)
-                    // ->afterStateUpdated(fn() => $this->loadSpecimenBarcodes())
-                    ->extraAttributes([
-                        'class' => 'w-full md:w-80',
-                        'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
-                    ]),
-            ];
+            return $form
+                ->components(
+                    [
+                        TextInput::make('pse_barcode')
+                            ->label('Project Subject Event Barcode')
+                            ->helperText('Scan the barcode')
+                            ->rules([new \App\Rules\ValidPSE()])
+                            ->statePath('pse_barcode')
+                            ->autofocus()
+                            // ->live(onBlur: true)
+                            // ->afterStateUpdated(fn() => $this->loadSpecimenBarcodes())
+                            ->extraAttributes([
+                                'class' => 'w-full md:w-80',
+                                'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
+                            ]),
+                    ]
+                );
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
             $sections = [];
@@ -181,10 +185,12 @@ class LogPrimarySpecimens extends Page implements HasForms
                     ->extraAttributes(['class' => 'py-0']);
             }
 
-            return $sections;
+            return $form
+                ->components(
+                    [...$sections,]
+                );
         }
     }
-
     private function logged($specimenType_id): bool
     {
         return $this->specimens[$specimenType_id][count($this->specimens[$specimenType_id]) - 1]['logged'] ?? false;
