@@ -10,8 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
 {
-    // protected string $view = 'filament.pages.login';
-
     #[\Override]
     public function form(Schema $schema): Schema
     {

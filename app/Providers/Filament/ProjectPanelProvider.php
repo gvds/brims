@@ -52,7 +52,7 @@ class ProjectPanelProvider extends PanelProvider
             )
             ->id('project')
             ->path('project')
-            ->login(Login::class)
+            ->login(fn() => redirect()->route('filament.app.auth.login'))
             ->tenant(Project::class)
             ->tenantMenu(false)
             ->tenantMiddleware([
