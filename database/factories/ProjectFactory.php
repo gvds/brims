@@ -25,7 +25,7 @@ class ProjectFactory extends Factory
             'public_release_date' => null,
             'subjectID_prefix' => fake()->regexify('[A-Z]{2,5}'),
             'subjectID_digits' => fake()->numberBetween(3, 5),
-            'storageProjectName' => fake()->word(),
+            'storageDesignation' => fake()->word(),
         ];
     }
 }

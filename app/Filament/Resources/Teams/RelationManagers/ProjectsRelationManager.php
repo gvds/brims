@@ -57,8 +57,8 @@ class ProjectsRelationManager extends RelationManager
                             ->autocomplete(false)
                             ->required()
                             ->unique(ignoreRecord: true),
-                        TextInput::make('storageProjectName')
-                            ->label('Storage Project Name')
+                        TextInput::make('storageDesignation')
+                            ->label('Storage Designation')
                             ->required()
                             ->maxLength(40),
                     ]),
@@ -231,8 +231,8 @@ class ProjectsRelationManager extends RelationManager
                                     ->autocomplete(false)
                                     ->required()
                                     ->unique(ignoreRecord: true),
-                                TextInput::make('storageProjectName')
-                                    ->label('Storage Project Name')
+                                TextInput::make('storageDesignation')
+                                    ->label('Storage Designation')
                                     ->required()
                                     ->maxLength(40),
                             ]),

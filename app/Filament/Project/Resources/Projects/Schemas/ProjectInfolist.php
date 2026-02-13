@@ -34,8 +34,8 @@ class ProjectInfolist
                         TextEntry::make('subjectID_prefix')
                             ->label('Subject ID Format')
                             ->formatStateUsing(fn($record) => $record->subjectID_prefix . str_repeat('#', $record->subjectID_digits)),
-                        TextEntry::make('storageProjectName')
-                            ->label('Storage Project Name'),
+                        TextEntry::make('storageDesignation')
+                            ->label('Storage Designation'),
                         TextEntry::make('subjects_count')
                             ->label('Number of Subjects')
                             ->counts('Subjects'),

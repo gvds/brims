@@ -67,8 +67,8 @@ class ProjectsRelationManager extends RelationManager
                             ->maxValue(8)
                             ->hint('The number of digits in a subject ID'),
                     ]),
-                TextInput::make('storageProjectName')
-                    ->label('Storage Project Name')
+                TextInput::make('storageDesignation')
+                    ->label('Storage Designation')
                     ->required()
                     ->maxLength(40),
                 Grid::make(2)
