@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Login;
 use App\Filament\Project\Pages\Dashboard;
 use App\Models\Project;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -51,6 +52,7 @@ class ProjectPanelProvider extends PanelProvider
             )
             ->id('project')
             ->path('project')
+            ->login(Login::class)
             ->tenant(Project::class)
             ->tenantMenu(false)
             ->tenantMiddleware([
