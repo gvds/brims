@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login(fn() => redirect()->route('filament.app.auth.login'))
+            ->login(fn() => abort(404))
             ->colors([
                 'primary' => Color::Amber,
             ])
