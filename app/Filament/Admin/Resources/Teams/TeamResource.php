@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\Teams;
 
 use App\Filament\Admin\Resources\Teams\Pages\CreateTeam;
 use App\Filament\Admin\Resources\Teams\Pages\EditTeam;
-use App\Filament\Admin\Resources\Teams\Pages\ListTeams;
+use App\Filament\Admin\Resources\Teams\Pages\ListStudydesigns;
 use App\Filament\Admin\Resources\Teams\Pages\ViewTeam;
 use App\Filament\Admin\Resources\Teams\Schemas\TeamForm;
 use App\Filament\Admin\Resources\Teams\Schemas\TeamInfolist;
@@ -52,7 +52,7 @@ class TeamResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListTeams::route('/'),
+            'index' => ListStudydesigns::route('/'),
             'create' => CreateTeam::route('/create'),
             'view' => ViewTeam::route('/{record}'),
             'edit' => EditTeam::route('/{record}/edit'),

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\Studydesigns;
+namespace App\Filament\Admin\Resources\Studydesigns;
 
-use App\Filament\Resources\Teams\Resources\Studydesigns\Pages\CreateStudydesign;
-use App\Filament\Resources\Teams\Resources\Studydesigns\Pages\EditStudydesign;
-use App\Filament\Resources\Teams\Resources\Studydesigns\Schemas\StudydesignForm;
-use App\Filament\Resources\Teams\Resources\Studydesigns\Tables\StudydesignsTable;
-use App\Filament\Resources\Teams\TeamResource;
+use App\Filament\Admin\Resources\Studydesigns\Pages\CreateStudydesign;
+use App\Filament\Admin\Resources\Studydesigns\Pages\EditStudydesign;
+use App\Filament\Admin\Resources\Studydesigns\Schemas\StudydesignForm;
+use App\Filament\Admin\Resources\Studydesigns\Tables\StudydesignsTable;
+use App\Filament\Admin\Resources\Teams\Pages\ListStudydesigns;
 use App\Models\StudyDesign;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,9 +20,9 @@ class StudydesignResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $parentResource = TeamResource::class;
-
     protected static ?string $recordTitleAttribute = 'type';
+
+    protected static ?int $navigationSort = 4;
 
     #[\Override]
     public static function form(Schema $schema): Schema
@@ -47,6 +47,7 @@ class StudydesignResource extends Resource
     public static function getPages(): array
     {
         return [
+            'index' => ListStudydesigns::route('/'),
             'create' => CreateStudydesign::route('/create'),
             'edit' => EditStudydesign::route('/{record}/edit'),
         ];

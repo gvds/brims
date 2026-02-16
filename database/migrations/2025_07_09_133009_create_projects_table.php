@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\StudyDesign;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Team::class)->constrained();
             $table->foreignIdFor(User::class, 'leader_id')->constrained();
+            $table->foreignIdFor(StudyDesign::class)->constrained();
             $table->string('identifier', 100)->unique();
             $table->string('title', 100)->unique();
             $table->text('description')->nullable();

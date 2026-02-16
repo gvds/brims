@@ -91,6 +91,11 @@ class Project extends Model implements HasName
         return $this->hasMany(ImportValueMapping::class);
     }
 
+    public function studydesign(): BelongsTo
+    {
+        return $this->belongsTo(StudyDesign::class);
+    }
+
     public function getFilamentName(): string
     {
         return $this->title;

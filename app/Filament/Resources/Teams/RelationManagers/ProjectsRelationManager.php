@@ -6,7 +6,6 @@ use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
 use App\Services\REDCap;
-use Dom\Text;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -21,8 +20,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Filament\Support\Colors\Color;
-use Filament\Support\Icons\Heroicon;
 use Filament\Support\Markdown;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -62,6 +59,9 @@ class ProjectsRelationManager extends RelationManager
                             ->required()
                             ->maxLength(40),
                     ]),
+                Select::make('studydesign_id')
+                    ->relationship(name: 'studydesign', titleAttribute: 'type')
+                    ->required(),
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),

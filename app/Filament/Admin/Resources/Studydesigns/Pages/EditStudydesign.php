@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\Studydesigns\Pages;
+namespace App\Filament\Admin\Resources\Studydesigns\Pages;
 
-use App\Filament\Resources\Teams\Resources\Studydesigns\StudydesignResource;
+use App\Filament\Admin\Resources\Studydesigns\StudydesignResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
