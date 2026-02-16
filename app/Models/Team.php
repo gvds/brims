@@ -37,11 +37,6 @@ class Team extends Model
         return $this->hasMany(Protocol::class);
     }
 
-    public function studyDesigns(): HasMany
-    {
-        return $this->hasMany(StudyDesign::class);
-    }
-
     public function assayDefinitions(): HasMany
     {
         return $this->hasMany(AssayDefinition::class);

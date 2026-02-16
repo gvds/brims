@@ -14,9 +14,4 @@ class StudyDesign extends Model
     protected $table = 'studydesigns';
 
     protected $guarded = ['id'];
-
-    public function team(): BelongsTo
-    {
-        return $this->belongsTo(Team::class);
-    }
 }
