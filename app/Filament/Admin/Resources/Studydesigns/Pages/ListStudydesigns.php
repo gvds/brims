@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Teams\Pages;
+namespace App\Filament\Admin\Resources\Studydesigns\Pages;
 
 use App\Filament\Admin\Resources\Studydesigns\StudydesignResource;
 use Filament\Actions\CreateAction;

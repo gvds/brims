@@ -4,9 +4,9 @@ namespace App\Filament\Admin\Resources\Studydesigns;
 
 use App\Filament\Admin\Resources\Studydesigns\Pages\CreateStudydesign;
 use App\Filament\Admin\Resources\Studydesigns\Pages\EditStudydesign;
+use App\Filament\Admin\Resources\Studydesigns\Pages\ListStudydesigns;
 use App\Filament\Admin\Resources\Studydesigns\Schemas\StudydesignForm;
 use App\Filament\Admin\Resources\Studydesigns\Tables\StudydesignsTable;
-use App\Filament\Admin\Resources\Teams\Pages\ListStudydesigns;
 use App\Models\StudyDesign;
 use BackedEnum;
 use Filament\Resources\Resource;
