@@ -4,11 +4,11 @@ namespace App\Filament\Admin\Resources\Teams;
 
 use App\Filament\Admin\Resources\Teams\Pages\CreateTeam;
 use App\Filament\Admin\Resources\Teams\Pages\EditTeam;
-use App\Filament\Admin\Resources\Teams\Pages\ListStudydesigns;
 use App\Filament\Admin\Resources\Teams\Pages\ViewTeam;
 use App\Filament\Admin\Resources\Teams\Schemas\TeamForm;
 use App\Filament\Admin\Resources\Teams\Schemas\TeamInfolist;
 use App\Filament\Admin\Resources\Teams\Tables\TeamsTable;
+use App\Filament\Resources\Teams\Pages\ListTeams;
 use App\Models\Team;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -52,7 +52,7 @@ class TeamResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListStudydesigns::route('/'),
+            'index' => ListTeams::route('/'),
             'create' => CreateTeam::route('/create'),
             'view' => ViewTeam::route('/{record}'),
             'edit' => EditTeam::route('/{record}/edit'),
