@@ -6,7 +6,7 @@ use App\Filament\Admin\Resources\Teams\TeamResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
-class ListStudydesigns extends ListRecords
+class ListTeams extends ListRecords
 {
     protected static string $resource = TeamResource::class;
 
