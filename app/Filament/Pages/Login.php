@@ -25,7 +25,6 @@ class Login extends BaseLogin
             ->statePath('data');
     }
 
-
     protected function getUsernameFormComponent(): Component
     {
         return TextInput::make('username')
@@ -44,10 +43,10 @@ class Login extends BaseLogin
     {
         return [
             'username' => $data['username'],
-            'password'  => $data['password'],
+            'password' => $data['password'],
+            'active' => true,
         ];
     }
-
 
     protected function throwFailureValidationException(): never
     {
