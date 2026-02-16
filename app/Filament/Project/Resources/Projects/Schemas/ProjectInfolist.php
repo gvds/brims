@@ -41,9 +41,14 @@ class ProjectInfolist
                             ->counts('Subjects'),
                     ])
                     ->extraAttributes(['class' => 'min-w-full']),
-                TextEntry::make('description')
-                    ->wrap(true)
-                    ->limit(500),
+                Grid::make(1)
+                    ->schema([
+                        TextEntry::make('studydesign.type')
+                            ->label('Study Design'),
+                        TextEntry::make('description')
+                            ->wrap(true)
+                            ->limit(500),
+                    ]),
             ])
             ->extraAttributes(['class' => 'border border-gray-200 rounded-lg py-4 px-5 bg-gray-50 dark:bg-zinc-900 dark:border-zinc-800']);
     }

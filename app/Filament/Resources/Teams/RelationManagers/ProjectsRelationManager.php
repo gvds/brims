@@ -123,7 +123,8 @@ class ProjectsRelationManager extends RelationManager
                 //     }
                 // })
                 // ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
-                TextColumn::make('team.name')
+                TextColumn::make('studydesign.type')
+                    ->label('Study Design')
                     ->searchable(),
                 TextColumn::make('leader.fullname')
                     ->searchable(['firstname', 'lastname']),

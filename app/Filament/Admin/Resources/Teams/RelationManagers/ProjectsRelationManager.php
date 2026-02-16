@@ -37,6 +37,9 @@ class ProjectsRelationManager extends RelationManager
                 TextInput::make('identifier')
                     ->required()
                     ->unique(ignoreRecord: true),
+                Select::make('studydesign_id')
+                    ->relationship(name: 'studydesign', titleAttribute: 'type')
+                    ->required(),
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),
@@ -88,7 +91,8 @@ class ProjectsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('team.name')
+                TextColumn::make('studydesign.type')
+                    ->label('Study Design')
                     ->searchable(),
                 TextColumn::make('leader.fullname')
                     ->searchable(['firstname', 'lastname']),
