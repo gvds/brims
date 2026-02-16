@@ -7,7 +7,7 @@ use App\Filament\Resources\Teams\Resources\Studydesigns\Pages\EditStudydesign;
 use App\Filament\Resources\Teams\Resources\Studydesigns\Schemas\StudydesignForm;
 use App\Filament\Resources\Teams\Resources\Studydesigns\Tables\StudydesignsTable;
 use App\Filament\Resources\Teams\TeamResource;
-use App\Models\Studydesign;
+use App\Models\StudyDesign;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class StudydesignResource extends Resource
 {
-    protected static ?string $model = Studydesign::class;
+    protected static ?string $model = StudyDesign::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

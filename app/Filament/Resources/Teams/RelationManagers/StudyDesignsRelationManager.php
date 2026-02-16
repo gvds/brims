@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Teams\RelationManagers;
 use App\Filament\Resources\Teams\Resources\Studydesigns\Schemas\StudydesignForm;
 use App\Filament\Resources\Teams\Resources\Studydesigns\StudydesignResource;
 use App\Filament\Resources\Teams\Resources\Studydesigns\Tables\StudydesignsTable;
-use App\Models\Studydesign;
+use App\Models\StudyDesign;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
