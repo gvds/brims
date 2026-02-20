@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Publications\Tables;
+namespace App\Filament\Project\Resources\Publications\Tables;
 
-use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;

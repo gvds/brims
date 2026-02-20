@@ -32,7 +32,7 @@ class LogPrimarySpecimens extends Page implements HasForms
 
     protected static ?string $title = 'Log Primary Specimens';
 
-    protected static ?int $navigationSort = 101;
+    protected static ?int $navigationSort = 5;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 

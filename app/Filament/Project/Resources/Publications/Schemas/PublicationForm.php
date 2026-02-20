@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Publications\Schemas;
+namespace App\Filament\Project\Resources\Publications\Schemas;
 
 use App\Enums\PublicationStatus;
 use Filament\Forms\Components\MarkdownEditor;
@@ -40,7 +40,6 @@ class PublicationForm
                             ->label('Author Name'),
                     )
                     ->required(),
-
             ]);
     }
 }

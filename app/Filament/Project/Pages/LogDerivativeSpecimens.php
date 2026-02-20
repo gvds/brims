@@ -29,7 +29,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?int $navigationSort = 102;
+    protected static ?int $navigationSort = 6;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 
