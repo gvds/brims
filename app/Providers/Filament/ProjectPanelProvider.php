@@ -78,7 +78,7 @@ class ProjectPanelProvider extends PanelProvider
                     ->url('/')
                     ->icon('heroicon-o-home')
                     ->sort(0),
-                NavigationItem::make('Project')
+                NavigationItem::make('Configure Project')
                     ->url(fn(): string => route('filament.project.resources.projects.view', [
                         'tenant' => Filament::getTenant(),
                         'record' => Filament::getTenant(),
