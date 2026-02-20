@@ -18,12 +18,12 @@ class StudyInfolist
                         TextEntry::make('title'),
                         TextEntry::make('identifier'),
                         IconEntry::make('locked')
-                            ->label('Specimen Lock')
+                            ->label('Specimens Lock')
                             ->trueIcon('heroicon-o-lock-closed')
                             ->falseIcon('heroicon-o-lock-open')
                             ->trueColor('warning')
                             ->falseColor('success')
-                            ->helperText('When locked, specimens cannot be added or deleted.'),
+                            ->helperText('When locked, specimens cannot be added or removed.'),
                     ])
                     ->columnSpan(2),
                 Grid::make(2)
