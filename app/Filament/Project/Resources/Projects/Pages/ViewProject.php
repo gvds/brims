@@ -24,7 +24,7 @@ class ViewProject extends ViewRecord
 {
     protected static string $resource = ProjectResource::class;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         parent::mount($record);
 
@@ -40,7 +40,7 @@ class ViewProject extends ViewRecord
                 ImportAction::make('subject_import')
                     ->authorize(['create', 'update'], Subject::class)
                     ->label('Import Subjects')
-                    ->color("gray")
+                    ->color('gray')
                     ->importer(SubjectImporter::class)
                     ->options([
                         'project' => $this->record,
@@ -48,7 +48,7 @@ class ViewProject extends ViewRecord
                 ImportAction::make('subject_event_import')
                     ->authorize(['create', 'update'], SubjectEvent::class)
                     ->label('Import Subject Events')
-                    ->color("gray")
+                    ->color('gray')
                     ->importer(SubjectEventImporter::class)
                     ->options([
                         'project' => $this->record,
@@ -56,7 +56,7 @@ class ViewProject extends ViewRecord
                 ImportAction::make('specimen_import')
                     ->authorize(['create', 'update'], Specimen::class)
                     ->label('Import Specimens')
-                    ->color("gray")
+                    ->color('gray')
                     ->importer(SpecimenImporter::class)
                     ->options([
                         'project' => $this->record,
@@ -67,23 +67,26 @@ class ViewProject extends ViewRecord
                 ->color(Color::Indigo),
             ActionGroup::make([
                 ExportAction::make('subject_export')
-                    ->visible(fn(): bool => Gate::allows('viewAny', Subject::class))
+                    ->visible(fn (): bool => Gate::allows('viewAny', Subject::class))
                     ->label('Export Subjects')
-                    ->color("gray")
+                    ->color('gray')
                     ->exporter(SubjectExporter::class)
-                    ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
+                    ->columnMapping(false)
+                    ->modifyQueryUsing(fn ($query) => $query->where('project_id', $this->record->id)),
                 ExportAction::make('subject_event_export')
-                    ->visible(fn(): bool => Gate::allows('viewAny', SubjectEvent::class))
+                    ->visible(fn (): bool => Gate::allows('viewAny', SubjectEvent::class))
                     ->label('Export Subject Events')
-                    ->color("gray")
+                    ->color('gray')
                     ->exporter(SubjectEventExporter::class)
-                    ->modifyQueryUsing(fn($query) => $query->whereHas('subject', fn($query) => $query->where('project_id', $this->record->id))),
+                    ->columnMapping(false)
+                    ->modifyQueryUsing(fn ($query) => $query->whereHas('subject', fn ($query) => $query->where('project_id', $this->record->id))),
                 ExportAction::make('specimen_export')
-                    ->visible(fn(): bool => Gate::allows('viewAny', Specimen::class))
+                    ->visible(fn (): bool => Gate::allows('viewAny', Specimen::class))
                     ->label('Export Specimens')
-                    ->color("gray")
+                    ->color('gray')
                     ->exporter(SpecimenExporter::class)
-                    ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
+                    ->columnMapping(false)
+                    ->modifyQueryUsing(fn ($query) => $query->where('project_id', $this->record->id)),
             ])
                 ->label('Data Export')
                 ->button()

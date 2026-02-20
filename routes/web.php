@@ -3,7 +3,10 @@
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\ScheduleController;
 use App\Livewire\SetNewAccountPassword;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get(
     '/newaccount/{user}',

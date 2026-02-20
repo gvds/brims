@@ -4,6 +4,7 @@ namespace App\Filament\Exports;
 
 use App\Enums\SubjectStatus;
 use App\Models\Subject;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
@@ -12,6 +13,18 @@ use Illuminate\Support\Number;
 class SubjectExporter extends Exporter
 {
     protected static ?string $model = Subject::class;
+
+    public function getFileDisk(): string
+    {
+        return 'exports';
+    }
+
+    public function getFormats(): array
+    {
+        return [
+            ExportFormat::Csv,
+        ];
+    }
 
     public static function getColumns(): array
     {
@@ -29,17 +42,16 @@ class SubjectExporter extends Exporter
             ExportColumn::make('arm.name'),
             ExportColumn::make('armBaselineDate'),
             ExportColumn::make('status')
-                ->formatStateUsing(fn(SubjectStatus $state): string => $state->name),
+                ->formatStateUsing(fn (SubjectStatus $state): string => $state->name),
         ];
     }
 
-
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your subject export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
+        $body = 'Your subject export has completed and '.Number::format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
+            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
         }
 
         return $body;

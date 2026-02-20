@@ -6,6 +6,7 @@ use App\Filament\Exports\SpecimenExporter;
 use App\Filament\Project\Resources\Specimens\SpecimenResource;
 use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Colors\Color;
 
 class ListSpecimens extends ListRecords
 {
@@ -16,8 +17,9 @@ class ListSpecimens extends ListRecords
         return [
             ExportAction::make('export')
                 ->label('Export')
-                ->color('info')
-                ->exporter(SpecimenExporter::class),
+                ->color(Color::Indigo)
+                ->exporter(SpecimenExporter::class)
+                ->columnMappingColumns(3),
         ];
     }
 }

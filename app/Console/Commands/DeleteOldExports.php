@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class DeleteOldExports extends Command
@@ -27,29 +28,28 @@ class DeleteOldExports extends Command
      */
     public function handle(): int
     {
-        $exportPath = storage_path('app/private/filament_exports');
 
-        if (! File::isDirectory($exportPath)) {
-            $this->info('Export directory does not exist.');
+        if (! Storage::disk('exports')->exists('filament_exports')) {
+            Log::warning('Export directory does not exist.');
 
             return self::SUCCESS;
         }
 
-        $directories = File::directories($exportPath);
+        $directories = Storage::disk('exports')->directories('filament_exports');
         $deletedCount = 0;
         $cutoffTime = now()->subHours(24)->timestamp;
 
         foreach ($directories as $directory) {
-            $directoryTime = File::lastModified($directory);
+            $directoryTime = filectime(Storage::disk('exports')->path($directory));
 
             if ($directoryTime < $cutoffTime) {
-                File::deleteDirectory($directory);
+                Storage::disk('exports')->deleteDirectory($directory);
                 $deletedCount++;
-                $this->line("Deleted: {$directory}");
+                Log::info("Deleted: {$directory}");
             }
         }
 
-        $this->info("Deleted {$deletedCount} old export directories.");
+        Log::info("Deleted {$deletedCount} old export directories.");
 
         return self::SUCCESS;
     }
