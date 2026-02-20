@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas;
+namespace App\Filament\Project\Resources\Studies\Resources\Assays\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -21,7 +21,7 @@ class AssayInfolist
                     ->label('Location'),
                 TextEntry::make('uri')
                     ->label('URI'),
-                TextEntry::make('additional_fields')
+                TextEntry::make('additional_fields'),
                 // Group::make()
                 //     ->schema(function (callable $get) {
                 //         $additionalFields = [];

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\RelationManagers;
+namespace App\Filament\Project\Resources\Studies\RelationManagers;
 
-use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas\AssayForm;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Tables\AssaysTable;
+use App\Filament\Project\Resources\Studies\Resources\Assays\Schemas\AssayForm;
+use App\Filament\Project\Resources\Studies\Resources\Assays\Tables\AssaysTable;
 use App\Models\Assay;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -120,7 +120,7 @@ class AssaysRelationManager extends RelationManager
 
             Log::info('Removed filename from assay', [
                 'assay_id' => $assay->id,
-                'removed_filename' => $storedFilename
+                'removed_filename' => $storedFilename,
             ]);
         }
 
@@ -150,7 +150,7 @@ class AssaysRelationManager extends RelationManager
             if ($assay && $storedFilename) {
                 $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];
 
-                if (!in_array($storedFilename, $assayFiles)) {
+                if (! in_array($storedFilename, $assayFiles)) {
                     $assayFiles[] = $storedFilename;
                     $assay->assayfiles = $assayFiles;
                     $assay->save();
@@ -158,7 +158,7 @@ class AssaysRelationManager extends RelationManager
                     Log::info('Added stored filename to assay', [
                         'assay_id' => $assay->id,
                         'stored_filename' => $storedFilename,
-                        'original_filename' => $this->filename
+                        'original_filename' => $this->filename,
                     ]);
                 }
             }

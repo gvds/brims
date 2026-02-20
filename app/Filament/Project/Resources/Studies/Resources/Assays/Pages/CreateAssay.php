@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Pages;
+namespace App\Filament\Project\Resources\Studies\Resources\Assays\Pages;
 
-use App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\AssayResource;
+use App\Filament\Project\Resources\Studies\Resources\Assays\AssayResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateAssay extends CreateRecord

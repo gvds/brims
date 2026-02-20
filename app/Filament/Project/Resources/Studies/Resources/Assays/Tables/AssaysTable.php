@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Tables;
+namespace App\Filament\Project\Resources\Studies\Resources\Assays\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -34,8 +34,8 @@ class AssaysTable
                 TextColumn::make('assayfiles')
                     ->label('Files')
                     ->badge()
-                    ->getStateUsing(fn($record) => is_array($record->assayfiles) ? count($record->assayfiles) : 0)
-                    ->color(fn($state) => $state > 0 ? 'success' : 'gray'),
+                    ->getStateUsing(fn ($record) => is_array($record->assayfiles) ? count($record->assayfiles) : 0)
+                    ->color(fn ($state) => $state > 0 ? 'success' : 'gray'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -77,7 +77,7 @@ class AssaysTable
                     ->color(Color::Indigo)
                     ->button()
                     ->extraAttributes(['class' => 'h-7 text-xs opacity-70'])
-                    ->hidden(fn(Model $record): bool => empty($record->assayfiles))
+                    ->hidden(fn (Model $record): bool => empty($record->assayfiles))
                     ->schema([
                         TextInput::make('expiration_days')
                             ->label('Link Expiration (days)')
@@ -100,12 +100,12 @@ class AssaysTable
                         }
 
                         $content = "Assay File Download Links for: {$record->name}\n";
-                        $content .= "Generated: " . now()->format('Y-m-d H:i:s') . "\n";
-                        $content .= "Links expire: " . now()->addDays($data['expiration_days'])->format('Y-m-d H:i:s') . "\n";
-                        $content .= str_repeat('-', 50) . "\n\n";
+                        $content .= 'Generated: '.now()->format('Y-m-d H:i:s')."\n";
+                        $content .= 'Links expire: '.now()->addDays($data['expiration_days'])->format('Y-m-d H:i:s')."\n";
+                        $content .= str_repeat('-', 50)."\n\n";
                         $content .= implode("\n\n", $temporarySignedUrls);
 
-                        $filename = 'download_links_' . str($record->name)->slug() . '_' . now()->format('Ymd_His') . '.txt';
+                        $filename = 'download_links_'.str($record->name)->slug().'_'.now()->format('Ymd_His').'.txt';
 
                         return response()->streamDownload(function () use ($content) {
                             echo $content;
@@ -120,8 +120,8 @@ class AssaysTable
                         }
                         $record->delete();
                     })
-                    ->modalHeading(fn($record) => new HtmlString('Delete Assay<br/>' . $record->name))
-                    ->modalDescription(new HtmlString("This will delete all associated data files.<br/>Are you sure you want to delete this assay?")),
+                    ->modalHeading(fn ($record) => new HtmlString('Delete Assay<br/>'.$record->name))
+                    ->modalDescription(new HtmlString('This will delete all associated data files.<br/>Are you sure you want to delete this assay?')),
             ]);
     }
 }

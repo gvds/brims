@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies;
+namespace App\Filament\Project\Resources\Studies;
 
-use App\Filament\Project\Resources\Projects\ProjectResource;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Pages\CreateStudy;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Pages\EditStudy;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Pages\ViewStudy;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Schemas\StudyForm;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Schemas\StudyInfolist;
-use App\Filament\Project\Resources\Projects\Resources\Studies\Tables\StudiesTable;
+use App\Filament\Project\Resources\Studies\Pages\CreateStudy;
+use App\Filament\Project\Resources\Studies\Pages\EditStudy;
+use App\Filament\Project\Resources\Studies\Pages\ListStudies;
+use App\Filament\Project\Resources\Studies\Pages\ViewStudy;
+use App\Filament\Project\Resources\Studies\Schemas\StudyForm;
+use App\Filament\Project\Resources\Studies\Schemas\StudyInfolist;
+use App\Filament\Project\Resources\Studies\Tables\StudiesTable;
 use App\Models\Study;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,9 +20,9 @@ class StudyResource extends Resource
 {
     protected static ?string $model = Study::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    public static ?int $navigationSort = 7;
 
-    protected static ?string $parentResource = ProjectResource::class;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     #[\Override]
     public static function form(Schema $schema): Schema
@@ -54,6 +54,7 @@ class StudyResource extends Resource
     public static function getPages(): array
     {
         return [
+            'index' => ListStudies::route('/'),
             'create' => CreateStudy::route('/create'),
             'view' => ViewStudy::route('/{record}'),
             'edit' => EditStudy::route('/{record}/edit'),

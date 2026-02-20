@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\RelationManagers;
+namespace App\Filament\Project\Resources\Studies\RelationManagers;
 
 use App\Filament\Exports\StudySpecimenExporter;
 use App\Filament\Imports\StudySpecimenImporter;
@@ -92,7 +92,7 @@ class SpecimensRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('subjectEvent.event.name')
-                    ->label(new HtmlString("Event : iteration"))
+                    ->label(new HtmlString('Event : iteration'))
                     ->formatStateUsing(fn($state, $record) => new HtmlString("$state : {$record->subjectEvent->iteration}"))
                     ->searchable(),
                 TextColumn::make('specimenType.name')
@@ -177,7 +177,7 @@ class SpecimensRelationManager extends RelationManager
                 ExportAction::make()
                     ->label('Export Specimens')
                     ->exporter(StudySpecimenExporter::class)
-                    ->color(Color::Indigo)
+                    ->color(Color::Indigo),
             ])
             ->recordActions([
                 // EditAction::make(),

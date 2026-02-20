@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\Pages;
+namespace App\Filament\Project\Resources\Studies\Pages;
 
 use App\Filament\Project\Resources\Projects\ProjectResource;
-use App\Filament\Project\Resources\Projects\Resources\Studies\StudyResource;
+use App\Filament\Project\Resources\Studies\StudyResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
@@ -18,7 +18,7 @@ class ViewStudy extends ViewRecord
             Action::make('return')
                 ->label('Return to Studies')
                 ->color('gray')
-                ->url(fn(): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id])),
+                ->url(fn (): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id])),
             EditAction::make(),
         ];
     }

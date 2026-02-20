@@ -18,6 +18,12 @@ class Study extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'submission_date' => 'date',
+        'public_release_date' => 'date',
+        'locked' => 'boolean',
+    ];
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);

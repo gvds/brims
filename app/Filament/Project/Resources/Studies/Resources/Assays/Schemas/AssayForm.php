@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Projects\Resources\Studies\Resources\Assays\Schemas;
+namespace App\Filament\Project\Resources\Studies\Resources\Assays\Schemas;
 
 use App\Models\AssayDefinition;
 use Filament\Forms\Components\Checkbox;
@@ -40,15 +40,15 @@ class AssayForm
                 TextInput::make('location'),
             ];
             $assayDefinitionId = $get('assaydefinition_id');
-            if (!$assayDefinitionId) {
+            if (! $assayDefinitionId) {
                 return $fields;
             }
             $definition = AssayDefinition::find($assayDefinitionId);
-            if (!$definition || !$definition->additional_fields) {
+            if (! $definition || ! $definition->additional_fields) {
                 return $fields;
             }
             foreach ($definition->additional_fields as $field) {
-                $fieldname = 'additional_fields.' . $field['field_name'];
+                $fieldname = 'additional_fields.'.$field['field_name'];
                 if ($field['field_type'] === 'text') {
                     $fields[] = TextInput::make($fieldname)
                         ->label($field['label'] ?? null)
@@ -57,12 +57,14 @@ class AssayForm
                             if (in_array($field['sub_type'], ['numberic', 'integer'])) {
                                 return $field['max_length'] ?? 255;
                             }
+
                             return false;
                         })
                         ->maxLength(function () use ($field) {
-                            if (!in_array($field['sub_type'], ['numberic', 'integer'])) {
+                            if (! in_array($field['sub_type'], ['numberic', 'integer'])) {
                                 return $field['max_length'] ?? 255;
                             }
+
                             return null;
                         });
                 }
@@ -74,19 +76,19 @@ class AssayForm
                 if ($field['field_type'] === 'select') {
                     $fields[] = Select::make($fieldname)
                         ->label($field['label'] ?? null)
-                        ->options(fn() => collect($field['field_options'] ?? [])
-                            ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
+                        ->options(fn () => collect($field['field_options'] ?? [])
+                            ->mapWithKeys(fn ($option): array => [$option['option_value'] => $option['option_label']]))
                         ->required($field['required'] ?? false);
                 }
                 if ($field['field_type'] === 'radio') {
                     $fields[] = Radio::make($fieldname)
                         // ->label($field['label'] ?? null)
-                        ->options(fn() => collect($field['field_options'] ?? [])
-                            ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
+                        ->options(fn () => collect($field['field_options'] ?? [])
+                            ->mapWithKeys(fn ($option): array => [$option['option_value'] => $option['option_label']]))
                         ->inline()
                         // ->extraInputAttributes(['class' => 'text-sm bg-emerald-600'])
                         ->extraAttributes(
-                            fn(string $operation) => $operation === 'view' ?
+                            fn (string $operation) => $operation === 'view' ?
                                 ['class' => 'border border-stone-200 dark:border-zinc-700 bg-stone-50 dark:bg-zinc-900 shadow-xs rounded-lg p-2'] :
                                 ['class' => 'border border-stone-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 p-2']
                         )
@@ -95,10 +97,10 @@ class AssayForm
                 if ($field['field_type'] === 'checkboxlist') {
                     $fields[] = CheckboxList::make($fieldname)
                         // ->label($field['label'] ?? null)
-                        ->options(fn() => collect($field['field_options'] ?? [])
-                            ->mapWithKeys(fn($option): array => [$option['option_value'] => $option['option_label']]))
+                        ->options(fn () => collect($field['field_options'] ?? [])
+                            ->mapWithKeys(fn ($option): array => [$option['option_value'] => $option['option_label']]))
                         ->extraAttributes(
-                            fn(string $operation) => $operation === 'view' ?
+                            fn (string $operation) => $operation === 'view' ?
                                 ['class' => 'mt-1 border border-stone-200 dark:border-zinc-700 rounded-lg bg-stone-50 dark:bg-zinc-900 shadow-xs px-3 pb-2'] :
                                 ['class' => 'mt-1 border border-stone-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 px-3 pb-2']
                         )
@@ -109,20 +111,21 @@ class AssayForm
                     $fields[] = Checkbox::make($fieldname)
                         ->label($field['label'] ?? null)
                         ->extraAttributes(
-                            fn(string $operation) => $operation === 'view' ?
+                            fn (string $operation) => $operation === 'view' ?
                                 ['class' => 'border border-stone-200 dark:border-zinc-700 bg-stone-50 dark:bg-zinc-900 shadow-xs rounded-lg p-2'] :
                                 ['class' => 'border border-stone-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 p-2']
                         )
                         ->required($field['required'] ?? false);
                 }
             }
+
             return $fields;
         };
 
         return $schema
             ->components([
                 Grid::make($cols)
-                    ->schema($components)
+                    ->schema($components),
             ])
             ->columns(1)
             ->extraAttributes(['class' => 'mb-5']);
