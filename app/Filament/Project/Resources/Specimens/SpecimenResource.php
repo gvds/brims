@@ -2,8 +2,6 @@
 
 namespace App\Filament\Project\Resources\Specimens;
 
-use App\Filament\Project\Resources\Specimens\Pages\CreateSpecimen;
-use App\Filament\Project\Resources\Specimens\Pages\EditSpecimen;
 use App\Filament\Project\Resources\Specimens\Pages\ListSpecimens;
 use App\Filament\Project\Resources\Specimens\Schemas\SpecimenForm;
 use App\Filament\Project\Resources\Specimens\Tables\SpecimensTable;
@@ -48,8 +46,8 @@ class SpecimenResource extends Resource
     {
         return [
             'index' => ListSpecimens::route('/'),
-            'create' => CreateSpecimen::route('/create'),
-            'edit' => EditSpecimen::route('/{record}/edit'),
+            // 'create' => CreateSpecimen::route('/create'),
+            // 'edit' => EditSpecimen::route('/{record}/edit'),
         ];
     }
 }

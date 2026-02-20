@@ -6,6 +6,7 @@ use App\Enums\SpecimenStatus;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -54,12 +55,12 @@ class SpecimensTable
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->searchable(isIndividual: true, isGlobal: false),
-                TextColumn::make('loggedOutBy.fullname')
-                    ->label('Logged Out By')
-                    ->searchable(isIndividual: true, isGlobal: false),
-                TextColumn::make('usedBy.fullname')
-                    ->label('Used By')
-                    ->searchable(isIndividual: true, isGlobal: false),
+                // TextColumn::make('loggedOutBy.fullname')
+                //     ->label('Logged Out By')
+                //     ->searchable(isIndividual: true, isGlobal: false),
+                // TextColumn::make('usedBy.fullname')
+                //     ->label('Used By')
+                //     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('parentSpecimen.barcode')
                     ->label('Parent Barcode')
                     ->searchable(isIndividual: true, isGlobal: false),
@@ -81,6 +82,7 @@ class SpecimensTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

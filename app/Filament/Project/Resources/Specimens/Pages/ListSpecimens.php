@@ -2,8 +2,9 @@
 
 namespace App\Filament\Project\Resources\Specimens\Pages;
 
+use App\Filament\Exports\SpecimenExporter;
 use App\Filament\Project\Resources\Specimens\SpecimenResource;
-use Filament\Actions\CreateAction;
+use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListSpecimens extends ListRecords
@@ -13,7 +14,10 @@ class ListSpecimens extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            ExportAction::make('export')
+                ->label('Export')
+                ->color('info')
+                ->exporter(SpecimenExporter::class),
         ];
     }
 }
