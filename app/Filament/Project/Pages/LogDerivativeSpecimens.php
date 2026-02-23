@@ -11,8 +11,10 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Fieldset;
@@ -47,11 +49,17 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     public ?SubjectEvent $subjectEvent = null;
 
-    public bool $stageOneCompleted = false;
+    public int $stage = 0;
+
+    public ?string $selection_route = null;
 
     public ?string $parent_barcode = null;
 
+    public ?string $pse_barcode = null;
+
     public ?Specimen $parent_specimen = null;
+
+    public Collection $potentialParentSpecimens;
 
     protected $listeners = ['updateform' => '$refresh'];
 
@@ -87,21 +95,64 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     protected function form(Schema $form): Schema
     {
-        if (! $this->stageOneCompleted) {
+        if ($this->stage === 0) {
             return $form
                 ->components(
                     [
+                        ToggleButtons::make('selection_route')
+                            ->label('Select by')
+                            ->options([
+                                'parent_barcode' => 'Parent Specimen',
+                                'pse_barcode' => 'Project Subject Event',
+                            ])
+                            ->autofocus()
+                            ->inline()
+                            ->live(),
                         TextInput::make('parent_barcode')
                             ->label('Parent Specimen Barcode')
-                            ->helperText('Scan the barcode')
+                            ->helperText('Scan the parent specimen barcode')
                             ->statePath('parent_barcode')
+                            ->visible(fn($get) => $get('selection_route') === 'parent_barcode')
                             ->scopedExists(Specimen::class, 'barcode')
-                            ->autofocus()
                             ->extraAttributes([
                                 'class' => 'w-full md:w-80',
                                 'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
                             ]),
+                        TextInput::make('pse_barcode')
+                            ->label('Project Subject Event Barcode')
+                            ->helperText('Scan the PSE barcode')
+                            ->statePath('pse_barcode')
+                            ->visible(fn($get) => $get('selection_route') === 'pse_barcode')
+                            ->extraAttributes([
+                                'class' => 'w-full md:w-80',
+                                'x-on:keydown.enter.prevent' => '$wire.loadSubjectEventSpecimens()',
+                            ]),
                     ]
+                );
+        } elseif ($this->stage === 1) {
+            $sections = [];
+            foreach ($this->potentialParentSpecimens as $group => $potentialParentSpecimens) {
+                $sections[] = Section::make($group)
+                    ->schema(function () use ($potentialParentSpecimens) {
+                        $potentialParents = [];
+                        foreach ($potentialParentSpecimens as $potentialParentSpecimen) {
+                            $barcode = $potentialParentSpecimen['barcode'];
+                            $potentialParents[] = TextEntry::make('barcode_' . $barcode)
+                                ->getStateUsing(fn() => $barcode)
+                                ->hiddenLabel()
+                                ->grow(false)
+                                ->action(Action::make('select_parent_' . $barcode)->action(fn() => $this->selectParentSpecimen($barcode)));
+                        }
+
+                        return [Flex::make($potentialParents)];
+                    })
+                    ->compact()
+                    ->collapsible();
+            }
+
+            return $form
+                ->components(
+                    [...$sections]
                 );
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
@@ -187,6 +238,11 @@ class LogDerivativeSpecimens extends Page implements HasForms
         }
     }
 
+    public function selectParentSpecimen(string $barcode): void
+    {
+        $this->parent_barcode = $barcode;
+        $this->loadSpecimenBarcodes();
+    }
     public function loadSpecimenBarcodes(): void
     {
         $this->validate([
@@ -230,7 +286,40 @@ class LogDerivativeSpecimens extends Page implements HasForms
         }
         $this->specimens = $specimens;
 
-        $this->stageOneCompleted = true;
+        $this->stage = 2;
+
+        $this->dispatch('updateform');
+    }
+
+    public function loadSubjectEventSpecimens(): void
+    {
+        $this->validate([
+            'pse_barcode' => [
+                'required',
+                new \App\Rules\ValidPSE,
+            ],
+        ]);
+        [$project_id, $subject_id, $subject_event_id] = explode('_', (string) $this->pse_barcode);
+        $this->subjectEvent = SubjectEvent::find($subject_event_id);
+        $this->subject = Subject::find($subject_id);
+
+        if (! $this->subjectEvent) {
+            return;
+        }
+
+        $parentalSpecimenTypes = Specimentype::where('project_id', session('currentProject')->id)
+            ->whereNotNull('parentSpecimenType_id')
+            ->pluck('parentSpecimenType_id')
+            ->unique();
+
+        $this->potentialParentSpecimens = Specimen::with('specimenType')
+            ->where('subject_event_id', $this->subjectEvent->id)
+            ->whereIn('specimenType_id', $parentalSpecimenTypes)
+            ->get()
+            ->groupBy('specimenType.name')
+            ->map(fn($group) => $group->values()->toArray());
+
+        $this->stage = 1;
 
         $this->dispatch('updateform');
     }
@@ -254,15 +343,15 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     public function submit(): void
     {
-        if (! $this->stageOneCompleted || ! $this->subjectEvent) {
-            Notification::make()
-                ->title('Error')
-                ->body('Please scan a valid PSE barcode first.')
-                ->color('danger')
-                ->send();
+        // if ($this->stage === 0 || ! $this->subjectEvent) {
+        //     Notification::make()
+        //         ->title('Error')
+        //         ->body('Please scan a valid PSE barcode first.')
+        //         ->color('danger')
+        //         ->send();
 
-            return;
-        }
+        //     return;
+        // }
 
         $loggedCount = 0;
         try {
@@ -303,7 +392,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                 ->send();
 
             // Reset form for new entry
-            $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stageOneCompleted', 'parent_specimen']);
+            $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stage', 'parent_specimen']);
             $this->initializeSpecimenTypes();
 
             $this->dispatch('updateform');
@@ -320,7 +409,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     public function resetForm(): void
     {
-        $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stageOneCompleted']);
+        $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stage']);
         $this->initializeSpecimenTypes();
         $this->dispatch('updateform');
     }
@@ -329,21 +418,18 @@ class LogDerivativeSpecimens extends Page implements HasForms
     {
         $actions = [];
 
-        if ($this->stageOneCompleted) {
+        if ($this->stage !== 0) {
             $actions[] = Action::make('reset')
                 ->label('Start Over')
                 ->color('danger')
                 ->action('resetForm');
+        }
 
+        if ($this->stage === 2) {
             $actions[] = Action::make('submit')
                 ->label('Save Specimens')
                 ->color('primary')
                 ->action('submit');
-        } else {
-            $actions[] = Action::make('proceed')
-                ->label('Validate Barcode')
-                ->color('success')
-                ->action('loadSpecimenBarcodes');
         }
 
         return $actions;

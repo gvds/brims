@@ -1,12 +1,12 @@
 {
     "agents": [
-        "claude_code",
         "copilot"
     ],
     "editors": [
-        "claude_code",
         "vscode"
     ],
-    "guidelines": [],
+    "guidelines": [
+        "filament/filament"
+    ],
     "sail": true
 }
