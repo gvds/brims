@@ -24,3 +24,7 @@ Thumbs.db
 tests/Browser/Screenshots
 composer.lock
 package-lock.json
+
+**/caddy
+frankenphp
+frankenphp-worker.php
