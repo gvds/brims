@@ -16,7 +16,8 @@ class ListManifests extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->visible(fn($livewire) => $livewire->activeTab === 'sent'),
         ];
     }
 
@@ -24,7 +25,7 @@ class ListManifests extends ListRecords
     {
         return [
             'sent' => Tab::make('Sent Manifests')
-                ->query(fn ($query) => $query->where('sourceSite_id', session('currentProject')
+                ->query(fn($query) => $query->where('sourceSite_id', session('currentProject')
                     ->members()
                     ->where('user_id', Auth::id())
                     ->first()
@@ -32,7 +33,7 @@ class ListManifests extends ListRecords
                     ->site_id))
                 ->label('Sent Manifests'),
             'received' => Tab::make('Received Manifests')
-                ->query(fn ($query) => $query
+                ->query(fn($query) => $query
                     ->where('status', '!=', ManifestStatus::Open)
                     ->where('destinationSite_id', session('currentProject')
                         ->members()

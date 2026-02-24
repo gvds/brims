@@ -7,8 +7,10 @@ use App\Filament\Project\Resources\Manifests\ManifestResource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Fieldset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,19 +24,44 @@ class ViewManifest extends ViewRecord
             EditAction::make()
                 ->visible(fn() => $this->record->status === ManifestStatus::Open),
             Action::make('ship')
-                ->label('Ship')
+                ->label('Ship the Manifest')
                 ->button()
                 ->color('info')
+                ->schema([
+                    Fieldset::make('options')
+                        ->hiddenLabel()
+                        ->schema([
+                            ToggleButtons::make('mark_as_received')
+                                ->label('Automatically Mark as Received upon shipping?')
+                                ->options([
+                                    0 => 'No',
+                                    1 => 'Yes',
+                                ])
+                                ->afterContent('This is for transfers to sites that are not able to use this system to mark manifests as received.')
+                                ->default(0)
+                                ->inline()
+                                ->required(),
+                        ])
+                        ->columns(1),
+                ])
                 ->requiresConfirmation()
                 ->visible(fn($record) => $record->status === ManifestStatus::Open && $record->specimens->count() > 0)
-                ->action(function ($record) {
+                ->action(function ($record, $data) {
                     try {
                         DB::beginTransaction();
                         $record->ship();
-                        Notification::make()
-                            ->title('Manifest shipped successfully.')
-                            ->success()
-                            ->send();
+                        if ($data['mark_as_received']) {
+                            $record->receive();
+                            Notification::make()
+                                ->title('Manifest shipped successfully and marked as received.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Manifest shipped successfully.')
+                                ->success()
+                                ->send();
+                        }
                         DB::commit();
                     } catch (\Exception $th) {
                         DB::rollBack();
@@ -45,7 +72,7 @@ class ViewManifest extends ViewRecord
                     }
                 }),
             Action::make('receive')
-                ->label('Receive')
+                ->label('Receive the Manifest')
                 ->button()
                 ->color('info')
                 ->requiresConfirmation()
@@ -69,6 +96,7 @@ class ViewManifest extends ViewRecord
                     }
                 }),
             DeleteAction::make()
+                ->modalHeading('Delete Manifest')
                 ->before(function ($record) {
                     if ($record->status !== ManifestStatus::Open) {
                         throw new \Exception('Only manifests with status "Open" can be deleted.');
