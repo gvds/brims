@@ -1,9 +1,9 @@
 <?php
 
-use App\Filament\Resources\Projects\Pages\CreateProject;
-use App\Filament\Resources\Projects\Pages\EditProject;
-use App\Filament\Resources\Projects\Pages\ListProjects;
-use App\Filament\Resources\Projects\Pages\ViewProject;
+use App\Filament\App\Resources\Projects\Pages\CreateProject;
+use App\Filament\App\Resources\Projects\Pages\EditProject;
+use App\Filament\App\Resources\Projects\Pages\ListProjects;
+use App\Filament\App\Resources\Projects\Pages\ViewProject;
 use App\Models\Project;
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
@@ -13,7 +13,7 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
-describe('ProjectResource with authenticated user',  function (): void {
+describe('ProjectResource with authenticated user', function (): void {
 
     beforeEach(
         function (): void {

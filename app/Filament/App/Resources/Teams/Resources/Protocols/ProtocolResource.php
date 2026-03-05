@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\Protocols;
+namespace App\Filament\App\Resources\Teams\Resources\Protocols;
 
-use App\Filament\Resources\Teams\Resources\Protocols\Pages\CreateProtocol;
-use App\Filament\Resources\Teams\Resources\Protocols\Pages\EditProtocol;
-use App\Filament\Resources\Teams\Resources\Protocols\Pages\ViewProtocol;
-use App\Filament\Resources\Teams\Resources\Protocols\Schemas\ProtocolForm;
-use App\Filament\Resources\Teams\Resources\Protocols\Schemas\ProtocolInfolist;
-use App\Filament\Resources\Teams\Resources\Protocols\Tables\ProtocolsTable;
-use App\Filament\Resources\Teams\TeamResource;
+use App\Filament\App\Resources\Teams\Resources\Protocols\Pages\CreateProtocol;
+use App\Filament\App\Resources\Teams\Resources\Protocols\Pages\EditProtocol;
+use App\Filament\App\Resources\Teams\Resources\Protocols\Pages\ViewProtocol;
+use App\Filament\App\Resources\Teams\Resources\Protocols\Schemas\ProtocolForm;
+use App\Filament\App\Resources\Teams\Resources\Protocols\Schemas\ProtocolInfolist;
+use App\Filament\App\Resources\Teams\Resources\Protocols\Tables\ProtocolsTable;
+use App\Filament\App\Resources\Teams\TeamResource;
 use App\Models\Protocol;
 use BackedEnum;
 use Filament\Resources\Resource;

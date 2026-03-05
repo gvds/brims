@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Schemas;
+namespace App\Filament\App\Resources\Teams\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;

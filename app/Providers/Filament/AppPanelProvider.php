@@ -2,9 +2,9 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Dashboard;
-use App\Filament\Pages\EditProfile;
-use App\Filament\Pages\Login;
+use App\Filament\App\Pages\Dashboard;
+use App\Filament\App\Pages\EditProfile;
+use App\Filament\App\Pages\Login;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
@@ -35,7 +35,7 @@ class AppPanelProvider extends PanelProvider
 
         FilamentView::registerRenderHook(
             name: 'panels::head.end',
-            hook: fn(): string => Blade::render(string: "@vite('resources/js/app.js')"),
+            hook: fn (): string => Blade::render(string: "@vite('resources/js/app.js')"),
         );
     }
 
@@ -79,17 +79,17 @@ class AppPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 NavigationItem::make('Team')
-                    ->url(fn(): string => route('filament.app.resources.teams.view', [
+                    ->url(fn (): string => route('filament.app.resources.teams.view', [
                         'record' => Auth::user()->team_id,
                     ]))
                     ->icon('heroicon-o-user-group')
                     ->sort(2)
-                    ->visible(fn(): bool => Auth::user()->team_id !== null),
+                    ->visible(fn (): bool => Auth::user()->team_id !== null),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
                     ->sort(10)
-                    ->visible(fn(): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
+                    ->visible(fn (): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')

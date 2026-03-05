@@ -1,8 +1,8 @@
 <?php
 
 use App\Enums\TeamRoles;
-use App\Filament\Resources\Teams\RelationManagers\ProjectsRelationManager;
-use App\Filament\Resources\Teams\Pages\EditTeam;
+use App\Filament\App\Resources\Teams\Pages\EditTeam;
+use App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager;
 use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;

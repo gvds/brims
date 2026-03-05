@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\App\Pages;
 
 use Filament\Auth\Pages\EditProfile as BaseEditProfile;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 
 class EditProfile extends BaseEditProfile

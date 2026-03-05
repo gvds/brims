@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\Protocols\Tables;
+namespace App\Filament\App\Resources\Teams\Resources\Protocols\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;

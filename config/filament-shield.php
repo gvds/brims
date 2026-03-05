@@ -178,13 +178,13 @@ return [
             ],
         ],
         'exclude' => [
-            App\Filament\Resources\Teams\TeamResource::class,
-            App\Filament\Resources\Teams\Resources\Protocols\ProtocolResource::class,
-            App\Filament\Resources\Teams\Resources\Studydesigns\StudydesignResource::class,
-            App\Filament\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource::class,
+            App\Filament\App\Resources\Teams\TeamResource::class,
+            App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource::class,
+            App\Filament\App\Resources\Teams\Resources\Studydesigns\StudydesignResource::class,
+            App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource::class,
             App\Filament\Admin\Resources\Teams\TeamResource::class,
             App\Filament\Admin\Resources\Users\UserResource::class,
-            App\Filament\Resources\Projects\ProjectResource::class,
+            App\Filament\App\Resources\Projects\ProjectResource::class,
             App\Filament\Project\Resources\Projects\ProjectResource::class,
             \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class,
         ],
@@ -206,7 +206,7 @@ return [
         'prefix' => 'view',
         'exclude' => [
             \Filament\Pages\Dashboard::class,
-            \App\Filament\Pages\Dashboard::class,
+            \App\Filament\App\Pages\Dashboard::class,
             \App\Filament\Project\Pages\Dashboard::class,
             \App\Filament\Admin\Pages\Dashboard::class,
         ],
@@ -229,8 +229,8 @@ return [
         'exclude' => [
             \Filament\Widgets\AccountWidget::class,
             \Filament\Widgets\FilamentInfoWidget::class,
-            \App\Filament\Widgets\EventsDue::class,
-            \App\Filament\Widgets\EventsOverdue::class,
+            \App\Filament\App\Widgets\EventsDue::class,
+            \App\Filament\App\Widgets\EventsOverdue::class,
         ],
     ],
 

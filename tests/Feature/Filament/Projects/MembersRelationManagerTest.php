@@ -22,7 +22,7 @@
  * role and site_id fields. UI tests are excluded due to environment dependencies.
  */
 
-use App\Filament\Resources\Projects\RelationManagers\MembersRelationManager;
+use App\Filament\App\Resources\Projects\RelationManagers\MembersRelationManager;
 use App\Models\Project;
 use App\Models\Site;
 use App\Models\User;

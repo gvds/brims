@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\Protocols\Pages;
+namespace App\Filament\App\Resources\Teams\Resources\Protocols\Pages;
 
-use App\Filament\Resources\Teams\Resources\Protocols\ProtocolResource;
+use App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 

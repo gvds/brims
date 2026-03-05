@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Projects;
+namespace App\Filament\App\Resources\Projects;
 
-use App\Filament\Resources\Projects\Pages\ListProjects;
-use App\Filament\Resources\Projects\Tables\ProjectsTable;
+use App\Filament\App\Resources\Projects\Pages\ListProjects;
+use App\Filament\App\Resources\Projects\Tables\ProjectsTable;
 use App\Models\Project;
 use BackedEnum;
 use Filament\Resources\Resource;

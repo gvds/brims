@@ -1,10 +1,10 @@
 <?php
 
 use App\Enums\TeamRoles;
-use App\Filament\Resources\Teams\Pages\CreateTeam;
-use App\Filament\Resources\Teams\Pages\EditTeam;
-use App\Filament\Resources\Teams\Pages\ListTeams;
-use App\Filament\Resources\Teams\TeamResource;
+use App\Filament\App\Resources\Teams\Pages\CreateTeam;
+use App\Filament\App\Resources\Teams\Pages\EditTeam;
+use App\Filament\App\Resources\Teams\Pages\ListTeams;
+use App\Filament\App\Resources\Teams\TeamResource;
 use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
@@ -422,10 +422,10 @@ describe('TeamResource Relationship Management', function (): void {
         $relationManagers = TeamResource::getRelations();
 
         expect($relationManagers)->toContain(
-            \App\Filament\Resources\Teams\RelationManagers\MembersRelationManager::class,
-            \App\Filament\Resources\Teams\RelationManagers\ProjectsRelationManager::class,
-            \App\Filament\Resources\Teams\RelationManagers\ProtocolsRelationManager::class,
-            \App\Filament\Resources\Teams\RelationManagers\StudyDesignsRelationManager::class
+            \App\Filament\App\Resources\Teams\RelationManagers\MembersRelationManager::class,
+            \App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager::class,
+            \App\Filament\App\Resources\Teams\RelationManagers\ProtocolsRelationManager::class,
+            \App\Filament\App\Resources\Teams\RelationManagers\StudyDesignsRelationManager::class
         );
     });
 

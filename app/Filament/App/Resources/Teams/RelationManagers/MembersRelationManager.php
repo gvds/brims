@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\RelationManagers;
+namespace App\Filament\App\Resources\Teams\RelationManagers;
 
 use App\Enums\TeamRoles;
 use Filament\Actions\BulkActionGroup;
@@ -52,7 +52,7 @@ class MembersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(50),
                 Select::make('team_role')
-                    ->options(fn(): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
+                    ->options(fn (): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
                     ->required(),
                 TextInput::make('telephone')
                     ->prefix('+')
@@ -100,11 +100,11 @@ class MembersRelationManager extends RelationManager
             ])
             ->filters([
                 Filter::make('active')
-                    ->query(fn($query) => $query->where('active', true))
+                    ->query(fn ($query) => $query->where('active', true))
                     ->label('Active')
                     ->toggle(),
                 SelectFilter::make('homesite')
-                    ->options(fn() => \App\Models\User::distinct('homesite')->pluck('homesite', 'homesite'))
+                    ->options(fn () => \App\Models\User::distinct('homesite')->pluck('homesite', 'homesite'))
                     ->multiple()
                     ->searchable()
                     ->preload()
@@ -122,6 +122,7 @@ class MembersRelationManager extends RelationManager
                     ->mutateDataUsing(function (array $data): array {
                         $data['team_id'] = $this->ownerRecord->id;
                         $data['password'] = bcrypt(Str::password(32));
+
                         return $data;
                     }),
                 BulkActionGroup::make([

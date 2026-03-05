@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Schemas;
+namespace App\Filament\App\Resources\Teams\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -24,9 +24,9 @@ class TeamForm
                 Select::make('leader_id')
                     ->relationship(
                         name: 'leader',
-                        modifyQueryUsing: fn($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
+                        modifyQueryUsing: fn ($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
                     )
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
                     ->preload()
                     ->required()

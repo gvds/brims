@@ -21,7 +21,7 @@
  * file management, and technology platform tracking for research assays.
  */
 
-use App\Filament\Resources\Projects\Resources\Studies\RelationManagers\AssaysRelationManager;
+use App\Filament\App\Resources\Projects\Resources\Studies\RelationManagers\AssaysRelationManager;
 use App\Models\Assay;
 use App\Models\AssayDefinition;
 use App\Models\Project;

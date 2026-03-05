@@ -18,7 +18,7 @@
  * through the Project resource's relation manager.
  */
 
-use App\Filament\Resources\Projects\RelationManagers\LabwareRelationManager;
+use App\Filament\App\Resources\Projects\RelationManagers\LabwareRelationManager;
 use App\Models\Labware;
 use App\Models\Project;
 use App\Models\Specimentype;
@@ -26,7 +26,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\Testing\TestAction;
 
 use function Pest\Laravel\actingAs;
-use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
@@ -50,7 +49,7 @@ describe('LabwareResource Table Functionality', function (): void {
     it('can display labware in relation manager table', function (): void {
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCanSeeTableRecords($this->labware);
     });
@@ -58,7 +57,7 @@ describe('LabwareResource Table Functionality', function (): void {
     it('can search labware by name in relation manager', function (): void {
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->searchTable($this->labware->first()->name)
             ->assertCanSeeTableRecords($this->labware->take(1))
@@ -68,7 +67,7 @@ describe('LabwareResource Table Functionality', function (): void {
     it('displays all required table columns', function (): void {
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCanSeeTableRecords($this->labware)
             ->assertCanRenderTableColumn('name')
@@ -81,7 +80,7 @@ describe('LabwareResource Table Functionality', function (): void {
 
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->selectTableRecords($labwareToDelete->pluck('id')->toArray())
             ->callAction(TestAction::make(DeleteBulkAction::class)->table()->bulk())
@@ -100,7 +99,7 @@ describe('LabwareResource Table Functionality', function (): void {
 
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCountTableRecords(0);
     });
@@ -115,7 +114,7 @@ describe('LabwareResource Table Functionality', function (): void {
 
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCountTableRecords(18); // Should show total count across pages
     });
@@ -140,7 +139,7 @@ describe('LabwareResource Business Rules', function (): void {
         // Verify the labware with specimen types is still displayed
         livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ])
             ->assertCanSeeTableRecords([$labware]);
     });
@@ -154,7 +153,7 @@ describe('LabwareResource Business Rules', function (): void {
         // Relation manager should show project labware and global labware, but not other project labware
         $component = livewire(LabwareRelationManager::class, [
             'ownerRecord' => $this->project,
-            'pageClass' => \App\Filament\Resources\Projects\Pages\ViewProject::class,
+            'pageClass' => \App\Filament\App\Resources\Projects\Pages\ViewProject::class,
         ]);
 
         // Project labware should be visible

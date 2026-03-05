@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\AssayDefinitions;
+namespace App\Filament\App\Resources\Teams\Resources\AssayDefinitions;
 
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages\CreateAssayDefinition;
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages\EditAssayDefinition;
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages\ListAssayDefinitions;
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages\ViewAssayDefinition;
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Schemas\AssayDefinitionForm;
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Schemas\AssayDefinitionInfolist;
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\Tables\AssayDefinitionsTable;
-use App\Filament\Resources\Teams\TeamResource;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Pages\CreateAssayDefinition;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Pages\EditAssayDefinition;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Pages\ListAssayDefinitions;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Pages\ViewAssayDefinition;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Schemas\AssayDefinitionForm;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Schemas\AssayDefinitionInfolist;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Tables\AssayDefinitionsTable;
+use App\Filament\App\Resources\Teams\TeamResource;
 use App\Models\AssayDefinition;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

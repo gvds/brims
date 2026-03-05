@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use App\Filament\Admin\Pages\Dashboard;
-use App\Filament\Pages\Login;
 use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -28,13 +27,13 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login(fn() => abort(404))
+            ->login(fn () => abort(404))
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->plugins([
                 FilamentJobsMonitorPlugin::make(),
-                FilamentLogViewer::make()
+                FilamentLogViewer::make(),
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')

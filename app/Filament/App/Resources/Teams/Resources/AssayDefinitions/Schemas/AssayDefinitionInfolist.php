@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\AssayDefinitions\Schemas;
+namespace App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
@@ -52,16 +52,16 @@ class AssayDefinitionInfolist
                             ->label('Field Type'),
                         TextEntry::make('max_length')
                             ->label('Max Length')
-                            ->visible(fn(Get $get): bool => in_array($get('field_type'), ['text'])),
+                            ->visible(fn (Get $get): bool => in_array($get('field_type'), ['text'])),
                         TextEntry::make('sub_type')
                             ->label('Sub Type')
-                            ->visible(fn(Get $get): bool => in_array($get('field_type'), ['text'])),
+                            ->visible(fn (Get $get): bool => in_array($get('field_type'), ['text'])),
                         TextEntry::make('min_value')
                             ->label('Min Value')
-                            ->visible(fn(Get $get): bool => in_array($get('sub_type'), ['integer', 'numeric'])),
+                            ->visible(fn (Get $get): bool => in_array($get('sub_type'), ['integer', 'numeric'])),
                         TextEntry::make('max_value')
                             ->label('Max Value')
-                            ->visible(fn(Get $get): bool => in_array($get('sub_type'), ['integer', 'numeric'])),
+                            ->visible(fn (Get $get): bool => in_array($get('sub_type'), ['integer', 'numeric'])),
                         RepeatableEntry::make('field_options')
                             ->label('Field Options')
                             ->table([
@@ -76,7 +76,7 @@ class AssayDefinitionInfolist
                             ])
                             ->columns(2)
                             ->columnSpanFull()
-                            ->visible(fn(Get $get): bool => in_array($get('field_type'), ['select', 'radio', 'checkboxlist'])),
+                            ->visible(fn (Get $get): bool => in_array($get('field_type'), ['select', 'radio', 'checkboxlist'])),
                         IconEntry::make('required')
                             ->label('Required')
                             ->boolean(),

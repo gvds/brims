@@ -1,6 +1,6 @@
 <?php
 
-use App\Filament\Pages\Login;
+use App\Filament\App\Pages\Login;
 use App\Models\User;
 use Livewire\Livewire;
 

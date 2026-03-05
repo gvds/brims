@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Tables;
+namespace App\Filament\App\Resources\Teams\Tables;
 
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;

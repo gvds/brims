@@ -1,10 +1,10 @@
 <?php
 
 use App\Enums\SystemRoles;
-use App\Filament\Resources\Users\Pages\CreateUser;
-use App\Filament\Resources\Users\Pages\EditUser;
-use App\Filament\Resources\Users\Pages\ListUsers;
-use App\Filament\Resources\Users\UserResource;
+use App\Filament\Admin\Resources\Users\Pages\CreateUser;
+use App\Filament\Admin\Resources\Users\Pages\EditUser;
+use App\Filament\Admin\Resources\Users\Pages\ListUsers;
+use App\Filament\Admin\Resources\Users\UserResource;
 use App\Mail\UserAccountCreated;
 use App\Models\Team;
 use App\Models\User;
@@ -280,7 +280,6 @@ describe('UserResource Edit Page', function (): void {
             ->assertHasFormErrors(['username']);
     });
 
-
     it('can delete user', function (): void {
         $user = User::factory()->create();
 
@@ -347,7 +346,6 @@ describe('UserResource Edit Page', function (): void {
             'firstname' => 'Team',
             'lastname' => 'Member',
         ]);
-
 
         $component = livewire(EditUser::class, ['record' => $nonteamLeader->id]);
 

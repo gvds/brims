@@ -23,7 +23,7 @@
  */
 
 use App\Enums\StorageDestinations;
-use App\Filament\Resources\Projects\RelationManagers\SpecimentypesRelationManager;
+use App\Filament\App\Resources\Projects\RelationManagers\SpecimentypesRelationManager;
 use App\Models\Labware;
 use App\Models\Project;
 use App\Models\Specimentype;

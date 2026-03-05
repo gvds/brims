@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\Teams;
+namespace App\Filament\App\Resources\Teams;
 
-use App\Filament\Resources\Teams\Pages\EditTeam;
-use App\Filament\Resources\Teams\Pages\ViewTeam;
-use App\Filament\Resources\Teams\Schemas\TeamForm;
-use App\Filament\Resources\Teams\Schemas\TeamInfolist;
+use App\Filament\App\Resources\Teams\Pages\EditTeam;
+use App\Filament\App\Resources\Teams\Pages\ViewTeam;
+use App\Filament\App\Resources\Teams\Schemas\TeamForm;
+use App\Filament\App\Resources\Teams\Schemas\TeamInfolist;
 use App\Models\Team;
 use BackedEnum;
 use Filament\Resources\Resource;

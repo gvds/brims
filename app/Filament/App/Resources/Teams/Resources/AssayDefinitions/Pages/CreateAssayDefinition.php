@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\AssayDefinitions\Pages;
+namespace App\Filament\App\Resources\Teams\Resources\AssayDefinitions\Pages;
 
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +18,7 @@ class CreateAssayDefinition extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = Auth::id();
+
         return $data;
     }
 }

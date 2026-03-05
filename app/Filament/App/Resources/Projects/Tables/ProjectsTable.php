@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Tables;
+namespace App\Filament\App\Resources\Projects\Tables;
 
 use App\Enums\TeamRoles;
 use App\Models\Project;
-use BladeUI\Icons\Components\Icon;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -51,6 +50,7 @@ class ProjectsTable
                     ->button()
                     ->action(function (Project $record) {
                         session(['currentProject' => $record]);
+
                         // setPermissionsTeamId($record->id);
                         return to_route('filament.project.pages.dashboard', $parameters = ['tenant' => $record->id]);
                     })

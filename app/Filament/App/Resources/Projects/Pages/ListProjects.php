@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Projects\Pages;
+namespace App\Filament\App\Resources\Projects\Pages;
 
-use App\Filament\Resources\Projects\ProjectResource;
+use App\Filament\App\Resources\Projects\ProjectResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListProjects extends ListRecords

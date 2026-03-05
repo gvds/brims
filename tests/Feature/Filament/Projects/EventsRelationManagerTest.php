@@ -22,7 +22,7 @@
  * repeatable status, and various label counts for study management.
  */
 
-use App\Filament\Resources\Projects\Resources\Arms\RelationManagers\EventsRelationManager;
+use App\Filament\App\Resources\Projects\Resources\Arms\RelationManagers\EventsRelationManager;
 use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Project;

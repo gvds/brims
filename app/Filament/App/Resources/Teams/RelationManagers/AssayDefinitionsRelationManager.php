@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Teams\RelationManagers;
+namespace App\Filament\App\Resources\Teams\RelationManagers;
 
-use App\Filament\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;

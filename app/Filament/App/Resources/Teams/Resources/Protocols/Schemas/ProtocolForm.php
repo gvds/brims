@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Teams\Resources\Protocols\Schemas;
+namespace App\Filament\App\Resources\Teams\Resources\Protocols\Schemas;
 
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
