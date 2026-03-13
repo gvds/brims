@@ -24,7 +24,7 @@ class PhysicalUnitSeeder extends Seeder
                             'physical_unit_id' => $physicalUnit->id,
                         ])
                         ->each(function ($virtualUnit) {
-                            for ($rack = $virtualUnit->startRack; $virtualUnit->startRack <= $virtualUnit->endRack; $virtualUnit->startRack++) {
+                            for ($rack = $virtualUnit->startRack; $rack <= $virtualUnit->endRack; $rack++) {
                                 for ($box = $virtualUnit->startBox; $box <= $virtualUnit->endBox; $box++) {
                                     for ($position = 1; $position <= $virtualUnit->boxCapacity; $position++) {
                                         Location::create([

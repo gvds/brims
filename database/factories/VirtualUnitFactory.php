@@ -21,6 +21,7 @@ class VirtualUnitFactory extends Factory
         $project_ids = Project::all()->pluck('id');
         $project_id = fake()->randomElement($project_ids);
         $specimentype_ids = Specimentype::where('project_id', $project_id)->pluck('id');
+        $rackcapacity = 8;
 
         return [
             'name' => fake()->word(),
@@ -30,8 +31,8 @@ class VirtualUnitFactory extends Factory
             'startRack' => 1,
             'endRack' => 3,
             'startBox' => 'A',
-            'endBox' => chr(ord('A') + 12),
-            'rackCapacity' => 8,
+            'endBox' => chr(ord('A') + $rackcapacity - 1),
+            'rackCapacity' => $rackcapacity,
             'boxCapacity' => 25,
         ];
     }
