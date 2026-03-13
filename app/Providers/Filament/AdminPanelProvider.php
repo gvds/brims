@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login(fn () => abort(404))
+            ->login(fn() => abort(404))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -39,6 +39,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
                 Dashboard::class,
+            ])
+            ->navigationGroups([
+                'User Management',
+                'Utilities',
+                'Storage',
+                'System',
             ])
             ->navigationItems([
                 NavigationItem::make('Main Panel')
