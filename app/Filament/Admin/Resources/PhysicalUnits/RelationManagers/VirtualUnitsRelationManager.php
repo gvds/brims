@@ -85,6 +85,10 @@ class VirtualUnitsRelationManager extends RelationManager
                 $this->data['rackCapacity'] = $this->virtualUnitsInPartialRack->first()->rackCapacity;
                 $this->data['boxCapacity'] = $this->virtualUnitsInPartialRack->first()->boxCapacity;
 
+                // Clear any previous partial box selection when the rack capacity changes.
+                $this->data['startBox'] = null;
+                $this->data['endBox'] = null;
+
                 return;
             }
 
@@ -188,10 +192,10 @@ class VirtualUnitsRelationManager extends RelationManager
                                     ->preload()
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn(Set $set) => $set('specimentype_id', null)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('specimentype_id', null)),
                                 Select::make('specimentype_id')
                                     ->options(
-                                        fn(Get $get): Collection => Specimentype::query()
+                                        fn (Get $get): Collection => Specimentype::query()
                                             ->where('project_id', $get('project_id'))
                                             ->pluck('name', 'id')
                                             ->unique()
@@ -204,7 +208,7 @@ class VirtualUnitsRelationManager extends RelationManager
                                     ])
                                     ->default('Full')
                                     ->inline()
-                                    ->disabled(fn(): bool => count($this->selectedRacks) > 0 or $this->selectionIsPartial)
+                                    ->disabled(fn (): bool => count($this->selectedRacks) > 0 or $this->selectionIsPartial)
                                     ->live()
                                     ->dehydrated()
                                     ->afterStateUpdated(
@@ -214,11 +218,11 @@ class VirtualUnitsRelationManager extends RelationManager
                                         }
                                     ),
                                 Select::make('startBox')
-                                    ->options(fn() => $this->getBoxOptions())
+                                    ->options(fn () => $this->getBoxOptions())
                                     ->live()
                                     ->requiredIf('rack_extent', 'Partial')
-                                    ->disabled(fn(): bool => $this->data['rack_extent'] === 'Full')
-                                    ->disableOptionWhen(fn($value): bool => $this->selectionIsPartial and $this->boxIsUsed($value))
+                                    ->disabled(fn (): bool => $this->data['rack_extent'] === 'Full')
+                                    ->disableOptionWhen(fn ($value): bool => $this->selectionIsPartial and $this->boxIsUsed($value))
                                     ->afterStateUpdated(function (?string $state, Get $get, Set $set) {
                                         foreach ($this->virtualUnitsInPartialRack as $key => $virtualUnit) {
                                             if ($state < $virtualUnit->startBox and $get('endBox') > $virtualUnit->endBox) {
@@ -228,11 +232,11 @@ class VirtualUnitsRelationManager extends RelationManager
                                     })
                                     ->lte('endBox'),
                                 Select::make('endBox')
-                                    ->options(fn() => $this->getBoxOptions())
+                                    ->options(fn () => $this->getBoxOptions())
                                     ->live()
                                     ->requiredIf('rack_extent', 'Partial')
-                                    ->disabled(fn(): bool => $this->data['rack_extent'] === 'Full')
-                                    ->disableOptionWhen(fn($value): bool => $this->selectionIsPartial and $this->boxIsUsed($value))
+                                    ->disabled(fn (): bool => $this->data['rack_extent'] === 'Full')
+                                    ->disableOptionWhen(fn ($value): bool => $this->selectionIsPartial and $this->boxIsUsed($value))
                                     ->afterStateUpdated(function (?string $state, Get $get, Set $set) {
                                         foreach ($this->virtualUnitsInPartialRack as $key => $virtualUnit) {
                                             if ($state > $virtualUnit->endBox and $get('startBox') < $virtualUnit->startBox) {
@@ -243,12 +247,17 @@ class VirtualUnitsRelationManager extends RelationManager
                                     ->gte('startBox'),
                                 TextInput::make('rackCapacity')
                                     ->numeric()
-                                    ->disabled(fn(): bool => $this->selectionIsPartial)
+                                    ->live()
+                                    ->disabled(fn (): bool => $this->selectionIsPartial)
+                                    ->afterStateUpdated(function (?string $state, Get $get, Set $set) {
+                                        $set('startBox', null);
+                                        $set('endBox', null);
+                                    })
                                     ->dehydrated()
                                     ->gt('0'),
                                 TextInput::make('boxCapacity')
                                     ->numeric()
-                                    ->disabled(fn(): bool => $this->selectionIsPartial)
+                                    ->disabled(fn (): bool => $this->selectionIsPartial)
                                     ->dehydrated()
                                     ->gt('0'),
                                 // Forms\Components\Hidden::make('unitDefinition')
@@ -256,7 +265,7 @@ class VirtualUnitsRelationManager extends RelationManager
                             ])
                             ->columns(2)
                             ->columnSpan(['lg' => 1]),
-                        Section::make($this->physicalUnit->name . ' Layout')
+                        Section::make($this->physicalUnit->name.' Layout')
                             ->schema([
                                 View::make('filament.forms.components.virtual_unit'),
                             ])
@@ -342,7 +351,7 @@ class VirtualUnitsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->authorize(true)
-                    ->visible(fn() => $this->getOwnerRecord()->available)
+                    ->visible(fn () => $this->getOwnerRecord()->available)
                     ->createAnother(false)
                     ->beforeFormValidated(function (CreateAction $action) {
                         if (empty($this->selectedRacks)) {
@@ -429,7 +438,7 @@ class VirtualUnitsRelationManager extends RelationManager
                             DB::commit();
                             Notification::make()
                                 ->title('Consolidation complete')
-                                ->body('All specimens in Virtual Unit ' . $record->virtualUnit . ' have been relocated to the beginning of the unit.')
+                                ->body('All specimens in Virtual Unit '.$record->virtualUnit.' have been relocated to the beginning of the unit.')
                                 ->success()
                                 ->send();
                         } catch (\Throwable $th) {
@@ -446,13 +455,13 @@ class VirtualUnitsRelationManager extends RelationManager
                     ->color(Color::Yellow)
                     ->button()
                     ->size('xs')
-                    ->disabled(fn(VirtualUnit $record) => $record->free_extents() === 0)
+                    ->disabled(fn (VirtualUnit $record) => $record->free_extents() === 0)
                     ->requiresConfirmation()
                     ->schema([
                         Select::make('itemsToRemove')
-                            ->label(fn(VirtualUnit $record) => $record->rack_extent === 'Full' ? 'Number of racks to remove' : 'Number of boxes to remove')
+                            ->label(fn (VirtualUnit $record) => $record->rack_extent === 'Full' ? 'Number of racks to remove' : 'Number of boxes to remove')
                             ->required()
-                            ->options(fn(VirtualUnit $record) => array_combine(range(1, $record->free_extents()), range(1, $record->free_extents())))
+                            ->options(fn (VirtualUnit $record) => array_combine(range(1, $record->free_extents()), range(1, $record->free_extents())))
                             ->default(1),
                     ])
                     ->action(function (VirtualUnit $record, array $data) {
@@ -467,7 +476,7 @@ class VirtualUnitsRelationManager extends RelationManager
                             DB::commit();
                             Notification::make()
                                 ->title('Shrinkage complete')
-                                ->body('Virtual Unit ' . $record->virtualUnit . ' has been reduced by ' . $data['itemsToRemove'] . ' ' . ($record->rack_extent === 'Full' ? 'racks' : 'boxes') . '.')
+                                ->body('Virtual Unit '.$record->virtualUnit.' has been reduced by '.$data['itemsToRemove'].' '.($record->rack_extent === 'Full' ? 'racks' : 'boxes').'.')
                                 ->success()
                                 ->send();
                         } catch (\Throwable $th) {
@@ -484,7 +493,7 @@ class VirtualUnitsRelationManager extends RelationManager
                     ->button()
                     ->outlined()
                     ->size('xs')
-                    ->disabled(fn(VirtualUnit $record) => $record->usedLocations()->count() > 0),
+                    ->disabled(fn (VirtualUnit $record) => $record->usedLocations()->count() > 0),
             ])
             ->toolbarActions([
                 //
