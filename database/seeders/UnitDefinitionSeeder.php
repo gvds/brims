@@ -2,17 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\StudyDesign;
 use Illuminate\Database\Seeder;
 
-class StudydesignSeeder extends Seeder
+class UnitDefinitionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        StudyDesign::factory(5)
+        \App\Models\UnitDefinition::factory(3)
             ->create();
+        $this->call([
+            SectionSeeder::class,
+        ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Project;
+use App\Models\StudyDesign;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +17,7 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
+        $study_design_ids = StudyDesign::pluck('id');
         return [
             'identifier' => fake()->unique()->word(),
             'title' => fake()->sentence(4),
@@ -26,6 +27,7 @@ class ProjectFactory extends Factory
             'subjectID_prefix' => fake()->regexify('[A-Z]{2,5}'),
             'subjectID_digits' => fake()->numberBetween(3, 5),
             'storageDesignation' => fake()->word(),
+            'study_design_id' => fake()->randomElement($study_design_ids),
         ];
     }
 }

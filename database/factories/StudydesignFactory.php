@@ -17,7 +17,7 @@ class StudydesignFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'type' => fake()->unique()->sentence(3, false),
         ];
     }
 }
