@@ -14,10 +14,12 @@ This guide covers deploying the BRIMS (Bio-medical Research Information Manageme
 6. [Database Setup](#database-setup)
 7. [Environment Configuration](#environment-configuration)
 8. [File Permissions](#file-permissions)
-9. [Queue Worker](#queue-worker)
-10. [Scheduled Tasks](#scheduled-tasks)
-11. [Deployment Checklist](#deployment-checklist)
-12. [Updating the Application](#updating-the-application)
+9. [Optimization](#optimization)
+10. [Queue Worker](#queue-worker)
+11. [Scheduled Tasks](#scheduled-tasks)
+12. [Health Route](#health-route)
+13. [Deployment Checklist](#deployment-checklist)
+14. [Updating the Application](#updating-the-application)
 
 ---
 
@@ -33,10 +35,18 @@ This guide covers deploying the BRIMS (Bio-medical Research Information Manageme
 
 ### Required PHP Extensions
 
+The Laravel framework requires the following PHP extensions as a minimum (extension names, not package names):
+
+```
+Ctype, cURL, DOM, Fileinfo, Filter, Hash, Mbstring, OpenSSL, PCRE, PDO, Session, Tokenizer, XML
+```
+
+The following additional Ubuntu/Debian packages are needed for BRIMS:
+
 ```
 php8.4-fpm
 php8.4-cli
-php8.4-mysql
+php8.4-mysql       (MariaDB/MySQL database driver)
 php8.4-mbstring
 php8.4-xml
 php8.4-zip
@@ -156,6 +166,8 @@ php artisan storage:link
 
 ### 7. Optimize the Application
 
+Cache all configuration, events, routes, and views for production (see [Optimization](#optimization) for details):
+
 ```bash
 php artisan optimize
 ```
@@ -220,7 +232,8 @@ server {
 
     error_page 404 /index.php;
 
-    location ~ \.php$ {
+    # Only allow execution of index.php (recommended by Laravel docs)
+    location ~ ^/index\.php(/|$) {
         fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
@@ -347,6 +360,8 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 > **Never commit `.env` to version control.** It contains secrets.
 
+> **Warning:** In your production environment, `APP_DEBUG` must always be `false`. If it is set to `true` in production, you risk exposing sensitive configuration values and stack traces to end users.
+
 ---
 
 ## File Permissions
@@ -364,6 +379,40 @@ Add your deploy user to the `www-data` group so you can still write files:
 
 ```bash
 sudo usermod -aG www-data $USER
+```
+
+---
+
+## Optimization
+
+When deploying to production, several files should be cached to improve performance. Laravel provides a single command that handles all of them:
+
+```bash
+php artisan optimize
+```
+
+This is equivalent to running the following individual commands:
+
+```bash
+# Cache all configuration values into a single file
+php artisan config:cache
+
+# Cache event-to-listener mappings
+php artisan event:cache
+
+# Cache all route registrations
+php artisan route:cache
+
+# Pre-compile all Blade views
+php artisan view:cache
+```
+
+> **Warning:** After running `config:cache`, the `.env` file is no longer loaded at runtime. All calls to `env()` from outside of configuration files will return `null`. Always access environment values through `config()` helpers in application code — for example use `config('app.name')` instead of `env('APP_NAME')`.
+
+To clear all caches (e.g. for debugging):
+
+```bash
+php artisan optimize:clear
 ```
 
 ---
@@ -433,6 +482,18 @@ Add the following line:
 
 ---
 
+## Health Route
+
+BRIMS exposes a built-in health check endpoint at `/up` (configured in `bootstrap/app.php`). This endpoint returns an HTTP `200` response when the application has booted successfully, or `500` if an exception was encountered during boot.
+
+Use this endpoint with uptime monitors, load balancers, or orchestration systems (e.g. Kubernetes readiness probes):
+
+```
+GET https://brims.example.com/up
+```
+
+---
+
 ## Deployment Checklist
 
 Use this checklist for every deployment:
@@ -442,8 +503,8 @@ Use this checklist for every deployment:
 - [ ] Install/update Node dependencies and rebuild assets: `npm ci && npm run build`
 - [ ] Run pending migrations: `php artisan migrate --force`
 - [ ] Clear and rebuild the optimization cache: `php artisan optimize`
+- [ ] Reload long-running services: `php artisan reload`
 - [ ] Reload PHP-FPM: `sudo systemctl reload php8.4-fpm`
-- [ ] Restart queue workers: `sudo supervisorctl restart brims-worker:*`
 
 ---
 
@@ -470,11 +531,11 @@ php artisan migrate --force
 # 5. Clear old caches and rebuild optimized caches
 php artisan optimize
 
-# 6. Reload PHP-FPM to pick up any new OPcache files
-sudo systemctl reload php8.4-fpm
+# 6. Gracefully reload queue workers and other long-running services
+php artisan reload
 
-# 7. Restart queue workers
-sudo supervisorctl restart brims-worker:*
+# 7. Reload PHP-FPM to pick up any new OPcache files
+sudo systemctl reload php8.4-fpm
 
 # 8. Bring the application back online
 php artisan up
