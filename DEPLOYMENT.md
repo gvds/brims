@@ -17,9 +17,8 @@ This guide covers deploying the BRIMS (Bio-medical Research Information Manageme
 9. [Optimization](#optimization)
 10. [Queue Worker](#queue-worker)
 11. [Scheduled Tasks](#scheduled-tasks)
-12. [Health Route](#health-route)
-13. [Deployment Checklist](#deployment-checklist)
-14. [Updating the Application](#updating-the-application)
+12. [Deployment Checklist](#deployment-checklist)
+13. [Updating the Application](#updating-the-application)
 
 ---
 
@@ -461,16 +460,6 @@ Add the following line:
 ```
 
 ---
-
-## Health Route
-
-BRIMS exposes a built-in health check endpoint at `/up` (configured in `bootstrap/app.php`). This endpoint returns an HTTP `200` response when the application has booted successfully, or `500` if an exception was encountered during boot.
-
-Use this endpoint with uptime monitors, load balancers, or orchestration systems (e.g. Kubernetes readiness probes):
-
-```
-GET https://brims.example.com/up
-```
 
 ---
 
