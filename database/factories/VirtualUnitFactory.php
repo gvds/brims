@@ -4,10 +4,11 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use App\Models\Specimentype;
+use App\Models\VirtualUnit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\VirtualUnit>
+ * @extends Factory<VirtualUnit>
  */
 class VirtualUnitFactory extends Factory
 {
@@ -20,13 +21,15 @@ class VirtualUnitFactory extends Factory
     {
         $project_ids = Project::all()->pluck('id');
         $project_id = fake()->randomElement($project_ids);
-        $specimentype_ids = Specimentype::where('project_id', $project_id)->pluck('id');
+        // $specimentype_ids = Specimentype::where('project_id', $project_id)->pluck('id');
+        $storagespecimentypes = Specimentype::where('project_id', $project_id)->pluck('storageSpecimenType');
         $rackcapacity = 8;
 
         return [
             'name' => fake()->word(),
             'project_id' => $project_id,
-            'specimentype_id' => fake()->randomElement($specimentype_ids),
+            // 'specimentype_id' => fake()->randomElement($specimentype_ids),
+            'storageSpecimenType' => fake()->randomElement($storagespecimentypes),
             'rack_extent' => 'Full',
             'startRack' => 1,
             'endRack' => 3,
