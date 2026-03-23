@@ -54,13 +54,13 @@ class StorageAllocationResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                // EditAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
