@@ -1,0 +1,30 @@
+{
+    "name": "codedge/laravel-fpdf",
+    "version": "1.12.99",
+    "description": "Laravel package to include Fpdf. It ships with Fpdf 1.86. (Local fork with Laravel 13 support.)",
+    "license": "MIT",
+    "keywords": [
+        "fpdf",
+        "laravel",
+        "pdf"
+    ],
+    "require": {
+        "php": "~8.3 || ~8.4",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Codedge\\Fpdf\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Fpdf": "Codedge\\Fpdf\\Facades\\Fpdf"
+            },
+            "providers": [
+                "Codedge\\Fpdf\\FpdfServiceProvider"
+            ]
+        }
+    }
+}

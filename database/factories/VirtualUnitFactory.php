@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\Specimentype;
 use App\Models\VirtualUnit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,23 +18,16 @@ class VirtualUnitFactory extends Factory
      */
     public function definition(): array
     {
-        $project_ids = Project::all()->pluck('id');
-        $project_id = fake()->randomElement($project_ids);
-        // $specimentype_ids = Specimentype::where('project_id', $project_id)->pluck('id');
-        $storagespecimentypes = Specimentype::where('project_id', $project_id)->pluck('storageSpecimenType');
-        $rackcapacity = 8;
-
         return [
             'name' => fake()->word(),
-            'project_id' => $project_id,
-            // 'specimentype_id' => fake()->randomElement($specimentype_ids),
-            'storageSpecimenType' => fake()->randomElement($storagespecimentypes),
+            'project_id' => Project::factory(),
+            'storageSpecimenType' => fake()->word(),
             'rack_extent' => 'Full',
             'startRack' => 1,
             'endRack' => 3,
             'startBox' => 'A',
-            'endBox' => chr(ord('A') + $rackcapacity - 1),
-            'rackCapacity' => $rackcapacity,
+            'endBox' => 'H',
+            'rackCapacity' => 8,
             'boxCapacity' => 25,
         ];
     }

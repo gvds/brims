@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Enums\StorageType;
+use App\Models\PhysicalUnit;
 use App\Models\UnitDefinition;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PhysicalUnit>
+ * @extends Factory<PhysicalUnit>
  */
 class PhysicalUnitFactory extends Factory
 {
@@ -19,14 +19,11 @@ class PhysicalUnitFactory extends Factory
      */
     public function definition(): array
     {
-        $user_ids = User::all()->pluck('id');
-        $unitdefinition_ids = UnitDefinition::whereNot('storageType', StorageType::Biorepository)->pluck('id');
-
         return [
             'name' => fake()->unique()->word(),
-            'unit_definition_id' => fake()->randomElement($unitdefinition_ids),
+            'unit_definition_id' => UnitDefinition::factory(),
             'serial' => fake()->unique()->randomNumber(8, true),
-            'user_id' => fake()->randomElement($user_ids),
+            'user_id' => User::factory(),
             'available' => true,
         ];
     }
