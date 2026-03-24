@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('name', 50)->unique();
             $table->foreignIdFor(PhysicalUnit::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignIdFor(Project::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            $table->foreignIdFor(Specimentype::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
+            // $table->foreignIdFor(Specimentype::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
+            $table->string('storageSpecimenType', 50);
             $table->string('rack_extent', 10);
             $table->unsignedTinyInteger('startRack');
             $table->unsignedTinyInteger('endRack');

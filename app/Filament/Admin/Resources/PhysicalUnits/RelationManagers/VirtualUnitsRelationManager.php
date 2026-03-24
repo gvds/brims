@@ -192,15 +192,28 @@ class VirtualUnitsRelationManager extends RelationManager
                                     ->preload()
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn(Set $set) => $set('specimentype_id', null)),
-                                Select::make('specimentype_id')
+                                    ->afterStateUpdated(function (Set $set) {
+                                        $set('storageSpecimenType', null);
+                                        $set('specimentype_id', null);
+                                    }),
+                                Select::make('storageSpecimenType')
+                                    ->label('Storage Specimen Type')
                                     ->options(
                                         fn(Get $get): Collection => Specimentype::query()
                                             ->where('project_id', $get('project_id'))
-                                            ->pluck('name', 'id')
+                                            ->whereNotNull('storageSpecimenType')
+                                            ->pluck('storageSpecimenType', 'storageSpecimenType')
                                             ->unique()
                                     )
                                     ->required(),
+                                // Select::make('specimentype_id')
+                                //     ->options(
+                                //         fn(Get $get): Collection => Specimentype::query()
+                                //             ->where('project_id', $get('project_id'))
+                                //             ->pluck('name', 'id')
+                                //     )
+                                //     ->searchable()
+                                //     ->required(),
                                 Radio::make('rack_extent')
                                     ->options([
                                         'Full' => 'Full',
@@ -326,15 +339,26 @@ class VirtualUnitsRelationManager extends RelationManager
                 TextColumn::make('project.name')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('specimentype.name')
+                TextColumn::make('storageSpecimenType')
+                    ->label('Storage Specimen Type')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('rack_extent'),
-                TextColumn::make('startRack')
-                    ->sortable(),
-                TextColumn::make('endRack'),
-                TextColumn::make('startBox'),
-                TextColumn::make('endBox'),
+                // TextColumn::make('specimentype.name')
+                //     ->sortable()
+                //     ->searchable(),
+                TextColumn::make('rack_extent')
+                    ->sortable()
+                    ->searchable(),
+                // TextColumn::make('startRack')
+                //     ->sortable(),
+                // TextColumn::make('endRack'),
+                // TextColumn::make('startBox'),
+                // TextColumn::make('endBox'),
+                TextColumn::make('Racks')
+                    ->getStateUsing(fn(VirtualUnit $record) => "$record->startRack - $record->endRack")
+                    ->sortable(['startRack']),
+                TextColumn::make('Boxes')
+                    ->getStateUsing(fn(VirtualUnit $record) => "$record->startBox - $record->endBox"),
                 TextColumn::make('rackCapacity'),
                 TextColumn::make('boxCapacity'),
                 TextColumn::make('locations_count')

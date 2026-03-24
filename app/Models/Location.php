@@ -11,7 +11,7 @@ class Location extends Model
 
     protected $guarded = ['id'];
 
-    public function virtualunit()
+    public function virtualUnit()
     {
         return $this->belongsTo(VirtualUnit::class, 'virtual_unit_id');
     }
