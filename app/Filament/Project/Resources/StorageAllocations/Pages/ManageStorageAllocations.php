@@ -3,7 +3,7 @@
 namespace App\Filament\Project\Resources\StorageAllocations\Pages;
 
 use App\Filament\Project\Resources\StorageAllocations\StorageAllocationResource;
-use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageStorageAllocations extends ManageRecords
@@ -13,8 +13,9 @@ class ManageStorageAllocations extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()
-                ->label('Allocate Storage'),
+            Action::make('allocate')
+                ->label('Allocate Storage')
+                ->url(fn (): string => static::getResource()::getUrl('allocate')),
         ];
     }
 }

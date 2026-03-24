@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('storage_allocation', function (Blueprint $table) {
+        Schema::create('storage_allocations', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Project::class)->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('storage_allocation');
+        Schema::dropIfExists('storage_allocations');
     }
 };

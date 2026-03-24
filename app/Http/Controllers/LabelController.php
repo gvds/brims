@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\PrintLabels;
 use App\Enums\LabelStatus;
 use App\Enums\SubjectStatus;
 use App\Library\PDF_Label;
@@ -28,8 +27,8 @@ class LabelController extends Controller
         $subjectEvents = SubjectEvent::join('subjects', 'subject_id', 'subjects.id')
             ->join('events', 'event_id', 'events.id')
             ->join('arms', 'events.arm_id', 'arms.id')
-            ->when($request->has('ids'), fn($query) => $query->whereIn('subject_event.id', $request->input('ids', [])))
-            ->whereHas('subject', fn(Builder $q) => $q
+            ->when($request->has('ids'), fn ($query) => $query->whereIn('subject_event.id', $request->input('ids', [])))
+            ->whereHas('subject', fn (Builder $q) => $q
                 ->where('project_id', session('currentProject')->id)
                 ->where('status', SubjectStatus::Enrolled)
                 ->whereIn('user_id', $userIds))
@@ -60,7 +59,7 @@ class LabelController extends Controller
         foreach ($subjectEvents as $event) {
             // Generate Name labels
             // $PSE = $event->project_id . '_' . $event->subjectID . '_' . $event->id;
-            $PSE = $event->project_id . '_' . $event->subject_id . '_' . $event->id;
+            $PSE = $event->project_id.'_'.$event->subject_id.'_'.$event->id;
             for ($i = 0; $i < $event->name_labels; $i++) {
                 $text = sprintf("%s %s\n%s\n%s [%s]\nArm: %s", $event->firstname, $event->lastname, $PSE, $event->eventname, $event->iteration, $event->armname);
                 $this->fpdf->Add_BarLabel($text, $PSE);
