@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EventStatus;
+use App\Enums\SubjectStatus;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Codedge\Fpdf\Fpdf\Fpdf;
@@ -64,21 +66,21 @@ class ScheduleController extends Controller
             'subject',
             fn($query) => $query->where('project_id', session('currentProject')->id)
                 ->whereIn('user_id', $userIDList)
-                ->where('status', 1)
+                ->where('status', SubjectStatus::Enrolled)
         )
             ->whereHas('event', fn($query) => $query->where('active', true))
             ->where('minDate', '<=', $enddate)
-            ->where('status', '<', 2)
-            ->update(['status' => 2]);
+            ->where('status', '<', EventStatus::Scheduled)
+            ->update(['status' => EventStatus::Scheduled]);
 
         $subjects = Subject::with([
-            'events' => fn($query) => $query->where('status', 2)
+            'events' => fn($query) => $query->where('status', EventStatus::Scheduled)
                 ->where('active', true)
                 ->orderBy('eventDate'),
         ])
             ->where('project_id', session('currentProject')->id)
-            ->where('user_id', auth()->user()->id)
-            ->where('status', 1)
+            ->where('user_id', Auth::id())
+            ->where('status', SubjectStatus::Enrolled)
             ->orderBy('subjectID')
             ->get();
         $fill = 1;
