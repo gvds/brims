@@ -30,6 +30,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->text('app_authentication_secret')->nullable();
             $table->text('app_authentication_recovery_codes')->nullable();
+            $table->dateTime('last_login')->nullable();
             $table->timestamps();
         });
 

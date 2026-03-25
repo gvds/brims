@@ -6,10 +6,11 @@ namespace App\Models;
 
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
+use Database\Factories\UserFactory;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
-use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -24,10 +25,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthentication, HasAppAuthenticationRecovery, HasTenants
+class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasName, HasTenants
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -64,9 +65,9 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
             'app_authentication_recovery_codes' => 'encrypted:array',
             'system_role' => SystemRoles::class,
             'active' => 'boolean',
+            'last_login' => 'datetime',
         ];
     }
-
 
     public function canAccessPanel(Panel $panel): bool
     {
@@ -141,7 +142,7 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     protected function fullname(): Attribute
     {
         return new Attribute(
-            get: fn(): string => $this->firstname . ' ' . $this->lastname,
+            get: fn (): string => $this->firstname.' '.$this->lastname,
         );
     }
 
@@ -158,14 +159,14 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAppAuthe
     protected function isTeamLeader(): Attribute
     {
         return new Attribute(
-            get: fn(): bool => $this->team && $this->id === $this->team->leader_id,
+            get: fn (): bool => $this->team && $this->id === $this->team->leader_id,
         );
     }
 
     protected function isTeamAdmin(): Attribute
     {
         return new Attribute(
-            get: fn(): bool => $this->team && $this->team_role === TeamRoles::Admin->value,
+            get: fn (): bool => $this->team && $this->team_role === TeamRoles::Admin->value,
         );
     }
 
