@@ -2,7 +2,9 @@
 
 namespace App\Filament\App\Pages;
 
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Filament\Auth\Pages\Login as BaseLogin;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
@@ -44,8 +46,26 @@ class Login extends BaseLogin
         return [
             'username' => $data['username'],
             'password' => $data['password'],
-            'active' => true,
+            // 'active' => true, // This check has been replaced by the override of the authenticate method below --- IGNORE ---
         ];
+    }
+
+    #[\Override]
+    public function authenticate(): ?LoginResponse
+    {
+        $data = $this->form->getState();
+        $credentials = $this->getCredentialsFromFormData($data);
+
+        $authProvider = Filament::auth()->getProvider();
+        $user = $authProvider->retrieveByCredentials($credentials);
+
+        if ($user && $authProvider->validateCredentials($user, $credentials) && ! $user->active) {
+            throw ValidationException::withMessages([
+                'data.username' => __('Your account is currently inactive.'),
+            ]);
+        }
+
+        return parent::authenticate();
     }
 
     protected function throwFailureValidationException(): never

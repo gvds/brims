@@ -33,7 +33,8 @@ it('prevents an inactive user from logging in', function (): void {
             'password' => 'password',
         ])
         ->call('authenticate')
-        ->assertHasFormErrors(['username']);
+        ->assertHasFormErrors(['username'])
+        ->assertSee('Your account is currently inactive.');
 
     $this->assertGuest();
 });

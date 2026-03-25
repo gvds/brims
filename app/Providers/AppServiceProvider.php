@@ -3,13 +3,12 @@
 namespace App\Providers;
 
 use App\Enums\SystemRoles;
-use App\Http\Middleware\SetUserTeam;
-use Filament\Forms\Components\TextInput;
 use App\Models\Permission;
 use App\Models\Role;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
+use Spatie\Permission\PermissionRegistrar;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        app(\Spatie\Permission\PermissionRegistrar::class)
+        app(PermissionRegistrar::class)
             ->setPermissionClass(Permission::class)
             ->setRoleClass(Role::class);
 
@@ -39,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         // ]);
 
         Gate::before(
-            fn($user): ?true => in_array($user->system_role, [SystemRoles::SuperAdmin]) ? true : null
+            fn ($user): ?true => in_array($user->system_role, [SystemRoles::SuperAdmin]) ? true : null
             // fn($user): ?true => in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]) ? true : null
         );
 
