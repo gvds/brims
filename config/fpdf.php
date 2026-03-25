@@ -14,7 +14,7 @@ return [
     'orientation' => 'P',
     'unit' => 'mm',
     'size' => 'A4',
-    // 'font_path' => env('FPDF_FONTPATH'),
+    'font_path' => env('FPDF_FONTPATH', base_path('vendor/codedge/laravel-fpdf/src/Fpdf/font/')),
 
     /*
     |--------------------------------------------------------------------------

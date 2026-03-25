@@ -20,7 +20,7 @@ class LabelController extends Controller
      *
      * Returns an application/pdf download response.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, ?PDF_Label $pdfLabel = null)
     {
         $userIds = Auth::user()->substitutees->pluck('id')->push(Auth::id())->all();
 
@@ -50,7 +50,8 @@ class LabelController extends Controller
                 'iteration',
             ])
             ->get();
-        $this->fpdf = new PDF_Label('L7651_mod');
+        // $this->fpdf = new PDF_Label('L7651_mod');
+        $this->fpdf = $pdfLabel ?? (app()->bound(PDF_Label::class) ? app(PDF_Label::class) : new PDF_Label('L7651_mod'));
 
         $this->fpdf->AddPage();
         $this->fpdf->AddFont('Calibri', '', 'calibri.php');
