@@ -6,9 +6,7 @@ use App\Filament\Project\Resources\StorageAllocations\Pages\AllocateStorage;
 use App\Filament\Project\Resources\StorageAllocations\Pages\ManageStorageAllocations;
 use App\Models\StorageAllocation;
 use BackedEnum;
-use Dom\Text;
 use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,7 +18,13 @@ class StorageAllocationResource extends Resource
 {
     protected static ?string $model = StorageAllocation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    public static ?int $navigationSort = 7;
+
+    protected static ?string $navigationLabel = 'Specimen Storage';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBoxArrowDown;
+
+    protected static ?string $modelLabel = 'Specimen Storage Allocation';
 
     protected static ?string $recordTitleAttribute = 'created_at';
 

@@ -20,7 +20,7 @@ class StudyResource extends Resource
 {
     protected static ?string $model = Study::class;
 
-    public static ?int $navigationSort = 7;
+    public static ?int $navigationSort = 9;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

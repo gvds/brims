@@ -20,7 +20,7 @@ class PublicationResource extends Resource
 {
     protected static ?string $model = Publication::class;
 
-    public static ?int $navigationSort = 8;
+    public static ?int $navigationSort = 10;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
