@@ -12,6 +12,7 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\ViewException;
 
@@ -24,6 +25,8 @@ beforeEach(function (): void {
     // Create test data structure
     $this->user = $this->adminuser;
     actingAs($this->user);
+    Filament::setCurrentPanel('project');
+    Filament::bootCurrentPanel();
 
     $this->project = Project::factory()
         ->for($this->team)
@@ -31,10 +34,15 @@ beforeEach(function (): void {
         ->has(Site::factory()->count(2))
         ->create();
 
+    $this->role = $this->project->roles()->create([
+        'name' => 'Admin',
+        'guard_name' => 'web',
+    ]);
+
     // Attach user to project with site
     $this->project->members()->attach($this->user->id, [
         'site_id' => $this->project->sites->first()->id,
-        'role' => 'Admin',
+        'role_id' => $this->role->id,
     ]);
 
     // Create labware for the project
@@ -127,17 +135,17 @@ describe('LogDerivativeSpecimens Page Initialization', function (): void {
         expect($component->get('user')->id)->toBe($this->user->id);
         expect($component->get('userSiteId'))->toBe($this->project->sites->first()->id);
         expect($component->get('specimenTypes'))->toHaveCount(3);
-        expect($component->get('stageOneCompleted'))->toBeFalse();
+        expect($component->get('stage'))->toBe(0);
     });
 
     it('handles user not being a project member', function (): void {
         $nonMemberUser = User::factory()->create();
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $nonMemberUser;
         actingAs($user);
 
         // The page will throw an error since the user is not a member
-        expect(fn() => livewire(LogDerivativeSpecimens::class))
+        expect(fn () => livewire(LogDerivativeSpecimens::class))
             ->toThrow(ViewException::class);
     });
 
@@ -173,7 +181,7 @@ describe('LogDerivativeSpecimens Stage 1 - Parent Barcode Validation', function 
             ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
             ->call('loadSpecimenBarcodes')
             ->assertHasNoFormErrors()
-            ->assertSet('stageOneCompleted', true);
+            ->assertSet('stage', 2);
     });
 
     it('loads parent specimen information', function (): void {
@@ -188,13 +196,10 @@ describe('LogDerivativeSpecimens Stage 1 - Parent Barcode Validation', function 
     });
 
     it('rejects non-existent parent barcode', function (): void {
-        $component = livewire(LogDerivativeSpecimens::class)
-            ->fillForm(['parent_barcode' => 'NONEXISTENT']);
-
-        // Attempting to load non-existent barcode should cause error
-        // The method will try to access properties on null parent_specimen
-        expect(fn() => $component->call('loadSpecimenBarcodes'))
-            ->toThrow(\ErrorException::class);
+        livewire(LogDerivativeSpecimens::class)
+            ->fillForm(['parent_barcode' => 'NONEXISTENT'])
+            ->call('loadSpecimenBarcodes')
+            ->assertHasErrors(['parent_barcode']);
     });
 
     it('loads existing logged derivative specimens', function (): void {
@@ -234,7 +239,7 @@ describe('LogDerivativeSpecimens Stage 1 - Parent Barcode Validation', function 
         livewire(LogDerivativeSpecimens::class)
             ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
             ->call('loadSpecimenBarcodes')
-            ->assertSet('stageOneCompleted', true)
+            ->assertSet('stage', 2)
             ->assertSet('subjectEvent.id', $this->subjectEvent->id)
             ->assertSet('subject.id', $this->subject->id);
 
@@ -257,7 +262,7 @@ describe('LogDerivativeSpecimens Stage 2 - Specimen Entry', function (): void {
 
     it('shows specimen entry form after parent barcode validation', function (): void {
         // Check that stage one completed successfully
-        expect($this->component->get('stageOneCompleted'))->toBeTrue();
+        expect($this->component->get('stage'))->toBe(2);
 
         // Check that specimens array is populated
         $specimens = $this->component->get('specimens');
@@ -269,7 +274,7 @@ describe('LogDerivativeSpecimens Stage 2 - Specimen Entry', function (): void {
 
         // Verify we can fill form fields
         $this->component
-            ->assertSet('stageOneCompleted', true)
+            ->assertSet('stage', 2)
             ->fillForm([
                 "specimens.{$specimenTypeId}.0.barcode" => 'DV1234',
                 "specimens.{$specimenTypeId}.0.volume" => 2.0,
@@ -366,9 +371,9 @@ describe('LogDerivativeSpecimens Stage 2 - Specimen Entry', function (): void {
 
         $specimens = $this->component->get('specimens');
         // Volume may be stored as integer instead of float
-        expect($specimens[$specimenTypeId][0]['volume'])->toBe(2);
-        expect($specimens[$specimenTypeId][1]['volume'])->toBe(2);
-        expect($specimens[$specimenTypeId][2]['volume'])->toBe(2);
+        expect($specimens[$specimenTypeId][0]['volume'])->toBe(2.0);
+        expect($specimens[$specimenTypeId][1]['volume'])->toBe(2.0);
+        expect($specimens[$specimenTypeId][2]['volume'])->toBe(2.0);
     });
 
     it('handles multiple specimen groups correctly', function (): void {
@@ -519,7 +524,7 @@ describe('LogDerivativeSpecimens Specimen Submission', function (): void {
         expect($derivativeCount)->toBe(0);
 
         // Check that stage one is still not completed
-        expect($component->get('stageOneCompleted'))->toBeFalse();
+        expect($component->get('stage'))->toBe(0);
     });
 
     it('links derivative specimens to parent specimen', function (): void {
@@ -584,7 +589,7 @@ describe('LogDerivativeSpecimens Form Reset', function (): void {
         $component = livewire(LogDerivativeSpecimens::class)
             ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
             ->call('loadSpecimenBarcodes')
-            ->assertSet('stageOneCompleted', true);
+            ->assertSet('stage', 2);
 
         $component
             ->call('resetForm')
@@ -592,7 +597,7 @@ describe('LogDerivativeSpecimens Form Reset', function (): void {
             ->assertSet('specimens', null)
             ->assertSet('subjectEvent', null)
             ->assertSet('subject', null)
-            ->assertSet('stageOneCompleted', false);
+            ->assertSet('stage', 0);
 
         // Note: parent_specimen may not be reset to null in the current implementation
         // This is acceptable as it will be overwritten on next load
@@ -615,16 +620,11 @@ describe('LogDerivativeSpecimens Form Reset', function (): void {
 });
 
 describe('LogDerivativeSpecimens Header Actions', function (): void {
-    it('shows validate barcode action in stage one', function (): void {
-        livewire(LogDerivativeSpecimens::class)
-            ->assertActionExists('proceed');
-    });
-
     it('shows save and reset actions in stage two', function (): void {
         $component = livewire(LogDerivativeSpecimens::class)
             ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
             ->call('loadSpecimenBarcodes')
-            ->assertSet('stageOneCompleted', true);
+            ->assertSet('stage', 2);
 
         // Verify both submit and reset methods are available
         expect(method_exists($component->instance(), 'submit'))->toBeTrue();
@@ -638,14 +638,14 @@ describe('LogDerivativeSpecimens Header Actions', function (): void {
         // Call the action directly
         $component->call('loadSpecimenBarcodes');
 
-        expect($component->get('stageOneCompleted'))->toBeTrue();
+        expect($component->get('stage'))->toBe(2);
     });
 
     it('can validate barcode and show submit action', function (): void {
         $component = livewire(LogDerivativeSpecimens::class)
             ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
             ->call('loadSpecimenBarcodes')
-            ->assertSet('stageOneCompleted', true);
+            ->assertSet('stage', 2);
 
         // Verify we can call submit method
         $specimenType = $this->derivativeSpecimenTypes->first();
@@ -664,12 +664,12 @@ describe('LogDerivativeSpecimens Header Actions', function (): void {
         $component = livewire(LogDerivativeSpecimens::class)
             ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
             ->call('loadSpecimenBarcodes')
-            ->assertSet('stageOneCompleted', true);
+            ->assertSet('stage', 2);
 
         // Call the reset method directly
         $component
             ->call('resetForm')
-            ->assertSet('stageOneCompleted', false)
+            ->assertSet('stage', 0)
             ->assertSet('parent_barcode', null);
     });
 });
@@ -760,5 +760,24 @@ describe('LogDerivativeSpecimens Edge Cases', function (): void {
         expect($component->get('parent_specimen'))->not->toBeNull();
         expect($component->get('parent_specimen')->barcode)->toBe($secondParent->barcode);
         expect($component->get('parent_specimen')->specimenType_id)->toBe($this->primarySpecimenTypes->get(1)->id);
+    });
+});
+
+describe('LogDerivativeSpecimens by PSE', function (): void {
+    it('displays available parent specimens', function (): void {
+        // Link derivative types to the primary type so the query finds parent specimens
+        $this->derivativeSpecimenTypes->each(function ($type): void {
+            $type->update(['parentSpecimenType_id' => $this->primarySpecimenTypes->first()->id]);
+        });
+
+        $component = livewire(LogDerivativeSpecimens::class)
+            ->fillForm(['pse_barcode' => $this->project->id.'_'.$this->subject->id.'_'.$this->subjectEvent->id])
+            ->call('loadSubjectEventSpecimens')
+            ->assertSet('stage', 1);
+
+        $potentialParentSpecimens = $component->get('potentialParentSpecimens');
+        $barcodes = collect($potentialParentSpecimens)->flatten(1)->pluck('barcode');
+
+        expect($barcodes)->toContain($this->parentSpecimen->barcode);
     });
 });

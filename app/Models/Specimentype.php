@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\SpecimentypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Specimentype extends Model
 {
-    /** @use HasFactory<\Database\Factories\SpecimentypeFactory> */
+    /** @use HasFactory<SpecimentypeFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];
@@ -38,6 +39,7 @@ class Specimentype extends Model
     {
         return [
             'transferDestinations' => 'json',
+            'defaultVolume' => 'float',
         ];
     }
 }

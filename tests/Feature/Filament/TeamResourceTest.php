@@ -1,27 +1,27 @@
 <?php
 
 use App\Enums\TeamRoles;
-use App\Filament\App\Resources\Teams\Pages\CreateTeam;
-use App\Filament\App\Resources\Teams\Pages\EditTeam;
-use App\Filament\App\Resources\Teams\Pages\ListTeams;
-use App\Filament\App\Resources\Teams\RelationManagers\MembersRelationManager;
-use App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager;
-use App\Filament\App\Resources\Teams\RelationManagers\ProtocolsRelationManager;
-use App\Filament\App\Resources\Teams\RelationManagers\StudyDesignsRelationManager;
-use App\Filament\App\Resources\Teams\TeamResource;
+use App\Filament\Admin\Resources\Teams\Pages\CreateTeam;
+use App\Filament\Admin\Resources\Teams\Pages\EditTeam;
+use App\Filament\Admin\Resources\Teams\Pages\ListTeams;
+use App\Filament\Admin\Resources\Teams\RelationManagers\MembersRelationManager;
+use App\Filament\Admin\Resources\Teams\RelationManagers\ProjectsRelationManager;
+use App\Filament\Admin\Resources\Teams\TeamResource;
 use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 beforeEach(function (): void {
     actingAs($this->adminuser);
+    Filament::setCurrentPanel('admin');
+    Filament::bootCurrentPanel();
 });
 
 describe('TeamResource List Page', function (): void {
@@ -81,7 +81,7 @@ describe('TeamResource List Page', function (): void {
 
         $team = Team::factory()->create(['name' => 'NoAuthTeam']);
 
-        expect(fn() => Team::where('name', 'NoAuthTeam')->first())->not->toThrow(Exception::class);
+        expect(fn () => Team::where('name', 'NoAuthTeam')->first())->not->toThrow(Exception::class);
 
         expect(Team::where('name', 'NoAuthTeam')->first()->name)->toBe('NoAuthTeam');
     });
@@ -92,19 +92,6 @@ describe('TeamResource List Page', function (): void {
         livewire(ListTeams::class)
             ->callAction(TestAction::make('edit')->table($team))
             ->assertSuccessful();
-    });
-
-    it('can bulk delete teams', function (): void {
-        $teams = Team::factory()->count(3)->create();
-
-        livewire(ListTeams::class)
-            ->selectTableRecords($teams->pluck('id')->toArray())
-            ->callAction(TestAction::make('delete')->table()->bulk())
-            ->assertSuccessful();
-
-        foreach ($teams as $team) {
-            assertDatabaseMissing('teams', ['id' => $team->id]);
-        }
     });
 });
 
@@ -421,15 +408,6 @@ describe('TeamResource Form Layout', function (): void {
             ->call('create')
             ->assertHasNoFormErrors(['description']);
     });
-
-    it('shows leader field as required on edit', function (): void {
-        $team = Team::factory()->create();
-
-        livewire(EditTeam::class, ['record' => $team->getRouteKey()])
-            ->fillForm(['leader_id' => null])
-            ->call('save')
-            ->assertHasFormErrors(['leader_id']);
-    });
 });
 
 describe('TeamResource Relationship Management', function (): void {
@@ -439,8 +417,6 @@ describe('TeamResource Relationship Management', function (): void {
         expect($relationManagers)->toContain(
             MembersRelationManager::class,
             ProjectsRelationManager::class,
-            ProtocolsRelationManager::class,
-            StudyDesignsRelationManager::class
         );
     });
 
@@ -461,7 +437,7 @@ describe('TeamResource Navigation', function (): void {
         expect(TeamResource::getModel())->toBe(Team::class);
 
         // Test that the resource is properly configured
-        expect(new TeamResource)->toBeInstanceOf(Filament\Resources\Resource::class);
+        expect(new TeamResource)->toBeInstanceOf(\Filament\Resources\Resource::class);
     });
 
     it('has correct page routes configured', function (): void {

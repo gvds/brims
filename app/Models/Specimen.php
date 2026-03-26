@@ -80,6 +80,7 @@ class Specimen extends Model
     {
         return [
             'status' => SpecimenStatus::class,
+            'volume' => 'float',
         ];
     }
 
