@@ -15,6 +15,12 @@ class TeamScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        in_array(Auth::user()->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]) ? $builder : $builder->where('id', Auth::user()->team_id);
+        $user = Auth::user();
+
+        if (! $user || in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin])) {
+            return;
+        }
+
+        $builder->where('id', $user->team_id);
     }
 }

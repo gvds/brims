@@ -13,6 +13,7 @@ use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Facades\Session;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Livewire\livewire;
 
 beforeEach(function (): void {
@@ -80,7 +81,7 @@ it('can clear a single queued label from the queue', function (): void {
     $component->callAction(TestAction::make('clear')->table($this->subjectEvent))
         ->assertStatus(200);
 
-    $this->assertDatabaseHas('subject_event', [
+    assertDatabaseHas('subject_event', [
         'id' => $this->subjectEvent->id,
         'labelstatus' => LabelStatus::Generated->value,
     ]);

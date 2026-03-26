@@ -9,6 +9,7 @@ use App\Mail\UserAccountCreated;
 use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -20,6 +21,9 @@ use function Pest\Livewire\livewire;
 
 beforeEach(function (): void {
     actingAs($this->adminuser);
+
+    Filament::setCurrentPanel('admin');
+    Filament::bootCurrentPanel();
 });
 
 describe('UserResource List Page', function (): void {
@@ -36,7 +40,7 @@ describe('UserResource List Page', function (): void {
         $user2 = User::factory()->create(['username' => 'janedoe']);
 
         livewire(ListUsers::class)
-            ->searchTable('johndoe')
+            ->searchTableColumns(['username' => 'johndoe'])
             ->assertCanSeeTableRecords([$user1])
             ->assertCanNotSeeTableRecords([$user2]);
     });
@@ -46,7 +50,7 @@ describe('UserResource List Page', function (): void {
         $user2 = User::factory()->create(['email' => 'jane@example.com']);
 
         livewire(ListUsers::class)
-            ->searchTable('john@example.com')
+            ->searchTableColumns(['email' => 'john@example.com'])
             ->assertCanSeeTableRecords([$user1])
             ->assertCanNotSeeTableRecords([$user2]);
     });
@@ -56,7 +60,7 @@ describe('UserResource List Page', function (): void {
         $user2 = User::factory()->create(['firstname' => 'Jane', 'lastname' => 'Smith']);
 
         livewire(ListUsers::class)
-            ->searchTable('John')
+            ->searchTableColumns(['firstname' => 'John'])
             ->assertCanSeeTableRecords([$user1])
             ->assertCanNotSeeTableRecords([$user2]);
     });
@@ -80,6 +84,18 @@ describe('UserResource Create Page', function (): void {
         $response = get(UserResource::getUrl('create'));
 
         $response->assertOk();
+    });
+
+    it('denies unauthenticated users without causing system_role on null', function (): void {
+        Auth::logout();
+
+        $response = get(UserResource::getUrl('create'));
+
+        $response->assertStatus(302);
+    });
+
+    it('returns false when evaluate_permission is called with null user', function (): void {
+        expect(evaluate_permission(null, 'ViewAny:User'))->toBeFalse();
     });
 
     it('can create a new user with valid data', function (): void {
@@ -112,7 +128,7 @@ describe('UserResource Create Page', function (): void {
         // Check if email was sent or queued (try both)
         try {
             Mail::assertSent(UserAccountCreated::class);
-        } catch (\Exception) {
+        } catch (Exception) {
             // If not sent, check if it was queued
             Mail::assertQueued(UserAccountCreated::class);
         }

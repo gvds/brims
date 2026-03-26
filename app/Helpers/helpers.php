@@ -5,6 +5,10 @@ use Filament\Facades\Filament;
 
 function evaluate_permission($authUser, string $permission): bool
 {
+    if (! $authUser) {
+        return false;
+    }
+
     $conditions = [
         $authUser->system_role === SystemRoles::SysAdmin,
         Filament::getCurrentPanel()->getId() === 'app' && $authUser->is_team_admin,

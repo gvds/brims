@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('queue_monitors', function (Blueprint $table) {
             $table->id();
             $table->string('job_id')->index();
+            $table->string('tenant_id')->nullable()->index();
             $table->string('name')->nullable();
             $table->string('queue')->nullable();
             $table->timestamp('started_at')->nullable()->index();

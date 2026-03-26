@@ -4,10 +4,15 @@ use App\Enums\TeamRoles;
 use App\Filament\App\Resources\Teams\Pages\CreateTeam;
 use App\Filament\App\Resources\Teams\Pages\EditTeam;
 use App\Filament\App\Resources\Teams\Pages\ListTeams;
+use App\Filament\App\Resources\Teams\RelationManagers\MembersRelationManager;
+use App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager;
+use App\Filament\App\Resources\Teams\RelationManagers\ProtocolsRelationManager;
+use App\Filament\App\Resources\Teams\RelationManagers\StudyDesignsRelationManager;
 use App\Filament\App\Resources\Teams\TeamResource;
 use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
+use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
 
 use function Pest\Laravel\actingAs;
@@ -69,6 +74,16 @@ describe('TeamResource List Page', function (): void {
         livewire(ListTeams::class)
             ->sortTable('name')
             ->assertCanSeeTableRecords([$teamA, $teamB, $teamC], inOrder: true);
+    });
+
+    it('does not crash when querying teams with no authenticated user', function (): void {
+        Auth::logout();
+
+        $team = Team::factory()->create(['name' => 'NoAuthTeam']);
+
+        expect(fn() => Team::where('name', 'NoAuthTeam')->first())->not->toThrow(Exception::class);
+
+        expect(Team::where('name', 'NoAuthTeam')->first()->name)->toBe('NoAuthTeam');
     });
 
     it('can edit team from table action', function (): void {
@@ -422,10 +437,10 @@ describe('TeamResource Relationship Management', function (): void {
         $relationManagers = TeamResource::getRelations();
 
         expect($relationManagers)->toContain(
-            \App\Filament\App\Resources\Teams\RelationManagers\MembersRelationManager::class,
-            \App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager::class,
-            \App\Filament\App\Resources\Teams\RelationManagers\ProtocolsRelationManager::class,
-            \App\Filament\App\Resources\Teams\RelationManagers\StudyDesignsRelationManager::class
+            MembersRelationManager::class,
+            ProjectsRelationManager::class,
+            ProtocolsRelationManager::class,
+            StudyDesignsRelationManager::class
         );
     });
 
@@ -446,7 +461,7 @@ describe('TeamResource Navigation', function (): void {
         expect(TeamResource::getModel())->toBe(Team::class);
 
         // Test that the resource is properly configured
-        expect(new TeamResource)->toBeInstanceOf(\Filament\Resources\Resource::class);
+        expect(new TeamResource)->toBeInstanceOf(Filament\Resources\Resource::class);
     });
 
     it('has correct page routes configured', function (): void {

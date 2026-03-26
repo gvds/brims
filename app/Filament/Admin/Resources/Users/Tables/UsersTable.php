@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Users\Tables;
 
 use App\Enums\SystemRoles;
+use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,7 +13,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 class UsersTable
@@ -54,12 +54,12 @@ class UsersTable
             ])
             ->filters([
                 Filter::make('active')
-                    ->query(fn($query) => $query->where('active', true))
+                    ->query(fn ($query) => $query->where('active', true))
                     ->label('Active')
                     ->toggle()
                     ->default(),
                 SelectFilter::make('homesite')
-                    ->options(fn() => \App\Models\User::whereNotNull('homesite')->distinct('homesite')->pluck('homesite', 'homesite'))
+                    ->options(fn () => User::whereNotNull('homesite')->distinct('homesite')->pluck('homesite', 'homesite'))
                     ->multiple()
                     ->searchable()
                     ->preload()
@@ -68,7 +68,7 @@ class UsersTable
                     ->default(null),
                 SelectFilter::make('team_id')
                     ->label('Team')
-                    ->options(fn() => \App\Models\Team::pluck('name', 'id'))
+                    ->options(fn () => Team::pluck('name', 'id'))
                     ->multiple()
                     ->searchable()
                     ->preload()
@@ -79,7 +79,7 @@ class UsersTable
                 EditAction::make(),
                 // ->hidden(fn(User $record) => $record->system_role === SystemRoles::SuperAdmin && Auth::user()->system_role !== SystemRoles::SuperAdmin),
                 Impersonate::make()
-                    ->hidden(fn(User $record) => $record->system_role === SystemRoles::SuperAdmin),
+                    ->hidden(fn (User $record) => $record->system_role === SystemRoles::SuperAdmin),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
