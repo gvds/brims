@@ -60,7 +60,7 @@ class ProjectsRelationManager extends RelationManager
                             ->maxLength(40),
                     ]),
                 Select::make('study_design_id')
-                    ->relationship(name: 'studydesign', titleAttribute: 'type')
+                    ->relationship(name: 'studyDesign', titleAttribute: 'type')
                     ->required(),
                 Textarea::make('description')
                     ->default(null)
@@ -123,7 +123,7 @@ class ProjectsRelationManager extends RelationManager
                 //     }
                 // })
                 // ->extraAttributes(['class' => 'text-sky-800 dark:text-sky-500 hover:invert']),
-                TextColumn::make('studydesign.type')
+                TextColumn::make('studyDesign.type')
                     ->label('Study Design')
                     ->searchable(),
                 TextColumn::make('leader.fullname')

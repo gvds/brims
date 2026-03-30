@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\ProjectScope;
+use Database\Factories\ProjectFactory;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 #[ScopedBy([ProjectScope::class])]
 class Project extends Model implements HasName
 {
-    /** @use HasFactory<\Database\Factories\ProjectFactory> */
+    /** @use HasFactory<ProjectFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];
@@ -88,7 +89,7 @@ class Project extends Model implements HasName
         return $this->hasMany(ImportValueMapping::class);
     }
 
-    public function studydesign(): BelongsTo
+    public function studyDesign(): BelongsTo
     {
         return $this->belongsTo(StudyDesign::class);
     }
@@ -98,9 +99,9 @@ class Project extends Model implements HasName
         return $this->title;
     }
 
-    /** @return HasMany<\App\Models\Role, self> */
+    /** @return HasMany<Role, self> */
     public function roles(): HasMany
     {
-        return $this->hasMany(\App\Models\Role::class);
+        return $this->hasMany(Role::class);
     }
 }
