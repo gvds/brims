@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page provides quick guidance for common BRIMS problems and explains when to escalate an issue.
+Use this page to work through common BRIMS problems and decide when an issue should be escalated.
 
 ## Who Should Use This Page
 
@@ -10,33 +10,47 @@ This page provides quick guidance for common BRIMS problems and explains when to
 
 ## Before You Begin
 
-Gather the relevant identifiers before troubleshooting, such as project name, participant ID, specimen barcode, study code, or manifest reference.
+Before you start troubleshooting, gather the relevant identifiers such as project name, subject ID, specimen barcode, study code, or manifest reference.
 
 ## Common Issues
 
 ### I cannot access a project
 
-Placeholder: explain likely permission and membership causes.
+Check that you are signed in with the correct account and that you have been added to the project with the correct role.
+
+If the project is still missing, ask a project administrator to confirm your project membership and permissions.
 
 ### I cannot find a participant or specimen
 
-Placeholder: explain search, filter, and status-related causes.
+Check your search terms first.
+
+For participants, try the subject ID. For specimens, try the barcode.
+
+If the record still does not appear, review whether filters or status values are hiding it.
 
 ### A barcode is not recognised
 
-Placeholder: explain likely data-entry or workflow causes.
+Check that the barcode was scanned correctly and that it matches the label on the specimen.
+
+If the barcode still fails, confirm that the specimen has already been logged and that the correct project is selected.
 
 ### I cannot move, store, or ship a specimen
 
-Placeholder: explain common status, permission, or reconciliation blockers.
+Review the specimen status and make sure the previous handling step was recorded correctly.
+
+Also confirm that you have permission to perform the action and that the specimen has been reconciled correctly for the workflow you are trying to complete.
 
 ### I cannot edit a record
 
-Placeholder: explain locked records, permission limits, or project state issues.
+This is often caused by missing permissions or by project-specific workflow restrictions.
+
+Check whether you are working in the correct project and whether your role allows that action.
 
 ### REDCap integration is not working
 
-Placeholder: explain the first checks users should perform before escalating.
+Confirm that the project was created as a REDCap-linked project and that the correct member token has been stored.
+
+If the setup looks correct but expected REDCap-related behavior is still missing, escalate the issue to an administrator.
 
 ## When to Escalate
 

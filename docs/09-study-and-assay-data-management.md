@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how studies are managed in BRIMS and how specimens and assay information are associated with them.
+Use this page to manage studies in BRIMS and link the correct specimens and assay information to those studies.
 
 ## Who Should Use This Page
 
@@ -12,32 +12,40 @@ This page explains how studies are managed in BRIMS and how specimens and assay 
 
 ## Before You Begin
 
-Projects and studies should already exist, and the relevant specimens should already be recorded in BRIMS.
+Before you start, make sure the project and studies already exist and that the relevant specimens have already been recorded in BRIMS.
 
 ## Managing Studies
 
-Placeholder: explain how studies are created, updated, reviewed, and governed.
+Studies are used to organise research activity within a project.
+
+Each study should have a clear title and identifier so that specimens and assay work can be linked correctly.
+
+Add a description and submission date where useful for your project records.
 
 ## Associating Specimens with Studies
 
-Placeholder: describe how specimens are linked to one or more studies where appropriate.
+Associate specimens with the correct study once they are ready to be used for that research activity.
 
-## Study Restrictions and Locking
-
-Placeholder: explain what locking means and when it should be used.
+Before linking specimens, confirm that the participant, event, and specimen details are already correct.
 
 ## Assay Definitions
 
-Placeholder: explain how assay types or definitions are represented in the system.
+Assay definitions provide the structure for recording laboratory work and related metadata.
+
+Use the correct assay definition so that results are captured in a consistent way across the project.
 
 ## Recording Assay Data
 
-Placeholder: describe how assay results or metadata are entered, reviewed, or maintained.
+Record assay information against the correct study and specimen set.
+
+Depending on the assay design, this may include result values, platform information, file references, or other metadata required by the project.
+
+Review assay entries carefully before saving.
 
 ## Quality and Integrity Checks
 
 - Confirm specimens are correctly linked before recording assay information
-- Review locked-state implications before making changes
+- Confirm the correct study is selected before entering assay data
 - Validate required metadata fields consistently
 
 ## Related Pages

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how specimens are prepared for transfer, grouped into manifests, shipped, and confirmed on receipt.
+Use this page to prepare specimens for transfer, manage manifests, and confirm shipments on dispatch and receipt.
 
 ## Who Should Use This Page
 
@@ -12,35 +12,55 @@ This page explains how specimens are prepared for transfer, grouped into manifes
 
 ## Before You Begin
 
-Specimens should be eligible for shipment, correctly identified, and reconciled against the intended transfer list.
+Before you start, make sure the specimens are eligible for shipment, correctly identified, and reconciled against the intended transfer list.
 
 ## What a Manifest Is
 
-Placeholder: explain the role of a manifest in BRIMS and how it differs from a single specimen record.
+A manifest is the shipment or transfer record that groups specimens together for movement between sites or facilities.
+
+Use the manifest to track the transfer as a whole, while each specimen record tracks the individual sample.
 
 ## Creating a Manifest
 
-Placeholder: describe how to create a new shipment or transfer manifest.
+Create a manifest when specimens are being sent together as part of the same transfer.
+
+Make sure the manifest clearly reflects the sending location, receiving location, and the specimens that are expected to move.
 
 ## Adding Specimens
 
-Placeholder: explain how to add, review, or remove specimens before dispatch.
+Add specimens carefully and review the list before dispatch.
+
+Before finalising the manifest, confirm that:
+
+- Each specimen belongs on that shipment
+- Barcodes and specimen details are correct
+- No expected specimens are missing
 
 ## Manifest Statuses
 
-Placeholder: define common statuses such as draft, dispatched, received, or closed.
+Manifest statuses show where the transfer is in its lifecycle.
+
+Typical stages may include draft, dispatched, received, or completed, depending on your project workflow.
+
+Use these statuses consistently so that other users can understand the current state of the transfer.
 
 ## Dispatch Workflow
 
-Placeholder: explain what should be verified before shipment leaves the originating site.
+Before dispatch, review the manifest, confirm the contents, and make sure the shipment has been packed and labelled correctly.
+
+The system record should match what is physically leaving the site.
 
 ## Receipt Workflow
 
-Placeholder: explain how the receiving team confirms the shipment and resolves discrepancies.
+When the shipment arrives, the receiving team should compare the delivered specimens with the manifest.
+
+Confirm receipt promptly and record any discrepancies before the specimens move into routine storage or use.
 
 ## Reconciliation and Audit
 
-Placeholder: explain how to handle missing, unexpected, or damaged specimens.
+If a shipment does not match the manifest, review the barcode list and specimen details carefully.
+
+Record missing, unexpected, or damaged specimens according to your local procedure and escalate issues that cannot be resolved immediately.
 
 ## Related Pages
 

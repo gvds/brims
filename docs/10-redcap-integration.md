@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how BRIMS integrates with REDCap and what users need to configure and monitor for the integration to work correctly.
+Use this page to set up and check REDCap-linked workflows in BRIMS.
 
 ## Who Should Use This Page
 
@@ -12,23 +12,31 @@ This page explains how BRIMS integrates with REDCap and what users need to confi
 
 ## Before You Begin
 
-You should know whether the project uses REDCap, have the necessary project identifiers, and have permission to manage integration settings.
+Before you start, make sure you know whether the project uses REDCap. Also, you need to have access to the REDCap project to be linked and have permission to manage integration settings.
 
 ## Integration Overview
 
-Placeholder: explain what information BRIMS exchanges with REDCap and why.
+BRIMS can be linked to REDCap for projects that use REDCap alongside operational specimen and study workflows.
+
+Use this integration to connect project activity in BRIMS with data already managed in REDCap.
 
 ## Project-Level Configuration
 
-Placeholder: describe the required project settings for REDCap integration.
+REDCap-linked projects should be created using the dedicated REDCap-linked project workflow.
+
+Make sure the correct REDCap project is linked to the correct BRIMS project before users begin working with live data.
 
 ## User Tokens and Access
 
-Placeholder: explain token ownership, storage, and expected responsibilities.
+Some REDCap functions rely on a user-specific token stored on the project member record.
+
+Only enter a token for the correct project member, and update it if access changes or the token is replaced.
 
 ## Expected Workflow
 
-Placeholder: describe when integration actions happen and how users should verify outcomes.
+After setup, users should confirm that the linked project behaves as expected and that the required REDCap-connected functions are available.
+
+If something fails, check the project link, user access, and stored token details first.
 
 ## Common Issues
 
@@ -39,7 +47,13 @@ Placeholder: describe when integration actions happen and how users should verif
 
 ## Troubleshooting Steps
 
-Placeholder: provide a standard process for checking configuration, access, and expected outputs.
+When troubleshooting REDCap integration:
+
+1. Confirm that the correct REDCap-linked project was created
+2. Check that the user has the correct REDCap access
+3. Verify that the correct token is being used by the project member
+4. Review whether the expected BRIMS workflow actually depends on REDCap for that step
+5. Escalate configuration problems to an administrator if needed
 
 ## Related Pages
 

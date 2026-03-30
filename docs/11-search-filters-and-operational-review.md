@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how users find records quickly and review operational data for completeness, accuracy, and follow-up.
+Use this page to find records quickly and review operational data for completeness, accuracy, and follow-up.
 
 ## Who Should Use This Page
 
@@ -13,19 +13,31 @@ This page explains how users find records quickly and review operational data fo
 
 ## Before You Begin
 
-You should know which project, study, participant, specimen, or date range you are trying to review.
+Before you start, decide which project, study, participant or subject ID, specimen, or date range you are trying to review.
 
 ## Searching for Records
 
-Placeholder: explain how to search for participants, specimens, studies, events, and manifests.
+Use search to find the specific records you need before making updates or reviewing progress.
+
+Common searches include:
+
+- Participants by subject ID or related details
+- Specimens by barcode or status
+- Studies by identifier or title
+- Events linked to a participant
+- Manifests linked to a shipment or transfer
 
 ## Using Filters
 
-Placeholder: describe how filters can narrow results by status, site, date, or ownership.
+Use filters to narrow large lists into a manageable working view.
+
+Filters are especially useful when reviewing by status, site, date, or another operational category.
 
 ## Reviewing Operational Work
 
-Placeholder: explain how users review incomplete tasks, overdue items, or recent changes.
+Use operational review to identify work that still needs attention.
+
+Use list views, filters, and record history to check for incomplete tasks, overdue follow-up, or recent activity that needs review.
 
 ## Suggested Review Patterns
 
@@ -36,7 +48,9 @@ Placeholder: explain how users review incomplete tasks, overdue items, or recent
 
 ## Exporting Review Results
 
-Placeholder: explain whether filtered views or reports can be exported for operational follow-up.
+Where exports are available, use them carefully and confirm that the filtered view matches the operational question you are trying to answer.
+
+Always review identifiers, counts, and date ranges before sharing or acting on exported information.
 
 ## Related Pages
 

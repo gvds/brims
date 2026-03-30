@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how users generate outputs, review system history, and validate information before sharing or acting on it.
+Use this page to generate outputs, review system history, and validate information before you share it or act on it.
 
 ## Who Should Use This Page
 
@@ -13,23 +13,42 @@ This page explains how users generate outputs, review system history, and valida
 
 ## Before You Begin
 
-You should understand the scope of the data you need and whether you are reviewing live system data, exported data, or change history.
+Before you start, confirm the scope of the data you need and whether you are reviewing live system data, exported data, or change history.
 
 ## Reports and Exports
 
-Placeholder: explain what outputs are available and when each should be used.
+Use reports and exports to review project activity outside the standard record views.
+
+Use in-system review when you need to inspect live records directly.
+
+Use exports when you need to share a filtered data set, perform offline checks, or prepare information for operational follow-up.
 
 ## Data Validation Before Sharing
 
-Placeholder: describe the checks users should complete before distributing exported information.
+Before sharing exported information, confirm that the output matches the question you are trying to answer.
+
+Check that the correct project, date range, status filters, and record types were used.
+
+Where possible, compare the export with the live system view before distributing it.
 
 ## Reviewing Audit History
 
-Placeholder: explain how to inspect historical changes and operational traceability.
+Audit history helps users understand what changed, when it changed, and which records were involved.
+
+Review change history when:
+
+- A value appears different from what was expected
+- A specimen movement needs to be traced
+- A shipment discrepancy needs to be checked
+- Operational activity needs to be confirmed
 
 ## Sensitive Data Handling
 
-Placeholder: explain what users must consider when exporting participant or specimen data.
+Treat exported participant and specimen data carefully.
+
+Only export the minimum information needed for the task, and share it only with people who are authorised to receive it.
+
+Before distributing an export, confirm that it does not include unnecessary personal or operational information.
 
 ## Common Validation Checks
 

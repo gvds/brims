@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how storage infrastructure is represented in BRIMS and how specimens are placed, moved, and retrieved.
+Use this page to place specimens into storage, record storage moves, and keep storage information accurate over time.
 
 ## Who Should Use This Page
 
@@ -12,11 +12,15 @@ This page explains how storage infrastructure is represented in BRIMS and how sp
 
 ## Before You Begin
 
-Specimen records should already exist and storage locations should be configured according to your operating procedures.
+Before you start, make sure specimen records already exist and that storage locations have been configured according to your operating procedures.
 
 ## Storage Concepts
 
-Placeholder: explain the storage hierarchy and storage destination types used in BRIMS.
+BRIMS records where each specimen is stored so that it can be found, moved, and reviewed later.
+
+Storage information should reflect the real physical location of the specimen as closely as possible.
+
+Use the storage structure defined for your project so that everyone records locations in the same way.
 
 ## Supported Storage Contexts
 
@@ -26,19 +30,31 @@ Placeholder: explain the storage hierarchy and storage destination types used in
 
 ## Assigning a Storage Location
 
-Placeholder: describe how to place a specimen into storage.
+When placing a specimen into storage, select the correct location and confirm the specimen status before saving.
+
+This step should be completed as soon as the specimen has been placed physically into its storage position.
 
 ## Moving a Specimen
 
-Placeholder: explain relocation workflows and what should be verified before moving a specimen.
+If a specimen is moved, update the record at the time of the move.
+
+Before saving the change, confirm:
+
+- The specimen being moved is the correct one
+- The new storage location is correct
+- The move matches what has happened physically
 
 ## Retrieving a Specimen
 
-Placeholder: explain how to record removal from storage for assay, shipment, or other handling.
+When a specimen is removed from storage for assay work, shipment, or other handling, record that change promptly.
+
+This helps keep the system aligned with the actual specimen location and status.
 
 ## Storage Traceability
 
-Placeholder: describe how BRIMS records storage history and why that matters.
+Storage traceability makes it possible to review where a specimen has been over time.
+
+This is useful for operational review, discrepancy resolution, and confirming that handling steps were recorded correctly.
 
 ## Common Storage Checks
 

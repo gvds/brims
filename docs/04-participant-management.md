@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This page explains how participant records are created, assigned, updated, and reviewed in BRIMS.
+Use this page to enrol participants, assign them correctly, keep their records up to date, and review their project history.
+
+BRIMS uses the term **subject ID** for the unique identifier assigned to each participant.
 
 ## Who Should Use This Page
 
@@ -12,27 +14,53 @@ This page explains how participant records are created, assigned, updated, and r
 
 ## Before You Begin
 
-Make sure the project has been configured correctly, including identifier rules, sites, and arms.
+Before you start, make sure the project has been configured correctly, including identifier rules, sites, and study arms.
 
 ## Participant Enrolment Workflow
 
-Placeholder: describe the enrolment path from creating the record through confirmation.
+Participant enrolment usually follows this sequence:
+
+1. Search to confirm the participant does not already exist in the project
+2. Create the participant record
+3. Check the automatically generated subject ID
+4. Assign the participant to the correct site and study arm
+5. Confirm the enrolment date and any required status fields
+
+Complete enrolment carefully, because the participant record is the starting point for event scheduling, specimen logging, and study tracking.
 
 ## Subject Identifier Allocation
 
-Placeholder: explain how automatic subject IDs are generated and how users should verify them.
+BRIMS generates a subject ID automatically using the project prefix and digit settings defined during project setup.
+
+For example, a project with prefix `BRI` and 6 digits will generate IDs such as `BRI000001`.
+
+Before saving a new participant, confirm that the generated ID matches the project format you expect.
 
 ## Assigning Participants
 
-Placeholder: describe site assignment, arm allocation, and any linked rules.
+Each participant should be assigned to the correct project site and study arm.
+
+Site assignment helps keep operational work organised, and arm assignment determines how the participant is grouped for study activities and follow-up.
+
+If your project uses manual arm allocation, make sure the correct arm is selected during enrolment or as soon as possible afterwards.
 
 ## Updating Participant Records
 
-Placeholder: explain which fields can be edited and what should be handled carefully.
+Participant records may need to be updated when information changes or when missing details are added later.
+
+When editing a participant record:
+
+- Confirm that you are working on the correct participant
+- Review site and arm assignments carefully
+- Be cautious when changing values that affect follow-up or specimen tracking
 
 ## Participant Statuses
 
-Placeholder: define common participant statuses and when they should be used.
+Participant statuses help show where a participant is in the study process.
+
+Use the status values defined for your project consistently so that enrolment, follow-up, and reporting remain accurate.
+
+If you are unsure which status to use, check your project procedure before updating the record.
 
 ## Avoiding Duplicate Records
 
@@ -42,7 +70,15 @@ Placeholder: define common participant statuses and when they should be used.
 
 ## Reviewing Participant History
 
-Placeholder: explain how to inspect enrolment, visits, specimens, and related activity.
+Use the participant record to review related project activity, including:
+
+- Enrolment details
+- Site and arm assignment
+- Scheduled and completed events
+- Linked specimens
+- Study activity connected to the participant
+
+Review this history when you need to check follow-up progress or resolve data questions.
 
 ## Related Pages
 

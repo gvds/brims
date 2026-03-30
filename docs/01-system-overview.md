@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page introduces BRIMS, explains the main concepts used in the system, and shows how the major workflows fit together.
+Use this page to understand what BRIMS manages, how the main records relate to each other, and how the core workflows fit together.
 
 ## Who Should Use This Page
 
@@ -10,7 +10,7 @@ This page introduces BRIMS, explains the main concepts used in the system, and s
 
 ## Before You Begin
 
-You should have access to BRIMS and know which project or operational area you will be working in.
+Before you start, make sure you have access to BRIMS and know which project or operational area you will be working in.
 
 ## What BRIMS Manages
 
@@ -29,39 +29,39 @@ BRIMS supports research operations across multiple sites, including:
 
 ### Project
 
-Placeholder: explain the project as the top-level organisational unit.
+A project is the top-level organisational unit in BRIMS. It brings together the sites, study arms, participants, specimens, and studies that belong to the same research effort.
 
 ### Site
 
-Placeholder: explain how sites represent physical or organisational locations.
+A site is the physical or organisational location where project work is carried out.
 
 ### Arm
 
-Placeholder: explain how study arms group participants.
+A study arm groups participants within a project, for example into control or intervention cohorts.
 
 ### Participant
 
-Placeholder: explain participant records and subject identifiers.
+A participant is a person enrolled in a project. Each participant is given a unique subject ID based on the project settings.
 
 ### Event
 
-Placeholder: explain scheduled and completed visits or activities.
+An event is a scheduled or completed project activity such as a visit, follow-up, or specimen collection point.
 
 ### Specimen
 
-Placeholder: explain collected and tracked biological samples.
+A specimen is a biological sample that is logged and tracked through storage, shipment, and study workflows.
 
 ### Study
 
-Placeholder: explain how studies relate to projects and specimens.
+A study is a research investigation within a project. Studies help organise which specimens and assay work belong to a specific research activity.
 
 ### Assay
 
-Placeholder: explain assay records and related metadata.
+An assay records laboratory analysis work and the related metadata linked to a study.
 
 ### Manifest
 
-Placeholder: explain specimen groupings for shipment or transfer.
+A manifest groups specimens together for shipment or transfer between locations.
 
 ## Typical Workflow
 
@@ -75,7 +75,9 @@ Placeholder: explain specimen groupings for shipment or transfer.
 
 ## Traceability and Audit
 
-Placeholder: describe how BRIMS maintains a record of operational changes and supports traceability.
+BRIMS supports traceability by linking participants, events, specimens, storage actions, shipments, and study activity across the same workflow.
+
+This helps teams review what happened, when it happened, and which records were involved.
 
 ## Related Pages
 

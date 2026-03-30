@@ -1,6 +1,6 @@
 # Project Setup
 
-This section guides you through configuring a new research project in BRIMS — from initial creation through to adding team members and defining studies. Complete these steps before enrolling participants or logging specimens.
+Use this guide to configure a new research project in BRIMS, from initial creation through to adding project members and defining studies. Complete these steps before you enrol participants or log specimens.
 
 ---
 
@@ -11,19 +11,19 @@ Projects are the top-level organisational unit in BRIMS. A project contains:
 - **Sites** — The physical or institutional locations where work takes place
 - **Arms** — The study cohorts or groups that participants are assigned to
 - **Studies** — Individual research investigations within the project (each with their own specimen and assay data)
-- **Members** — The team members who have access to the project, each with a specific role
+- **Members** — The project members who have access to the project, each with a specific role
 
 The recommended setup order is:
 
 ```
-Create Project → Add Sites → Create Arms → Add Members → Create Studies
+Create Project → Review Default Site and Admin Role → Add Sites → Create Arms → Review Roles → Add Members → Create Studies
 ```
 
 ---
 
 ## 1. Creating a Project
 
-Navigate to the **Project Panel** and select **Projects → New Project**.
+Navigate to your team's **Projects** section and create a new project from there.
 
 ### Required Fields
 
@@ -45,9 +45,20 @@ Navigate to the **Project Panel** and select **Projects → New Project**.
 |---|---|
 | **Description** | Free-text description of the project. |
 | **Submission Date** | The date the project was or will be formally submitted. |
-| **REDCap Project ID** | The numeric ID of the linked REDCap project, if applicable. Leave blank if not using REDCap integration. |
 
 > **Note:** The **Public Release Date** field is only available when editing an existing project, not during initial creation.
+
+> **Note:** If you need a project linked to **REDCap**, use the dedicated REDCap-linked project creation option rather than the standard project form.
+
+### What BRIMS Creates Automatically
+
+When a new project is created, BRIMS automatically sets up:
+
+- A default **Admin** role for the project
+- An initial site based on the project creator's home site
+- Project membership for the project creator and project leader
+
+Review and adjust these after the project has been created.
 
 ---
 
@@ -56,6 +67,8 @@ Navigate to the **Project Panel** and select **Projects → New Project**.
 Sites represent the physical or organisational locations within the project where research is conducted. Members and their substitutes are assigned to sites.
 
 From the **Project view page**, open the **Sites** tab and select **New Site**.
+
+> **Note:** A first site may already exist because BRIMS creates an initial site automatically when the project is created.
 
 | Field | Description |
 |---|---|
@@ -77,7 +90,7 @@ From the **Project view page**, open the **Arms** tab and select **New Arm**.
 | **Name** | A descriptive name for the arm (e.g. `Control`, `Intervention`). Must be unique within the project. |
 | **Manual Enrolment** | If enabled, participants must be manually assigned to this arm. If disabled, assignment may be automated. Defaults to off. |
 
-> **Note:** Arm numbers are assigned automatically and sequentially. Arms cannot be edited after creation — if a change is required, the arm must be deleted and recreated. Deleting an arm that already has enrolled participants is not permitted.
+> **Note:** Arm numbers are assigned automatically and sequentially. Arms can be updated later if needed. Deleting an arm that already has enrolled participants may not be allowed.
 
 ---
 
@@ -96,6 +109,8 @@ From the **Project view page**, open the **Members** tab and select **Attach Mem
 ### Member Roles
 
 Roles are defined at the project level and determine what actions a member can perform. To view or manage the roles available for the project, navigate to **Roles** in the project sidebar.
+
+BRIMS creates a default **Admin** role when the project is created. You can use this role as-is or create additional roles before adding the rest of your project team.
 
 > **Note:** The Project Leader cannot be detached from the project. To change the leader, edit the project and assign a different user to the leader field.
 
@@ -134,7 +149,6 @@ Navigate to **Studies** in the project sidebar and select **New Study**.
 |---|---|
 | **Description** | A free-text description of the study's scope or objectives. |
 | **Submission Date** | The formal submission date for the study. |
-| **Study File** | Upload any associated study protocol or design document. |
 
 ### Locking a Study
 
@@ -168,10 +182,10 @@ Use this checklist to confirm project setup is complete before starting data col
 - [ ] Study design selected
 - [ ] Project leader assigned
 - [ ] Storage designation entered
-- [ ] At least one site created (if multi-site)
+- [ ] Initial site reviewed and additional sites created if needed
 - [ ] All study arms created and named
-- [ ] All team members added with appropriate roles and site assignments
-- [ ] Roles reviewed and permissions confirmed
+- [ ] Default Admin role reviewed and any additional roles created
+- [ ] All project members added with appropriate roles and site assignments
 - [ ] At least one study created
 
 ---

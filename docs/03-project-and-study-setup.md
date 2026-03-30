@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This page covers the initial setup steps required before participant enrolment, specimen logging, and assay workflows begin.
+Use this page for a simple overview of the setup steps required before participant enrolment, specimen logging, and assay workflows begin.
+
+For a more detailed walkthrough, see [Project Setup](03-project-setup.md).
 
 ## Who Should Use This Page
 
@@ -12,56 +14,107 @@ This page covers the initial setup steps required before participant enrolment, 
 
 ## Before You Begin
 
-Make sure you have permission to create or manage projects and that the necessary study planning details have been approved.
+Before you start, make sure you have permission to create or manage projects and that the necessary study planning details have been approved.
 
 ## Setup Sequence
 
 1. Create the project
-2. Define subject identifier settings
-3. Add sites
+2. Review the default site and Admin role created by BRIMS
+3. Add extra sites if needed
 4. Create study arms
-5. Add project members
-6. Assign project roles
+5. Review roles and permissions
+6. Add project members
 7. Create studies
-8. Confirm storage designations
 
 ## Create a Project
 
-Placeholder: list the required project fields and decisions that should be confirmed before saving.
+When you create a project, confirm the following information carefully:
+
+- Project title
+- Project identifier
+- Study design
+- Project leader
+- Storage designation
+- Subject ID prefix
+- Subject ID digits
+
+You can also add a description and submission date.
+
+If the project must link to REDCap, use the REDCap-linked project creation option rather than the standard project form.
 
 ## Configure Subject ID Rules
 
-Placeholder: explain prefixes, digit lengths, and long-term implications.
+BRIMS uses the subject ID prefix and digit count to generate participant identifiers automatically.
+
+For example, a prefix of `BRI` with 6 digits produces IDs such as `BRI000001`.
+
+Choose these settings carefully. Changing them later can be difficult once participants have already been enrolled.
+
+## Review What BRIMS Creates Automatically
+
+When a new project is created, BRIMS automatically creates:
+
+- A default Admin role
+- An initial site based on the project creator's home site
+- Project membership for the project creator and the project leader
+
+Review these defaults before you continue with the rest of the setup.
 
 ## Add Sites
 
-Placeholder: explain when multiple sites are needed and how they are used.
+Sites represent the physical or organisational locations where work is carried out.
+
+If your project runs across more than one clinic, hospital, laboratory, or institution, add a separate site for each one.
+
+Sites are also used when assigning project members and substitutes.
 
 ## Create Study Arms
 
-Placeholder: explain manual versus automatic allocation where relevant.
+Study arms divide participants into groups such as control and intervention cohorts.
 
-## Add Members and Roles
+When creating an arm, decide whether enrolment into that arm will be manual or automated.
 
-Placeholder: explain project membership, role assignment, and site-linked responsibilities.
+Arm numbers are assigned automatically by BRIMS.
+
+## Review Roles and Add Members
+
+Project members are users who have access to work within the project.
+
+Before adding the full team, review the default Admin role and create any additional roles your project needs.
+
+When adding a project member, assign:
+
+- The correct project role
+- The correct site, if applicable
+
+If the project uses REDCap integration, a REDCap token can be stored on the member record where needed.
 
 ## Create Studies
 
-Placeholder: explain how study records are created and governed.
+Studies are research investigations within the project.
+
+Each study should have:
+
+- A title
+- An identifier
+
+You can also add a description and submission date.
 
 ## Setup Checklist
 
-- Project created
-- Identifier rules confirmed
-- Sites added
-- Arms created
-- Members attached
-- Roles assigned
+- Project created with the correct title and identifier
+- Study design confirmed
+- Subject ID settings confirmed
+- Storage designation entered
+- Default site reviewed and extra sites added if needed
+- Study arms created
+- Default Admin role reviewed and extra roles created if needed
+- Project members added with the correct roles and site assignments
 - Studies created
-- Storage plan confirmed
 
 ## Related Pages
 
+- [Project Setup](03-project-setup.md)
 - [Participant Management](04-participant-management.md)
 - [Administration Guide](13-administration-guide.md)
 - [Glossary](15-glossary.md)

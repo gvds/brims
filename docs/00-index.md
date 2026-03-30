@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This documentation set supports end users working in BRIMS across project setup, participant management, specimen handling, storage, shipment, study workflows, and reporting.
+Use this documentation set to work through BRIMS project setup, participant management, specimen handling, storage, shipment, study workflows, and reporting.
 
 ## Who Should Use This Documentation
 
@@ -70,7 +70,7 @@ This documentation set supports end users working in BRIMS across project setup,
 
 ## Support
 
-Use the troubleshooting guide first for routine issues. Escalate to a project administrator or system administrator when the issue involves missing permissions, failed integrations, or incorrect configuration.
+Start with the troubleshooting guide for routine issues. Escalate to a project administrator or system administrator when the issue involves missing permissions, failed integrations, or incorrect configuration.
 
 ## Related Pages
 

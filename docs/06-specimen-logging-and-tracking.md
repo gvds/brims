@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how specimens are recorded, linked, identified, and tracked in BRIMS.
+Use this page to log specimens, link them correctly, and track them through the rest of the BRIMS workflow.
 
 ## Who Should Use This Page
 
@@ -12,31 +12,57 @@ This page explains how specimens are recorded, linked, identified, and tracked i
 
 ## Before You Begin
 
-The participant and relevant event should already exist in the system unless your process supports later reconciliation.
+Before you start, make sure the participant and relevant event already exist in the system.
 
 ## Logging a Specimen
 
-Placeholder: describe the standard workflow for creating a specimen record.
+When logging a specimen, make sure it is linked to the correct participant and, where applicable, the correct event.
+
+Record the specimen as soon as possible after collection so that barcode, status, and storage information remains accurate.
 
 ## Linking a Specimen
 
-Placeholder: explain how specimens are linked to participants, events, and studies.
+Specimens should be linked to the participant record and to the relevant event when one exists.
+
+Later workflows may also link the specimen to a study or assay process.
+
+Link specimens correctly because that relationship affects tracking, storage, shipment, and reporting.
 
 ## Barcode Workflows
 
-Placeholder: describe barcode generation, scanning, validation, and error handling.
+Use barcode workflows consistently to reduce transcription errors.
+
+When scanning or entering a barcode:
+
+- Confirm it matches the physical specimen label
+- Check that the barcode is unique where required
+- Resolve scanning or format issues before continuing
 
 ## Specimen Types and Statuses
 
-Placeholder: explain the values used to classify specimens and track their state.
+Specimen type identifies what kind of sample was collected.
+
+Specimen status shows where that sample is in its lifecycle, for example whether it is newly logged, stored, transferred, used, or otherwise updated.
+
+Use these values consistently so downstream workflows stay reliable.
 
 ## Updating Specimen Details
 
-Placeholder: explain what may be edited after creation and what should be controlled carefully.
+Specimen details may need updating as the sample moves through storage, shipment, or assay workflows.
+
+When editing a specimen record, check that any changes still match the physical specimen and its most recent handling step.
 
 ## Tracking and History
 
-Placeholder: explain how to review movement, storage, shipment, and assay history for a specimen.
+Use the specimen record to review its history across the full workflow, including:
+
+- Logging details
+- Linked participant and event
+- Storage placement and moves
+- Shipment activity
+- Study and assay use
+
+This history is important when resolving discrepancies or preparing material for analysis.
 
 ## Common Data Quality Checks
 

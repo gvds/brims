@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This page explains how users access BRIMS, how permissions affect what they can do, and how to move around the system safely.
+Use this page to understand how to access BRIMS, how permissions affect your work, and how to move around the system safely.
 
 ## Who Should Use This Page
 
@@ -12,27 +12,52 @@ This page explains how users access BRIMS, how permissions affect what they can 
 
 ## Before You Begin
 
-You should have a BRIMS account and know whether you are working at the system level or within a specific project.
+Before you start, make sure you have a BRIMS account and know whether you are working at the system level or within a specific project.
 
 ## Accessing BRIMS
 
-Placeholder: describe login access, password setup, and account requirements.
+Users need an active BRIMS account before they can sign in.
+
+After your account has been created, you may be asked to set a password or complete an initial password setup step.
+
+If you cannot sign in, first confirm that you are using the correct account details and that your account is active.
 
 ## Understanding Permissions
 
-Placeholder: explain the difference between system roles and project roles.
+BRIMS permissions are usually applied at two levels:
+
+- **System roles** control access to wider administrative functions
+- **Project roles** control what a user can do inside a specific project
+
+A user may have access to one project but not another, depending on how project membership and roles have been assigned.
 
 ## How Permissions Affect Actions
 
-Placeholder: describe how view, create, edit, delete, export, and administration actions are controlled.
+Permissions determine which actions are visible and available to you.
+
+If you do not have permission for an action, you may find that:
+
+- The action button is hidden
+- The record can be viewed but not edited
+- Export or administration options are unavailable
+
+If an expected action is missing, check your project role or ask an administrator to confirm your access.
 
 ## Main Navigation Areas
 
-Placeholder: describe the main menu areas and how users move between them.
+BRIMS is organised into areas for project work, study work, specimen operations, and administration.
+
+Use the main navigation to move between these sections, and use the project context carefully so that you are always working in the correct place.
+
+Within each section, lists, record pages, tabs, and related links help you move from one task to another.
 
 ## Project-Scoped Work
 
-Placeholder: explain which actions happen inside a selected project.
+Most day-to-day work happens inside a selected project.
+
+This includes participant enrolment, event review, specimen logging, storage actions, shipment activity, and study-related work.
+
+Before editing a record, confirm that you are in the correct project because permissions and available actions may change between projects.
 
 ## Safe Editing Practices
 
