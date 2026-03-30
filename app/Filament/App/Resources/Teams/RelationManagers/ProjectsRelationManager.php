@@ -60,7 +60,7 @@ class ProjectsRelationManager extends RelationManager
                             ->maxLength(40),
                     ]),
                 Select::make('study_design_id')
-                    ->relationship(name: 'study_design', titleAttribute: 'type')
+                    ->relationship(name: 'studydesign', titleAttribute: 'type')
                     ->required(),
                 Textarea::make('description')
                     ->default(null)
