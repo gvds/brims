@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\Auth;
 
 #[ScopedBy([SpecimenScope::class])]
 class Specimen extends Model
@@ -62,17 +63,29 @@ class Specimen extends Model
             ->withTimestamps();
     }
 
-    public function logOut(): void
+    public function logUsed(): void
     {
-        $this->status = SpecimenStatus::LoggedOut;
-        $this->loggedOutBy()->associate(auth()->user());
+        $this->status = SpecimenStatus::Used;
+        $this->usedBy()->associate(Auth::user());
+        $this->usedAt = now();
         $this->save();
     }
 
-    public function logReturn(): void
+    public function logOut(): void
+    {
+        $this->status = SpecimenStatus::LoggedOut;
+        $this->loggedOutBy()->associate(Auth::user());
+        $this->loggedOutAt = now();
+        $this->save();
+    }
+
+    public function logReturn(bool $thawed): void
     {
         $this->status = SpecimenStatus::InStorage;
         $this->loggedOutBy()->disassociate();
+        if ($thawed) {
+            $this->thawcount++;
+        }
         $this->save();
     }
 
