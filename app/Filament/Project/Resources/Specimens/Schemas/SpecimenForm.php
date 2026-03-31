@@ -48,17 +48,6 @@ class SpecimenForm
                         true
                     ),
                 DatePicker::make('loggedAt'),
-                Select::make('loggedOutBy_id')
-                    ->label('Logged Out By')
-                    ->relationship(name: 'loggedOutBy', titleAttribute: 'firstname')
-                    ->requiredIf(
-                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut]),
-                        true
-                    ),
-                Select::make('usedBy_id')
-                    ->relationship(name: 'usedBy', titleAttribute: 'firstname')
-                    ->requiredIf(fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used]), true),
-                DatePicker::make('usedAt'),
                 Select::make('parentSpecimen_id')
                     ->relationship(name: 'parentSpecimen', titleAttribute: 'barcode')
                     ->default(null),

@@ -70,6 +70,12 @@ class Specimen extends Model
             ->orderBy('created_at');
     }
 
+    public function logStored(): void
+    {
+        $this->createAuditLog(SpecimenStatus::InStorage);
+        $this->setStatus(SpecimenStatus::InStorage);
+    }
+
     public function logUsed(): void
     {
         $this->createAuditLog(SpecimenStatus::Used);
@@ -84,11 +90,30 @@ class Specimen extends Model
 
     public function logReturn(bool $thawed): void
     {
-        $this->createAuditLog(SpecimenStatus::InStorage);
-        $this->setStatus(SpecimenStatus::InStorage);
+        $prior_status = $this->auditLogs->last()->prior_status;
+        $this->createAuditLog($prior_status);
+        $this->setStatus($prior_status);
         if ($thawed) {
             $this->update(['thawcount' => $this->thawcount + 1]);
         }
+    }
+
+    public function logIntoManifest(): void
+    {
+        $this->createAuditLog(SpecimenStatus::PreTransfer);
+        $this->setStatus(SpecimenStatus::PreTransfer);
+    }
+
+    public function logOutOfManifest($prior_status): void
+    {
+        $this->createAuditLog($prior_status);
+        $this->setStatus($prior_status);
+    }
+
+    public function logTransferred(): void
+    {
+        $this->createAuditLog(SpecimenStatus::Transferred);
+        $this->setStatus(SpecimenStatus::Transferred);
     }
 
     protected function casts(): array

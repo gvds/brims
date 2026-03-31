@@ -64,8 +64,7 @@ class Manifest extends Model
         $this->save();
 
         foreach ($this->specimens as $specimen) {
-            $specimen->status = SpecimenStatus::Transferred;
-            $specimen->save();
+            $specimen->logTransferred();
         }
     }
 
@@ -81,9 +80,8 @@ class Manifest extends Model
         $this->save();
 
         foreach ($this->specimens as $specimen) {
-            $specimen->status = SpecimenStatus::Logged;
-            $specimen->site_id = $this->destinationSite_id;
-            $specimen->save();
+            $specimen->logAsReceived();
+            $specimen->update(['site_id' => $this->destinationSite_id]);
             $this->specimens()->updateExistingPivot($specimen->id, [
                 'received' => true,
                 'receivedTime' => now(),

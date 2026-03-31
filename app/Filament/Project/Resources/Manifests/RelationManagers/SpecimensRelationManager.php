@@ -123,7 +123,7 @@ class SpecimensRelationManager extends RelationManager
                         $relationship->attach($pivotData);
 
                         foreach ($specimens as $specimen) {
-                            $specimen->setStatus(SpecimenStatus::PreTransfer);
+                            $specimen->logIntoManifest();
                         }
                     })
                     ->color('primary')
@@ -143,7 +143,7 @@ class SpecimensRelationManager extends RelationManager
                 ViewAction::make(),
                 DetachAction::make()
                     ->before(function (Specimen $record): void {
-                        $record->setStatus($record->pivot->priorSpecimenStatus);
+                        $record->logOutOfManifest($record->pivot->priorSpecimenStatus);
                     })
                     ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
             ])
@@ -161,7 +161,7 @@ class SpecimensRelationManager extends RelationManager
                             $relationship->detach($records);
 
                             foreach ($records as $record) {
-                                $record->setStatus($priorStatuses[$record->id]);
+                                $record->logOutOfManifest($priorStatuses[$record->id]);
                             }
                         })
                         ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),

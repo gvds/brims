@@ -55,7 +55,7 @@ class AllocateStorage extends Page implements HasForms
             ->where('project_id', $this->project->id)
             ->whereNotNull('storageSpecimenType')
             ->withCount([
-                'specimens' => fn ($query) => $query
+                'specimens' => fn($query) => $query
                     ->where('status', SpecimenStatus::Logged)
                     ->where('site_id', $this->userSiteId),
             ])
@@ -68,7 +68,7 @@ class AllocateStorage extends Page implements HasForms
             ->withCount('freeLocations')
             ->get()
             ->groupBy('storageSpecimenType')
-            ->map(fn (Collection $units): int => $units->sum('free_locations_count'));
+            ->map(fn(Collection $units): int => $units->sum('free_locations_count'));
 
         $this->form->fill();
     }
@@ -93,17 +93,17 @@ class AllocateStorage extends Page implements HasForms
                     ->options($this->specimenTypes->pluck('name', 'id')->all())
                     ->descriptions(
                         $this->specimenTypes->mapWithKeys(function (Specimentype $type) use ($insufficientStorage): array {
-                            $description = "{$type->specimens_count} ".str('specimen')->plural($type->specimens_count);
+                            $description = "{$type->specimens_count} " . str('specimen')->plural($type->specimens_count);
 
                             if ($insufficientStorage->get($type->id)) {
                                 $available = $this->locationsCounts->get($type->storageSpecimenType, 0);
-                                $description .= " — Insufficient storage: {$available} ".str('location')->plural($available).' available';
+                                $description .= " — Insufficient storage: {$available} " . str('location')->plural($available) . ' available';
                             }
 
                             return [$type->id => $description];
                         })->all()
                     )
-                    ->disableOptionWhen(fn (string $value): bool => $insufficientStorage->get((int) $value, false))
+                    ->disableOptionWhen(fn(string $value): bool => $insufficientStorage->get((int) $value, false))
                     ->required(),
             ])
             ->statePath('data');
@@ -163,9 +163,7 @@ class AllocateStorage extends Page implements HasForms
                         'barcode' => $specimen->barcode,
                     ]);
 
-                    $specimen->update([
-                        'status' => SpecimenStatus::InStorage,
-                    ]);
+                    $specimen->logStored();
 
                     $storageAllocation->storageLogs()->create([
                         'specimentype_id' => $specimenType->id,
