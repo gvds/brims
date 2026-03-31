@@ -33,9 +33,10 @@ return new class extends Migration
             $table->unsignedTinyInteger('thawcount')->default(0);
             $table->foreignIdFor(User::class, 'loggedBy_id')->constrained();
             $table->dateTime('loggedAt');
-            $table->foreignIdFor(User::class, 'loggedOutBy_id')->nullable()->constrained();
-            $table->foreignIdFor(User::class, 'usedBy_id')->nullable()->constrained();
-            $table->dateTime('usedAt')->nullable()->nullable();
+            // $table->foreignIdFor(User::class, 'loggedOutBy_id')->nullable()->constrained();
+            // $table->dateTime('loggedOutAt')->nullable();
+            // $table->foreignIdFor(User::class, 'usedBy_id')->nullable()->constrained();
+            // $table->dateTime('usedAt')->nullable();
             $table->timestamps();
 
             $table->unique(['barcode', 'project_id'], 'specimens_unique_barcode_project');

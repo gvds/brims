@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,15 +47,15 @@ class Specimen extends Model
         return $this->belongsTo(User::class, 'loggedBy_id');
     }
 
-    public function loggedOutBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'loggedOutBy_id');
-    }
+    // public function loggedOutBy(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class, 'loggedOutBy_id');
+    // }
 
-    public function usedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'usedBy_id');
-    }
+    // public function usedBy(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class, 'usedBy_id');
+    // }
 
     public function studies(): BelongsToMany
     {
@@ -63,30 +64,31 @@ class Specimen extends Model
             ->withTimestamps();
     }
 
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(SpecimenLog::class, 'specimen_id')
+            ->orderBy('created_at');
+    }
+
     public function logUsed(): void
     {
-        $this->status = SpecimenStatus::Used;
-        $this->usedBy()->associate(Auth::user());
-        $this->usedAt = now();
-        $this->save();
+        $this->createAuditLog(SpecimenStatus::Used);
+        $this->setStatus(SpecimenStatus::Used);
     }
 
     public function logOut(): void
     {
-        $this->status = SpecimenStatus::LoggedOut;
-        $this->loggedOutBy()->associate(Auth::user());
-        $this->loggedOutAt = now();
-        $this->save();
+        $this->createAuditLog(SpecimenStatus::LoggedOut);
+        $this->setStatus(SpecimenStatus::LoggedOut);
     }
 
     public function logReturn(bool $thawed): void
     {
-        $this->status = SpecimenStatus::InStorage;
-        $this->loggedOutBy()->disassociate();
+        $this->createAuditLog(SpecimenStatus::InStorage);
+        $this->setStatus(SpecimenStatus::InStorage);
         if ($thawed) {
-            $this->thawcount++;
+            $this->update(['thawcount' => $this->thawcount + 1]);
         }
-        $this->save();
     }
 
     protected function casts(): array
@@ -136,7 +138,15 @@ class Specimen extends Model
 
     public function setStatus(SpecimenStatus $status): void
     {
-        $this->status = $status;
-        $this->save();
+        $this->update(['status' => $status]);
+    }
+
+    public function createAuditLog(SpecimenStatus $newStatus): void
+    {
+        $this->auditLogs()->create([
+            'previous_status' => $this->getOriginal('status'),
+            'new_status' => $newStatus,
+            'changed_by' => Auth::id(),
+        ]);
     }
 }

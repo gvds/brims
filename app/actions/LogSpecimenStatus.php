@@ -27,7 +27,7 @@ class LogSpecimenStatus
 
         $specimens = $allSpecimens
             ->whereIn('status', $validStatuses)
-            ->where('site_id', session('currentProject')->members()->firstWhere('user_id', Auth::id())->site_id);
+            ->where('site_id', session('currentProject')->members()->firstWhere('user_id', Auth::id())->pivot->site_id);
 
         if (count($barcodes) !== $specimens->count()) {
             $errorMessage = '';

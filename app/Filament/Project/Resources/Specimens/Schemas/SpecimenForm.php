@@ -17,11 +17,8 @@ class SpecimenForm
         return $schema
             ->components([
                 TextEntry::make('barcode'),
-                // ->required()
-                // ->unique(table: 'specimens', column: 'barcode', ignoreRecord: true)
-                // ->maxLength(20),
-                TextEntry::make('subjectEvent.event.name'),
-                // ->label('Subject Event'),
+                TextEntry::make('subjectEvent.event.name')
+                    ->label('Subject Event'),
                 Select::make('specimenType_id')
                     ->relationship(name: 'specimenType', titleAttribute: 'name')
                     ->required(),
