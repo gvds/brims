@@ -12,6 +12,7 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\ViewException;
 
@@ -25,6 +26,8 @@ beforeEach(function (): void {
 
     $this->user = $this->adminuser;
     actingAs($this->user);
+    Filament::setCurrentPanel('project');
+    Filament::bootCurrentPanel();
 
     $this->project = Project::factory()
         ->for($this->team)
@@ -32,10 +35,15 @@ beforeEach(function (): void {
         ->has(Site::factory()->count(2))
         ->create();
 
+    $this->role = $this->project->roles()->create([
+        'name' => 'Admin',
+        'guard_name' => 'web',
+    ]);
+
     // Attach user to project with site
     $this->project->members()->attach($this->user->id, [
         'site_id' => $this->project->sites->first()->id,
-        'role' => 'Admin',
+        'role_id' => $this->role->id,
     ]);
 
     // Create labware for the project
@@ -108,13 +116,13 @@ describe('LogPrimarySpecimens Page Initialization', function (): void {
 
     it('handles user not being a project member', function (): void {
         $nonMemberUser = User::factory()->create();
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $nonMemberUser;
         actingAs($user);
 
         // The page will throw an error since the user is not a member
         // In a real application, this would be handled by middleware or route guards
-        expect(fn() => livewire(LogPrimarySpecimens::class))
+        expect(fn () => livewire(LogPrimarySpecimens::class))
             ->toThrow(ViewException::class);
     });
 
@@ -338,8 +346,8 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
         $specimenTypeId = $this->primarySpecimenTypes->first()->id;
 
         $specimens = $this->component->get('specimens');
-        expect($specimens[$specimenTypeId][0]['volume'])->toBe(5);
-        expect($specimens[$specimenTypeId][1]['volume'])->toBe(5);
+        expect($specimens[$specimenTypeId][0]['volume'])->toBe(5.00);
+        expect($specimens[$specimenTypeId][1]['volume'])->toBe(5.00);
     });
 });
 

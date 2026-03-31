@@ -20,7 +20,7 @@
  * functionality, model behavior, and resource configuration are thoroughly tested.
  */
 
-use App\Filament\App\Resources\Projects\Resources\Sites\SiteResource;
+use App\Filament\Project\Resources\Projects\Resources\Sites\SiteResource;
 use App\Models\Project;
 use App\Models\Site;
 
