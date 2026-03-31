@@ -17,6 +17,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -126,6 +127,7 @@ class MembersRelationManager extends RelationManager
             ->headerActions([
                 AttachAction::make()
                     ->authorize('attach', ProjectMember::class)
+                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('active', true))
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['firstname', 'lastname'])
                     ->schema(fn(AttachAction $action): array => [
