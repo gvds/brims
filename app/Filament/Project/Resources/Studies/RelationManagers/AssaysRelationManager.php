@@ -9,7 +9,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -58,15 +57,6 @@ class AssaysRelationManager extends RelationManager
         $this->getFileMetadata();
     }
 
-    public function getInfo($file)
-    {
-        return Http::withHeaders([
-            'Accept-Encoding' => 'gzip, deflate',
-        ])->withOptions([
-            'decode_content' => false,
-        ])->get(Storage::disk('s3')->url($file));
-    }
-
     public function getFileMetadata(): void
     {
         $assays = $this->getOwnerRecord()->assays()->get();
@@ -79,33 +69,64 @@ class AssaysRelationManager extends RelationManager
             }
         }
 
-        $this->files = Storage::disk('s3')->files();
+        $this->files = $assayfiles;
         $this->infos = [];
-        foreach ($this->files as $file) {
-            if (! in_array($file, $assayfiles)) {
-                continue;
+
+        try {
+            $disk = Storage::disk('s3');
+            foreach ($assayfiles as $file) {
+                if (! $disk->exists($file)) {
+                    continue;
+                }
+                $contents = $disk->get($file);
+                $info = json_decode($contents, true);
+                if (isset($info['MetaData']['assay_id'])) {
+                    $this->infos[$info['MetaData']['assay_id']][] = $info;
+                }
             }
-            // if (Str::endsWith($file, '.info')) {
-            Storage::disk('s3')->setVisibility($file, 'public');
-            $info = json_decode($this->getInfo($file)->body(), true);
-            $this->infos[$info['MetaData']['assay_id']][] = $info;
-            // }
+        } catch (\Throwable $e) {
+            Log::warning('S3 unavailable while fetching file metadata', [
+                'error' => $e->getMessage(),
+            ]);
+
+            Notification::make()
+                ->title('Storage Unavailable')
+                ->body('Could not retrieve file metadata from storage. The service may be temporarily unavailable.')
+                ->warning()
+                ->persistent()
+                ->send();
         }
     }
 
     public function download($file, $filename)
     {
-        if (! Storage::disk('s3')->exists($file)) {
+        try {
+            if (! Storage::disk('s3')->exists($file)) {
+                Notification::make()
+                    ->title('Download Failed')
+                    ->body("<strong>{$filename}</strong> could not be found")
+                    ->danger()
+                    ->send();
+
+                return;
+            }
+
+            return Storage::disk('s3')->download($file, $filename);
+        } catch (\Throwable $e) {
+            Log::warning('S3 unavailable during file download', [
+                'file' => $file,
+                'error' => $e->getMessage(),
+            ]);
+
             Notification::make()
-                ->title('Download Failed')
-                ->body("<strong>{$filename}</strong> could not be found")
-                ->danger()
+                ->title('Storage Unavailable')
+                ->body('Could not download the file. The storage service may be temporarily unavailable.')
+                ->warning()
+                ->persistent()
                 ->send();
 
             return;
         }
-
-        return Storage::disk('s3')->download($file, $filename);
     }
 
     public function delete($storedFilename, $assay_id)
