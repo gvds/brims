@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Enums\ManifestStatus;
-use App\Enums\SpecimenStatus;
+use App\Models\Scopes\SpecimenScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Manifest extends Model
 {
@@ -79,9 +80,10 @@ class Manifest extends Model
         $this->receivedBy_id = Auth::id();
         $this->save();
 
-        foreach ($this->specimens as $specimen) {
-            $specimen->logAsReceived();
-            $specimen->update(['site_id' => $this->destinationSite_id]);
+        $specimens = $this->specimens()->withoutGlobalScope(SpecimenScope::class)->get();
+
+        foreach ($specimens as $specimen) {
+            $specimen->logReceived($this->destinationSite_id);
             $this->specimens()->updateExistingPivot($specimen->id, [
                 'received' => true,
                 'receivedTime' => now(),
@@ -89,7 +91,7 @@ class Manifest extends Model
         }
     }
 
-    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function export(): StreamedResponse
     {
         $items = $this->specimens()
             ->with('specimenType', 'subjectEvent.event.arm', 'subjectEvent.subject')
@@ -111,7 +113,7 @@ class Manifest extends Model
                     $item->subjectEvent->event->name,
                     $item->specimenType->name,
                     $item->aliquot,
-                    $item->volume . $item->specimenType->volumeUnit,
+                    $item->volume.$item->specimenType->volumeUnit,
                 ]);
             }
 
