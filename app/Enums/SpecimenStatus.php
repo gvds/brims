@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum SpecimenStatus: int implements HasLabel, HasColor
+enum SpecimenStatus: int implements HasColor, HasLabel
 {
     case Unassigned = 0;
     case Registered = 1;
@@ -24,7 +24,7 @@ enum SpecimenStatus: int implements HasLabel, HasColor
         return $this->name;
     }
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::Logged => 'primary',

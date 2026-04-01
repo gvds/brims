@@ -5,6 +5,7 @@ namespace App\Filament\Project\Resources\Manifests\RelationManagers;
 use App\Enums\ManifestStatus;
 use App\Enums\SpecimenStatus;
 use App\Filament\Imports\ManifestItemImporter;
+use App\Models\Scopes\SpecimenScope;
 use App\Models\Specimen;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
@@ -61,13 +62,17 @@ class SpecimensRelationManager extends RelationManager
                     ->label('Event'),
                 TextEntry::make('thawcount'),
                 TextEntry::make('volume')
-                    ->formatStateUsing(fn(Specimen $record): string => "{$record->volume}{$record->volumeUnit}"),
+                    ->formatStateUsing(fn (Specimen $record): string => "{$record->volume}{$record->volumeUnit}"),
             ]);
     }
 
     public function table(Table $table): Table
     {
+
         return $table
+            ->modifyQueryUsing(function ($query): void {
+                $query->withoutGlobalScope(SpecimenScope::class);
+            })
             ->recordTitleAttribute('barcode')
             ->columns([
                 TextColumn::make('barcode')
@@ -106,9 +111,9 @@ class SpecimensRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->multiple()
                     ->recordSelectOptionsQuery(
-                        fn($query) => $query
+                        fn ($query) => $query
                             ->whereIn('specimenType_id', $this->getOwnerRecord()->specimenTypes)
-                            ->whereIn('status', [SpecimenStatus::Logged, SpecimenStatus::InStorage])
+                            ->whereIn('status', [SpecimenStatus::Logged, SpecimenStatus::InStorage, SpecimenStatus::Received])
                             ->where('site_id', session('currentProject')->members()->where('user_id', Auth::id())->first()->pivot->site_id)
                     )
                     ->using(function (BelongsToMany $relationship, array $data): void {
@@ -127,7 +132,7 @@ class SpecimensRelationManager extends RelationManager
                         }
                     })
                     ->color('primary')
-                    ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
+                    ->visible(fn (): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
                 ImportAction::make('importSpecimens')
                     ->label('Upload Specimens')
                     ->importer(ManifestItemImporter::class)
@@ -137,7 +142,7 @@ class SpecimensRelationManager extends RelationManager
                         'sourceSite_id' => $this->getOwnerRecord()->sourceSite_id,
                         'specimenTypes' => $this->getOwnerRecord()->specimenTypes,
                     ])
-                    ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
+                    ->visible(fn (): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -145,7 +150,7 @@ class SpecimensRelationManager extends RelationManager
                     ->before(function (Specimen $record): void {
                         $record->logOutOfManifest($record->pivot->priorSpecimenStatus);
                     })
-                    ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
+                    ->visible(fn (): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -154,7 +159,7 @@ class SpecimensRelationManager extends RelationManager
                             /** @var BelongsToMany $relationship */
                             $relationship = $table->getRelationship();
 
-                            $priorStatuses = $records->mapWithKeys(fn(Specimen $record) => [
+                            $priorStatuses = $records->mapWithKeys(fn (Specimen $record) => [
                                 $record->id => $record->pivot->priorSpecimenStatus,
                             ]);
 
@@ -164,7 +169,7 @@ class SpecimensRelationManager extends RelationManager
                                 $record->logOutOfManifest($priorStatuses[$record->id]);
                             }
                         })
-                        ->visible(fn(): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
+                        ->visible(fn (): bool => $this->getOwnerRecord()->status === ManifestStatus::Open),
                 ]),
             ]);
     }

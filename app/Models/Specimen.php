@@ -90,9 +90,9 @@ class Specimen extends Model
 
     public function logReturn(bool $thawed): void
     {
-        $prior_status = $this->auditLogs->last()->prior_status;
-        $this->createAuditLog($prior_status);
-        $this->setStatus($prior_status);
+        $previous_status = $this->auditLogs->last()->previous_status;
+        $this->createAuditLog($previous_status);
+        $this->setStatus($previous_status);
         if ($thawed) {
             $this->update(['thawcount' => $this->thawcount + 1]);
         }
@@ -104,16 +104,23 @@ class Specimen extends Model
         $this->setStatus(SpecimenStatus::PreTransfer);
     }
 
-    public function logOutOfManifest($prior_status): void
+    public function logOutOfManifest($previous_status): void
     {
-        $this->createAuditLog($prior_status);
-        $this->setStatus($prior_status);
+        $this->createAuditLog($previous_status);
+        $this->setStatus($previous_status);
     }
 
     public function logTransferred(): void
     {
         $this->createAuditLog(SpecimenStatus::Transferred);
         $this->setStatus(SpecimenStatus::Transferred);
+    }
+
+    public function logReceived(int $destinationSiteId): void
+    {
+        $this->createAuditLog(SpecimenStatus::Received);
+        $this->setStatus(SpecimenStatus::Received);
+        $this->update(['site_id' => $destinationSiteId]);
     }
 
     protected function casts(): array

@@ -17,9 +17,8 @@ class LogSpecimenStatus
         $allSpecimens = Specimen::whereIn('barcode', $barcodes)
             ->where('project_id', session('currentProject')->id)
             ->get();
-
         $validStatuses = match ($status) {
-            SpecimenStatus::Used => [SpecimenStatus::Logged, SpecimenStatus::InStorage, SpecimenStatus::LoggedOut],
+            SpecimenStatus::Used => [SpecimenStatus::Logged, SpecimenStatus::InStorage, SpecimenStatus::LoggedOut, SpecimenStatus::Received],
             SpecimenStatus::InStorage => [SpecimenStatus::LoggedOut],
             SpecimenStatus::LoggedOut => [SpecimenStatus::InStorage],
             default => throw new \Exception('Invalid target status provided.'),
@@ -36,20 +35,20 @@ class LogSpecimenStatus
 
             if ($invalidStatusSpecimens->count()) {
                 match ($validStatuses) {
-                    [SpecimenStatus::InStorage] => $errorMessage .= 'The following barcodes are not listed as in storage: ' . implode(', ', $invalidStatusSpecimens->pluck('barcode')->toArray()) . '.<br><br>',
-                    [SpecimenStatus::LoggedOut] => $errorMessage .= 'The following barcodes are not listed as logged out: ' . implode(', ', $invalidStatusSpecimens->pluck('barcode')->toArray()) . '.<br><br>',
-                    default => $errorMessage .= 'The following barcodes are not eligible to be logged as used: ' . implode(', ', $invalidStatusSpecimens->pluck('barcode')->toArray()) . '.<br><br>',
+                    [SpecimenStatus::InStorage] => $errorMessage .= 'The following barcodes are not listed as in storage: '.implode(', ', $invalidStatusSpecimens->pluck('barcode')->toArray()).'.<br><br>',
+                    [SpecimenStatus::LoggedOut] => $errorMessage .= 'The following barcodes are not listed as logged out: '.implode(', ', $invalidStatusSpecimens->pluck('barcode')->toArray()).'.<br><br>',
+                    default => $errorMessage .= 'The following barcodes are not eligible to be logged as used: '.implode(', ', $invalidStatusSpecimens->pluck('barcode')->toArray()).'.<br><br>',
                 };
             }
 
             $invalidSiteSpecimens = $allSpecimens->whereNotIn('site_id', session('currentProject')->members()->firstWhere('user_id', auth()->id())->site_id);
             if ($invalidSiteSpecimens->count()) {
-                $errorMessage .= 'The following barcodes are not located at your site: ' . implode(', ', $invalidSiteSpecimens->pluck('barcode')->toArray()) . '.<br><br>';
+                $errorMessage .= 'The following barcodes are not located at your site: '.implode(', ', $invalidSiteSpecimens->pluck('barcode')->toArray()).'.<br><br>';
             }
 
             $notFoundBarcodes = array_diff($barcodes, $allSpecimens->pluck('barcode')->toArray());
             if ($notFoundBarcodes) {
-                $errorMessage .= 'The following barcodes were not found in this project: ' . implode(', ', $notFoundBarcodes) . '.';
+                $errorMessage .= 'The following barcodes were not found in this project: '.implode(', ', $notFoundBarcodes).'.';
             }
 
             throw new \Exception($errorMessage);
@@ -72,12 +71,6 @@ class LogSpecimenStatus
                 });
                 break;
         }
-        $specimens->each(function ($specimen) use ($status) {
-            $specimen->status = $status;
-            $specimen->usedBy_id = Auth::id();
-            $specimen->usedAt = now();
-            $specimen->save();
-        });
 
         return $specimens->count();
     }
