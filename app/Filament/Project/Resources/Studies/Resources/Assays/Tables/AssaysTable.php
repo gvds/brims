@@ -139,6 +139,7 @@ class AssaysTable
                         try {
                             foreach ($record->assayfiles ?? [] as $file) {
                                 Storage::disk('s3')->delete($file);
+                                Storage::disk('s3')->delete($file . '.info');
                             }
                         } catch (\Throwable $e) {
                             Log::warning('S3 unavailable during assay file deletion', [
