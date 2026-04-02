@@ -1,0 +1,48 @@
+# Manifest
+- view
+- manage
+
+Site
+- view
+- manage
+
+Labware
+- view
+- manage
+
+Arm
+- view
+- manage
+
+SpecimenType
+- view
+- manage
+
+Event
+- view
+- manage
+
+Subject
+
+Specimen
+- log
+-
+
+Specimen_Storage_Allocation
+
+Study
+- view
+- manage
+    Specimens
+
+Assay
+- view
+- manage
+- download_files
+
+Publication
+- view
+- manage
+
+Role
+
