@@ -38,6 +38,8 @@ In the current UI, use the study's **Specimens** section to:
 
 The attach screen supports filtering by specimen type and site before you select the specimens to add.
 
+> Screenshot placeholder: Add a study record with the Specimens section open, showing attach, import, export, and the specimen type and site filters.
+
 ## Assay Definitions
 
 Assay definitions provide the structure for recording laboratory work and related metadata.
@@ -55,6 +57,8 @@ Depending on the assay design, this may include result values, platform informat
 Review assay entries carefully before saving.
 
 The current assay list supports create, view, edit, delete, file upload, and **Download All Files** actions.
+
+> Screenshot placeholder: Add the assay list and a single assay view showing file upload controls, assay metadata, and the Download All Files action.
 
 ## Quality and Integrity Checks
 

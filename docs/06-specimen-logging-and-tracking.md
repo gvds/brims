@@ -32,6 +32,8 @@ For derivative specimen logging:
 - Scan the **Parent Specimen Barcode**
 - Scan the **Project Subject Event Barcode** and then choose a parent specimen
 
+> Screenshot placeholder: Add the primary specimen logging workflow and the derivative specimen logging screen, showing the barcode-driven steps.
+
 ## Linking a Specimen
 
 Specimens should be linked to the participant record and to the relevant event when one exists.
@@ -74,6 +76,8 @@ Specimen statuses include:
 **Logged Out**
 **Received**
 
+> Visual placeholder: Add a specimen lifecycle diagram showing the main status transitions from logging through storage, transfer, return, and use.
+
 ## Updating Specimen Details
 
 Specimen details may need updating as the sample moves through storage, shipment, or assay workflows.
@@ -93,6 +97,8 @@ Use the specimen record to review its history across the full workflow, includin
 - Study and assay use
 
 This history is important when resolving discrepancies or preparing material for analysis.
+
+> Screenshot placeholder: Add a specimen record view showing linked participant and event details, status, parent specimen, and handling history.
 
 ## Common Data Quality Checks
 

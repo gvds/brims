@@ -30,6 +30,8 @@ Make sure the correct REDCap project is linked to the correct BRIMS project befo
 
 In the team project list, linked projects are also marked with the **REDCap Linked** indicator.
 
+> Screenshot placeholder: Add the Create New REDCap-Linked Project workflow and the team Projects list showing the REDCap Linked indicator.
+
 ## User Tokens and Access
 
 Some REDCap functions rely on a user-specific token stored on the project member record.
@@ -37,6 +39,8 @@ Some REDCap functions rely on a user-specific token stored on the project member
 Only enter a token for the correct project member, and update it if access changes or the token is replaced.
 
 The token field becomes available when you edit a project member in a REDCap-linked project.
+
+> Screenshot placeholder: Add the project member edit view showing the REDCap token field and any project membership context needed to identify the correct user.
 
 ## Expected Workflow
 

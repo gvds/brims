@@ -47,6 +47,8 @@ Keep shared values and configuration settings consistent so that data entry and 
 
 Current administrative reference data includes areas such as **Study Designs**, **Unit Definitions**, and **Physical Units**. Team-level setup also includes **Assay Definitions** and **Protocols**.
 
+> Screenshot placeholder: Add the admin navigation with the main reference-data areas visible, plus an example configuration page such as Unit Definitions or Physical Units.
+
 ## Preparing for New Projects
 
 Before onboarding a new project, confirm that the required people, permissions, and supporting configuration are in place.

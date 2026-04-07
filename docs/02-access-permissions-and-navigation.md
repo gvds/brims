@@ -61,6 +61,8 @@ Common project management areas include:
 - **Studies** for study records, linked specimens, and assays
 - **Configure Project Details** for project settings, sites, arms, specimen types, labware, and project-level imports or exports
 
+> Screenshot placeholder: Add the main BRIMS navigation with a project selected, highlighting Subjects, Specimens, Specimen Storage, Manifests, Studies, and Configure Project Details.
+
 ## Project-Scoped Work
 
 Most day-to-day work happens inside a selected project.

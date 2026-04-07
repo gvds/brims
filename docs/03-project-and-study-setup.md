@@ -28,6 +28,8 @@ Before you start, make sure you have permission to create or manage projects and
 8. Add project members
 9. Create studies
 
+> Visual placeholder: Add a setup sequence diagram showing the order from project creation through study creation.
+
 ## Create a Project
 
 When you create a project, confirm the following information carefully:
@@ -43,6 +45,8 @@ When you create a project, confirm the following information carefully:
 You can also add a description and submission date.
 
 If the project must link to REDCap, use the REDCap-linked project creation option rather than the standard project form.
+
+> Screenshot placeholder: Add the project creation form showing title, identifier, study design, leader, storage designation, and subject ID settings.
 
 ## Configure Subject ID Rules
 

@@ -30,6 +30,8 @@ Participant enrolment usually follows this sequence:
 
 Complete enrolment carefully, because the participant record is the starting point for event scheduling, specimen logging, and study tracking.
 
+> Screenshot placeholder: Add the Subjects list with a Generated record and the Enrol action, plus the enrolment form showing subject ID, site, and arm fields.
+
 ## Subject Identifier Allocation
 
 BRIMS generates a subject ID automatically using the project prefix and digit settings defined during project setup.
@@ -95,6 +97,8 @@ Use the participant record to review related project activity, including:
 Review this history when you need to check follow-up progress or resolve data questions.
 
 If arm switching is allowed, the subject view also provides **Switch Arm** and **Revert Arm Switch** actions.
+
+> Screenshot placeholder: Add a subject record view showing enrolment details, Subject Events, linked specimens, and arm-switch actions.
 
 ## Related Pages
 

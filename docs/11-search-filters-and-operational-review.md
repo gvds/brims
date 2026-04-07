@@ -40,6 +40,8 @@ For example:
 - **Subjects** supports filters for status, site, and manager
 - **Manifests** supports filtering by status
 
+> Screenshot placeholder: Add a typical list page showing table search, filters, and a filtered result set for operational review.
+
 ## Reviewing Operational Work
 
 Use operational review to identify work that still needs attention.

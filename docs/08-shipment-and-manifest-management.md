@@ -42,6 +42,8 @@ Before finalising the manifest, confirm that:
 - Barcodes and specimen details are correct
 - No expected specimens are missing
 
+> Screenshot placeholder: Add an open manifest with the Select Specimens to Add and Upload Specimens actions visible, plus the specimen list for the shipment.
+
 ## Manifest Statuses
 
 Manifest statuses show where the transfer is in its lifecycle.
@@ -57,6 +59,8 @@ Before dispatch, review the manifest, confirm the contents, and make sure the sh
 The system record should match what is physically leaving the site.
 
 When samples are ready to be shipped, use **Ship the Manifest**. You can also choose to mark it as received immediately for transfer to sites that do not have a facility to confirm receipt in BRIMS.
+
+> Visual placeholder: Add a manifest status flow diagram showing Open, Shipped, and Received, including specimen status changes during transfer.
 
 ## Receipt Workflow
 

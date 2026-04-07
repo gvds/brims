@@ -50,6 +50,8 @@ Navigate to your team's **Projects** section and create a new project from there
 
 > **Note:** If you need a project linked to **REDCap**, use the dedicated REDCap-linked project creation option rather than the standard project form.
 
+> Screenshot placeholder: Add the project creation form with the required fields and subject ID configuration visible.
+
 ### What BRIMS Creates Automatically
 
 When a new project is created, BRIMS automatically sets up:
@@ -99,6 +101,8 @@ After creating an arm, open that arm and add the events that should be scheduled
 The event setup screen includes fields such as **Name**, **Offset**, **Ante Window**, **Post Window**, **Autolog**, **Repeatable**, and **Active**.
 
 Use these settings to define the visit schedule that subjects will follow after enrolment or arm switching.
+
+> Screenshot placeholder: Add the arm view with its Events section open, showing the event template fields and visit ordering.
 
 ---
 
@@ -156,6 +160,8 @@ Labware records define the barcode format expected for each specimen type.
 
 Use the **Barcode Format Regex** field carefully because BRIMS validates specimen barcodes against that pattern during logging.
 
+> Screenshot placeholder: Add the Specimen Types and Labware areas side by side or as consecutive screenshots to show how barcode rules and storage-related settings are configured.
+
 ---
 
 ## 6. Creating Studies
@@ -178,6 +184,8 @@ Navigate to **Studies** in the project sidebar and select **New Study**.
 | **Description** | A free-text description of the study's scope or objectives. |
 | **Submission Date** | The formal submission date for the study. |
 | **Public Release Date** | The planned public release date for the study, if relevant. |
+
+> Screenshot placeholder: Add the study creation or edit form showing title, identifier, dates, and the Locked toggle.
 
 ### Locking a Study
 

@@ -31,6 +31,8 @@ Current export entry points in BRIMS include:
 - **Manifests** → **Export** after the manifest is no longer open
 - **Specimen Storage** → **Print** for storage allocation reports
 
+> Screenshot placeholder: Add examples of the main export entry points, including a specimen export action, study specimen export, manifest export, and storage report print action.
+
 ## Data Validation Before Sharing
 
 Before sharing exported information, confirm that the output matches the question you are trying to answer.
@@ -51,6 +53,8 @@ Review change history when:
 - A specimen movement needs to be traced
 - A shipment discrepancy needs to be checked
 - Operational activity needs to be confirmed
+
+> Screenshot placeholder: Add a record view showing timestamps, linked workflow history, or any audit-related fields that users should check before escalating an issue.
 
 ## Sensitive Data Handling
 

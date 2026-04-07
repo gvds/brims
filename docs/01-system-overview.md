@@ -25,23 +25,29 @@ BRIMS supports research operations across multiple sites, including:
 - Assay records and metadata
 - REDCap-linked processes
 
+> Visual placeholder: Add an entity relationship or workflow diagram showing how projects, sites, arms, events, subjects, specimens, studies, assays, and manifests connect.
+
 ## Core Concepts
 
 ### Project
 
 A project is the top-level organisational unit in BRIMS. It brings together the sites, study arms, participants, specimens, and studies that belong to the same research effort.
 
+### Study
+
+A study is a research investigation within a project. Studies help organise which specimens and assay work belong to a specific research activity.
+
 ### Site
 
 A site is the physical or organisational location where project work is carried out.
 
-### Arm
-
-A study arm groups participants within a project, for example into control or intervention cohorts.
-
 ### Participant
 
 A participant is a person enrolled in a project. Participant records are managed under **Subjects**. Each participant is given a unique subject ID based on the project settings.
+
+### Arm
+
+A study arm groups participants within a project, for example into control or intervention cohorts.
 
 ### Event
 
@@ -51,13 +57,9 @@ An event is a scheduled or completed project activity such as a visit, follow-up
 
 A specimen is a biological sample that is logged and tracked through storage, shipment, and study workflows.
 
-### Study
-
-A study is a research investigation within a project. Studies help organise which specimens and assay work belong to a specific research activity.
-
 ### Assay
 
-An assay records laboratory analysis work and the related metadata linked to a study.
+An assay describes experimental procedures conducted in the study and defines the related metadata.
 
 ### Manifest
 

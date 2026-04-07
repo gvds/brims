@@ -26,6 +26,8 @@ Use the storage structure defined for your project so that everyone records loca
 
 The storage screen focuses on **allocation** rather than manual specimen-by-specimen placement.
 
+> Visual placeholder: Add a storage hierarchy diagram showing unit definition, physical unit, virtual unit, and specimen location concepts.
+
 ## Supported Storage Contexts
 
 - Biorepository storage
@@ -41,6 +43,8 @@ This page works in bulk by specimen type for the current project site.
 Select the specimen types to allocate, decide whether previously used locations may be reused, and then run the allocation.
 
 The allocation is recorded and specimens are updated from **Logged** to **In Storage**.
+
+> Screenshot placeholder: Add the Allocate Specimen Storage page showing specimen type selection, available capacity, and the reuse-locations option.
 
 ## Moving a Specimen
 
@@ -65,6 +69,8 @@ This helps keep the system aligned with the actual specimen location and status.
 Each storage allocation creates a storage record that can be reviewed later.
 
 Use the **Specimen Storage** list to review previous allocations and print the storage allocation report.
+
+> Screenshot placeholder: Add the Specimen Storage list or allocation report view to show how stored specimens and their assigned locations are reviewed.
 
 ## Common Storage Checks
 

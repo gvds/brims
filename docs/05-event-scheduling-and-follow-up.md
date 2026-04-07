@@ -33,6 +33,8 @@ When a subject switches arms, BRIMS cancels pending events from the old arm and 
 
 Always check that the expected events are present after enrolment.
 
+> Visual placeholder: Add a diagram showing the relationship between arm event templates and subject events generated at enrolment or arm switch.
+
 ### Configuring Arm Event Templates
 
 Open an arm and use its **Events** section to define the schedule for that arm.
@@ -49,6 +51,8 @@ Review event timelines regularly so you can identify:
 - Overdue follow-up
 - Missed activities
 - Items that still need outcome recording
+
+> Screenshot placeholder: Add a subject record with the Subject Events section visible, including upcoming, overdue, and completed events.
 
 ## Recording Outcomes
 
