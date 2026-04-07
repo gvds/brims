@@ -28,7 +28,7 @@ The storage screen focuses on **allocation** rather than manual specimen-by-spec
 
 ## Supported Storage Contexts
 
-- Standard cold storage
+- Biorepository storage
 - Minus-80 storage
 - Liquid nitrogen storage
 

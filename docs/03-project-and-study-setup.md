@@ -110,7 +110,7 @@ Studies are research investigations within the project.
 Each study should have:
 
 - A title
-- An identifier
+- An identifier that is unique in BRIMS
 
 You can also add a description and submission date.
 

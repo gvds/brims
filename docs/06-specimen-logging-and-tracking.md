@@ -62,13 +62,17 @@ Specimen status shows where that sample is in its lifecycle, for example whether
 Use these values consistently so downstream workflows stay reliable.
 
 Specimen statuses include: 
+**Unassigned**
+**Registered**
 **Logged**
 **In Storage**
 **Pre Transfer**
+**Used**
+**Reassigned**
 **Transferred**
+**Lost**
 **Logged Out**
 **Received**
-**Used**
 
 ## Updating Specimen Details
 
@@ -76,7 +80,7 @@ Specimen details may need updating as the sample moves through storage, shipment
 
 When editing a specimen record, check that any changes still match the physical specimen and its most recent handling step.
 
-The specimen edit form also includes fields such as **thaw count**, **parent specimen**, and user or date fields for logged, logged out, and used actions.
+The specimen edit form also includes fields such as **thaw count**, **parent specimen**, a logged date, a logged out user field, and user or date fields for used actions.
 
 ## Tracking and History
 
