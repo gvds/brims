@@ -38,6 +38,7 @@ class ArmsRelationManager extends RelationManager
                             ->components([
                                 TextInput::make('name')
                                     ->required()
+                                    ->autocomplete(false)
                                     ->default(null),
                                 Toggle::make('manual_enrol')
                                     ->required()

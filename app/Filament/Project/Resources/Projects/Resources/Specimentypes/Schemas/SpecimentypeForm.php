@@ -25,6 +25,7 @@ class SpecimentypeForm
             ->components([
                 TextInput::make('name')
                     ->required()
+                    ->autocomplete(false)
                     ->autofocus(),
                 Grid::make(2)
                     ->schema([
@@ -99,7 +100,8 @@ class SpecimentypeForm
                     ])
                     ->columnSpanFull(),
                 Toggle::make('active')
-                    ->required(),
+                    ->required()
+                    ->default(true),
             ]);
     }
 }

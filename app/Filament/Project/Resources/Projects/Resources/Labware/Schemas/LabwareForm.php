@@ -12,7 +12,9 @@ class LabwareForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->autocomplete(false)
+                    ->autofocus(),
                 TextInput::make('barcodeFormat')
                     ->label('Barcode Format Regex')
                     ->hint('Use a regular expression to define the barcode format')

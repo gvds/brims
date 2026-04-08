@@ -34,7 +34,9 @@ class EventsRelationManager extends RelationManager
                 Grid::make()
                     ->components([
                         TextInput::make('name')
-                            ->required(),
+                            ->required()
+                            ->autocomplete(false)
+                            ->autofocus(),
                         TextEntry::make('redcap_event_id')
                             ->visible(fn($record): bool => isset($record->redcap_event_id)),
                         // ->integer()
