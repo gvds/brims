@@ -26,7 +26,7 @@ This guide covers deploying the BRIMS (Bio-medical Research Information Manageme
 
 | Requirement | Version |
 |---|---|
-| PHP | 8.4+ |
+| PHP | 8.5+ |
 | MariaDB | 11+ |
 | Nginx | 1.18+ |
 | Node.js | 22+ (build only) |
@@ -43,20 +43,20 @@ Ctype, cURL, DOM, Fileinfo, Filter, Hash, Mbstring, OpenSSL, PCRE, PDO, Session,
 The following additional Ubuntu/Debian packages are needed for BRIMS:
 
 ```
-php8.4-fpm
-php8.4-cli
-php8.4-mysql       (MariaDB/MySQL database driver)
-php8.4-mbstring
-php8.4-xml
-php8.4-zip
-php8.4-bcmath
-php8.4-curl
-php8.4-gd
-php8.4-intl
-php8.4-sqlite3
-php8.4-soap
-php8.4-redis        (if using Redis for cache/queues)
-php8.4-imagick
+php8.5-fpm
+php8.5-cli
+php8.5-mysql       (MariaDB/MySQL database driver)
+php8.5-mbstring
+php8.5-xml
+php8.5-zip
+php8.5-bcmath
+php8.5-curl
+php8.5-gd
+php8.5-intl
+php8.5-sqlite3
+php8.5-soap
+php8.5-redis        (if using Redis for cache/queues)
+php8.5-imagick
 ```
 
 ---
@@ -79,19 +79,19 @@ sudo apt update
 
 ```bash
 sudo apt install -y nginx \
-    php8.4-fpm \
-    php8.4-cli \
-    php8.4-mysql \
-    php8.4-mbstring \
-    php8.4-xml \
-    php8.4-zip \
-    php8.4-bcmath \
-    php8.4-curl \
-    php8.4-gd \
-    php8.4-intl \
-    php8.4-sqlite3 \
-    php8.4-soap \
-    php8.4-imagick
+    php8.5-fpm \
+    php8.5-cli \
+    php8.5-mysql \
+    php8.5-mbstring \
+    php8.5-xml \
+    php8.5-zip \
+    php8.5-bcmath \
+    php8.5-curl \
+    php8.5-gd \
+    php8.5-intl \
+    php8.5-sqlite3 \
+    php8.5-soap \
+    php8.5-imagick
 ```
 
 ### 3. Install MariaDB
@@ -236,7 +236,7 @@ server {
 
     # Only allow execution of index.php (recommended by Laravel docs)
     location ~ ^/index\.php(/|$) {
-        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.5-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
         fastcgi_hide_header X-Powered-By;
@@ -279,7 +279,7 @@ sudo systemctl reload nginx
 
 ### Recommended `php.ini` settings
 
-Edit `/etc/php/8.4/fpm/php.ini` (or create a drop-in at `/etc/php/8.4/fpm/conf.d/99-brims.ini`):
+Edit `/etc/php/8.5/fpm/php.ini` (or create a drop-in at `/etc/php/8.5/fpm/conf.d/99-brims.ini`):
 
 ```ini
 upload_max_filesize = 100M
@@ -296,7 +296,7 @@ opcache.validate_timestamps = 0   ; set to 1 during development
 Restart PHP-FPM after changes:
 
 ```bash
-sudo systemctl restart php8.4-fpm
+sudo systemctl restart php8.5-fpm
 ```
 
 ---
@@ -480,7 +480,7 @@ Use this checklist for every deployment:
 - [ ] Run pending migrations: `php artisan migrate --force`
 - [ ] Clear and rebuild the optimization cache: `php artisan optimize`
 - [ ] Restart queue workers: `php artisan queue:restart`
-- [ ] Reload PHP-FPM: `sudo systemctl reload php8.4-fpm`
+- [ ] Reload PHP-FPM: `sudo systemctl reload php8.5-fpm`
 
 ---
 
@@ -511,7 +511,7 @@ php artisan optimize
 php artisan queue:restart
 
 # 7. Reload PHP-FPM to pick up any new OPcache files
-sudo systemctl reload php8.4-fpm
+sudo systemctl reload php8.5-fpm
 
 # 8. Bring the application back online
 php artisan up
