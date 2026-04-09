@@ -53,9 +53,7 @@ class ArmResource extends Resource
     public static function getPages(): array
     {
         return [
-            // 'create' => CreateArm::route('/create'),
             'view' => ViewArm::route('/{record}'),
-            // 'edit' => EditArm::route('/{record}/edit'),
         ];
     }
 }
