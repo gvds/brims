@@ -10,6 +10,8 @@ class ViewPublication extends ViewRecord
 {
     protected static string $resource = PublicationResource::class;
 
+    protected static ?string $title = 'Publication Details';
+
     protected function getHeaderActions(): array
     {
         return [
