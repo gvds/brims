@@ -335,7 +335,7 @@ The key variables to set for a production deployment are:
 | `DB_HOST` / `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` | Primary database connection |
 | `REDCAP_DB_*` / `REDCAP_URL` | REDCap integration — leave commented out if not used |
 | `MAIL_HOST` / `MAIL_USERNAME` / `MAIL_PASSWORD` | Outgoing mail server |
-| `TELESCOPE_ENABLED` | Set to `false` in production |
+| `TUS_ENDPOINT` | TUS server URL for resumable uploads — leave blank if not used |
 
 > **Never commit `.env` to version control.** It contains secrets.
 
@@ -447,7 +447,14 @@ sudo supervisorctl status
 
 ## Scheduled Tasks
 
-BRIMS registers a scheduled command (`app:delete-old-exports`) that runs hourly to clean up stale export files. Add a single cron entry for the Laravel scheduler:
+BRIMS registers the following scheduled commands:
+
+| Command | Frequency | Purpose |
+|---|---|---|
+| `app:delete-old-exports` | Hourly | Clean up stale export files |
+| `app:deactivate-inactive-users` | Daily | Deactivate users who have not logged in for 3 months |
+
+Add a single cron entry for the Laravel scheduler:
 
 ```bash
 sudo crontab -u www-data -e
@@ -469,10 +476,10 @@ Use this checklist for every deployment:
 
 - [ ] Pull latest code: `git pull origin main`
 - [ ] Install/update PHP dependencies: `composer install --optimize-autoloader --no-dev`
-- [ ] Install/update Node dependencies and rebuild assets: `npm ci && npm run build`
+- [ ] Install/update Node dependencies and rebuild assets: `npm install && npm run build`
 - [ ] Run pending migrations: `php artisan migrate --force`
 - [ ] Clear and rebuild the optimization cache: `php artisan optimize`
-- [ ] Reload long-running services: `php artisan reload`
+- [ ] Restart queue workers: `php artisan queue:restart`
 - [ ] Reload PHP-FPM: `sudo systemctl reload php8.4-fpm`
 
 ---
@@ -492,7 +499,7 @@ git pull origin main
 
 # 3. Install/update dependencies
 composer install --optimize-autoloader --no-dev
-npm ci && npm run build
+npm install && npm run build
 
 # 4. Run any new database migrations
 php artisan migrate --force
@@ -500,8 +507,8 @@ php artisan migrate --force
 # 5. Clear old caches and rebuild optimized caches
 php artisan optimize
 
-# 6. Gracefully reload queue workers and other long-running services
-php artisan reload
+# 6. Restart queue workers so they pick up the new code
+php artisan queue:restart
 
 # 7. Reload PHP-FPM to pick up any new OPcache files
 sudo systemctl reload php8.4-fpm
