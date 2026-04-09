@@ -45,8 +45,8 @@ class EventResource extends Resource
     public static function getPages(): array
     {
         return [
-            'create' => CreateEvent::route('/create'),
-            'edit' => EditEvent::route('/{record}/edit'),
+            // 'create' => CreateEvent::route('/create'),
+            // 'edit' => EditEvent::route('/{record}/edit'),
         ];
     }
 }

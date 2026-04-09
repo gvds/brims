@@ -5,6 +5,7 @@ namespace App\Filament\Project\Resources\Projects\RelationManagers;
 use App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource;
 use App\Models\Arm;
 use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -24,40 +25,44 @@ class ArmsRelationManager extends RelationManager
         return false;
     }
 
-
     public function table(Table $table): Table
     {
         return $table
             ->headerActions([
-                // CreateAction::make(),
-                Action::make('create')
-                    ->authorize('create', Arm::class)
-                    ->schema([
-                        Grid::make()
-                            ->columns(2)
-                            ->components([
-                                TextInput::make('name')
-                                    ->required()
-                                    ->autocomplete(false)
-                                    ->default(null),
-                                Toggle::make('manual_enrol')
-                                    ->required()
-                                    ->inline(false)
-                                    ->default(false),
-                            ])
-                            ->columnSpanFull(),
-                        CheckboxList::make('switcharms')
-                            ->options(
-                                fn(): array => Arm::where('project_id', $this->ownerRecord->id)
-                                    ->pluck('name', 'id')
-                                    ->toArray()
-                            )
-                    ])
-                    ->action(function (array $data): void {
-                        $data['project_id'] = $this->ownerRecord->id;
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data) {
                         $data['arm_num'] = Arm::where('project_id', $this->ownerRecord->id)->max('arm_num') + 1;
-                        Arm::create($data);
+                        return $data;
                     }),
             ]);
+        // Action::make('create')
+        //     ->authorize('create', Arm::class)
+        //     ->schema([
+        //         Grid::make()
+        //             ->columns(2)
+        //             ->components([
+        //                 TextInput::make('name')
+        //                     ->required()
+        //                     ->autocomplete(false)
+        //                     ->default(null),
+        //                 Toggle::make('manual_enrol')
+        //                     ->required()
+        //                     ->inline(false)
+        //                     ->default(false),
+        //             ])
+        //             ->columnSpanFull(),
+        //         CheckboxList::make('switcharms')
+        //             ->options(
+        //                 fn(): array => Arm::where('project_id', $this->ownerRecord->id)
+        //                     ->pluck('name', 'id')
+        //                     ->toArray()
+        //             )
+        //     ])
+        //     ->action(function (array $data): void {
+        //         $data['project_id'] = $this->ownerRecord->id;
+        //         $data['arm_num'] = Arm::where('project_id', $this->ownerRecord->id)->max('arm_num') + 1;
+        //         Arm::create($data);
+        //     }),
+        // ]);
     }
 }
