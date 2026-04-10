@@ -21,7 +21,7 @@
  * submission dates, and file management for research study tracking.
  */
 
-use App\Filament\App\Resources\Projects\RelationManagers\StudiesRelationManager;
+use App\Filament\Project\Resources\Projects\RelationManagers\StudiesRelationManager;
 use App\Models\Project;
 use App\Models\Study;
 
@@ -60,7 +60,7 @@ describe('Studies Relation Manager Configuration', function (): void {
         $relatedResourceProperty = $reflection->getProperty('relatedResource');
 
         expect($relationshipProperty->getValue())->toBe('studies');
-        expect($relatedResourceProperty->getValue())->toBe(App\Filament\App\Resources\Projects\Resources\Studies\StudyResource::class);
+        expect($relatedResourceProperty->getValue())->toBe(App\Filament\Project\Resources\Studies\StudyResource::class);
     });
 
     it('is not read-only', function (): void {

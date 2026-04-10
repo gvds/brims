@@ -22,10 +22,11 @@
  * repeatable status, and various label counts for study management.
  */
 
-use App\Filament\App\Resources\Projects\Resources\Arms\RelationManagers\EventsRelationManager;
+use App\Filament\Project\Resources\Projects\Resources\Arms\RelationManagers\EventsRelationManager;
 use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Project;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Sleep;
 
 use function Pest\Laravel\actingAs;
@@ -101,7 +102,7 @@ describe('Events Relation Manager Configuration', function (): void {
     });
 
     it('has proper relationship with arm', function (): void {
-        expect($this->arm->events())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class);
+        expect($this->arm->events())->toBeInstanceOf(HasMany::class);
         expect($this->arm->events()->count())->toBe(2); // 2 existing events added in setup
     });
 

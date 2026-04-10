@@ -60,7 +60,7 @@ describe('UserResource List Page', function (): void {
         $user2 = User::factory()->create(['firstname' => 'Jane', 'lastname' => 'Smith']);
 
         livewire(ListUsers::class)
-            ->searchTableColumns(['firstname' => 'John'])
+            ->searchTableColumns(['fullname' => 'John'])
             ->assertCanSeeTableRecords([$user1])
             ->assertCanNotSeeTableRecords([$user2]);
     });

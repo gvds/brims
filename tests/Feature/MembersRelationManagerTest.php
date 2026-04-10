@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TeamRoles;
+use App\Filament\App\Resources\Teams\Pages\EditTeam;
 use App\Filament\App\Resources\Teams\RelationManagers\MembersRelationManager;
 use App\Models\Team;
 use App\Models\User;
@@ -15,7 +16,7 @@ it('can render the members relation manager', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])->assertSuccessful();
 });
 
@@ -36,7 +37,7 @@ it('displays existing team members', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->assertCanSeeTableRecords([$teamAdminUser, $memberUser]);
 });
@@ -58,7 +59,7 @@ it('shows user details in the table', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->assertSee('John')
         ->assertSee('Doe')
@@ -84,7 +85,7 @@ it('can filter by active status', function (): void {
 
     $component = Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ]);
 
     // Initially both users should be visible
@@ -100,21 +101,21 @@ it('can filter by homesite', function (): void {
     $team = Team::factory()->create();
     $user1 = User::factory()->create([
         'team_id' => $team->id,
-        'homesite' => 'Main Office',
+        'homesite' => 'Main',
     ]);
     $user2 = User::factory()->create([
         'team_id' => $team->id,
-        'homesite' => 'Branch Office',
+        'homesite' => 'Branch',
     ]);
 
     $this->actingAs($user1);
 
     $component = Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ]);
 
-    $component->filterTable('homesite', 'Main Office')
+    $component->filterTable('homesite', 'Main')
         ->assertCanSeeTableRecords([$user1])
         ->assertCanNotSeeTableRecords([$user2]);
 });
@@ -134,7 +135,7 @@ it('can edit existing team members', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->assertActionExists(TestAction::make('edit')->table($member))
         ->callAction(TestAction::make('edit')->table($member), data: [
@@ -162,7 +163,7 @@ it('can delete team members', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->assertActionExists(TestAction::make('delete')->table($member))
         ->callAction(TestAction::make('delete')->table($member))
@@ -192,7 +193,7 @@ it('only shows members for the specific team', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team1,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->assertCanSeeTableRecords([$team1Member])
         ->assertCanNotSeeTableRecords([$team2Member, $noTeamMember]);
@@ -213,7 +214,7 @@ it('displays team role correctly', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->assertSee('Admin')
         ->assertSee('Member');
@@ -234,7 +235,7 @@ it('shows active status correctly', function (): void {
 
     $component = Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ]);
 
     // Check that both users are visible in the table (icons show boolean status)
@@ -258,7 +259,7 @@ it('can search members by name', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->searchTable('John')
         ->assertCanSeeTableRecords([$user1])
@@ -283,7 +284,7 @@ it('can search members by username', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->searchTable('johndoe')
         ->assertCanSeeTableRecords([$user1])
@@ -305,7 +306,7 @@ it('can search members by email', function (): void {
 
     Livewire::test(MembersRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => \App\Filament\App\Resources\Teams\Pages\EditTeam::class,
+        'pageClass' => EditTeam::class,
     ])
         ->searchTable('john@example.com')
         ->assertCanSeeTableRecords([$user1])

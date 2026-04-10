@@ -93,7 +93,7 @@ it('updates manifest_items, specimen site, and specimen status on receive', func
     expect($manifest->receivedBy_id)->toBe($this->adminuser->id);
 
     $specimen->refresh();
-    expect($specimen->status)->toBe(SpecimenStatus::Logged);
+    expect($specimen->status)->toBe(SpecimenStatus::Received);
     expect($specimen->site_id)->toBe($this->destinationSite->id);
 
     $this->assertDatabaseHas('manifest_items', [
@@ -138,7 +138,7 @@ it('creates an audit log entry when receiving a manifest', function (): void {
     $this->assertDatabaseHas('specimen_logs', [
         'specimen_id' => $specimen->id,
         'previous_status' => SpecimenStatus::Transferred->value,
-        'new_status' => SpecimenStatus::Logged->value,
+        'new_status' => SpecimenStatus::Received->value,
         'changed_by' => $this->adminuser->id,
     ]);
 });
@@ -157,7 +157,7 @@ it('throws an exception when receiving a non-shipped manifest', function (): voi
 })->throws(Exception::class, 'Only manifests with status "Shipped" can be received.');
 
 it('receives a manifest with multiple specimens', function (): void {
-    $specimens = collect([1, 2, 3])->map(fn (int $aliquot) => Specimen::factory()->create([
+    $specimens = collect([1, 2, 3])->map(fn(int $aliquot) => Specimen::factory()->create([
         'subject_event_id' => $this->subjectEvent->id,
         'specimenType_id' => $this->specimenType->id,
         'site_id' => $this->sourceSite->id,
@@ -188,7 +188,7 @@ it('receives a manifest with multiple specimens', function (): void {
 
     foreach ($specimens as $specimen) {
         $specimen->refresh();
-        expect($specimen->status)->toBe(SpecimenStatus::Logged);
+        expect($specimen->status)->toBe(SpecimenStatus::Received);
         expect($specimen->site_id)->toBe($this->destinationSite->id);
 
         $this->assertDatabaseHas('manifest_items', [

@@ -19,13 +19,14 @@
  *
  * Note: MembersRelationManager manages the many-to-many relationship between
  * Projects and Users through the project_member pivot table with additional
- * role and site_id fields. UI tests are excluded due to environment dependencies.
+ * role_id and site_id fields. UI tests are excluded due to environment dependencies.
  */
 
-use App\Filament\App\Resources\Projects\RelationManagers\MembersRelationManager;
+use App\Filament\Project\Resources\Projects\RelationManagers\MembersRelationManager;
 use App\Models\Project;
 use App\Models\Site;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -54,7 +55,7 @@ beforeEach(function (): void {
     $this->existingMembers = $this->users->take(2);
     foreach ($this->existingMembers as $index => $user) {
         $this->project->members()->attach($user->id, [
-            'role' => $index === 0 ? 'Admin' : 'Member',
+            'role_id' => $index === 0 ? 'Admin' : 'Member',
             'site_id' => $this->sites->random()->id,
         ]);
     }
@@ -81,7 +82,7 @@ describe('Members Relation Manager Configuration', function (): void {
     });
 
     it('has proper relationship with project', function (): void {
-        expect($this->project->members())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsToMany::class);
+        expect($this->project->members())->toBeInstanceOf(BelongsToMany::class);
         expect($this->project->members()->count())->toBe(2); // 2 existing members added in setup
     });
 
@@ -99,14 +100,14 @@ describe('Member Attachment Business Logic', function (): void {
         $site = $this->sites->first();
 
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $site->id,
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $newUser->id,
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $site->id,
         ]);
 
@@ -117,14 +118,14 @@ describe('Member Attachment Business Logic', function (): void {
         $newUser = $this->users->whereNotIn('id', $this->existingMembers->pluck('id'))->first();
 
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => null, // Optional site assignment
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $newUser->id,
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => null,
         ]);
     });
@@ -133,14 +134,14 @@ describe('Member Attachment Business Logic', function (): void {
         $newUser = $this->users->whereNotIn('id', $this->existingMembers->pluck('id'))->first();
 
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => null,
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $newUser->id,
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => null,
         ]);
     });
@@ -150,7 +151,7 @@ describe('Member Attachment Business Logic', function (): void {
         $originalCount = $this->project->members()->count();
 
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $this->sites->first()->id,
         ]);
 
@@ -164,13 +165,13 @@ describe('Member Attachment Business Logic', function (): void {
 
         // Attach first user as Admin
         $this->project->members()->attach($usersArray[0]->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => $this->sites->random()->id,
         ]);
 
         // Attach second user as Member
         $this->project->members()->attach($usersArray[1]->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $this->sites->random()->id,
         ]);
 
@@ -179,13 +180,13 @@ describe('Member Attachment Business Logic', function (): void {
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $usersArray[0]->id,
-            'role' => 'Admin',
+            'role_id' => 'Admin',
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $usersArray[1]->id,
-            'role' => 'Member',
+            'role_id' => 'Member',
         ]);
     });
 });
@@ -257,14 +258,14 @@ describe('Member Role and Site Management', function (): void {
         $currentSiteId = $memberData->pivot->site_id;
 
         $this->project->members()->updateExistingPivot($member->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => $currentSiteId,
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $member->id,
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => $currentSiteId,
         ]);
     });
@@ -272,18 +273,18 @@ describe('Member Role and Site Management', function (): void {
     it('can update member site assignment', function (): void {
         $member = $this->existingMembers->first();
         $memberData = $this->project->members()->where('user_id', $member->id)->first();
-        $currentRole = $memberData->pivot->role;
+        $currentRole = $memberData->pivot->role_id;
         $newSite = $this->sites->where('id', '!=', $memberData->pivot->site_id)->first();
 
         $this->project->members()->updateExistingPivot($member->id, [
-            'role' => $currentRole,
+            'role_id' => $currentRole,
             'site_id' => $newSite->id,
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $member->id,
-            'role' => $currentRole,
+            'role_id' => $currentRole,
             'site_id' => $newSite->id,
         ]);
     });
@@ -291,17 +292,17 @@ describe('Member Role and Site Management', function (): void {
     it('can remove site assignment by setting to null', function (): void {
         $member = $this->existingMembers->first();
         $memberData = $this->project->members()->where('user_id', $member->id)->first();
-        $currentRole = $memberData->pivot->role;
+        $currentRole = $memberData->pivot->role_id;
 
         $this->project->members()->updateExistingPivot($member->id, [
-            'role' => $currentRole,
+            'role_id' => $currentRole,
             'site_id' => null,
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $member->id,
-            'role' => $currentRole,
+            'role_id' => $currentRole,
             'site_id' => null,
         ]);
     });
@@ -311,23 +312,23 @@ describe('Member Role and Site Management', function (): void {
 
         // Test that valid roles work
         $this->project->members()->updateExistingPivot($member->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $member->id,
-            'role' => 'Admin',
+            'role_id' => 'Admin',
         ]);
 
         $this->project->members()->updateExistingPivot($member->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $member->id,
-            'role' => 'Member',
+            'role_id' => 'Member',
         ]);
     });
 
@@ -336,7 +337,7 @@ describe('Member Role and Site Management', function (): void {
         $member = $this->existingMembers->first();
 
         $this->project->members()->updateExistingPivot($member->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => $this->sites->random()->id,
         ]);
 
@@ -354,14 +355,14 @@ describe('Project Leader Relationship', function (): void {
     it('can add project leader as member', function (): void {
         // Add leader as project member
         $this->project->members()->attach($this->adminuser->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => $this->sites->first()->id,
         ]);
 
         assertDatabaseHas('project_member', [
             'project_id' => $this->project->id,
             'user_id' => $this->adminuser->id,
-            'role' => 'Admin',
+            'role_id' => 'Admin',
         ]);
 
         expect($this->project->fresh()->members()->where('user_id', $this->adminuser->id)->exists())->toBeTrue();
@@ -373,7 +374,7 @@ describe('Project Leader Relationship', function (): void {
         // Add some members
         $newUser = $this->users->whereNotIn('id', $this->existingMembers->pluck('id'))->first();
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $this->sites->first()->id,
         ]);
 
@@ -384,7 +385,7 @@ describe('Project Leader Relationship', function (): void {
     it('can distinguish between leader and regular members', function (): void {
         // Add leader as member
         $this->project->members()->attach($this->adminuser->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
             'site_id' => $this->sites->first()->id,
         ]);
 
@@ -403,7 +404,7 @@ describe('Site Integration', function (): void {
         $projectSite = $this->sites->first();
 
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $projectSite->id,
         ]);
 
@@ -441,7 +442,7 @@ describe('Site Integration', function (): void {
 
         foreach ($availableUsers as $user) {
             $this->project->members()->attach($user->id, [
-                'role' => 'Member',
+                'role_id' => 'Member',
                 'site_id' => $site->id,
             ]);
         }
@@ -463,7 +464,7 @@ describe('Data Integrity and Validation', function (): void {
 
         // Add member
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $this->sites->first()->id,
         ]);
 
@@ -471,7 +472,7 @@ describe('Data Integrity and Validation', function (): void {
 
         // Update member
         $this->project->members()->updateExistingPivot($newUser->id, [
-            'role' => 'Admin',
+            'role_id' => 'Admin',
         ]);
 
         expect($this->project->fresh()->members()->count())->toBe($initialMemberCount + 1);
@@ -488,7 +489,7 @@ describe('Data Integrity and Validation', function (): void {
         // Attach multiple members
         foreach ($users as $user) {
             $this->project->members()->attach($user->id, [
-                'role' => 'Member',
+                'role_id' => 'Member',
                 'site_id' => $this->sites->random()->id,
             ]);
         }
@@ -499,7 +500,7 @@ describe('Data Integrity and Validation', function (): void {
         // Update roles for all new members
         foreach ($users as $user) {
             $this->project->members()->updateExistingPivot($user->id, [
-                'role' => 'Admin',
+                'role_id' => 'Admin',
             ]);
         }
 
@@ -511,7 +512,7 @@ describe('Data Integrity and Validation', function (): void {
             assertDatabaseHas('project_member', [
                 'project_id' => $this->project->id,
                 'user_id' => $user->id,
-                'role' => 'Admin',
+                'role_id' => 'Admin',
             ]);
         }
     });
@@ -520,7 +521,7 @@ describe('Data Integrity and Validation', function (): void {
         $newUser = $this->users->whereNotIn('id', $this->existingMembers->pluck('id'))->first();
 
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $this->sites->first()->id,
         ]);
 
@@ -539,7 +540,7 @@ describe('Data Integrity and Validation', function (): void {
 
         // Add member to first project
         $this->project->members()->attach($newUser->id, [
-            'role' => 'Member',
+            'role_id' => 'Member',
             'site_id' => $this->sites->first()->id,
         ]);
 
