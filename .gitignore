@@ -29,3 +29,11 @@ package-lock.json
 frankenphp
 frankenphp-worker.php
 /config/octane.php
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

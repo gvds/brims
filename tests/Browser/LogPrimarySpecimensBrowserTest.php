@@ -25,10 +25,14 @@ beforeEach(function (): void {
         ->has(Site::factory()->count(2))
         ->create();
 
+    $this->role = $this->project->roles()->create([
+        'name' => 'Admin',
+    ]);
+
     // Attach user to project with site
     $this->project->members()->attach($this->user->id, [
         'site_id' => $this->project->sites->first()->id,
-        'role' => 'Admin',
+        'role_id' => $this->role->id,
     ]);
 
     // Create labware for the project
