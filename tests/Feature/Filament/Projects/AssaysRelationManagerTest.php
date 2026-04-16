@@ -21,12 +21,13 @@
  * file management, and technology platform tracking for research assays.
  */
 
-use App\Filament\App\Resources\Projects\Resources\Studies\RelationManagers\AssaysRelationManager;
+use App\Filament\Project\Resources\Studies\RelationManagers\AssaysRelationManager;
 use App\Models\Assay;
 use App\Models\AssayDefinition;
 use App\Models\Project;
 use App\Models\Study;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -93,7 +94,7 @@ describe('Assays Relation Manager Configuration', function (): void {
     it('has proper relationship with study', function (): void {
         $assays = $this->study->assays();
 
-        expect($assays)->toBeInstanceOf(Illuminate\Database\Eloquent\Relations\HasMany::class);
+        expect($assays)->toBeInstanceOf(HasMany::class);
         expect($assays->getRelated())->toBeInstanceOf(Assay::class);
     });
 
@@ -410,44 +411,43 @@ describe('File Management', function (): void {
             'user_id' => $this->adminuser->id,
             'name' => 'Assay with File',
             'technologyPlatform' => 'PCR',
-            'assayfile' => 'assay_data_2025.xlsx',
+            'assayfiles' => ['assay_data_2025.xlsx'],
             'assayfilename' => 'PCR Results Spreadsheet',
         ]);
 
-        expect($assay->assayfile)->toBe('assay_data_2025.xlsx');
+        expect($assay->assayfiles)->toBe(['assay_data_2025.xlsx']);
         expect($assay->assayfilename)->toBe('PCR Results Spreadsheet');
 
         assertDatabaseHas('assays', [
             'id' => $assay->id,
-            'assayfile' => 'assay_data_2025.xlsx',
             'assayfilename' => 'PCR Results Spreadsheet',
         ]);
     });
 
     it('can update file information', function (): void {
         $this->existingAssay->update([
-            'assayfile' => 'updated_assay_file.csv',
+            'assayfiles' => ['updated_assay_file.csv'],
             'assayfilename' => 'Updated Assay Results',
         ]);
 
-        expect($this->existingAssay->assayfile)->toBe('updated_assay_file.csv');
+        expect($this->existingAssay->assayfiles)->toBe(['updated_assay_file.csv']);
         expect($this->existingAssay->assayfilename)->toBe('Updated Assay Results');
     });
 
     it('can clear file information', function (): void {
         // First set file information
         $this->existingAssay->update([
-            'assayfile' => 'temp_file.dat',
+            'assayfiles' => ['temp_file.dat'],
             'assayfilename' => 'Temporary File',
         ]);
 
         // Then clear it
         $this->existingAssay->update([
-            'assayfile' => null,
+            'assayfiles' => null,
             'assayfilename' => null,
         ]);
 
-        expect($this->existingAssay->assayfile)->toBeNull();
+        expect($this->existingAssay->assayfiles)->toBeNull();
         expect($this->existingAssay->assayfilename)->toBeNull();
     });
 
@@ -467,11 +467,11 @@ describe('File Management', function (): void {
                 'user_id' => $this->adminuser->id,
                 'name' => "File Type Test {$index}",
                 'technologyPlatform' => 'PCR',
-                'assayfile' => $fileInfo['file'],
+                'assayfiles' => [$fileInfo['file']],
                 'assayfilename' => $fileInfo['name'],
             ]);
 
-            expect($assay->assayfile)->toBe($fileInfo['file']);
+            expect($assay->assayfiles)->toBe([$fileInfo['file']]);
             expect($assay->assayfilename)->toBe($fileInfo['name']);
         }
     });

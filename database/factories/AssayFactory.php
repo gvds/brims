@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Assay;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Assay>
+ * @extends Factory<Assay>
  */
 class AssayFactory extends Factory
 {
@@ -26,7 +27,11 @@ class AssayFactory extends Factory
                 ['field1' => fake()->word(), 'field2' => fake()->numberBetween(1, 100)],
                 ['experiment_type' => fake()->word(), 'specimens' => fake()->numberBetween(10, 50)],
             ]),
-            'assayfile' => fake()->optional()->word() . '.xlsx',
+            'assayfiles' => fake()->optional()->randomElement([
+                null,
+                [fake()->word().'.xlsx'],
+                [fake()->word().'.xlsx', fake()->word().'.csv'],
+            ]),
             'assayfilename' => fake()->optional()->sentence(3),
         ];
     }

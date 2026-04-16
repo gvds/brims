@@ -40,14 +40,6 @@ class AssayResource extends Resource
     }
 
     #[\Override]
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    #[\Override]
     public static function getPages(): array
     {
         return [

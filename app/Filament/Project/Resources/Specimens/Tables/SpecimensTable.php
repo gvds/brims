@@ -59,19 +59,9 @@ class SpecimensTable
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->searchable(isIndividual: true, isGlobal: false),
-                // TextColumn::make('loggedOutBy.fullname')
-                //     ->label('Logged Out By')
-                //     ->searchable(isIndividual: true, isGlobal: false),
-                // TextColumn::make('usedBy.fullname')
-                //     ->label('Used By')
-                //     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('parentSpecimen.barcode')
                     ->label('Parent Barcode')
                     ->searchable(isIndividual: true, isGlobal: false),
-                TextColumn::make('usedAt')
-                    ->dateTime('Y-m-d H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -11,6 +11,8 @@ class EditPublication extends EditRecord
 {
     protected static string $resource = PublicationResource::class;
 
+    protected static ?string $title = 'Edit Publication Details';
+
     protected function getHeaderActions(): array
     {
         return [

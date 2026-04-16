@@ -2,11 +2,19 @@
     "agents": [
         "copilot"
     ],
-    "editors": [
-        "vscode"
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "filament/filament",
+        "fruitcake/laravel-debugbar"
     ],
-    "guidelines": [
-        "filament/filament"
-    ],
-    "sail": true
+    "sail": true,
+    "skills": [
+        "laravel-best-practices",
+        "livewire-development",
+        "pest-testing",
+        "tailwindcss-development",
+        "debug-using-debugbar"
+    ]
 }

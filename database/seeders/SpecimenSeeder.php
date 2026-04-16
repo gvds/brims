@@ -29,6 +29,11 @@ class SpecimenSeeder extends Seeder
                             'aliquot' => $sequence->index + 1,
                         ];
                     })
+                    ->hasAuditLogs(1, [
+                        'previous_status' => SpecimenStatus::Logged,
+                        'new_status' => SpecimenStatus::Used,
+                        'changed_by' => fake()->randomElement($project->members->pluck('id')),
+                    ])
                     ->create([
                         'site_id' => $subjectEvent->subject->site_id,
                         'project_id' => $project->id,
@@ -36,8 +41,8 @@ class SpecimenSeeder extends Seeder
                         'volumeUnit' => $specimenType->volumeUnit,
                         'loggedBy_id' => fake()->randomElement($project->members->pluck('id')),
                         'loggedAt' => now(),
-                        'usedBy_id' => fake()->randomElement($project->members->pluck('id')),
-                        'usedAt' => now(),
+                        // 'usedBy_id' => fake()->randomElement($project->members->pluck('id')),
+                        // 'usedAt' => now(),
                         'status' => SpecimenStatus::Used,
                     ]);
             });

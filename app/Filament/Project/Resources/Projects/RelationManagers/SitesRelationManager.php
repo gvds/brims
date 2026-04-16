@@ -29,6 +29,7 @@ class SitesRelationManager extends RelationManager
             ->components([
                 TextInput::make('name')
                     ->required()
+                    ->autocomplete(false)
                     ->minLength(2)
                     ->maxLength(20)
                     ->autofocus(),

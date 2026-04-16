@@ -172,7 +172,6 @@ return [
     'resources' => [
         'subject' => 'model',
         'manage' => [
-            // ...existing code...
             App\Models\ProjectMember::class => [
                 'setSubstitute',
             ],
@@ -180,12 +179,15 @@ return [
         'exclude' => [
             App\Filament\App\Resources\Teams\TeamResource::class,
             App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource::class,
-            App\Filament\App\Resources\Teams\Resources\Studydesigns\StudydesignResource::class,
+            App\Filament\App\Resources\Projects\ProjectResource::class,
             App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource::class,
+            App\Filament\Admin\Resources\Studydesigns\StudydesignResource::class,
             App\Filament\Admin\Resources\Teams\TeamResource::class,
             App\Filament\Admin\Resources\Users\UserResource::class,
-            App\Filament\App\Resources\Projects\ProjectResource::class,
+            App\Filament\Admin\Resources\UnitDefinitions\UnitDefinitionResource::class,
+            App\Filament\Admin\Resources\PhysicalUnits\PhysicalUnitResource::class,
             App\Filament\Project\Resources\Projects\ProjectResource::class,
+            \Croustibat\FilamentJobsMonitor\Resources\QueueMonitorResource::class,
             \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class,
         ],
     ],

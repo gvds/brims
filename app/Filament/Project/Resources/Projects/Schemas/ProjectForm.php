@@ -58,7 +58,7 @@ class ProjectForm
                             ]),
                         TextInput::make('storageDesignation')
                             ->label('Storage Designation')
-                            ->required()
+                            // ->required()
                             ->maxLength(40),
                         Grid::make(2)
                             ->schema([

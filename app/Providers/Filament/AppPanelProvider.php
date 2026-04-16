@@ -35,7 +35,7 @@ class AppPanelProvider extends PanelProvider
 
         FilamentView::registerRenderHook(
             name: 'panels::head.end',
-            hook: fn (): string => Blade::render(string: "@vite('resources/js/app.js')"),
+            hook: fn(): string => Blade::render(string: "@vite('resources/js/app.js')"),
         );
     }
 
@@ -79,17 +79,21 @@ class AppPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 NavigationItem::make('Team')
-                    ->url(fn (): string => route('filament.app.resources.teams.view', [
+                    ->url(fn(): string => route('filament.app.resources.teams.view', [
                         'record' => Auth::user()->team_id,
                     ]))
                     ->icon('heroicon-o-user-group')
                     ->sort(2)
-                    ->visible(fn (): bool => Auth::user()->team_id !== null),
+                    ->visible(fn(): bool => Auth::user()->team_id !== null),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
-                    ->sort(10)
-                    ->visible(fn (): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
+                    ->sort(3)
+                    ->visible(fn(): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
+                NavigationItem::make('Documentation')
+                    ->url('/docs')
+                    ->icon('heroicon-o-book-open')
+                    ->sort(4)
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')

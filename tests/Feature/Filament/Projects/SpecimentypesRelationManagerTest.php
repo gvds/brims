@@ -23,10 +23,11 @@
  */
 
 use App\Enums\StorageDestinations;
-use App\Filament\App\Resources\Projects\RelationManagers\SpecimentypesRelationManager;
+use App\Filament\Project\Resources\Projects\RelationManagers\SpecimentypesRelationManager;
 use App\Models\Labware;
 use App\Models\Project;
 use App\Models\Specimentype;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Sleep;
 
 use function Pest\Laravel\actingAs;
@@ -94,7 +95,7 @@ describe('Specimentypes Relation Manager Configuration', function (): void {
     });
 
     it('has proper relationship with project', function (): void {
-        expect($this->project->specimentypes())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class);
+        expect($this->project->specimentypes())->toBeInstanceOf(HasMany::class);
         expect($this->project->specimentypes()->count())->toBe(2); // 2 existing specimen types added in setup
     });
 

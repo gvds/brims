@@ -102,7 +102,7 @@ class ViewManifest extends ViewRecord
                         throw new \Exception('Only manifests with status "Open" can be deleted.');
                     }
                     $record->specimens()->each(function ($specimen) {
-                        $specimen->setStatus($specimen->pivot->priorSpecimenStatus);
+                        $specimen->logOutOfManifest($specimen->pivot->priorSpecimenStatus);
                     });
                 })
                 ->visible(fn() => $this->record->status === ManifestStatus::Open),

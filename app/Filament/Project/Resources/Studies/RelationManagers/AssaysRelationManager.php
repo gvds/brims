@@ -9,7 +9,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -58,15 +57,6 @@ class AssaysRelationManager extends RelationManager
         $this->getFileMetadata();
     }
 
-    public function getInfo($file)
-    {
-        return Http::withHeaders([
-            'Accept-Encoding' => 'gzip, deflate',
-        ])->withOptions([
-            'decode_content' => false,
-        ])->get(Storage::disk('s3')->url($file));
-    }
-
     public function getFileMetadata(): void
     {
         $assays = $this->getOwnerRecord()->assays()->get();
@@ -74,38 +64,72 @@ class AssaysRelationManager extends RelationManager
         foreach ($assays as $assay) {
             if (is_array($assay->assayfiles)) {
                 foreach ($assay->assayfiles as $file) {
-                    $assayfiles[] = $file . '.info';
+                    $assayfiles[] = $file.'.info';
                 }
             }
         }
 
-        $this->files = Storage::disk('s3')->files();
+        $this->files = $assayfiles;
         $this->infos = [];
-        foreach ($this->files as $file) {
-            if (! in_array($file, $assayfiles)) {
-                continue;
+
+        try {
+            $disk = Storage::disk('s3');
+            foreach ($assayfiles as $file) {
+                if (! $disk->exists($file)) {
+                    continue;
+                }
+                $contents = $disk->get($file);
+                if ($contents === null) {
+                    continue;
+                }
+                $info = json_decode($contents, true);
+                if (isset($info['MetaData']['assay_id'])) {
+                    $this->infos[$info['MetaData']['assay_id']][] = $info;
+                }
             }
-            // if (Str::endsWith($file, '.info')) {
-            Storage::disk('s3')->setVisibility($file, 'public');
-            $info = json_decode($this->getInfo($file)->body(), true);
-            $this->infos[$info['MetaData']['assay_id']][] = $info;
-            // }
+        } catch (\Throwable $e) {
+            Log::warning('S3 unavailable while fetching file metadata', [
+                'error' => $e->getMessage(),
+            ]);
+
+            Notification::make()
+                ->title('Storage Unavailable')
+                ->body('Could not retrieve file metadata from storage. The service may be temporarily unavailable.')
+                ->warning()
+                ->persistent()
+                ->send();
         }
     }
 
     public function download($file, $filename)
     {
-        if (! Storage::disk('s3')->exists($file)) {
+        try {
+            if (! Storage::disk('s3')->exists($file)) {
+                Notification::make()
+                    ->title('Download Failed')
+                    ->body("<strong>{$filename}</strong> could not be found")
+                    ->danger()
+                    ->send();
+
+                return;
+            }
+
+            return Storage::disk('s3')->download($file, $filename);
+        } catch (\Throwable $e) {
+            Log::warning('S3 unavailable during file download', [
+                'file' => $file,
+                'error' => $e->getMessage(),
+            ]);
+
             Notification::make()
-                ->title('Download Failed')
-                ->body("<strong>{$filename}</strong> could not be found")
-                ->danger()
+                ->title('Storage Unavailable')
+                ->body('Could not download the file. The storage service may be temporarily unavailable.')
+                ->warning()
+                ->persistent()
                 ->send();
 
             return;
         }
-
-        return Storage::disk('s3')->download($file, $filename);
     }
 
     public function delete($storedFilename, $assay_id)
@@ -114,7 +138,7 @@ class AssaysRelationManager extends RelationManager
 
         if ($assay) {
             $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];
-            $assayFiles = array_values(array_filter($assayFiles, fn($f) => $f !== $storedFilename));
+            $assayFiles = array_values(array_filter($assayFiles, fn ($f) => $f !== $storedFilename));
             $assay->assayfiles = $assayFiles;
             $assay->save();
 
@@ -126,7 +150,7 @@ class AssaysRelationManager extends RelationManager
 
         // Delete the file and its metadata from S3
         Storage::disk('s3')->delete($storedFilename);
-        Storage::disk('s3')->delete($storedFilename . '.info');
+        Storage::disk('s3')->delete($storedFilename.'.info');
 
         $this->getFileMetadata();
     }
@@ -199,8 +223,8 @@ class AssaysRelationManager extends RelationManager
         if ($fileName) {
             try {
                 $storageDeleted = Storage::disk('s3')->delete($fileName);
-                $partDeleted = Storage::disk('s3')->delete($fileName . '.part');
-                Storage::disk('s3')->delete($fileName . '.info');
+                $partDeleted = Storage::disk('s3')->delete($fileName.'.part');
+                Storage::disk('s3')->delete($fileName.'.info');
 
                 Log::info('Files deleted from S3 storage', [
                     'file_name' => $fileName,

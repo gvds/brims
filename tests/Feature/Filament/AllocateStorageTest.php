@@ -100,14 +100,17 @@ describe('AllocateStorage Page', function (): void {
 
         livewire(AllocateStorage::class)
             ->assertSee($specimenType->name)
-            ->assertSee('3 logged specimens');
+            ->assertSee('3 specimens');
     });
 
     it('does not display specimen types without storageSpecimenType', function (): void {
         $specimenType = Specimentype::factory()
             ->for($this->project)
             ->for($this->labware, 'labware')
-            ->create(['storageSpecimenType' => null]);
+            ->create([
+                'name' => 'No Storage SpecimenType',
+                'storageSpecimenType' => null,
+            ]);
 
         Specimen::factory()
             ->count(2)
@@ -125,7 +128,10 @@ describe('AllocateStorage Page', function (): void {
         $specimenType = Specimentype::factory()
             ->for($this->project)
             ->for($this->labware, 'labware')
-            ->create(['storageSpecimenType' => 'Frozen Plasma']);
+            ->create([
+                'name' => 'Frozen Plasma No Logged Specimens',
+                'storageSpecimenType' => 'Frozen Plasma',
+            ]);
 
         Specimen::factory()
             ->count(2)
@@ -143,7 +149,10 @@ describe('AllocateStorage Page', function (): void {
         $specimenType = Specimentype::factory()
             ->for($this->project)
             ->for($this->labware, 'labware')
-            ->create(['storageSpecimenType' => 'Frozen Plasma']);
+            ->create([
+                'name' => 'Frozen Plasma Other Site',
+                'storageSpecimenType' => 'Frozen Plasma',
+            ]);
 
         Specimen::factory()
             ->count(2)

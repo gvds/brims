@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Studies\Tables;
 
+use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,9 +21,18 @@ class StudiesTable
                     ->searchable(),
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('submission_date')
-                    ->date('Y-m-d')
-                    ->sortable(),
+                TextColumn::make('specimens_count')
+                    ->label('Specimens')
+                    ->counts('specimens')
+                    ->numeric()
+                    ->badge()
+                    ->color(fn($state) => $state > 0 ? 'primary' : 'gray'),
+                TextColumn::make('assays_count')
+                    ->label('Assays')
+                    ->counts('assays')
+                    ->numeric()
+                    ->badge()
+                    ->color(fn($state) => $state > 0 ? 'primary' : 'gray'),
                 TextColumn::make('public_release_date')
                     ->date('Y-m-d')
                     ->sortable(),

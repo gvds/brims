@@ -64,7 +64,7 @@ class ManifestItemImporter extends Importer
     protected function afterSave(): void
     {
         $specimen = Specimen::find($this->record->specimen_id);
-        $specimen->update(['status' => SpecimenStatus::PreTransfer]);
+        $specimen->logIntoManifest();
     }
 
     public static function getCompletedNotificationBody(Import $import): string

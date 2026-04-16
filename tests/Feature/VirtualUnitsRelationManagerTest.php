@@ -26,7 +26,11 @@ it('clears start and end boxes when rack capacity changes in a partial selection
         'study_design_id' => $studyDesign->id,
     ]);
 
-    $specimentype = Specimentype::factory()->create(['project_id' => $project->id]);
+    $specimentype = Specimentype::factory()->create([
+        'project_id' => $project->id,
+        'storageSpecimenType' => fake()->word(),
+        'store' => true,
+    ]);
 
     $unitDefinition = UnitDefinition::factory()->create([
         'boxDesignation' => 'Numeric',

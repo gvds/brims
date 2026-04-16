@@ -5,8 +5,8 @@ namespace App\Filament\Project\Resources\Projects\Resources\Arms;
 use App\Filament\Project\Resources\Projects\ProjectResource;
 use App\Filament\Project\Resources\Projects\Resources\Arms\Pages\CreateArm;
 use App\Filament\Project\Resources\Projects\Resources\Arms\Pages\EditArm;
-use App\Filament\Project\Resources\Projects\Resources\Arms\Schemas\ArmForm;
 use App\Filament\Project\Resources\Projects\Resources\Arms\Pages\ViewArm;
+use App\Filament\Project\Resources\Projects\Resources\Arms\Schemas\ArmForm;
 use App\Filament\Project\Resources\Projects\Resources\Arms\Schemas\ArmInfolist;
 use App\Filament\Project\Resources\Projects\Resources\Arms\Tables\ArmsTable;
 use App\Models\Arm;
@@ -53,9 +53,7 @@ class ArmResource extends Resource
     public static function getPages(): array
     {
         return [
-            'create' => CreateArm::route('/create'),
             'view' => ViewArm::route('/{record}'),
-            'edit' => EditArm::route('/{record}/edit'),
         ];
     }
 }

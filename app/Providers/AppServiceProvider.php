@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Enums\SystemRoles;
+use App\Http\Responses\LogoutResponse;
 use App\Models\Permission;
 use App\Models\Role;
+use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -18,10 +20,7 @@ class AppServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
-        }
+        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     /**

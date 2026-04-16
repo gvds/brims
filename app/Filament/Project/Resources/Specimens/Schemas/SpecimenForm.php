@@ -17,11 +17,8 @@ class SpecimenForm
         return $schema
             ->components([
                 TextEntry::make('barcode'),
-                // ->required()
-                // ->unique(table: 'specimens', column: 'barcode', ignoreRecord: true)
-                // ->maxLength(20),
-                TextEntry::make('subjectEvent.event.name'),
-                // ->label('Subject Event'),
+                TextEntry::make('subjectEvent.event.name')
+                    ->label('Subject Event'),
                 Select::make('specimenType_id')
                     ->relationship(name: 'specimenType', titleAttribute: 'name')
                     ->required(),
@@ -51,17 +48,6 @@ class SpecimenForm
                         true
                     ),
                 DatePicker::make('loggedAt'),
-                Select::make('loggedOutBy_id')
-                    ->label('Logged Out By')
-                    ->relationship(name: 'loggedOutBy', titleAttribute: 'firstname')
-                    ->requiredIf(
-                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::LoggedOut]),
-                        true
-                    ),
-                Select::make('usedBy_id')
-                    ->relationship(name: 'usedBy', titleAttribute: 'firstname')
-                    ->requiredIf(fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Used]), true),
-                DatePicker::make('usedAt'),
                 Select::make('parentSpecimen_id')
                     ->relationship(name: 'parentSpecimen', titleAttribute: 'barcode')
                     ->default(null),
