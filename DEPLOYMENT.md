@@ -2,6 +2,8 @@
 
 This guide covers deploying the BRIMS (Bio-medical Research Information Management System) Laravel application on an Ubuntu/Debian server running **Nginx** and **PHP-FPM**.
 
+For **local full-stack testing on your machine** (PHP 8.4, MariaDB 11, Mailpit, phpMyAdmin, queue worker, and scheduler in one Compose project), use Docker instead of the sections below: copy [`.env.docker`](.env.docker) to `.env`, then run `bash docker/setup.sh` or follow the [README — Quick Start (Docker)](README.md#quick-start-docker). That environment mirrors the same core pieces this document describes (database, mail, uploads, queue) without Nginx or system PHP.
+
 ---
 
 ## Table of Contents

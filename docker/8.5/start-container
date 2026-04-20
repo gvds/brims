@@ -15,6 +15,24 @@ fi
 
 chmod -R ugo+rw /.composer
 
+# First-time bind mounts often have no vendor/ yet; supervisor would otherwise
+# crash-loop Octane/queue until `docker compose exec laravel.test composer install` finishes.
+if [ ! -f /var/www/html/vendor/autoload.php ]; then
+    echo "Waiting for Composer dependencies (vendor/autoload.php)..."
+    echo "Install them with: docker compose exec laravel.test composer install"
+    waited=0
+    max_wait=600
+    while [ ! -f /var/www/html/vendor/autoload.php ]; do
+        if [ "$waited" -ge "$max_wait" ]; then
+            echo "Timed out after ${max_wait}s waiting for vendor/autoload.php."
+            exit 1
+        fi
+        sleep 2
+        waited=$((waited + 2))
+    done
+    echo "Composer dependencies found; starting services."
+fi
+
 if [ $# -gt 0 ]; then
     if [ "$SUPERVISOR_PHP_USER" = "root" ]; then
         exec "$@"

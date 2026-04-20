@@ -71,10 +71,10 @@ echo ""
 echo "→ Generating application key..."
 $COMPOSE exec laravel.test php artisan key:generate
 
-# 8. Run migrations and seed
+# 8. Run migrations and seed through isolated DB stage script
 echo ""
-echo "→ Running database migrations..."
-$COMPOSE exec laravel.test php artisan migrate --seed
+echo "→ Running database migrations and seed..."
+bash docker/setup-db.sh fresh-seed
 
 # 9. Create storage symlink
 echo ""
