@@ -9,8 +9,6 @@
 # /.vscode
 /auth.json
 /node_modules
-/public/js
-/public/css
 /public/build
 /public/hot
 /public/js

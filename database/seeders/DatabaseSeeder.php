@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
         Artisan::call('shield:generate --all --panel=project --option=permissions --no-interaction');
         $this->call([
             UserSeeder::class,
-            StudydesignSeeder::class,
             AssayDefinitionSeeder::class,
             ProjectSeeder::class,
             RoleSeeder::class,
