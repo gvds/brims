@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class StudydesignsTable
 {
@@ -17,7 +18,7 @@ class StudydesignsTable
                 TextColumn::make('type')
                     ->searchable(),
                 TextColumn::make('type_term_accession_number')
-                    ->searchable(),
+                    ->url(fn($record) => Str::isUrl($record->type_term_accession_number) ? $record->type_term_accession_number : null, shouldOpenInNewTab: true),
                 TextColumn::make('type_term_reference')
                     ->searchable(),
                 TextColumn::make('created_at')
