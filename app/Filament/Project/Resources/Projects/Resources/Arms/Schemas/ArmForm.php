@@ -30,6 +30,7 @@ class ArmForm
                     ])
                     ->columnSpanFull(),
                 CheckboxList::make('switcharms')
+                    ->label('Switchable Arms')
                     ->options(
                         function (?Arm $record, Component $livewire): array {
                             $projectId = $record ? $record->project_id : $livewire->getOwnerRecord()->id;
