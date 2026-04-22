@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\AssayDefinition;
 use App\Models\Team;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class AssayDefinitionSeeder extends Seeder
@@ -14,11 +14,19 @@ class AssayDefinitionSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::each(function ($team) {
+        Team::query()->each(function (Team $team): void {
+            $userId = $team->leader_id
+                ?? $team->members()->orderBy('id')->value('id')
+                ?? User::query()->orderBy('id')->value('id');
+
+            if ($userId === null) {
+                return;
+            }
+
             AssayDefinition::factory(8)
                 ->create([
                     'team_id' => $team->id,
-                    'user_id' => $team->leader_id,
+                    'user_id' => $userId,
                 ]);
         });
     }

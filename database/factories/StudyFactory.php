@@ -17,8 +17,10 @@ class StudyFactory extends Factory
     public function definition(): array
     {
         return [
-            'identifier' => fake()->unique()->word(),
-            'title' => fake()->sentence(4),
+            // `studies.identifier` is globally unique; `word()` has too small a space
+            // and collides during large seed runs.
+            'identifier' => fake()->unique()->bothify('study-????-####'),
+            'title' => fake()->unique()->sentence(4),
             'description' => fake()->paragraph(),
             'submission_date' => fake()->date(),
             'studyfile' => fake()->word(),
