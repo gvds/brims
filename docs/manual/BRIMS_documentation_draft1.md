@@ -161,15 +161,20 @@ Once signed in, you will land on the main BRIMS interface. The area you see firs
 
 ## 1.2 How BRIMS Is Organised
 
-BRIMS is built around a **project** as its main organisational unit. Almost all of your day-to-day work — participant enrolment, specimen logging, storage, shipments, and study data — takes place within a specific project.
+BRIMS organises work at two levels: a **team** and a **project**.
+
+A **team** is the top-level organisational unit in BRIMS. It represents the research group or organisation that operates the system and owns the projects within it. Teams have their own members, protocols, and assay definitions. Every user belongs to a team, and every project belongs to a team.
+
+A **project** is the main working unit within a team. Almost all of your day-to-day work — participant enrolment, specimen logging, storage, shipments, and study data — takes place within a specific project.
 
 This is important to understand from the start: the actions, records, and data you see are scoped to the project you are currently working in. If you switch to a different project, you will see different participants, specimens, and study records.
 
-Below the project level, the main building blocks are:
+The main building blocks are:
 
 | Concept | What it represents |
 |---|---|
-| **Project** | The top-level research effort, bringing together all sites, participants, and studies |
+| **Team** | The organisational group that owns projects, members, protocols, and assay definitions |
+| **Project** | The primary working unit within a team, bringing together all sites, participants, and studies |
 | **Site** | A physical or organisational location where project work is carried out |
 | **Arm** | A participant grouping within the project, such as a control or treatment cohort |
 | **Subject** | A participant enrolled in the project — BRIMS uses the term *subject* for participant records |
@@ -188,21 +193,22 @@ These records are connected. A subject belongs to a site and an arm; events are 
 
 ### Main Navigation
 
-The main navigation menu gives you access to the areas of BRIMS relevant to your role and project.
+The main navigation menu gives you access to the areas of BRIMS relevant to your role and project. [Note: assumes a project has been created previously and can be accessed by user]
 
 ![The main BRIMS navigation menu with a project selected, showing Subjects, Specimens, Specimen Storage, Manifests, Studies, and Configure Project Details.]()
 
 Common navigation areas include:
 
+- **Team** — Your team's overview page, showing members, projects, protocols, and assay definitions
+- **Project Configuration** — Project-level settings, sites, arms, specimen types, labware, and imports or exports
 - **Subjects** — Participant enrolment, subject records, and linked events
+- **Specimens** — Reviewing, searching, and exporting the full specimen list
 - **Log Primary Specimens** — Barcode-driven logging of primary specimens
 - **Log Derivative Specimens** — Logging of derivative (child) specimens from a parent
-- **Specimens** — Reviewing, searching, and exporting the full specimen list
 - **Specimen Storage** — Storage allocation and storage reports
 - **Manifests** — Shipment and transfer records
 - **Studies** — Study records, linked specimens, and assay data
-- **Configure Project Details** — Project-level settings, sites, arms, specimen types, labware, and imports or exports
-
+- 
 Not all of these areas will be visible to every user. What you see depends on your project role.
 
 ### Moving Between Records
@@ -313,7 +319,7 @@ Each step is covered in its own section below. A [setup checklist](#setup-checkl
 
 ## 2.1 Creating a Project
 
-Navigate to your team's **Projects** section and select **New Project**.
+Navigate to your team's **Projects** section and select **New Project**. 
 
 ![The project creation form showing required fields: title, identifier, study design, project leader, storage designation, and subject ID settings.]()
 
@@ -350,6 +356,8 @@ When you save a new project, BRIMS sets up the following automatically:
 
 These defaults are a starting point. Review them before proceeding with the rest of the setup, particularly the initial site name and the Admin role permissions.
 
+Sections 2.2 to 2.6 cover the remaining project configuration steps. All of these are accessed through **Project Configuration** in the main navigation panel. Select your project from the list of  projects using the **Access** button, then open **Project Configuration** to find the tabs for Members, Sites, Arms, Labware and Specimen Types.
+
 ---
 
 ## 2.2 Adding Sites
@@ -384,6 +392,8 @@ Navigate to the project view, open the **Arms** tab, and select **New Arm**.
 
 BRIMS assigns arm numbers automatically. The arm number cannot be set manually.
 
+When two or more arms exist in a project, the arm form also shows a **Switch Arms** checkbox list. Ticking an arm here means that participants currently enrolled in this arm can be moved to the selected arm using the **Switch Arm** action on a subject's record. When a switch is performed, all of the subject's pending, primed, and scheduled events from the current arm are cancelled, the subject is assigned to the new arm with a new baseline date, and a fresh set of events is generated from the new arm's event templates. If no arms are ticked, the Switch Arm option will not appear for any subject in this arm.
+
 > **Tip:** Create all arms before you start adding event templates. Once participants are enrolled, changing an arm's structure may affect the events that have already been scheduled for subjects.
 
 ### Adding event templates to an arm
@@ -400,6 +410,9 @@ Events represent the visit schedule or follow-up milestones for participants in 
 | **Post Window** | How many days after the scheduled date the event can still be recorded as on time. |
 | **Autolog** | If enabled, BRIMS logs this event automatically at the defined offset. |
 | **Repeatable** | If enabled, additional iterations of this event can be added after the first one is recorded. |
+| **Name Labels** | The number of full-name barcode labels to print per event. Each label shows the participant's name, the project–subject–event ID, event name, iteration, and arm name. Enter `0` if not required. |
+| **Subject Event Labels** | The number of PSE (Project–Subject–Event) barcode labels to print per event. Each label shows the subject ID, PSE ID, event name, iteration, and arm name. Enter `0` if not required. |
+| **Study ID Labels** | The number of subject ID-only barcode labels to print per event. Each label shows the subject ID alone. Enter `0` if not required. |
 | **Active** | Controls whether this event template is currently in use for new subjects. |
 
 > **Tip:** The offset, ante window, and post window together define the acceptable timing range for each visit. Setting these correctly helps follow-up review reports distinguish between events that were on time, those recorded within an acceptable window, and those that were genuinely missed or late. Discuss these values with your study statistician or clinical operations lead before entering them.
@@ -410,35 +423,49 @@ Events represent the visit schedule or follow-up milestones for participants in 
 
 Before specimen logging begins, configure the specimen types and labware that the project will use. This step is essential: specimen logging workflows in BRIMS rely on these settings to identify and validate samples.
 
-Navigate to the project view and use the **Specimen Types** and **Labware** sections.
+Navigate to the project configuration view and use the **Labware** and **Specimen Types** sections.
 
 ![The Specimen Types and Labware configuration areas, showing type settings and barcode format fields.]()
 
-### Specimen types
-
-Specimen types define what kind of sample is being collected and how it should be handled.
-
-When creating a specimen type, you will define:
-
-- Whether the sample is **primary** (collected directly from the participant) or **derivative** (processed from a primary specimen)
-- Whether specimens of this type should go into storage after logging
-- How aliquots or volumes are managed
-
-These settings affect downstream workflows directly. A specimen type that is not configured for storage will not trigger storage allocation after logging.
-
 ### Labware
 
-Labware records define the physical container associated with a specimen type and the barcode format expected during logging.
+Labware records define the physical container associated with a specimen type and the barcode format expected during logging. Create a labware record for each distinct container type used in the project before configuring specimen types, as specimen types must reference a labware record.
 
-The **Barcode Format Regex** field is particularly important: BRIMS validates every scanned or entered barcode against this pattern. If a barcode does not match the pattern defined for the labware, the logging step will fail.
+| Field | What to enter |
+|---|---|
+| **Name** | A short, descriptive name for the container (e.g. `EDTA Tube`, `Serum Vacutainer`). |
+| **Barcode Format Regex** | A regular expression that defines the expected barcode format for this labware. BRIMS validates every scanned or entered barcode against this pattern — if the barcode does not match, the logging step will fail. The regex must begin with `^` and end with `$`; BRIMS will add these automatically if omitted. |
 
 > **Tip:** Work with your laboratory team to confirm the barcode format in use before entering the regex pattern. A small formatting error here can block logging for the entire project. If you are not familiar with regular expressions, ask your data manager or system administrator to help define this field.
+
+### Specimen types
+
+Specimen types define what kind of sample is being collected and how it should be handled. Each specimen type must be linked to a labware record.
+
+| Field | What to enter |
+|---|---|
+| **Name** | A descriptive name for the specimen type (e.g. `EDTA Whole Blood`, `Serum`). |
+| **Primary** | Enable if this specimen is collected directly from the participant. Disable if it is derived from another specimen (e.g. plasma separated from whole blood). |
+| **Parent Specimen Type** | Only available when **Primary** is disabled. Select the primary specimen type that this derivative is processed from. |
+| **Aliquots** | The number of aliquots (portions) that are expected per specimen of this type. Must be at least 1. |
+| **Pooled** | Enable if specimens of this type are pooled from multiple sources. |
+| **Default Volume** | The typical volume of each aliquot (e.g. `1.0`). Required if a volume unit is entered. |
+| **Volume Unit** | The unit for the volume (e.g. `mL`, `µL`). Required if a default volume is entered. |
+| **Specimen Group** | An optional free-text grouping label, used to organise specimen types in reports or exports (e.g. 'Blood'). |
+| **Labware** | Select the labware record that corresponds to the physical container for this specimen type. |
+| **Store** | Enable if specimens of this type should be allocated to storage after logging. |
+| **Storage Specimen Type** | Only available when **Store** is enabled. The label used to identify this specimen type within the storage system. |
+| **Destination** | Only available when **Store** is enabled. Select `Internal` for on-site storage within BRIMS, or `Biorepository` for transfer to an external biorepository. |
+| **Transfer Destinations** | Optional. Add one or more destination labels if specimens may be transferred to named locations outside of the standard storage workflow. |
+| **Active** | Controls whether this specimen type is available for logging. Disable to retire a type without deleting it. |
+
+> **Tip:** Configure derivative specimen types only after the parent primary type has been created, as the form requires you to select the parent type. If a derivative type is created before its parent, it will not be available to select.
 
 ---
 
 ## 2.5 Reviewing Roles and Adding Project Members
 
-### Reviewing roles
+### Reviewing roles [*still to check*]
 
 Roles define what each project member is permitted to do. BRIMS creates a default Admin role when the project is set up, but most projects need at least a few distinct roles — for example, a data manager role, a clinical staff role, and a laboratory role.
 
@@ -512,7 +539,7 @@ Navigate to **Studies** in the project sidebar and select **New Study**.
 
 ### Locking a study
 
-The **Locked** toggle prevents specimens from being added to or removed from a study. Use this when the study has reached a defined data cut-off or analytical milestone to preserve the integrity of the specimen set.
+The **Locked** toggle prevents specimens from being added to or removed from a study. Use this when the study has reached a defined data cut-off or analytical milestone to preserve the integrity of the specimen set. This action is reversible.
 
 > **Warning:** Locking a study is a significant action. Confirm that all expected specimens have been associated with the study, and that no further additions are anticipated, before enabling this toggle. Locked studies continue to be viewable; only specimen association is restricted.
 
@@ -524,7 +551,7 @@ Use this checklist to confirm that the project is ready before research and labo
 
 - [ ] Project created with a unique title and identifier
 - [ ] Study design selected
-- [ ] Subject ID prefix and digit count confirmed and agreed with the study team
+- [ ] Subject ID prefix and digit count confirmed by the study team
 - [ ] Storage designation entered
 - [ ] Default site reviewed; additional sites created as needed
 - [ ] All study arms created and named
