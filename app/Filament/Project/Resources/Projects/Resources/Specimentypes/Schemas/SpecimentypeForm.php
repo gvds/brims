@@ -64,8 +64,16 @@ class SpecimentypeForm
                 TextInput::make('defaultVolume')
                     ->numeric()
                     ->default(null)
-                    ->requiredWith('volumeUnit'),
-                TextInput::make('volumeUnit')
+                    ->minValue(0)
+                    ->requiredWith('volumeUnit')
+                    ->extraInputAttributes([
+                        'class' => '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                    ]),
+                Select::make('volumeUnit')
+                    ->options([
+                        'µl' => 'µl',
+                        'ml' => 'ml',
+                    ])
                     ->default(null)
                     ->requiredWith('defaultVolume'),
                 TextInput::make('specimenGroup')
