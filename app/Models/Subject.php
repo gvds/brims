@@ -8,6 +8,7 @@ use App\Enums\SubjectStatus;
 use App\Models\Scopes\SubjectScope;
 use App\Services\REDCap;
 use Carbon\CarbonImmutable;
+use Database\Factories\SubjectFactory;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 #[ScopedBy([SubjectScope::class])]
 class Subject extends Model
 {
-    /** @use HasFactory<\Database\Factories\SubjectFactory> */
+    /** @use HasFactory<SubjectFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];
@@ -28,7 +29,7 @@ class Subject extends Model
     protected function fullname(): Attribute
     {
         return new Attribute(
-            get: fn(): string => $this->firstname . ' ' . $this->lastname,
+            get: fn (): string => $this->firstname.' '.$this->lastname,
         );
     }
 
@@ -75,28 +76,60 @@ class Subject extends Model
         if ($this->status !== SubjectStatus::Generated) {
             throw new \Exception('Subject is not in Generated status');
         }
-        $armBaselineDate = new CarbonImmutable($data['enrolDate']);
-        $newevents = Event::where('arm_id', $this->arm_id)->get();
-        $newevents->each(fn($event) => $this->events()->attach(
-            $event,
-            [
-                'eventDate' => $armBaselineDate,
-                'minDate' => isset($event->offset_ante_window) ? $armBaselineDate->addDays($event->offset - $event->offset_ante_window) : null,
-                'maxDate' => isset($event->offset_post_window) ? $armBaselineDate->addDays($event->offset + $event->offset_post_window) : null,
-                'iteration' => 1,
-                'status' => $event->event_order === 1 && $event->offset === 0 ? EventStatus::Scheduled : EventStatus::Pending,
-                'labelstatus' => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
-            ]
-        ));
-
         $data['status'] = SubjectStatus::Enrolled->value;
         $data['armBaselineDate'] = $data['enrolDate'];
 
         $this->update($data);
 
+        $this->subjectEvents()
+            ->whereRelation('event', 'event_order', 1)
+            ->whereRelation('event', 'offset', 0)
+            ->update(['status' => EventStatus::Logged, 'labelstatus' => LabelStatus::Generated]);
+
+        $armBaselineDate = new CarbonImmutable($this->enrolDate);
+        $events = $this->subjectEvents()
+            ->whereRelation('event', 'arm_id', $this->arm_id)
+            ->get();
+        $events->each(fn ($subjectEvent) => $subjectEvent->update([
+            'eventDate' => $armBaselineDate->addDays($subjectEvent->event->offset),
+            'minDate' => $armBaselineDate->addDays($subjectEvent->event->offset - $subjectEvent->event->offset_ante_window),
+            'maxDate' => $armBaselineDate->addDays($subjectEvent->event->offset + $subjectEvent->event->offset_post_window),
+        ]));
+
         if (session('currentProject')->redcapProject_id) {
             REDCap::createREDCapRecord($this, $this->arm_id);
         }
+    }
+
+    public function generateEvents($armBaselineDate = null): void
+    {
+        if ($this->status !== SubjectStatus::Generated) {
+            throw new \Exception('Subject is not in Generated status');
+        }
+        $newevents = Event::where('arm_id', $this->arm_id)->get();
+        $newevents->each(fn ($event) => $this->events()->attach(
+            $event,
+            [
+                'eventDate' => $armBaselineDate?->addDays($event->offset) ?? null,
+                'minDate' => $armBaselineDate?->addDays($event->offset - $event->offset_ante_window) ?? null,
+                'maxDate' => $armBaselineDate?->addDays($event->offset + $event->offset_post_window) ?? null,
+                'iteration' => 1,
+                'status' => EventStatus::Pending,
+
+                'status' => $this->status === SubjectStatus::Generated ?
+                    EventStatus::Pending :
+                    match ($event->autolog) {
+                        true => EventStatus::Logged,
+                        false => $event->event_order === 1 && $event->offset === 0 ? EventStatus::Scheduled : EventStatus::Pending,
+                    },
+
+                // 'labelstatus' => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
+                'labelstatus' => match ($event->autolog) {
+                    true => LabelStatus::Generated,
+                    false => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
+                },
+            ]
+        ));
     }
 
     public function switchArm(int $arm_id, string $armBaselineDate): void
@@ -116,24 +149,25 @@ class Subject extends Model
             $this->save();
 
             $armBaselineDate = new CarbonImmutable($armBaselineDate);
-            $newevents = Event::where('arm_id', $arm_id)->get();
-            $newevents->each(fn($event) => $this->events()->attach(
-                $event,
-                [
-                    'eventDate' => $armBaselineDate->addDays($event->offset),
-                    'minDate' => $armBaselineDate->addDays($event->offset - $event->offset_ante_window),
-                    'maxDate' => $armBaselineDate->addDays($event->offset + $event->offset_post_window),
-                    'iteration' => 1,
-                    'status' => match ($event->autolog) {
-                        true => EventStatus::Logged,
-                        false => $event->event_order === 1 && $event->offset === 0 ? EventStatus::Scheduled : EventStatus::Pending,
-                    },
-                    'labelstatus' => match ($event->autolog) {
-                        true => LabelStatus::Generated,
-                        false => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
-                    },
-                ]
-            ));
+            $this->generateEvents($armBaselineDate);
+            // $newevents = Event::where('arm_id', $this->arm_id)->get();
+            // $newevents->each(fn($event) => $this->events()->attach(
+            //     $event,
+            //     [
+            //         'eventDate' => $armBaselineDate->addDays($event->offset),
+            //         'minDate' => $armBaselineDate->addDays($event->offset - $event->offset_ante_window),
+            //         'maxDate' => $armBaselineDate->addDays($event->offset + $event->offset_post_window),
+            //         'iteration' => 1,
+            //         'status' => match ($event->autolog) {
+            //             true => EventStatus::Logged,
+            //             false => $event->event_order === 1 && $event->offset === 0 ? EventStatus::Scheduled : EventStatus::Pending,
+            //         },
+            //         'labelstatus' => match ($event->autolog) {
+            //             true => LabelStatus::Generated,
+            //             false => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
+            //         },
+            //     ]
+            // ));
 
             if (session('currentProject')->redcapProject_id) {
                 REDCap::createREDCapRecord($this, $arm_id);

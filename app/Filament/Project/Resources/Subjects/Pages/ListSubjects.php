@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Subjects\Pages;
 
+use App\Enums\SubjectStatus;
 use App\Filament\Project\Resources\Subjects\SubjectResource;
 use App\Models\Project;
 use App\Models\ProjectMember;
@@ -42,12 +43,13 @@ class ListSubjects extends ListRecords
                         ->required(),
                 ])
                 ->action(function (array $data) {
-                    $currentProject = Project::find(session('currentProject')->id);
-                    $lastSubjectNumber = $currentProject->last_subject_number;
                     try {
                         DB::beginTransaction();
+                        $currentProject = Project::lockForUpdate()
+                            ->find(session('currentProject')->id);
+                        $lastSubjectNumber = $currentProject->last_subject_number;
                         for ($i = 1; $i <= $data['subjects']; $i++) {
-                            Subject::create([
+                            $subject = Subject::create([
                                 'subjectID' => $currentProject->subjectID_prefix . str_pad(++$lastSubjectNumber, $currentProject->subjectID_digits, '0', STR_PAD_LEFT),
                                 'project_id' => $currentProject->id,
                                 'arm_id' => $data['arm'],
@@ -55,7 +57,9 @@ class ListSubjects extends ListRecords
                                 'site_id' => ProjectMember::where('project_id', $currentProject->id)
                                     ->where('user_id', Auth::id())
                                     ->value('site_id'),
+                                'status' => SubjectStatus::Generated,
                             ]);
+                            $subject->generateEvents();
                         }
                         $currentProject->last_subject_number = $lastSubjectNumber;
                         $currentProject->save();

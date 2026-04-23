@@ -85,40 +85,40 @@ class SubjectsTable
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('user_id')
-                    ->options(fn (): array => User::all()->pluck('fullname', 'id')->toArray())
+                    ->options(fn(): array => User::all()->pluck('fullname', 'id')->toArray())
                     ->attribute('fullname')
                     ->label('Manager')
                     ->searchable()
                     ->preload(),
             ])
             ->deferFilters(false)
-            ->recordUrl(fn ($record) => $record->status !== SubjectStatus::Generated ? route('filament.project.resources.subjects.view', ['tenant' => session('currentProject'), 'record' => $record]) : null)
+            ->recordUrl(fn($record) => $record->status !== SubjectStatus::Generated ? route('filament.project.resources.subjects.view', ['tenant' => session('currentProject'), 'record' => $record]) : null)
             ->recordActions([
                 ViewAction::make()
-                    ->visible(fn ($record): bool => $record->status !== SubjectStatus::Generated),
+                    ->visible(fn($record): bool => $record->status !== SubjectStatus::Generated),
                 Action::make('enrol')
-                    ->visible(fn ($record): bool => $record->status === SubjectStatus::Generated)
+                    ->visible(fn($record): bool => $record->status === SubjectStatus::Generated)
                     ->schema(SubjectForm::configure(new Schema)->columns(2)->getComponents())
                     ->action(function (array $data, Subject $record) {
                         DB::beginTransaction();
                         try {
                             $record->enrol($data);
+                            Notification::make()
+                                ->title('Subject enrolled successfully')
+                                ->success()
+                                ->send();
                             DB::commit();
                         } catch (\Throwable $th) {
                             DB::rollBack();
                             Notification::make()
-                                ->title('Error enrolling subject: '.$th->getMessage())
+                                ->title('Error enrolling subject: ' . $th->getMessage())
                                 ->danger()
                                 ->persistent()
                                 ->send();
                         }
-                        Notification::make()
-                            ->title('Subject enrolled successfully')
-                            ->success()
-                            ->send();
                     }),
                 EditAction::make()
-                    ->visible(fn ($record): bool => $record->status === SubjectStatus::Enrolled)
+                    ->visible(fn($record): bool => $record->status === SubjectStatus::Enrolled)
                     ->successNotification(
                         Notification::make()
                             ->title('Subject updated successfully')
