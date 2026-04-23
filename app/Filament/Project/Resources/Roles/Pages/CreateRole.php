@@ -19,8 +19,10 @@ class CreateRole extends CreateRecord
     #[\Override]
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $data['guard_name'] = 'web';
+
         $this->permissions = collect($data)
-            ->reject(fn (mixed $permission, string $key): bool => in_array($key, ['name', 'guard_name', 'select_all', Utils::getTenantModelForeignKey()]))
+            ->reject(fn(mixed $permission, string $key): bool => in_array($key, ['name', 'guard_name', 'select_all', Utils::getTenantModelForeignKey()]))
             ->values()
             ->flatten()
             ->unique();
