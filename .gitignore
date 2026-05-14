@@ -14,8 +14,9 @@
 /public/js
 /public/css
 /public/fonts/**/
-public/storage
+/public/storage
 /storage/*.key
+/storage/exports
 /vendor
 /database/testing*
 Thumbs.db
