@@ -167,18 +167,18 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             ->schema([
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
                                     ->label('Aliquot ' . ($i + 1))
-                                    ->regex('/' . $type->Labware->barcodeFormat . '/')
-                                    ->disabled(isset($this->specimens[$type->id][$i]['barcode']))
+                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/' . $type->Labware->barcodeFormat . '/')
+                                    ->disabled($this->specimens[$type->id][$i]['logged'] ?? false)
                                     ->extraAttributes(['style' => 'height: 30px']),
                                 TextInput::make("specimens.{$type->id}.{$i}.volume")
                                     ->hiddenLabel()
                                     ->numeric()
                                     ->inputMode('decimal')
-                                    ->requiredWith("specimens.{$type->id}.{$i}.barcode")
-                                    ->minValue(0)
+                                    ->requiredWith(($this->specimens[$type->id][$i]['logged'] ?? false) ? '' : "specimens.{$type->id}.{$i}.barcode")
+                                    ->minValue(($this->specimens[$type->id][$i]['logged'] ?? false) ? null : 0)
                                     ->default($type->defaultVolume)
                                     ->suffix($type->volumeUnit)
-                                    ->disabled(isset($this->specimens[$type->id][$i]['barcode']))
+                                    ->disabled($this->specimens[$type->id][$i]['logged'] ?? false)
                                     ->extraAttributes(['style' => 'height: 30px']),
                             ])
                             ->columns(1)
@@ -352,6 +352,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
         //     return;
         // }
+
+        $this->form->validate();
 
         $loggedCount = 0;
         try {
