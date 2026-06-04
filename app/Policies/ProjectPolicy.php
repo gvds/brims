@@ -26,7 +26,8 @@ class ProjectPolicy
 
     public function create(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'Create:Project');
+        return $authUser->team_role === 'TeamRoles::Admin';
+        // return evaluate_permission($authUser, 'Create:Project');
     }
 
     public function update(AuthUser $authUser, Project $project): bool
