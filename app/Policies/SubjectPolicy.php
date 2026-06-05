@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Subject;
 use Filament\Facades\Filament;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class SubjectPolicy
 {
@@ -18,14 +19,14 @@ class SubjectPolicy
     private function evaluateModelPermission($authUser, string $permission, Model $model): bool
     {
         $userIDList = $authUser->substitutees()
-            ->where('project_id', session('currentProject')->id)
+            ->where('project_id', session('currentProject')?->id)
             ->pluck('users.id')
             ->push($authUser->id)
             ->toArray();
 
         $conditions = [
             $authUser->system_role === SystemRoles::SysAdmin,
-            Filament::getCurrentPanel()->getId() === 'app' && $authUser->is_team_admin,
+            Filament::getCurrentPanel()?->getId() === 'app' && $authUser->is_team_admin,
             $authUser->is_team_admin && session('currentProject')?->team_id === $authUser->team_id,
             $authUser->can($permission) && in_array($model->user_id, $userIDList),
         ];
@@ -44,7 +45,7 @@ class SubjectPolicy
             return evaluate_permission($authUser, 'View:Subject');
         }
 
-        return $this->evaluateModelPermission($authUser, 'View:Subject', $subject) && $subject->status !== \App\Enums\SubjectStatus::Generated;
+        return $this->evaluateModelPermission($authUser, 'View:Subject', $subject) && $subject->status !== SubjectStatus::Generated;
     }
 
     public function create(AuthUser $authUser): bool
