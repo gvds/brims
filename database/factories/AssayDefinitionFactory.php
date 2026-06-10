@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,7 +20,9 @@ class AssayDefinitionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => Str::ucfirst(fake()->words(3, true)),
+            'team_id' => Team::factory(),
+            'user_id' => User::factory(),
+            'name' => Str::ucfirst(fake()->unique()->words(3, true)),
             'description' => fake()->sentence(),
             'measurementType' => fake()->word(),
             'technologyType' => fake()->randomElement(['PCR', 'ELISA', 'scRNAseq', 'Luminex']),

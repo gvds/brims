@@ -17,7 +17,24 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::all()->each(function (Team $team): void {
+        Team::query()->with(['leader', 'members'])->get()->each(function (Team $team): void {
+            $leader = $team->leader;
+
+            if (! $leader instanceof User) {
+                $leader = $team->members()->first();
+            }
+
+            if (! $leader instanceof User) {
+                $leader = User::factory()->create([
+                    'team_id' => $team->id,
+                    'team_role' => 'Admin',
+                ]);
+            }
+
+            if ($team->leader_id !== $leader->id) {
+                $team->update(['leader_id' => $leader->id]);
+            }
+
             $projects = Project::factory()
                 ->count(3)
                 ->for($team)
@@ -25,7 +42,7 @@ class ProjectSeeder extends Seeder
                 ->hasSites(2)
                 ->hasLabware(5)
                 ->create([
-                    'leader_id' => $team->leader->id,
+                    'leader_id' => $leader->id,
                 ]);
             $projects->each(function (Project $project) use ($team): void {
                 $arms = Arm::factory()
