@@ -11,6 +11,7 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -24,9 +25,9 @@ class SetNewAccountPassword extends Component implements HasActions, HasSchemas
 
     public function mount(): void
     {
-        $this->user = User::find(basename(request()->getPathInfo()));
         if (!is_null($this->user->email_verified_at)) {
             to_route('filament.app.auth.login');
+            return;
         }
         $this->form->fill();
     }
@@ -41,13 +42,18 @@ class SetNewAccountPassword extends Component implements HasActions, HasSchemas
                     ->autocomplete('new-password')
                     ->required()
                     ->confirmed()
-                    ->minLength(12),
+                    ->rule(
+                        Password::min(15)
+                            ->letters()
+                            ->mixedCase()
+                            ->numbers()
+                            ->symbols()
+                    ),
                 TextInput::make('password_confirmation')
                     ->label('Confirm Password')
                     ->password()
                     ->autocomplete('new-password')
-                    ->required()
-                    ->minLength(12),
+                    ->required(),
             ])
             ->statePath('data');
     }
@@ -60,7 +66,9 @@ class SetNewAccountPassword extends Component implements HasActions, HasSchemas
         ]);
 
         Auth::login($this->user);
-        to_route('filament.app.pages.dashboard');
+        session()->regenerate();
+
+        $this->redirect(route('filament.app.pages.dashboard'));
     }
 
     #[Layout('components.layouts.guest')]

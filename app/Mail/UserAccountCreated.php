@@ -15,7 +15,7 @@ class UserAccountCreated extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $loginUrl;
+    public string $loginUrl;
 
     /**
      * Create a new message instance.
