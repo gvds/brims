@@ -15,10 +15,6 @@ class ViewStudy extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('return')
-                ->label('Return to Studies')
-                ->color('gray')
-                ->url(fn (): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id])),
             EditAction::make(),
         ];
     }
