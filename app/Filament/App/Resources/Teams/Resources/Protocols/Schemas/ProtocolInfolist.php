@@ -12,10 +12,10 @@ class ProtocolInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('team_id')
-                    ->numeric(),
-                TextEntry::make('user_id')
-                    ->numeric(),
+                TextEntry::make('team.name')
+                    ->label('Team'),
+                TextEntry::make('creator.fullname')
+                    ->label('Creator'),
                 TextEntry::make('type'),
                 TextEntry::make('type_term_accession_number'),
                 TextEntry::make('type_term_reference'),
@@ -25,14 +25,12 @@ class ProtocolInfolist
                 TextEntry::make('parameters_names'),
                 TextEntry::make('parameters_term_accession_number'),
                 TextEntry::make('parameters_term_reference'),
-                TextEntry::make('components_names'),
+                TextEntry::make('components_names')
+                    ->columnSpanFull(),
                 TextEntry::make('components_type'),
                 TextEntry::make('components_type_term_accession_number'),
                 TextEntry::make('components_type_term_reference'),
-                TextEntry::make('created_at')
-                    ->dateTime(),
-                TextEntry::make('updated_at')
-                    ->dateTime(),
-            ]);
+            ])
+            ->columns(3);
     }
 }

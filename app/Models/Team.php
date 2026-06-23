@@ -41,4 +41,9 @@ class Team extends Model
     {
         return $this->hasMany(AssayDefinition::class);
     }
+
+    public function programmes(): HasMany
+    {
+        return $this->hasMany(Programme::class);
+    }
 }

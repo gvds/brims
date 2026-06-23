@@ -54,6 +54,7 @@ class TeamResource extends Resource
             RelationManagers\ProjectsRelationManager::class,
             RelationManagers\ProtocolsRelationManager::class,
             RelationManagers\AssayDefinitionsRelationManager::class,
+            RelationManagers\ProgrammesRelationManager::class,
         ];
     }
 

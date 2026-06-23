@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Filament\App\Resources\Teams\Resources\Protocols\Tables;
+namespace App\Filament\App\Resources\Teams\Resources\Programmes\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class ProtocolsTable
+class ProgrammesTable
 {
     public static function configure(Table $table): Table
     {
@@ -17,22 +18,14 @@ class ProtocolsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('user.fullname')
-                    ->label('Creator')
+                TextColumn::make('pi.fullname')
+                    ->label('PI')
                     ->searchable(),
-                TextColumn::make('type')
+                TextColumn::make('funder')
                     ->searchable(),
-                TextColumn::make('description')
-                    ->searchable()
-                    ->limit(50),
-                TextColumn::make('version')
+                TextColumn::make('grantNumber')
                     ->searchable(),
-                TextColumn::make('parameters_names')
-                    ->searchable(),
-                TextColumn::make('components_names')
-                    ->searchable(),
-                TextColumn::make('components_type')
-                    ->searchable(),
+                TextColumn::make('description'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -45,14 +38,17 @@ class ProtocolsTable
             ->filters([
                 //
             ])
+            ->headerActions([
+                CreateAction::make(),
+            ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }
