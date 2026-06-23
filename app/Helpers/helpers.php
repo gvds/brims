@@ -1,9 +1,10 @@
 <?php
 
 use App\Enums\SystemRoles;
+use App\Models\User;
 use Filament\Facades\Filament;
 
-function evaluate_permission($authUser, string $permission): bool
+function evaluate_permission(User $authUser, string $permission): bool
 {
     if (! $authUser) {
         return false;

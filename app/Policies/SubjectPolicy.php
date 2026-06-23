@@ -16,7 +16,7 @@ class SubjectPolicy
 {
     use HandlesAuthorization;
 
-    private function evaluateModelPermission($authUser, string $permission, Model $model): bool
+    private function evaluateModelPermission(AuthUser $authUser, string $permission, Model $model): bool
     {
         $userIDList = $authUser->substitutees()
             ->where('project_id', session('currentProject')?->id)
