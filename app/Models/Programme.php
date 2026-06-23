@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Programme extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProgrammeFactory> */
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function pi()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

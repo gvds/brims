@@ -3,6 +3,7 @@
 namespace App\Filament\App\Resources\Teams\Resources\Programmes\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -17,8 +18,14 @@ class ProgrammesTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('pi.fullname')
+                    ->label('PI')
+                    ->searchable(),
+                TextColumn::make('funder')
+                    ->searchable(),
                 TextColumn::make('grantNumber')
                     ->searchable(),
+                TextColumn::make('description'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -31,14 +38,17 @@ class ProgrammesTable
             ->filters([
                 //
             ])
+            ->headerActions([
+                CreateAction::make(),
+            ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }
