@@ -17,10 +17,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PhysicalunitsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'physicalunits';
 
-    #[\Override]
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return $ownerRecord->sections()->count() > 0;
@@ -65,15 +63,15 @@ class PhysicalunitsRelationManager extends RelationManager
                             ->default(true),
                     ])
                     ->createAnother(false)
-                    ->visible(fn (): bool => $this->getOwnerRecord()->sections()->count() > 0)
+                    ->visible(fn(): bool => $this->getOwnerRecord()->sections()->count() > 0)
                     ->mutateDataUsing(function (array $data): array {
                         $data['unitDefinition_id'] = $this->getOwnerRecord()->getKey();
 
                         return $data;
                     })
-                    ->after(fn () => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
+                    ->after(fn() => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
             ])
-            ->recordUrl(fn ($record): string => route('filament.admin.resources.physical-units.view', ['record' => $record]))
+            ->recordUrl(fn($record): string => route('filament.admin.resources.physical-units.view', ['record' => $record]))
             ->recordActions([
                 EditAction::make()
                     ->schema([
@@ -89,8 +87,8 @@ class PhysicalunitsRelationManager extends RelationManager
                         Toggle::make('available'),
                     ]),
                 DeleteAction::make()
-                    ->visible(fn ($record): bool => $record->virtualUnits()->count() === 0)
-                    ->after(fn () => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
+                    ->visible(fn($record): bool => $record->virtualUnits()->count() === 0)
+                    ->after(fn() => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
             ]);
     }
 }

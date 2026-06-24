@@ -14,7 +14,6 @@ class VirtualUnit extends Model
 {
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     /**
@@ -110,7 +109,7 @@ class VirtualUnit extends Model
         ]);
         foreach ($relocations as $location_id => $relocated) {
             if (! isset($containers[$relocated->id])) {
-                throw new Exception('Container with barcode: '.$relocated->barcode.' in rack: '.$relocated->rack.', box: '.$relocated->box.', position: '.$relocated->position.' not found for relocation');
+                throw new Exception('Container with barcode: ' . $relocated->barcode . ' in rack: ' . $relocated->rack . ', box: ' . $relocated->box . ', position: ' . $relocated->position . ' not found for relocation');
             }
             $containers[$relocated->id]->location_id = $location_id;
             $consolidation->addRelocation($relocated->barcode, $relocated->id, $location_id);

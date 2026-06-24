@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SectionsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'sections';
 
     #[\Override]

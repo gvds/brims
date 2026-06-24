@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListStudydesigns extends ListRecords
 {
-    #[\Override]
     protected static string $resource = StudydesignResource::class;
 
     #[\Override]

@@ -18,40 +18,31 @@ use UnitEnum;
 
 class PhysicalUnitResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = PhysicalUnit::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[\Override]
     protected static string | UnitEnum | null $navigationGroup = 'Storage';
 
-    #[\Override]
     protected static ?int $navigationSort = 2;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return PhysicalUnitForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return PhysicalUnitInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return PhysicalUnitsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -59,7 +50,6 @@ class PhysicalUnitResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

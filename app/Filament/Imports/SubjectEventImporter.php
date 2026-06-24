@@ -15,7 +15,6 @@ use Illuminate\Validation\ValidationException;
 
 class SubjectEventImporter extends Importer
 {
-    #[\Override]
     protected static ?string $model = SubjectEvent::class;
 
     public static function getColumns(): array

@@ -19,7 +19,6 @@ class Project extends Model implements HasName
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function team(): BelongsTo

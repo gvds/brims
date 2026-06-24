@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class EditProject extends EditRecord
 {
-    #[\Override]
     protected static string $resource = ProjectResource::class;
 
     #[\Override]

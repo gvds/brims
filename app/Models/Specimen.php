@@ -18,10 +18,8 @@ class Specimen extends Model
 {
     use HasFactory;
 
-    #[\Override]
     protected $table = 'specimens';
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function subjectEvent(): BelongsTo

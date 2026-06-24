@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class SpecimenLog extends Model
 {
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function specimen()

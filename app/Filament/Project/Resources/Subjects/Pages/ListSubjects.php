@@ -20,7 +20,6 @@ class ListSubjects extends ListRecords
 {
     use WithFileUploads;
 
-    #[\Override]
     protected static string $resource = SubjectResource::class;
 
     #[\Override]

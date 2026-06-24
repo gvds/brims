@@ -15,37 +15,29 @@ use Filament\Tables\Table;
 
 class SpecimenResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Specimen::class;
 
-    #[\Override]
     public static ?int $navigationSort = 4;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'barcode';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return SpecimenForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return SpecimenInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return SpecimensTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -53,7 +45,6 @@ class SpecimenResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

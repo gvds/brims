@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Relocation extends Model
 {
-    #[\Override]
     protected $guarded = ['id'];
 
     public function StorageConsolidation(): BelongsTo

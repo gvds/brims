@@ -10,7 +10,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditSubject extends EditRecord
 {
-    #[\Override]
     protected static string $resource = SubjectResource::class;
 
     #[\Override]

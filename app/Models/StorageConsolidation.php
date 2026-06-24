@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Response;
 
 class StorageConsolidation extends Model
 {
-    #[\Override]
     protected $guarded = ['id'];
 
     public function relocations()

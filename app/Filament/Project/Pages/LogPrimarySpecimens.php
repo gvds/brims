@@ -28,19 +28,14 @@ class LogPrimarySpecimens extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    #[\Override]
     protected static ?string $navigationLabel = 'Log Primary Specimens (2-Stage)';
 
-    #[\Override]
     protected static ?string $title = 'Log Primary Specimens';
 
-    #[\Override]
     protected static ?int $navigationSort = 5;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 
-    #[\Override]
     protected string $view = 'filament.project.pages.log-primary-specimens';
 
     // Properties
@@ -60,7 +55,6 @@ class LogPrimarySpecimens extends Page implements HasForms
 
     public bool $stageOneCompleted = false;
 
-    #[\Override]
     protected $listeners = ['updateform' => '$refresh'];
 
     public function mount(): void

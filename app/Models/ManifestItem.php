@@ -12,10 +12,8 @@ class ManifestItem extends Pivot
     /** @use HasFactory<\Database\Factories\ManifestItemFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $table = 'manifest_items';
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function manifest(): BelongsTo

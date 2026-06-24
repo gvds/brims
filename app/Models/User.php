@@ -40,10 +40,8 @@ class User extends Authenticatable implements FilamentUser, PasskeyUser, HasAppA
      *
      * @var list<string>
      */
-    #[\Override]
     protected $guarded = ['id'];
 
-    #[\Override]
     protected $appends = ['fullname'];
 
     /**
@@ -51,7 +49,6 @@ class User extends Authenticatable implements FilamentUser, PasskeyUser, HasAppA
      *
      * @var list<string>
      */
-    #[\Override]
     protected $hidden = [
         'password',
         'remember_token',

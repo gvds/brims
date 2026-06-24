@@ -17,35 +17,27 @@ use UnitEnum;
 
 class StudydesignResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = StudyDesign::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'type';
 
-    #[\Override]
     protected static string | UnitEnum | null $navigationGroup = 'Utilities';
 
-    #[\Override]
     protected static ?int $navigationSort = 1;
 
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return StudydesignForm::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return StudydesignsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -53,7 +45,6 @@ class StudydesignResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListPublications extends ListRecords
 {
-    #[\Override]
     protected static string $resource = PublicationResource::class;
 
     #[\Override]

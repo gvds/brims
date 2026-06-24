@@ -11,7 +11,6 @@ class PhysicalUnit extends Model
 {
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     /**

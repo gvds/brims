@@ -13,7 +13,6 @@ use Illuminate\Validation\ValidationException;
 
 class StudySpecimenImporter extends Importer
 {
-    #[\Override]
     protected static ?string $model = StudySpecimen::class;
 
     public static function getColumns(): array

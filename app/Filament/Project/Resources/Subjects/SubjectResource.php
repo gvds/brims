@@ -17,34 +17,27 @@ use Filament\Tables\Table;
 
 class SubjectResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Subject::class;
 
-    #[\Override]
     public static ?int $navigationSort = 2;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return SubjectForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return SubjectInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return SubjectsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -53,7 +46,6 @@ class SubjectResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

@@ -13,7 +13,6 @@ class Event extends Model
     /** @use HasFactory<\Database\Factories\EventFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function arm(): BelongsTo

@@ -10,7 +10,6 @@ use Filament\Tables\Table;
 
 class ProgrammesRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'programmes';
 
     #[\Override]

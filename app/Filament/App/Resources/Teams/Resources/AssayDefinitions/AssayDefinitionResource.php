@@ -17,36 +17,29 @@ use Filament\Tables\Table;
 
 class AssayDefinitionResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = AssayDefinition::class;
 
-    #[\Override]
     protected static ?string $parentResource = TeamResource::class;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'name';
 
     // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return AssayDefinitionForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return AssayDefinitionInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return AssayDefinitionsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -54,7 +47,6 @@ class AssayDefinitionResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

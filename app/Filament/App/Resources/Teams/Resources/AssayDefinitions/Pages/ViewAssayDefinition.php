@@ -9,7 +9,6 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewAssayDefinition extends ViewRecord
 {
-    #[\Override]
     protected static string $resource = AssayDefinitionResource::class;
 
     #[\Override]
@@ -18,7 +17,7 @@ class ViewAssayDefinition extends ViewRecord
         return [
             Action::make('return')
                 ->color('gray')
-                ->url(fn (): string => static::getParentResource()::getUrl('view', ['record' => $this->record->team_id, 'relation' => 4])),
+                ->url(fn(): string => static::getParentResource()::getUrl('view', ['record' => $this->record->team_id, 'relation' => 4])),
             EditAction::make(),
         ];
     }

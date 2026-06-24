@@ -8,7 +8,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditManifest extends EditRecord
 {
-    #[\Override]
     protected static string $resource = ManifestResource::class;
 
     #[\Override]

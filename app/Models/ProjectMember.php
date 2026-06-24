@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ProjectMember extends Pivot
 {
-    #[\Override]
     protected $table = 'project_member';
 
     public function user(): BelongsTo

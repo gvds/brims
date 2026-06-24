@@ -13,7 +13,6 @@ use Illuminate\Support\Number;
 
 class SubjectEventExporter extends Exporter
 {
-    #[\Override]
     protected static ?string $model = SubjectEvent::class;
 
     #[\Override]
@@ -38,9 +37,9 @@ class SubjectEventExporter extends Exporter
             ExportColumn::make('event.name'),
             ExportColumn::make('iteration'),
             ExportColumn::make('status')
-                ->formatStateUsing(fn (EventStatus $state): string => $state->name),
+                ->formatStateUsing(fn(EventStatus $state): string => $state->name),
             ExportColumn::make('labelstatus')
-                ->formatStateUsing(fn (LabelStatus $state): string => $state->name),
+                ->formatStateUsing(fn(LabelStatus $state): string => $state->name),
             ExportColumn::make('eventDate'),
             ExportColumn::make('minDate'),
             ExportColumn::make('maxDate'),
@@ -50,10 +49,10 @@ class SubjectEventExporter extends Exporter
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your subject event export has completed and '.Number::format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
+        $body = 'Your subject event export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
         }
 
         return $body;

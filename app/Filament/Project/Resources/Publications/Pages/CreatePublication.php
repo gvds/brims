@@ -7,6 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreatePublication extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = PublicationResource::class;
 }

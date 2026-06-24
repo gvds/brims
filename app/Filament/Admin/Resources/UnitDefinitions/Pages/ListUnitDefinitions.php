@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListUnitDefinitions extends ListRecords
 {
-    #[\Override]
     protected static string $resource = UnitDefinitionResource::class;
 
     #[\Override]

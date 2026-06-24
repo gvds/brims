@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CreateProject extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = ProjectResource::class;
 
     #[\Override]

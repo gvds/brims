@@ -11,7 +11,6 @@ class Publication extends Model
     /** @use HasFactory<\Database\Factories\PublicationFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function project()

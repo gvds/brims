@@ -8,7 +8,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditSite extends EditRecord
 {
-    #[\Override]
     protected static string $resource = SiteResource::class;
 
     #[\Override]

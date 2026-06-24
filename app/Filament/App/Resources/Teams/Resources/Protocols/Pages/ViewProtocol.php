@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewProtocol extends ViewRecord
 {
-    #[\Override]
     protected static string $resource = ProtocolResource::class;
 
     #[\Override]

@@ -16,28 +16,22 @@ use Illuminate\Support\Facades\Auth;
 
 class TeamResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Team::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static bool $shouldRegisterNavigation = false;
 
-    #[\Override]
     public static function getIndexUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null, bool $shouldGuessMissingParameters = false): string
     {
         return static::getUrl('view', ['record' => Auth::user()->team_id]);
     }
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return TeamForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return TeamInfolist::configure($schema);
@@ -49,7 +43,6 @@ class TeamResource extends Resource
     //     return TeamsTable::configure($table);
     // }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -61,7 +54,6 @@ class TeamResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

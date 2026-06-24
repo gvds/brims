@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewSpecimen extends ViewRecord
 {
-    #[\Override]
     protected static string $resource = SpecimenResource::class;
 
     #[\Override]

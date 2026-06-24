@@ -13,7 +13,6 @@ class AssayDefinition extends Model
     /** @use HasFactory<\Database\Factories\AssayDefinitionFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function user()

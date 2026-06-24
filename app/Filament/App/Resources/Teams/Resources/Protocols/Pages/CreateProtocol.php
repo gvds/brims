@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CreateProtocol extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = ProtocolResource::class;
 
     #[\Override]

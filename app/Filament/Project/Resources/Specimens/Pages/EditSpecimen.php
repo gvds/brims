@@ -8,7 +8,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditSpecimen extends EditRecord
 {
-    #[\Override]
     protected static string $resource = SpecimenResource::class;
 
     #[\Override]

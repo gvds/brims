@@ -7,6 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateTeam extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = TeamResource::class;
 }

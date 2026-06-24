@@ -7,10 +7,8 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateStudy extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = StudyResource::class;
 
-    #[\Override]
     protected static bool $canCreateAnother = false;
 
     #[\Override]

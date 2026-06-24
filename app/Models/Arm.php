@@ -12,7 +12,6 @@ class Arm extends Model
     /** @use HasFactory<\Database\Factories\ArmFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function project(): BelongsTo

@@ -23,7 +23,6 @@ use Illuminate\Support\HtmlString;
 
 class SpecimensRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'specimens';
 
     #[\Override]

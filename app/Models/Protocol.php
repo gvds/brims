@@ -11,7 +11,6 @@ class Protocol extends Model
     /** @use HasFactory<\Database\Factories\ProtocolFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function team(): BelongsTo

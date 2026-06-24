@@ -7,7 +7,6 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateAssay extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = AssayResource::class;
 
     #[\Override]

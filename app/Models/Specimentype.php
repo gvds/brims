@@ -13,7 +13,6 @@ class Specimentype extends Model
     /** @use HasFactory<SpecimentypeFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function project(): BelongsTo

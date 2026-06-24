@@ -7,6 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateSpecimen extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = SpecimenResource::class;
 }

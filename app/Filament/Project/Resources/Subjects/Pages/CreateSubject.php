@@ -7,6 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateSubject extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = SubjectResource::class;
 }

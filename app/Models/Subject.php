@@ -24,7 +24,6 @@ class Subject extends Model
     /** @use HasFactory<SubjectFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     protected function fullname(): Attribute

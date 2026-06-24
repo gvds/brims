@@ -11,7 +11,6 @@ class Site extends Model
     /** @use HasFactory<\Database\Factories\SiteFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function project(): BelongsTo

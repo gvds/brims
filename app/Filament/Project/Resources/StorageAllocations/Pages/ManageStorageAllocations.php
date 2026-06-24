@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ManageRecords;
 
 class ManageStorageAllocations extends ManageRecords
 {
-    #[\Override]
     protected static string $resource = StorageAllocationResource::class;
 
     #[\Override]
@@ -17,7 +16,7 @@ class ManageStorageAllocations extends ManageRecords
         return [
             Action::make('allocate')
                 ->label('Allocate Storage')
-                ->url(fn (): string => static::getResource()::getUrl('allocate')),
+                ->url(fn(): string => static::getResource()::getUrl('allocate')),
         ];
     }
 }

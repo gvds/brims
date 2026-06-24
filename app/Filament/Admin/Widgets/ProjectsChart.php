@@ -8,13 +8,10 @@ use Illuminate\Support\Facades\Date;
 
 class ProjectsChart extends ChartWidget
 {
-    #[\Override]
     protected ?string $heading = 'Projects Chart';
 
-    #[\Override]
     protected static ?int $sort = 2;
 
-    #[\Override]
     protected ?string $maxHeight = '500px';
 
     #[\Override]

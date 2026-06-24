@@ -18,34 +18,27 @@ use Filament\Tables\Table;
 
 class StudyResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Study::class;
 
-    #[\Override]
     public static ?int $navigationSort = 9;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return StudyForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return StudyInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return StudiesTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -54,7 +47,6 @@ class StudyResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

@@ -16,34 +16,27 @@ use Filament\Tables\Table;
 
 class ArmResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Arm::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $parentResource = ProjectResource::class;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return ArmForm::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return ArmsTable::configure($table);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return ArmInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -51,7 +44,6 @@ class ArmResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

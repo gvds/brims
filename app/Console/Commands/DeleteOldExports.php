@@ -14,7 +14,6 @@ class DeleteOldExports extends Command
      *
      * @var string
      */
-    #[\Override]
     protected $signature = 'app:delete-old-exports';
 
     /**
@@ -22,7 +21,6 @@ class DeleteOldExports extends Command
      *
      * @var string
      */
-    #[\Override]
     protected $description = 'Delete exported directories older than 24 hours from filament_exports';
 
     /**

@@ -7,6 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreatePhysicalUnit extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = PhysicalUnitResource::class;
 }

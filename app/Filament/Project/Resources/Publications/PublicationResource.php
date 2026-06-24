@@ -18,37 +18,29 @@ use Filament\Tables\Table;
 
 class PublicationResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Publication::class;
 
-    #[\Override]
     public static ?int $navigationSort = 10;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'title';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return PublicationForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return PublicationInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return PublicationsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -56,7 +48,6 @@ class PublicationResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

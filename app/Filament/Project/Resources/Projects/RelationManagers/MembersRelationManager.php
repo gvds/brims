@@ -24,7 +24,6 @@ use Illuminate\Support\HtmlString;
 
 class MembersRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'members';
 
     #[\Override]

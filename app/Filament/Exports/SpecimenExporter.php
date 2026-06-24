@@ -12,7 +12,6 @@ use Illuminate\Support\Number;
 
 class SpecimenExporter extends Exporter
 {
-    #[\Override]
     protected static ?string $model = Specimen::class;
 
     #[\Override]
@@ -42,7 +41,7 @@ class SpecimenExporter extends Exporter
             ExportColumn::make('specimenType.name'),
             ExportColumn::make('site.name'),
             ExportColumn::make('status')
-                ->formatStateUsing(fn (SpecimenStatus $state): string => $state->name),
+                ->formatStateUsing(fn(SpecimenStatus $state): string => $state->name),
             ExportColumn::make('parentSpecimen.barcode')
                 ->label('Parent Barcode')
                 ->enabledByDefault(false),
@@ -65,10 +64,10 @@ class SpecimenExporter extends Exporter
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your specimen export has completed and '.Number::format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
+        $body = 'Your specimen export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
         }
 
         return $body;

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Cache;
 
 class StatsOverview extends StatsOverviewWidget
 {
-    #[\Override]
     protected static ?int $sort = 1;
 
     #[\Override]

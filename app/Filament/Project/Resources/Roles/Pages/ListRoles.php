@@ -10,7 +10,6 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListRoles extends ListRecords
 {
-    #[\Override]
     protected static string $resource = RoleResource::class;
 
     #[\Override]

@@ -18,37 +18,29 @@ use Filament\Tables\Table;
 
 class ProtocolResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Protocol::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $parentResource = TeamResource::class;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return ProtocolForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return ProtocolInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return ProtocolsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -56,7 +48,6 @@ class ProtocolResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

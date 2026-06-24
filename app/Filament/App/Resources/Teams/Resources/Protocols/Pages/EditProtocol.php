@@ -9,7 +9,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditProtocol extends EditRecord
 {
-    #[\Override]
     protected static string $resource = ProtocolResource::class;
 
     #[\Override]

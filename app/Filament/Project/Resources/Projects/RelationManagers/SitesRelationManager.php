@@ -15,7 +15,6 @@ use Filament\Tables\Table;
 
 class SitesRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'sites';
 
     #[\Override]

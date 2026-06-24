@@ -20,16 +20,13 @@ class LabelQueue extends Page implements HasTable
 {
     use Tables\Concerns\InteractsWithTable;
 
-    #[\Override]
     protected static ?int $navigationSort = 3;
 
     /**
      * Match parent signature which accepts a BackedEnum as well as string|null.
      */
-    #[\Override]
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-queue-list';
 
-    #[\Override]
     protected string $view = 'filament.project.pages.label-queue';
 
     protected function getTableQuery(): Builder

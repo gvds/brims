@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CreateManifest extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = ManifestResource::class;
 
     #[\Override]

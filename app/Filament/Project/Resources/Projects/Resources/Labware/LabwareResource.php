@@ -16,29 +16,23 @@ use Filament\Tables\Table;
 
 class LabwareResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Labware::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $parentResource = ProjectResource::class;
 
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return LabwareForm::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return LabwareTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -46,7 +40,6 @@ class LabwareResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

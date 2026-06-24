@@ -16,28 +16,22 @@ use Filament\Tables\Table;
 
 class SiteResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Site::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $parentResource = ProjectResource::class;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return SiteForm::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return SitesTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -45,7 +39,6 @@ class SiteResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

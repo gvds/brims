@@ -29,7 +29,6 @@ use Illuminate\Validation\Rules\Unique;
 
 class VirtualUnitsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'virtualUnits';
 
     public $physicalUnit;

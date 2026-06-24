@@ -19,40 +19,31 @@ use UnitEnum;
 
 class TeamResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Team::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
-    #[\Override]
     protected static string | UnitEnum | null $navigationGroup = 'User Management';
 
-    #[\Override]
     protected static ?int $navigationSort = 2;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return TeamForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return TeamInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return TeamsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -61,7 +52,6 @@ class TeamResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

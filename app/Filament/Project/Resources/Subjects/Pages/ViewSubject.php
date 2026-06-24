@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ViewRecord;
 
 class ViewSubject extends ViewRecord
 {
-    #[\Override]
     protected static string $resource = SubjectResource::class;
 
     #[\Override]
@@ -19,6 +18,5 @@ class ViewSubject extends ViewRecord
         ];
     }
 
-    #[\Override]
     protected $listeners = ['refreshSubjectViewData' => '$refresh'];
 }

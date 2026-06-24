@@ -25,13 +25,10 @@ class AllocateStorage extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    #[\Override]
     protected static string $resource = StorageAllocationResource::class;
 
-    #[\Override]
     protected static ?string $title = 'Allocate Specimen Storage';
 
-    #[\Override]
     protected string $view = 'filament.project.resources.storage-allocations.pages.allocate-storage';
 
     public ?array $data = [];

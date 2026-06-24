@@ -10,10 +10,8 @@ use Filament\Tables\Table;
 
 class ArmsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'arms';
 
-    #[\Override]
     protected static ?string $relatedResource = ArmResource::class;
 
     #[\Override]

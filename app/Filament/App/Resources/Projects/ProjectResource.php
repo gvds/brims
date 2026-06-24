@@ -12,25 +12,19 @@ use Filament\Tables\Table;
 
 class ProjectResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = Project::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     public static ?int $navigationSort = 1;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'title';
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return ProjectsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -38,7 +32,6 @@ class ProjectResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

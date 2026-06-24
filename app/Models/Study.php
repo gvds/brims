@@ -16,7 +16,6 @@ class Study extends Model
     /** @use HasFactory<\Database\Factories\StudyFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function project(): BelongsTo

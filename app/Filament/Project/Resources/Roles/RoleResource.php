@@ -37,10 +37,8 @@ class RoleResource extends Resource
     use Essentials\HasNavigation;
     use HasShieldFormComponents;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -80,7 +78,6 @@ class RoleResource extends Resource
             ]);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return $table
@@ -115,7 +112,6 @@ class RoleResource extends Resource
             ]);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [
@@ -123,7 +119,6 @@ class RoleResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [
@@ -134,19 +129,16 @@ class RoleResource extends Resource
         ];
     }
 
-    #[\Override]
     public static function getModel(): string
     {
         return Utils::getRoleModel();
     }
 
-    #[\Override]
     public static function getSlug(?Panel $panel = null): string
     {
         return Utils::getResourceSlug();
     }
 
-    #[\Override]
     public static function getCluster(): ?string
     {
         return Utils::getResourceCluster();

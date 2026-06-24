@@ -14,7 +14,6 @@ use Illuminate\Validation\ValidationException;
 
 class SpecimenImporter extends Importer
 {
-    #[\Override]
     protected static ?string $model = Specimen::class;
 
     public static function getColumns(): array

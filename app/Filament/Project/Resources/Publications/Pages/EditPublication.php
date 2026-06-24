@@ -9,10 +9,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditPublication extends EditRecord
 {
-    #[\Override]
     protected static string $resource = PublicationResource::class;
 
-    #[\Override]
     protected static ?string $title = 'Edit Publication Details';
 
     #[\Override]

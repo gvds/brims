@@ -12,7 +12,6 @@ use Illuminate\Support\Number;
 
 class ManifestItemImporter extends Importer
 {
-    #[\Override]
     protected static ?string $model = ManifestItem::class;
 
     public static function getColumns(): array

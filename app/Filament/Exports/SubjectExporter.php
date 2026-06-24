@@ -12,7 +12,6 @@ use Illuminate\Support\Number;
 
 class SubjectExporter extends Exporter
 {
-    #[\Override]
     protected static ?string $model = Subject::class;
 
     #[\Override]
@@ -45,16 +44,16 @@ class SubjectExporter extends Exporter
             ExportColumn::make('arm.name'),
             ExportColumn::make('armBaselineDate'),
             ExportColumn::make('status')
-                ->formatStateUsing(fn (SubjectStatus $state): string => $state->name),
+                ->formatStateUsing(fn(SubjectStatus $state): string => $state->name),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your subject export has completed and '.Number::format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
+        $body = 'Your subject export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
         }
 
         return $body;

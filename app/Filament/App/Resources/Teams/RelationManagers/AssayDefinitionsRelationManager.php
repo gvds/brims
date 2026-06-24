@@ -9,10 +9,8 @@ use Filament\Tables\Table;
 
 class AssayDefinitionsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'assayDefinitions';
 
-    #[\Override]
     protected static ?string $relatedResource = AssayDefinitionResource::class;
 
     #[\Override]

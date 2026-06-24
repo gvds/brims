@@ -8,13 +8,10 @@ use Illuminate\Support\Facades\Date;
 
 class ActiveUsersChart extends ChartWidget
 {
-    #[\Override]
     protected ?string $heading = 'Active Users Chart';
 
-    #[\Override]
     protected static ?int $sort = 2;
 
-    #[\Override]
     protected ?string $maxHeight = '500px';
 
     #[\Override]

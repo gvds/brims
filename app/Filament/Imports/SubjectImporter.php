@@ -13,7 +13,6 @@ use Illuminate\Validation\ValidationException;
 
 class SubjectImporter extends Importer
 {
-    #[\Override]
     protected static ?string $model = Subject::class;
 
     protected static array $staticOptions = [];

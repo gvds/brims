@@ -16,25 +16,18 @@ use Filament\Tables\Table;
 
 class StorageAllocationResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = StorageAllocation::class;
 
-    #[\Override]
     public static ?int $navigationSort = 7;
 
-    #[\Override]
     protected static ?string $navigationLabel = 'Specimen Storage';
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBoxArrowDown;
 
-    #[\Override]
     protected static ?string $modelLabel = 'Specimen Storage Allocation';
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'created_at';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -44,7 +37,6 @@ class StorageAllocationResource extends Resource
             ]);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return $table
@@ -87,7 +79,6 @@ class StorageAllocationResource extends Resource
             ]);
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

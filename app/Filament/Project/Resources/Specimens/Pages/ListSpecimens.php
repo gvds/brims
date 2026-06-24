@@ -17,7 +17,6 @@ use Filament\Support\Colors\Color;
 
 class ListSpecimens extends ListRecords
 {
-    #[\Override]
     protected static string $resource = SpecimenResource::class;
 
     #[\Override]

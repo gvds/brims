@@ -12,7 +12,6 @@ class Labware extends Model
     /** @use HasFactory<\Database\Factories\LabwareFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
     public function project(): BelongsTo
     {

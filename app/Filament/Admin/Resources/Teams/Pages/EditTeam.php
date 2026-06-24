@@ -8,7 +8,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditTeam extends EditRecord
 {
-    #[\Override]
     protected static string $resource = TeamResource::class;
 
     #[\Override]

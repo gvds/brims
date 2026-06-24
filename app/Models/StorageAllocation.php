@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StorageAllocation extends Model
 {
-    #[\Override]
     protected $guarded = [
         'id',
     ];

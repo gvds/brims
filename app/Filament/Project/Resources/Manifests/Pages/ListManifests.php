@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ListManifests extends ListRecords
 {
-    #[\Override]
     protected static string $resource = ManifestResource::class;
 
     #[\Override]

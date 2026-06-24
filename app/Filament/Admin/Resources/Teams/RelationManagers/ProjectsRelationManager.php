@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'projects';
 
     #[\Override]

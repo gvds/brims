@@ -8,7 +8,6 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListAssays extends ListRecords
 {
-    #[\Override]
     protected static string $resource = AssayResource::class;
 
     #[\Override]

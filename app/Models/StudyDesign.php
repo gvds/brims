@@ -13,13 +13,11 @@ class StudyDesign extends Model
     /** @use HasFactory<\Database\Factories\StudyDesignFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $table = 'studydesigns';
 
     /**
      * Get the projects associated with the study design.
      */
 
-    #[\Override]
     protected $guarded = ['id'];
 }

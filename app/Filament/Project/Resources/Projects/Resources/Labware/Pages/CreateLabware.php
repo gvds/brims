@@ -7,6 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateLabware extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = LabwareResource::class;
 }

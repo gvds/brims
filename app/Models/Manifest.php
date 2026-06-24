@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Manifest extends Model
 {
-    #[\Override]
     protected $guarded = ['id'];
 
     public function project(): BelongsTo
@@ -100,16 +99,19 @@ class Manifest extends Model
             fputcsv($handle, ['Subject', 'Barcode', 'Arm', 'Event', 'Sample Type', 'Aliquot', 'Volume'], escape: '\\');
 
             foreach ($items as $item) {
-                fputcsv($handle, [
-                    $item->subjectEvent->subject->subjectID,
-                    $item->barcode,
-                    $item->subjectEvent->event->arm->name,
-                    $item->subjectEvent->event->name,
-                    $item->specimenType->name,
-                    $item->aliquot,
-                    $item->volume.$item->specimenType->volumeUnit,
-                ],
-                escape: '\\');
+                fputcsv(
+                    $handle,
+                    [
+                        $item->subjectEvent->subject->subjectID,
+                        $item->barcode,
+                        $item->subjectEvent->event->arm->name,
+                        $item->subjectEvent->event->name,
+                        $item->specimenType->name,
+                        $item->aliquot,
+                        $item->volume . $item->specimenType->volumeUnit,
+                    ],
+                    escape: '\\'
+                );
             }
 
             fclose($handle);

@@ -12,7 +12,6 @@ class Assay extends Model
     /** @use HasFactory<\Database\Factories\AssayFactory> */
     use HasFactory;
 
-    #[\Override]
     protected $guarded = ['id'];
 
     public function study(): BelongsTo

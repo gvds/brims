@@ -17,34 +17,26 @@ use UnitEnum;
 
 class UserResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = User::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    #[\Override]
     protected static string | UnitEnum | null $navigationGroup = 'User Management';
 
-    #[\Override]
     protected static ?int $navigationSort = 3;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'fullname';
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return UserForm::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return UsersTable::configure($table);
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

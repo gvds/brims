@@ -12,7 +12,6 @@ use Illuminate\Support\Str;
 
 class CreateUser extends CreateRecord
 {
-    #[\Override]
     protected static string $resource = UserResource::class;
 
     #[\Override]

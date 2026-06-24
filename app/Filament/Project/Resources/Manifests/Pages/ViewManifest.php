@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\DB;
 
 class ViewManifest extends ViewRecord
 {
-    #[\Override]
     protected static string $resource = ManifestResource::class;
 
     #[\Override]

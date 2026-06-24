@@ -23,10 +23,8 @@ use Illuminate\Support\Facades\Auth;
 
 class SubjectEventsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'subjectEvents';
 
-    #[\Override]
     protected $listeners = [
         'refreshSubjectViewData' => 'refreshTable',
     ];

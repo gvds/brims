@@ -10,10 +10,8 @@ use Filament\Tables\Table;
 
 class SpecimentypesRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'specimentypes';
 
-    #[\Override]
     protected static ?string $title = 'Specimen Types';
 
     #[\Override]

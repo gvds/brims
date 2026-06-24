@@ -19,46 +19,36 @@ use UnitEnum;
 
 class UnitDefinitionResource extends Resource
 {
-    #[\Override]
     protected static ?string $model = UnitDefinition::class;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    #[\Override]
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[\Override]
     protected static string | UnitEnum | null $navigationGroup = 'Storage';
 
-    #[\Override]
     protected static ?int $navigationSort = 1;
 
-    #[\Override]
     public static function form(Schema $schema): Schema
     {
         return UnitDefinitionForm::configure($schema);
     }
 
-    #[\Override]
     public static function infolist(Schema $schema): Schema
     {
         return UnitDefinitionInfolist::configure($schema);
     }
 
-    #[\Override]
     public static function table(Table $table): Table
     {
         return UnitDefinitionsTable::configure($table);
     }
 
-    #[\Override]
     public static function getRelations(): array
     {
         return [];
     }
 
-    #[\Override]
     public static function getPages(): array
     {
         return [

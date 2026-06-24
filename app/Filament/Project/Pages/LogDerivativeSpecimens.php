@@ -31,13 +31,10 @@ class LogDerivativeSpecimens extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    #[\Override]
     protected static ?int $navigationSort = 6;
 
-    #[\Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 
-    #[\Override]
     protected string $view = 'filament.project.pages.log-derivative-specimens';
 
     public ?User $user = null;
@@ -64,7 +61,6 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     public Collection $potentialParentSpecimens;
 
-    #[\Override]
     protected $listeners = ['updateform' => '$refresh'];
 
     public function mount(): void

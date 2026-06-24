@@ -19,7 +19,6 @@ use Filament\Tables\Table;
 
 class EventsRelationManager extends RelationManager
 {
-    #[\Override]
     protected static string $relationship = 'events';
 
     #[\Override]

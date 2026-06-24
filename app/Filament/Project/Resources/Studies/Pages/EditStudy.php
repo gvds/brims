@@ -9,7 +9,6 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditStudy extends EditRecord
 {
-    #[\Override]
     protected static string $resource = StudyResource::class;
 
     #[\Override]
