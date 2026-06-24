@@ -94,6 +94,17 @@ class ProjectsRelationManager extends RelationManager
                     ]),
                 Grid::make(2)
                     ->schema([
+                        TextInput::make('storageDesignation')
+                            ->label('Storage Designation')
+                            // ->required()
+                            ->maxLength(40),
+                        Select::make('label_format')
+                            ->label('Label Format')
+                            ->relationship('labelSpecification', 'format')
+                            ->required(),
+                    ]),
+                Grid::make(2)
+                    ->schema([
                         DatePicker::make('submission_date'),
                         DatePicker::make('public_release_date')
                             ->visibleOn(['view', 'edit']),

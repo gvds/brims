@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\LabelSpecification;
 use App\Models\StudyDesign;
 use App\Models\Team;
 use App\Models\User;
@@ -29,8 +30,12 @@ return new class extends Migration
             $table->string('storageDesignation', 40)->nullable();
             $table->unsignedInteger('last_subject_number')->default(0);
             $table->unsignedInteger('redcapProject_id')->nullable()->unique();
-            // $table->foreignIdFor(Label::class)->nullable()->constrained();
+            $table->string('label_format', 30);
             $table->timestamps();
+
+            $table->foreign('label_format')
+                ->references('format')
+                ->on('label_specifications');
         });
     }
 

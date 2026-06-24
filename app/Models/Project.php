@@ -31,6 +31,11 @@ class Project extends Model implements HasName
         return $this->belongsTo(User::class);
     }
 
+    public function labelSpecification(): BelongsTo
+    {
+        return $this->belongsTo(LabelSpecification::class, 'label_format', 'format');
+    }
+
     public function arms(): HasMany
     {
         return $this->hasMany(Arm::class);

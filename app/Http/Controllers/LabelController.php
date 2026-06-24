@@ -33,7 +33,6 @@ class LabelController extends Controller
                 ->whereIn('status', [SubjectStatus::Enrolled, SubjectStatus::Generated])
                 ->whereIn('user_id', $userIds))
             ->where('labelstatus', LabelStatus::Queued)
-
             ->select([
                 'subject_event.id',
                 'subjects.project_id',
@@ -50,6 +49,7 @@ class LabelController extends Controller
                 'iteration',
             ])
             ->get();
+
         // $this->fpdf = new PDF_Label('L7651_mod');
         $this->fpdf = $pdfLabel ?? (app()->bound(PDF_Label::class) ? resolve(PDF_Label::class) : new PDF_Label('L7651_mod'));
 

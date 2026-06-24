@@ -28,6 +28,7 @@ class ProjectFactory extends Factory
             'subjectID_digits' => fake()->numberBetween(3, 5),
             'storageDesignation' => fake()->word(),
             'study_design_id' => StudyDesign::factory(),
+            'label_format' => 'L7651',
         ];
     }
 }

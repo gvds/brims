@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Location;
 use App\Models\PhysicalUnit;
+use App\Models\Project;
 use App\Models\VirtualUnit;
 use Illuminate\Database\Seeder;
 
@@ -22,6 +23,7 @@ class PhysicalUnitSeeder extends Seeder
                     VirtualUnit::factory(1)
                         ->create([
                             'physical_unit_id' => $physicalUnit->id,
+                            'project_id' => Project::inRandomOrder(2231)->first()->id,
                         ])
                         ->each(function ($virtualUnit) {
                             for ($rack = $virtualUnit->startRack; $rack <= $virtualUnit->endRack; $rack++) {

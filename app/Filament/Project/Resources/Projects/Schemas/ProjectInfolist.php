@@ -15,7 +15,7 @@ class ProjectInfolist
             ->components([
                 Grid::make([
                     'default' => 1,
-                    'sm' => 3,
+                    'sm' => 2,
                 ])
                     ->schema([
                         TextEntry::make('title')
@@ -36,15 +36,17 @@ class ProjectInfolist
                             ->formatStateUsing(fn($record): string => $record->subjectID_prefix . str_repeat('#', $record->subjectID_digits)),
                         TextEntry::make('storageDesignation')
                             ->label('Storage Designation'),
-                        TextEntry::make('subjects_count')
-                            ->label('Number of Subjects')
-                            ->counts('Subjects'),
+                        TextEntry::make('label_format'),
+
                     ])
                     ->extraAttributes(['class' => 'min-w-full']),
-                Grid::make(1)
+                Grid::make(2)
                     ->schema([
                         TextEntry::make('studydesign.type')
                             ->label('Study Design'),
+                        TextEntry::make('subjects_count')
+                            ->label('Number of Subjects')
+                            ->counts('Subjects'),
                         TextEntry::make('description')
                             ->wrap(true)
                             ->limit(500),

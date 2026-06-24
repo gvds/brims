@@ -102,7 +102,8 @@ class LabelQueue extends Page implements HasTable
                 ->requiresConfirmation()
                 ->modalHeading('Clear all labels from queue')
                 ->modalDescription('This will mark all queued labels as generated and remove them from the queue.')
-                ->action(fn() => SubjectEvent::where('labelstatus', LabelStatus::Queued->value)->update(['labelstatus' => LabelStatus::Generated->value])),
+                ->action(fn() => SubjectEvent::where('labelstatus', LabelStatus::Queued->value)
+                    ->update(['labelstatus' => LabelStatus::Generated->value])),
         ];
     }
 
