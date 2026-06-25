@@ -14,21 +14,31 @@ class LabelSpecificationForm
             ->components([
                 TextInput::make('format')
                     ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(30)
                     ->columnSpanFull(),
-                TextInput::make('paper-size')
-                    ->required(),
+                Select::make('paper-size')
+                    ->required()
+                    ->options([
+                        'A4' => 'A4',
+                        'letter' => 'Letter',
+                    ])
+                    ->in(['A4', 'letter']),
                 Select::make('metric')
                     ->required()
                     ->options([
                         'mm' => 'mm',
                         'in' => 'in',
-                    ]),
+                    ])
+                    ->in(['mm', 'in']),
                 TextInput::make('marginLeft')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rules(['decimal:0,3', 'max:999.999', 'min:0']),
                 TextInput::make('marginTop')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rules(['decimal:0,3', 'max:999.999', 'min:0']),
                 TextInput::make('NX')
                     ->label('Count X')
                     ->required()
@@ -42,17 +52,21 @@ class LabelSpecificationForm
                 TextInput::make('SpaceX')
                     ->label('Space X')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rules(['decimal:0,3', 'max:999.999', 'min:0']),
                 TextInput::make('SpaceY')
                     ->label('Space Y')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rules(['decimal:0,3', 'max:999.999', 'min:0']),
                 TextInput::make('width')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rules(['decimal:0,3', 'max:999.999', 'min:0']),
                 TextInput::make('height')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rules(['decimal:0,3', 'max:999.999', 'min:0']),
                 TextInput::make('font-size')
                     ->required()
                     ->numeric()

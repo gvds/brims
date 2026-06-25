@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\LabelStatus;
 use App\Enums\SubjectStatus;
 use App\Library\PDF_Label;
+use App\Models\LabelSpecification;
 use App\Models\SubjectEvent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -20,14 +21,27 @@ class LabelController extends Controller
      *
      * Returns an application/pdf download response.
      */
-    public function __invoke(Request $request, ?PDF_Label $pdfLabel = null)
+    public function __invoke(Request $request)
     {
+        $labelFormats = LabelSpecification::all()->pluck('format');
+        if (!$labelFormats->contains($request->labelFormat)) {
+            echo "The '" . $request->labelFormat . "' label format specified for this project is not valid.";
+            exit;
+        }
+        // $validated = $request->validate([
+        //     'id' => ['array'],
+        //     'id.*' => ['integer', 'exists:subject_event,id'],
+        //     'labelFormat' => [
+        //         'string',
+        //         Rule::in($labelFormats),
+        //     ],
+        // ]);
         $userIds = Auth::user()->substitutees->pluck('id')->push(Auth::id())->all();
 
         $subjectEvents = SubjectEvent::join('subjects', 'subject_id', 'subjects.id')
             ->join('events', 'event_id', 'events.id')
             ->join('arms', 'events.arm_id', 'arms.id')
-            ->when($request->has('ids'), fn($query) => $query->whereIn('subject_event.id', $request->input('ids', [])))
+            ->when($request->has('id'), fn($query) => $query->whereIn('subject_event.id', $request->input('id', [])))
             ->whereHas('subject', fn(Builder $q) => $q
                 ->where('project_id', session('currentProject')->id)
                 ->whereIn('status', [SubjectStatus::Enrolled, SubjectStatus::Generated])
@@ -50,8 +64,8 @@ class LabelController extends Controller
             ])
             ->get();
 
-        // $this->fpdf = new PDF_Label('L7651_mod');
-        $this->fpdf = $pdfLabel ?? (app()->bound(PDF_Label::class) ? resolve(PDF_Label::class) : new PDF_Label('L7651_mod'));
+        $this->fpdf = new PDF_Label($request->labelFormat);
+        // $this->fpdf = $request->labelFormat ?? (app()->bound(PDF_Label::class) ? resolve(PDF_Label::class) : new PDF_Label('L7651_mod'));
 
         $this->fpdf->AddPage();
         $this->fpdf->AddFont('Calibri', '', 'calibri.php');

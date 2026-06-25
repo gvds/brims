@@ -93,7 +93,7 @@ class LabelQueue extends Page implements HasTable
             Action::make('printAll')
                 ->label('Print all')
                 ->icon('heroicon-o-printer')
-                ->url(fn(): string => route('labels.print'))
+                ->url(fn(): string => route('labels.print', ['labelFormat' => session('currentProject')->label_format]))
                 ->openUrlInNewTab(),
             Action::make('clearAll')
                 ->label('Clear all')
@@ -122,7 +122,7 @@ class LabelQueue extends Page implements HasTable
             Action::make('print')
                 ->label('Print')
                 ->icon('heroicon-o-printer')
-                ->url(fn(SubjectEvent $record): string => route('labels.print', ['ids' => [$record->id]]))
+                ->url(fn(SubjectEvent $record): string => route('labels.print', ['id' => [$record->id], 'labelFormat' => session('currentProject')->label_format]))
                 ->openUrlInNewTab(),
         ];
     }

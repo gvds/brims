@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\LabelSpecification;
 use App\Models\StudyDesign;
 use App\Models\Team;
 use App\Models\User;
@@ -35,7 +34,9 @@ return new class extends Migration
 
             $table->foreign('label_format')
                 ->references('format')
-                ->on('label_specifications');
+                ->on('label_specifications')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 
