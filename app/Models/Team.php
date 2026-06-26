@@ -17,6 +17,11 @@ class Team extends Model
 
     protected $guarded = ['id'];
 
+    public function institution(): BelongsTo
+    {
+        return $this->belongsTo(Institution::class);
+    }
+
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);

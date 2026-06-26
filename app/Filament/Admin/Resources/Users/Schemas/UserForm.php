@@ -62,11 +62,11 @@ class UserForm
                             ->mask('99 (99) 999-9999')
                             ->maxLength(20)
                             ->default(null),
-                        Select::make('institution_id')
-                            ->label('Institution')
-                            ->relationship('institution', 'name')
-                            ->required()
-                            ->default(null),
+                        // Select::make('institution_id')
+                        //     ->label('Institution')
+                        //     ->relationship('institution', 'name')
+                        //     ->required()
+                        //     ->default(null),
                     ]),
                 Grid::make([
                     'default' => 1,

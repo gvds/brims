@@ -12,6 +12,8 @@ class TeamInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
+                TextEntry::make('institution.name')
+                    ->label('Institution'),
                 TextEntry::make('leader.fullname')
                     ->label('Team Leader'),
                 TextEntry::make('description'),

@@ -13,9 +13,9 @@ class Institution extends Model
 
     protected $guarded = ['id'];
 
-    public function users(): HasMany
+    public function teams(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Team::class);
     }
 
     public function physicalUnits(): HasMany

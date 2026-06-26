@@ -20,12 +20,17 @@ class TeamForm
                     ->maxLength(255),
                 Textarea::make('description')
                     ->default(null),
+                Select::make('institution_id')
+                    ->label('Institution')
+                    ->relationship('institution', 'name')
+                    ->required()
+                    ->default(null),
                 Select::make('leader_id')
                     ->relationship(
                         name: 'leader',
-                        modifyQueryUsing: fn ($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
+                        modifyQueryUsing: fn($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
                     )
-                    ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
                     ->preload()
                     ->visibleOn(['edit']),

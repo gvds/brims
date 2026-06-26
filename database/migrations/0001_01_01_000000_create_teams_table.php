@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Institution;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('teams', function (Blueprint $table): void {
             $table->id();
+            $table->foreighnIdFor(Institution::class)->constrained();
             $table->string('name')->unique();
             $table->mediumText('description')->nullable();
             $table->timestamps();

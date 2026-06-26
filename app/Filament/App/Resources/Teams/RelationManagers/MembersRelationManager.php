@@ -63,10 +63,6 @@ class MembersRelationManager extends RelationManager
                     ->mask('99 (99) 999-9999')
                     ->maxLength(20)
                     ->default(null),
-                TextInput::make('institution')
-                    ->label('Institution')
-                    ->maxLength(10)
-                    ->default(null),
                 Toggle::make('active')
                     ->visibleOn('edit'),
             ]);
@@ -111,14 +107,6 @@ class MembersRelationManager extends RelationManager
                     ->query(fn($query) => $query->where('active', true))
                     ->label('Active')
                     ->toggle(),
-                SelectFilter::make('institution')
-                    ->options(fn() => \App\Models\User::distinct('institution')->pluck('institution', 'institution'))
-                    ->multiple()
-                    ->searchable()
-                    ->preload()
-                    ->label('Institution')
-                    ->placeholder('All Institutions')
-                    ->default(null),
             ])
             ->deferFilters(false)
             ->recordActions([

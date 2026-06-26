@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Institution;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -22,7 +21,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('system_role')->default(1);
             $table->foreignIdFor(Team::class)->nullable()->constrained();
             $table->string('team_role', 20)->nullable();
-            $table->foreighnIdFor(Institution::class)->constrained();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('telephone', 20)->nullable();

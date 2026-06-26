@@ -181,11 +181,6 @@ class User extends Authenticatable implements FilamentUser, PasskeyUser, HasAppA
         );
     }
 
-    public function institution(): BelongsTo
-    {
-        return $this->belongsTo(Institution::class);
-    }
-
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'project_member')

@@ -25,7 +25,7 @@ class UsersTable
                 ImageColumn::make('avatar_url')
                     ->circular()
                     ->imageSize(40)
-                    ->state(fn (User $record): ?string => $record->avatar_url ? asset('storage/'.$record->avatar_url) : null),
+                    ->state(fn(User $record): ?string => $record->avatar_url ? asset('storage/' . $record->avatar_url) : null),
                 TextColumn::make('username')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('fullname')
@@ -41,8 +41,6 @@ class UsersTable
                 TextColumn::make('telephone')
                     ->prefix('+'),
                 // ->searchable(isIndividual: true, isGlobal: false),
-                TextColumn::make('institution.name')
-                    ->label('Institution'),
                 TextColumn::make('system_role')
                     ->label('System Role')
                     ->searchable(isIndividual: true, isGlobal: false),
@@ -63,21 +61,21 @@ class UsersTable
             ])
             ->filters([
                 Filter::make('active')
-                    ->query(fn ($query) => $query->where('active', true))
+                    ->query(fn($query) => $query->where('active', true))
                     ->label('Active')
                     ->toggle()
                     ->default(),
-                SelectFilter::make('institution_id')
-                    ->relationship('institution', 'name')
-                    ->multiple()
-                    ->searchable()
-                    ->preload()
-                    ->label('Institution')
-                    ->placeholder('All Institutions')
-                    ->default(null),
+                // SelectFilter::make('institution_id')
+                //     ->relationship('institution', 'name')
+                //     ->multiple()
+                //     ->searchable()
+                //     ->preload()
+                //     ->label('Institution')
+                //     ->placeholder('All Institutions')
+                //     ->default(null),
                 SelectFilter::make('team_id')
                     ->label('Team')
-                    ->options(fn () => Team::pluck('name', 'id'))
+                    ->options(fn() => Team::pluck('name', 'id'))
                     ->multiple()
                     ->searchable()
                     ->preload()
@@ -88,7 +86,7 @@ class UsersTable
                 EditAction::make(),
                 // ->hidden(fn(User $record) => $record->system_role === SystemRoles::SuperAdmin && Auth::user()->system_role !== SystemRoles::SuperAdmin),
                 Impersonate::make()
-                    ->hidden(fn (User $record): bool => $record->system_role === SystemRoles::SuperAdmin),
+                    ->hidden(fn(User $record): bool => $record->system_role === SystemRoles::SuperAdmin),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
