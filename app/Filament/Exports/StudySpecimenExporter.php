@@ -33,6 +33,8 @@ class StudySpecimenExporter extends Exporter
             ExportColumn::make('barcode'),
             ExportColumn::make('specimenType.name'),
             ExportColumn::make('site.name'),
+            ExportColumn::make('originSite.name')
+                ->label('Origin Site'),
             ExportColumn::make('subjectEvent.event.arm.name')
                 ->label('Arm'),
             ExportColumn::make('subjectEvent.event.name')

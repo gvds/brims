@@ -24,6 +24,8 @@ class SpecimenInfolist
                     ->label('Parent Specimen'),
                 TextEntry::make('site.name')
                     ->label('Site'),
+                TextEntry::make('originSite.name')
+                    ->label('Origin Site'),
                 TextEntry::make('status'),
                 TextInput::make('aliquot'),
                 TextInput::make('volume')

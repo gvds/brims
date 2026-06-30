@@ -25,6 +25,9 @@ class SpecimenForm
                 Select::make('site_id')
                     ->relationship(name: 'site', titleAttribute: 'name')
                     ->required(),
+                Select::make('origin_site_id')
+                    ->relationship(name: 'originSite', titleAttribute: 'name')
+                    ->required(),
                 Select::make('status')
                     ->options(SpecimenStatus::class)
                     ->required()

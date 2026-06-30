@@ -36,6 +36,7 @@ class SpecimenSeeder extends Seeder
                     ])
                     ->create([
                         'site_id' => $subjectEvent->subject->site_id,
+                        'origin_site_id' => $subjectEvent->subject->site_id,
                         'project_id' => $project->id,
                         'volume' => $specimenType->defaultVolume,
                         'volumeUnit' => $specimenType->volumeUnit,
@@ -67,6 +68,7 @@ class SpecimenSeeder extends Seeder
                         })
                         ->create([
                             'site_id' => $subjectEvent->subject->site_id,
+                            'origin_site_id' => $subjectEvent->subject->site_id,
                             'project_id' => $project->id,
                             'volume' => $specimenType->defaultVolume,
                             'volumeUnit' => $specimenType->volumeUnit,

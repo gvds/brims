@@ -374,6 +374,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             'specimenType_id' => $specimenType_id,
                             'subject_event_id' => $this->subjectEvent->id,
                             'site_id' => $this->userSiteId,
+                            'origin_site_id' => $this->userSiteId,
                             'project_id' => session('currentProject')->id,
                             'status' => SpecimenStatus::Logged,
                             'loggedBy_id' => $this->user->id,

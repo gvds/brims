@@ -4,10 +4,12 @@ namespace App\Filament\Project\Resources\Specimens\Tables;
 
 use App\actions\LogSpecimenStatus;
 use App\Enums\SpecimenStatus;
+use App\Filament\Exports\SpecimenExporter;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -16,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Support\Colors\Color;
 
 class SpecimensTable
 {
@@ -31,6 +34,9 @@ class SpecimensTable
                     ->label('Type')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('site.name')
+                    ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('originSite.name')
+                    ->label('Origin Site')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('status')
                     ->badge()
@@ -151,6 +157,15 @@ class SpecimensTable
                         ->requiresConfirmation(),
                     DeleteBulkAction::make()
                         ->label('Delete'),
+                    ExportAction::make('export')
+                        ->label('Export')
+                        ->color(Color::Indigo)
+                        ->exporter(SpecimenExporter::class)
+                        ->accessSelectedRecords()
+                        ->columnMappingColumns(3)
+                        ->modifyQueryUsing(function ($query, $records) {
+                            return $query->whereKey($records);
+                        }),
                 ]),
             ]);
     }

@@ -37,6 +37,11 @@ class Specimen extends Model
         return $this->belongsTo(Site::class, 'site_id');
     }
 
+    public function originSite(): BelongsTo
+    {
+        return $this->belongsTo(Site::class, 'origin_site_id');
+    }
+
     public function parentSpecimen(): BelongsTo
     {
         return $this->belongsTo(Specimen::class, 'parentSpecimen_id');

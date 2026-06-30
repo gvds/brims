@@ -40,6 +40,8 @@ class SpecimenExporter extends Exporter
                 ->label('Event Iteration'),
             ExportColumn::make('specimenType.name'),
             ExportColumn::make('site.name'),
+            ExportColumn::make('originSite.name')
+                ->label('Origin Site'),
             ExportColumn::make('status')
                 ->formatStateUsing(fn(SpecimenStatus $state): string => $state->name),
             ExportColumn::make('parentSpecimen.barcode')
