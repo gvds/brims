@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Institution;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Team>
+ * @extends Factory<Team>
  */
 class TeamFactory extends Factory
 {
@@ -17,6 +19,7 @@ class TeamFactory extends Factory
     public function definition(): array
     {
         return [
+            'institution_id' => Institution::query()->inRandomOrder()->value('id') ?: Institution::factory(),
             'name' => fake()->unique()->word(),
             'description' => fake()->sentence(),
         ];

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Institution;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 
@@ -15,6 +16,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Artisan::call('shield:generate --all --panel=project --option=permissions --no-interaction');
+        Institution::factory(2)
+            ->hasTeams(2)
+            ->create();
         $this->call([
             UserSeeder::class,
             AssayDefinitionSeeder::class,

@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('telephone', 20)->nullable();
-            $table->string('institution', 10);
             $table->boolean('active')->default(1);
             $table->string('password');
             $table->rememberToken();
@@ -55,7 +54,6 @@ return new class extends Migration
             'lastname' => 'Administrator',
             'system_role' => 0,
             'email' => 'admin@example.com',
-            'institution' => 'System',
             'password' => bcrypt('password'),
         ]);
     }

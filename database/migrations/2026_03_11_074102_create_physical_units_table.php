@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Site;
+use App\Models\Institution;
 use App\Models\UnitDefinition;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 40)->unique();
             $table->foreignIdFor(UnitDefinition::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            // $table->foreignIdFor(Site::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignIdFor(Institution::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
             $table->string('serial', 30)->nullable();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnUpdate()->restrictOnDelete();
             $table->boolean('available')->default(true);

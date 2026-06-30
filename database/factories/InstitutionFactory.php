@@ -18,7 +18,7 @@ class InstitutionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->unique()->lexify('INST_????'),
         ];
     }
 }
