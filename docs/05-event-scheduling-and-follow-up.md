@@ -18,19 +18,32 @@ Before you start, make sure participants have already been enrolled and that any
 
 In BRIMS, events represent scheduled study activities such as enrolment visits, follow-up visits, sample collection points, or other project-defined milestones.
 
-Events help teams track what should happen, what has already happened, and what still needs attention.
+Use events to track what should happen, what has already happened, and what still needs attention.
 
 ## Event Creation and Scheduling
 
-Event schedules are usually based on the project and arm structure that was set up earlier.
+BRIMS uses two related event layers:
 
-Depending on the project design, events may be created automatically from that setup or managed as part of the participant workflow.
+- **Arm events** are the event templates configured under each study arm
+- **Subject events** are the scheduled records created for a specific subject
+
+When a subject is enrolled, BRIMS creates subject events from the templates attached to that subject's current arm.
+
+When a subject switches arms, BRIMS cancels pending events from the old arm and creates a new set from the new arm.
 
 Always check that the expected events are present after enrolment.
 
+> Visual placeholder: Add a diagram showing the relationship between arm event templates and subject events generated at enrolment or arm switch.
+
+### Configuring Arm Event Templates
+
+Open an arm and use its **Events** section to define the schedule for that arm.
+
+The event setup screen includes offset-based scheduling, ante and post windows, **Autolog**, **Repeatable**, and **Active** settings.
+
 ## Viewing Event Schedules
 
-Use the participant record to view scheduled events and follow-up activity.
+Open a subject record and review the **Subject Events** section to view scheduled events and follow-up activity.
 
 Review event timelines regularly so you can identify:
 
@@ -38,6 +51,8 @@ Review event timelines regularly so you can identify:
 - Overdue follow-up
 - Missed activities
 - Items that still need outcome recording
+
+> Screenshot placeholder: Add a subject record with the Subject Events section visible, including upcoming, overdue, and completed events.
 
 ## Recording Outcomes
 
@@ -47,9 +62,21 @@ Record whether the event was completed, missed, rescheduled, or otherwise change
 
 Timely event updates help keep specimen logging and operational reporting accurate.
 
+Scheduled subject events provide a **Log Event** action so you can record the log date and set the event outcome.
+
 ## Event Statuses
 
 Use event statuses consistently so that study teams can see the true follow-up position of each participant.
+
+Event statuses include:
+
+- **Pending**
+- **Primed**
+- **Scheduled**
+- **Logged**
+- **Logged Late**
+- **Missed**
+- **Cancelled**
 
 If your project uses more than one status, make sure staff agree on when each status should be applied.
 
@@ -69,6 +96,8 @@ Look for:
 - Missing outcomes
 - Unexpected status patterns
 - Events where specimen activity is incomplete or missing
+
+Repeatable events may also show a **New Iteration** action when another occurrence needs to be added.
 
 ## Related Pages
 

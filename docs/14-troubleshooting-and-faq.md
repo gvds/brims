@@ -46,6 +46,8 @@ This is often caused by missing permissions or by project-specific workflow rest
 
 Check whether you are working in the correct project and whether your role allows that action.
 
+Some records are also action-based rather than freely editable. For example, generated subjects use **Enrol**, and manifests can only be edited or deleted while they are **Open**.
+
 ### REDCap integration is not working
 
 Confirm that the project was created as a REDCap-linked project and that the correct member token has been stored.

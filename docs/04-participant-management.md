@@ -6,6 +6,8 @@ Use this page to enrol participants, assign them correctly, keep their records u
 
 BRIMS uses the term **subject ID** for the unique identifier assigned to each participant.
 
+Participant records are managed under **Subjects**.
+
 ## Who Should Use This Page
 
 - Study coordinators
@@ -20,13 +22,15 @@ Before you start, make sure the project has been configured correctly, including
 
 Participant enrolment usually follows this sequence:
 
-1. Search to confirm the participant does not already exist in the project
-2. Create the participant record
-3. Check the automatically generated subject ID
-4. Assign the participant to the correct site and study arm
-5. Confirm the enrolment date and any required status fields
+1. Open the **Subjects** list and find the subject record in **Generated** status
+2. Use the **Enrol** action on that record
+3. Confirm or enter the participant details shown in the enrolment form
+4. Check the automatically generated subject ID
+5. Confirm the enrolment date, site, manager, and current study arm
 
 Complete enrolment carefully, because the participant record is the starting point for event scheduling, specimen logging, and study tracking.
+
+> Screenshot placeholder: Add the Subjects list with a Generated record and the Enrol action, plus the enrolment form showing subject ID, site, and arm fields.
 
 ## Subject Identifier Allocation
 
@@ -35,6 +39,8 @@ BRIMS generates a subject ID automatically using the project prefix and digit se
 For example, a project with prefix `BRI` and 6 digits will generate IDs such as `BRI000001`.
 
 Before saving a new participant, confirm that the generated ID matches the project format you expect.
+
+Use the **Subjects** list to search for an existing subject ID before assuming a subject has not yet been generated.
 
 ## Assigning Participants
 
@@ -54,13 +60,23 @@ When editing a participant record:
 - Review site and arm assignments carefully
 - Be cautious when changing values that affect follow-up or specimen tracking
 
+The **Edit** action is available for enrolled subjects. Generated subjects need to enrolled using the **Enrol** function.
+
 ## Participant Statuses
 
 Participant statuses help show where a participant is in the study process.
 
-Use the status values defined for your project consistently so that enrolment, follow-up, and reporting remain accurate.
+Subject statuses include:
+
+- **Generated**
+- **Enrolled**
+- **Dropped**
+
+Use these statuses consistently so that enrolment, follow-up, and reporting remain accurate.
 
 If you are unsure which status to use, check your project procedure before updating the record.
+
+From the subject view, users can also **Drop Subject** or **Re-Instate Subject** where appropriate.
 
 ## Avoiding Duplicate Records
 
@@ -79,6 +95,10 @@ Use the participant record to review related project activity, including:
 - Study activity connected to the participant
 
 Review this history when you need to check follow-up progress or resolve data questions.
+
+If arm switching is allowed, the subject view also provides **Switch Arm** and **Revert Arm Switch** actions.
+
+> Screenshot placeholder: Add a subject record view showing enrolment details, Subject Events, linked specimens, and arm-switch actions.
 
 ## Related Pages
 

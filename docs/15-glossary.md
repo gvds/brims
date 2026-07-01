@@ -28,7 +28,11 @@ A manifest is the shipment or transfer record that groups specimens together for
 
 ### Participant
 
-A participant is a person enrolled in a project.
+A participant is a person enrolled in a project. In the current BRIMS UI, participant records appear under **Subjects**.
+
+### Subject
+
+Subject is the label BRIMS uses in the UI for a participant record.
 
 ### Project
 

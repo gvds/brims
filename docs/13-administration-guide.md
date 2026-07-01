@@ -19,11 +19,15 @@ Use administrative controls to keep BRIMS reliable, secure, and ready for projec
 
 This includes managing access, checking configuration, supporting new projects, and monitoring recurring operational issues.
 
+In the current BRIMS UI, this work is split between system-level administration and team-level configuration.
+
 ## User Management
 
 User management includes creating accounts, reviewing account details, updating access where needed, and deactivating accounts that should no longer be used.
 
 Review user access regularly so that project membership and permissions remain appropriate.
+
+Use the **Users** area in the Admin panel for system user management.
 
 ## Role and Permission Management
 
@@ -33,11 +37,17 @@ System roles should be kept limited to users who need wider administrative acces
 
 Project roles should support day-to-day work without giving unnecessary permissions.
 
+Use the project **Roles** area for project-specific permissions. Use the Admin panel only for wider administrative access.
+
 ## Reference Data and Configuration
 
 Reference data and configuration should be reviewed whenever new projects, workflows, or study requirements are introduced.
 
 Keep shared values and configuration settings consistent so that data entry and reporting remain reliable across the system.
+
+Current administrative reference data includes areas such as **Study Designs**, **Unit Definitions**, and **Physical Units**. Team-level setup also includes **Assay Definitions** and **Protocols**.
+
+> Screenshot placeholder: Add the admin navigation with the main reference-data areas visible, plus an example configuration page such as Unit Definitions or Physical Units.
 
 ## Preparing for New Projects
 

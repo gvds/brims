@@ -19,6 +19,8 @@ Before you start, decide which project, study, participant or subject ID, specim
 
 Use search to find the specific records you need before making updates or reviewing progress.
 
+In the current UI, search is mainly resource-specific table search rather than one global search across all record types.
+
 Common searches include:
 
 - Participants by subject ID or related details
@@ -32,6 +34,13 @@ Common searches include:
 Use filters to narrow large lists into a manageable working view.
 
 Filters are especially useful when reviewing by status, site, date, or another operational category.
+
+For example:
+
+- **Subjects** supports filters for status, site, and manager
+- **Manifests** supports filtering by status
+
+> Screenshot placeholder: Add a typical list page showing table search, filters, and a filtered result set for operational review.
 
 ## Reviewing Operational Work
 
@@ -51,6 +60,8 @@ Use list views, filters, and record history to check for incomplete tasks, overd
 Where exports are available, use them carefully and confirm that the filtered view matches the operational question you are trying to answer.
 
 Always review identifiers, counts, and date ranges before sharing or acting on exported information.
+
+Exports are available from several places in the UI, including **Configure Project Details**, the **Specimens** list, and the **Specimens** section of a study.
 
 ## Related Pages
 

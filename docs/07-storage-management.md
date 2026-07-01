@@ -4,6 +4,8 @@
 
 Use this page to place specimens into storage, record storage moves, and keep storage information accurate over time.
 
+This is handled from **Specimen Storage**.
+
 ## Who Should Use This Page
 
 - Laboratory staff
@@ -22,23 +24,35 @@ Storage information should reflect the real physical location of the specimen as
 
 Use the storage structure defined for your project so that everyone records locations in the same way.
 
+The storage screen focuses on **allocation** rather than manual specimen-by-specimen placement.
+
+> Visual placeholder: Add a storage hierarchy diagram showing unit definition, physical unit, virtual unit, and specimen location concepts.
+
 ## Supported Storage Contexts
 
-- Standard cold storage
+- Biorepository storage
 - Minus-80 storage
 - Liquid nitrogen storage
 
 ## Assigning a Storage Location
 
-When placing a specimen into storage, select the correct location and confirm the specimen status before saving.
+Use **Allocate Specimen Storage** to assign logged specimens to available storage locations.
 
-This step should be completed as soon as the specimen has been placed physically into its storage position.
+This page works in bulk by specimen type for the current project site.
+
+Select the specimen types to allocate, decide whether previously used locations may be reused, and then run the allocation.
+
+The allocation is recorded and specimens are updated from **Logged** to **In Storage**.
+
+> Screenshot placeholder: Add the Allocate Specimen Storage page showing specimen type selection, available capacity, and the reuse-locations option.
 
 ## Moving a Specimen
 
-If a specimen is moved, update the record at the time of the move.
+The current storage UI does not provide a separate specimen-by-specimen move screen in this area. (CHECK)
 
-Before saving the change, confirm:
+Instead, use the specimen and manifest workflows carefully so the recorded status and location remain aligned with the real specimen movement.
+
+Before running a new allocation or related handling step, confirm:
 
 - The specimen being moved is the correct one
 - The new storage location is correct
@@ -46,15 +60,17 @@ Before saving the change, confirm:
 
 ## Retrieving a Specimen
 
-When a specimen is removed from storage for assay work, shipment, or other handling, record that change promptly.
+When a specimen leaves storage for assay work, shipment, or other handling, update the related specimen or manifest workflow promptly.
 
 This helps keep the system aligned with the actual specimen location and status.
 
 ## Storage Traceability
 
-Storage traceability makes it possible to review where a specimen has been over time.
+Each storage allocation creates a storage record that can be reviewed later.
 
-This is useful for operational review, discrepancy resolution, and confirming that handling steps were recorded correctly.
+Use the **Specimen Storage** list to review previous allocations and print the storage allocation report.
+
+> Screenshot placeholder: Add the Specimen Storage list or allocation report view to show how stored specimens and their assigned locations are reviewed.
 
 ## Common Storage Checks
 
