@@ -51,6 +51,18 @@ Use the main navigation to move between these sections, and use the project cont
 
 Within each section, lists, record pages, tabs, and related links help you move from one task to another.
 
+Common project management areas include:
+
+- **Subjects** for participant enrolment and follow-up
+- **Log Primary Specimens** and **Log Derivative Specimens** for specimen logging
+- **Specimens** for reviewing and exporting specimen records
+- **Specimen Storage** for storage allocation and storage reports
+- **Manifests** for shipments and transfers
+- **Studies** for study records, linked specimens, and assays
+- **Configure Project Details** for project settings, sites, arms, specimen types, labware, and project-level imports or exports
+
+> Screenshot placeholder: Add the main BRIMS navigation with a project selected, highlighting Subjects, Specimens, Specimen Storage, Manifests, Studies, and Configure Project Details.
+
 ## Project-Scoped Work
 
 Most day-to-day work happens inside a selected project.
@@ -58,6 +70,8 @@ Most day-to-day work happens inside a selected project.
 This includes participant enrolment, event review, specimen logging, storage actions, shipment activity, and study-related work.
 
 Before editing a record, confirm that you are in the correct project because permissions and available actions may change between projects.
+
+Project creation starts from the team-level **Projects** section.
 
 ## Safe Editing Practices
 

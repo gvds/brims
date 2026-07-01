@@ -22,9 +22,13 @@ Before you start, make sure you have permission to create or manage projects and
 2. Review the default site and Admin role created by BRIMS
 3. Add extra sites if needed
 4. Create study arms
-5. Review roles and permissions
-6. Add project members
-7. Create studies
+5. Add event templates inside each study arm
+6. Configure specimen types and labware
+7. Review roles and permissions
+8. Add project members
+9. Create studies
+
+> Visual placeholder: Add a setup sequence diagram showing the order from project creation through study creation.
 
 ## Create a Project
 
@@ -41,6 +45,8 @@ When you create a project, confirm the following information carefully:
 You can also add a description and submission date.
 
 If the project must link to REDCap, use the REDCap-linked project creation option rather than the standard project form.
+
+> Screenshot placeholder: Add the project creation form showing title, identifier, study design, leader, storage designation, and subject ID settings.
 
 ## Configure Subject ID Rules
 
@@ -76,6 +82,18 @@ When creating an arm, decide whether enrolment into that arm will be manual or a
 
 Arm numbers are assigned automatically by BRIMS.
 
+After creating an arm, open that arm and add the event templates that should be scheduled for subjects in that arm.
+
+Event templates control the visit order, timing windows, repeatable visits, and whether an event is logged automatically.
+
+## Configure Specimen Types and Labware
+
+Before specimen logging begins, set up the specimen types and labware that the project will use.
+
+Specimen types define whether a sample is primary or derivative, how aliquots and volumes are handled, and whether the sample should go into storage.
+
+Labware defines the barcode format expected during specimen logging.
+
 ## Review Roles and Add Members
 
 Project members are users who have access to work within the project.
@@ -96,7 +114,7 @@ Studies are research investigations within the project.
 Each study should have:
 
 - A title
-- An identifier
+- An identifier that is unique in BRIMS
 
 You can also add a description and submission date.
 
@@ -108,6 +126,8 @@ You can also add a description and submission date.
 - Storage designation entered
 - Default site reviewed and extra sites added if needed
 - Study arms created
+- Event templates added to each arm where needed
+- Specimen types and labware configured
 - Default Admin role reviewed and extra roles created if needed
 - Project members added with the correct roles and site assignments
 - Studies created

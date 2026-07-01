@@ -16,7 +16,7 @@ Projects are the top-level organisational unit in BRIMS. A project contains:
 The recommended setup order is:
 
 ```
-Create Project → Review Default Site and Admin Role → Add Sites → Create Arms → Review Roles → Add Members → Create Studies
+Create Project → Review Default Site and Admin Role → Add Sites → Create Arms and Events → Configure Specimen Types and Labware → Review Roles → Add Members → Create Studies
 ```
 
 ---
@@ -49,6 +49,8 @@ Navigate to your team's **Projects** section and create a new project from there
 > **Note:** The **Public Release Date** field is only available when editing an existing project, not during initial creation.
 
 > **Note:** If you need a project linked to **REDCap**, use the dedicated REDCap-linked project creation option rather than the standard project form.
+
+> Screenshot placeholder: Add the project creation form with the required fields and subject ID configuration visible.
 
 ### What BRIMS Creates Automatically
 
@@ -92,11 +94,21 @@ From the **Project view page**, open the **Arms** tab and select **New Arm**.
 
 > **Note:** Arm numbers are assigned automatically and sequentially. Arms can be updated later if needed. Deleting an arm that already has enrolled participants may not be allowed.
 
+### Adding Event Templates to an Arm
+
+After creating an arm, open that arm and add the events that should be scheduled for subjects in that arm.
+
+The event setup screen includes fields such as **Name**, **Offset**, **Ante Window**, **Post Window**, **Autolog**, **Repeatable**, and **Active**.
+
+Use these settings to define the visit schedule that subjects will follow after enrolment or arm switching.
+
+> Screenshot placeholder: Add the arm view with its Events section open, showing the event template fields and visit ordering.
+
 ---
 
 ## 4. Adding Project Members
 
-Members are team users who have been granted access to work within the project. Each member is assigned a project-specific role that controls their permissions.
+Members are users from your team who have been granted access to work within the project. Each member is assigned a project-specific role that controls their permissions.
 
 From the **Project view page**, open the **Members** tab and select **Attach Member**.
 
@@ -130,7 +142,29 @@ If the project uses REDCap integration, a personal REDCap API token can be store
 
 ---
 
-## 5. Creating Studies
+## 5. Configuring Specimen Types and Labware
+
+Before specimen logging begins, configure the specimen types and labware used by the project.
+
+From the **Project view page**, use the **Specimen Types** and **Labware** sections.
+
+### Specimen Types
+
+Specimen types control how BRIMS logs and manages each type of sample.
+
+This includes whether the sample is primary or derivative, whether it should go into storage, and how aliquots or volumes are handled.
+
+### Labware
+
+Labware records define the barcode format expected for each specimen type.
+
+Use the **Barcode Format Regex** field carefully because BRIMS validates specimen barcodes against that pattern during logging.
+
+> Screenshot placeholder: Add the Specimen Types and Labware areas side by side or as consecutive screenshots to show how barcode rules and storage-related settings are configured.
+
+---
+
+## 6. Creating Studies
 
 Studies are research investigations that sit within a project. Each study has its own set of associated specimens and assays. A project may contain multiple studies.
 
@@ -149,6 +183,9 @@ Navigate to **Studies** in the project sidebar and select **New Study**.
 |---|---|
 | **Description** | A free-text description of the study's scope or objectives. |
 | **Submission Date** | The formal submission date for the study. |
+| **Public Release Date** | The planned public release date for the study, if relevant. |
+
+> Screenshot placeholder: Add the study creation or edit form showing title, identifier, dates, and the Locked toggle.
 
 ### Locking a Study
 
@@ -158,7 +195,7 @@ The **Locked** toggle on a study prevents specimens from being added to or remov
 
 ---
 
-## 6. Managing Roles
+## 7. Managing Roles
 
 Project roles control what each member can see and do within the project. Roles are created and managed at the project level via the **Roles** section.
 
@@ -184,6 +221,8 @@ Use this checklist to confirm project setup is complete before starting data col
 - [ ] Storage designation entered
 - [ ] Initial site reviewed and additional sites created if needed
 - [ ] All study arms created and named
+- [ ] Event templates added to the relevant arms
+- [ ] Specimen types and labware configured
 - [ ] Default Admin role reviewed and any additional roles created
 - [ ] All project members added with appropriate roles and site assignments
 - [ ] At least one study created
