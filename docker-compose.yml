@@ -1,12 +1,12 @@
 services:
     laravel.test:
         build:
-            context: './docker/8.5'
+            context: ./docker/8.5
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
                 MYSQL_CLIENT: mariadb-client
-        image: 'sail-8.5/app'
+        image: sail-8.5/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -20,9 +20,9 @@ services:
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
-            SUPERVISOR_PHP_COMMAND: "/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:start --host=localhost --port=443 --admin-port=2019 --https --watch"
-            XDG_CONFIG_HOME:  /var/www/html/config
-            XDG_DATA_HOME:  /var/www/html/data
+            SUPERVISOR_PHP_COMMAND: '/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan octane:start --host=localhost --port=443 --admin-port=2019 --https --watch'
+            XDG_CONFIG_HOME: /var/www/html/config
+            XDG_DATA_HOME: /var/www/html/data
         volumes:
             - '.:/var/www/html'
         networks:
@@ -63,13 +63,13 @@ services:
         networks:
             - sail
     phpmyadmin:
-        image: 'phpmyadmin/phpmyadmin'
+        image: phpmyadmin/phpmyadmin
         ports:
-          - 8080:80
+            - '8080:80'
         environment:
-          MYSQL_USERNAME: "${DB_USERNAME}"
-          MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
-          PMA_HOST: mariadb
+            MYSQL_USERNAME: '${DB_USERNAME}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            PMA_HOST: mariadb
         networks:
             - sail
         depends_on:

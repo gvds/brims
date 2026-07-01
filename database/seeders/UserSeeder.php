@@ -3,12 +3,9 @@
 namespace Database\Seeders;
 
 use App\Enums\SystemRoles;
-use App\Models\Institution;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -19,13 +16,20 @@ class UserSeeder extends Seeder
     {
         $teams = Team::all();
 
-        $users = User::factory(4)
-            ->state(new Sequence(
-                ['team_id' => $teams->first()->id],
-                ['team_id' => $teams->last()->id],
-            ))
-            ->create([
-                'team_role' => 'Member',
-            ]);
+        Team::query()->each(function ($team) {
+            $leader = User::factory(1)
+                ->create([
+                    'team_id' => $team->id,
+                    'team_role' => 'Leader',
+                    'system_role' => SystemRoles::User,
+                ]);
+            $team->update(['leader_id' => $leader->first()->id]);
+            User::factory(4)
+                ->create([
+                    'team_id' => $team->id,
+                    'team_role' => 'Member',
+                    'system_role' => SystemRoles::User,
+                ]);
+        });
     }
 }

@@ -19,8 +19,8 @@ class VirtualUnitFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->word(),
-            'project_id' => Project::factory(),
+            'name' => fake()->unique()->words(2, true),
+            'project_id' => Project::query()->inRandomOrder()->value('id') ?: Project::factory(),
             'storageSpecimenType' => fake()->word(),
             'rack_extent' => 'Full',
             'startRack' => 1,

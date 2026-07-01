@@ -21,7 +21,7 @@ class PhysicalUnitFactory extends Factory
     {
         return [
             'name' => fake()->unique()->word(),
-            'unit_definition_id' => UnitDefinition::factory(),
+            'unit_definition_id' => UnitDefinition::query()->inRandomOrder()->value('id') ?: UnitDefinition::factory(),
             'serial' => fake()->unique()->randomNumber(8, true),
             'user_id' => User::factory(),
             'available' => true,

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Institution;
 use App\Models\Location;
 use App\Models\PhysicalUnit;
 use App\Models\Project;
@@ -15,31 +16,37 @@ class PhysicalUnitSeeder extends Seeder
      */
     public function run(): void
     {
-        PhysicalUnit::factory(5)
-            ->create()
-            ->each(function ($physicalUnit) {
-                // $virtualunit_count = random_int(1, 3);
-                $physicalUnit->virtualUnits()->saveMany(
-                    VirtualUnit::factory(1)
-                        ->create([
-                            'physical_unit_id' => $physicalUnit->id,
-                            'project_id' => Project::inRandomOrder(2231)->first()->id,
-                        ])
-                        ->each(function ($virtualUnit) {
-                            for ($rack = $virtualUnit->startRack; $rack <= $virtualUnit->endRack; $rack++) {
-                                for ($box = $virtualUnit->startBox; $box <= $virtualUnit->endBox; $box++) {
-                                    for ($position = 1; $position <= $virtualUnit->boxCapacity; $position++) {
-                                        Location::create([
-                                            'virtual_unit_id' => $virtualUnit->id,
-                                            'rack' => $rack,
-                                            'box' => $box,
-                                            'position' => $position,
-                                        ]);
+        Institution::query()->each(
+            function ($institution) {
+                PhysicalUnit::factory(5)
+                    ->create([
+                        'institution_id' => $institution->id,
+                    ])
+                    ->each(function ($physicalUnit) {
+                        // $virtualunit_count = random_int(1, 3);
+                        $physicalUnit->virtualUnits()->saveMany(
+                            VirtualUnit::factory(1)
+                                ->create([
+                                    'physical_unit_id' => $physicalUnit->id,
+                                    'project_id' => Project::inRandomOrder(2231)->first()->id,
+                                ])
+                                ->each(function ($virtualUnit) {
+                                    for ($rack = $virtualUnit->startRack; $rack <= $virtualUnit->endRack; $rack++) {
+                                        for ($box = $virtualUnit->startBox; $box <= $virtualUnit->endBox; $box++) {
+                                            for ($position = 1; $position <= $virtualUnit->boxCapacity; $position++) {
+                                                Location::create([
+                                                    'virtual_unit_id' => $virtualUnit->id,
+                                                    'rack' => $rack,
+                                                    'box' => $box,
+                                                    'position' => $position,
+                                                ]);
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        })
-                );
-            });
+                                })
+                        );
+                    });
+            }
+        );
     }
 }

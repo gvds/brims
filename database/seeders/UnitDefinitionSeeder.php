@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\UnitDefinition;
 use Illuminate\Database\Seeder;
 
 class UnitDefinitionSeeder extends Seeder
@@ -11,7 +12,7 @@ class UnitDefinitionSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\UnitDefinition::factory(3)
+        UnitDefinition::factory(3)
             ->create();
         $this->call([
             SectionSeeder::class,

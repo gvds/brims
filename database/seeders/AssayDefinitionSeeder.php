@@ -14,12 +14,12 @@ class AssayDefinitionSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::each(function ($team) {
+        Team::query()->each(function ($team) {
             AssayDefinition::factory(8)
                 ->create([
                     'team_id' => $team->id,
                     'user_id' => $team->leader_id,
                 ]);
-        });
+        }, 8);
     }
 }

@@ -37,13 +37,13 @@ class ProjectSeeder extends Seeder
                     ])
                     ->create();
                 $arms->each(function (Arm $arm): void {
-                    $arm->update([
-                        'switcharms' => match ($arm->arm_num) {
-                            1 => [$arm->id + 1, $arm->id + 2],
-                            2 => [$arm->id + 1],
-                            3 => null,
-                        }
-                    ]);
+                    $arm->switcharms = match ($arm->arm_num) {
+                        1 => [$arm->id + 1, $arm->id + 2],
+                        2 => [$arm->id + 1],
+                        3 => null,
+                    };
+
+                    $arm->save();
                 });
             });
         });

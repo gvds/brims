@@ -18,7 +18,7 @@ class SpecimentypeFactory extends Factory
     {
         $storageConfig = $this->getRandomStorageConfiguration();
         $fields = [
-            'name' => fake()->unique()->word(),
+            'name' => fake()->unique()->words(2, true),
             'primary' => fake()->boolean(),
             'aliquots' => fake()->numberBetween(1, 3),
             'pooled' => fake()->boolean(),
