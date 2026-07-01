@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\Projects\Tables;
 
+use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use App\Models\Project;
 use Filament\Actions\Action;
@@ -18,8 +19,11 @@ class ProjectsTable
     {
         return $table
             ->modifyQueryUsing(function (Builder $query): void {
-                if (Auth::user()->team_role !== TeamRoles::Admin) {
-                    $query->whereRelation('members', 'users.id', '=', Auth::id());
+                if (Auth::user()->system_role !== SystemRoles::SuperAdmin) {
+                    $query->where('team_id', Auth::user()->team_id);
+                    if (Auth::user()->team_role !== TeamRoles::Admin->value) {
+                        $query->whereRelation('members', 'users.id', '=', Auth::id());
+                    }
                 }
             })
             ->columns([

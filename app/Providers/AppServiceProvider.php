@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return in_array($user->system_role, [SystemRoles::SuperAdmin]) ? true : null;
+            // return null;
             // return in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin]) ? true : null;
         });
 
