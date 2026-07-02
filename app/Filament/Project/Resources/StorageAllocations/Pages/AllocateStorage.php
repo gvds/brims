@@ -6,6 +6,7 @@ use App\Enums\SpecimenStatus;
 use App\Enums\StorageDestinations;
 use App\Filament\Project\Resources\StorageAllocations\StorageAllocationResource;
 use App\Models\Location;
+use App\Models\Project;
 use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\StorageAllocation;
@@ -33,11 +34,11 @@ class AllocateStorage extends Page implements HasForms
 
     public ?array $data = [];
 
-    public $project;
+    public ?Project $project;
 
     public Collection $specimenTypes;
 
-    public $locationsCounts;
+    public Collection $locationsCounts;
 
     public ?int $userSiteId = null;
 

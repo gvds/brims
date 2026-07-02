@@ -22,6 +22,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LogPrimarySpecimens extends Page implements HasForms
@@ -65,14 +66,15 @@ class LogPrimarySpecimens extends Page implements HasForms
 
     private function initializeUser(): void
     {
-        $this->user = session('currentProject')->members()->where('user_id', \Illuminate\Support\Facades\Auth::id())->first();
+        $this->user = session('currentProject')->members()->where('user_id', Auth::id())->first();
         if (! $this->user) {
             Notification::make()
                 ->title('Error')
                 ->body('You are not a member of this project.')
                 ->color('danger')
                 ->send();
-            $this->redirect(route('filament.app.resources.projects.index'));
+            $this->redirect(route('filament.project.pages.dashboard', ['tenant' => session('currentProject')->id]));
+            return;
         }
 
         // Store the site_id separately since pivot data gets lost during Livewire serialization

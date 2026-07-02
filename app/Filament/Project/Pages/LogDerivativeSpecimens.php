@@ -78,7 +78,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
                 ->body('You are not a member of this project.')
                 ->color('danger')
                 ->send();
-            $this->redirect(route('filament.app.resources.projects.index'));
+            $this->redirect(route('filament.project.pages.dashboard', ['tenant' => session('currentProject')->id]));
+            return;
         }
 
         // Store the site_id separately since pivot data gets lost during Livewire serialization
