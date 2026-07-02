@@ -49,7 +49,6 @@ class ProjectsTable
             ])
             ->recordActions([
                 Action::make('access')
-                    // ->label('Administration')
                     ->icon('heroicon-o-eye')
                     ->button()
                     ->action(function (Project $record) {

@@ -34,7 +34,7 @@ class ProjectPanelProvider extends PanelProvider
 
         FilamentView::registerRenderHook(
             name: 'panels::head.end',
-            hook: fn (): string => Blade::render(string: "@vite('resources/js/app.js')"),
+            hook: fn(): string => Blade::render(string: "@vite('resources/js/app.js')"),
         );
     }
 
@@ -51,7 +51,7 @@ class ProjectPanelProvider extends PanelProvider
             )
             ->id('project')
             ->path('project')
-            ->login(fn () => abort(404))
+            ->login(fn() => abort(404))
             ->tenant(Project::class)
             ->tenantMenu(false)
             ->tenantMiddleware([
@@ -78,13 +78,13 @@ class ProjectPanelProvider extends PanelProvider
                     ->icon('heroicon-o-home')
                     ->sort(0),
                 NavigationItem::make('Project Configuration')
-                    ->url(fn (): string => route('filament.project.resources.projects.view', [
+                    ->url(fn(): string => route('filament.project.resources.projects.view', [
                         'tenant' => Filament::getTenant(),
                         'record' => Filament::getTenant(),
                     ]))
-                    ->icon('heroicon-o-rectangle-stack')
+                    ->icon('heroicon-o-cog')
                     ->sort(1)
-                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.project.resources.projects.*')),
+                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.project.resources.projects.*')),
                 NavigationItem::make('Generate Schedule')
                     ->url('/schedule/thisweek', $shouldOpenInNewTab = true)
                     ->icon('heroicon-o-calendar')

@@ -19,7 +19,7 @@ class LabelSpecificationResource extends Resource
 {
     protected static ?string $model = LabelSpecification::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBars3BottomLeft;
 
     protected static ?string $recordTitleAttribute = 'format';
 

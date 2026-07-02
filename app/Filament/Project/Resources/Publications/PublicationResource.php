@@ -22,7 +22,7 @@ class PublicationResource extends Resource
 
     public static ?int $navigationSort = 10;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquare3Stack3d;
 
     protected static ?string $recordTitleAttribute = 'title';
 

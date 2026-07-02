@@ -19,7 +19,7 @@ class InstitutionResource extends Resource
 {
     protected static ?string $model = Institution::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::BuildingLibrary;
 
     protected static string | UnitEnum | null $navigationGroup = 'User Management';
 

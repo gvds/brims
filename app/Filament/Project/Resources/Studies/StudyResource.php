@@ -22,7 +22,7 @@ class StudyResource extends Resource
 
     public static ?int $navigationSort = 9;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
     public static function form(Schema $schema): Schema
     {
