@@ -121,6 +121,9 @@ class AppPanelProvider extends PanelProvider
             ->resourceCreatePageRedirect('index')
             ->resourceEditPageRedirect('index')
             ->maxContentWidth('full')
+            // ->brandLogo(asset('favicon.ico'))
+            ->brandLogo(asset('brimslogo_gemini.png'))
+            ->brandLogoHeight('3rem')
             ->sidebarCollapsibleOnDesktop()
             ->spa()
             ->spaUrlExceptions([

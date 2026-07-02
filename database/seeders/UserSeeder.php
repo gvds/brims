@@ -14,13 +14,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $teams = Team::all();
-
         Team::query()->each(function ($team) {
             $leader = User::factory(1)
                 ->create([
                     'team_id' => $team->id,
-                    'team_role' => 'Leader',
+                    'team_role' => 'Admin',
                     'system_role' => SystemRoles::User,
                 ]);
             $team->update(['leader_id' => $leader->first()->id]);
