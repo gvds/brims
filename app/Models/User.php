@@ -147,6 +147,10 @@ class User extends Authenticatable implements FilamentUser, PasskeyUser, HasAppA
 
     public function canAccessTenant(Model $tenant): bool
     {
+        if (in_array($this->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
+            return true;
+        }
+
         return $this->projects()->whereKey($tenant)->exists();
     }
 
