@@ -225,10 +225,15 @@ class ProjectsRelationManager extends RelationManager
                                     ->autocomplete(false)
                                     ->required()
                                     ->unique(ignoreRecord: true),
-                                TextInput::make('storageDesignation')
-                                    ->label('Storage Designation')
-                                    ->required()
-                                    ->maxLength(40),
+                                Select::make('leader_id')
+                                    ->relationship(
+                                        name: 'leader',
+                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                    )
+                                    ->getOptionLabelFromRecordUsing(
+                                        fn($record) => $record->fullname
+                                    )
+                                    ->required(),
                             ]),
                         Textarea::make('description')
                             ->default(null)
@@ -252,17 +257,16 @@ class ProjectsRelationManager extends RelationManager
                             ]),
                         Grid::make(2)
                             ->schema([
-                                Select::make('leader_id')
-                                    ->relationship(
-                                        name: 'leader',
-                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
-                                    )
-                                    ->getOptionLabelFromRecordUsing(
-                                        fn($record) => $record->fullname
-                                    )
+                                TextInput::make('storageDesignation')
+                                    ->label('Storage Designation')
+                                    ->required()
+                                    ->maxLength(40),
+                                Select::make('label_format')
+                                    ->label('Label Format')
+                                    ->relationship('labelSpecification', 'format')
                                     ->required(),
-                                DatePicker::make('submission_date'),
                             ]),
+                        DatePicker::make('submission_date'),
                     ])
                     ->action(function (array $data): void {
                         DB::beginTransaction();
