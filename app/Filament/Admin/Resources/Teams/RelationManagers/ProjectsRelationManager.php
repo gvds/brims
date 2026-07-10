@@ -55,10 +55,15 @@ class ProjectsRelationManager extends RelationManager
                             ->autocomplete(false)
                             ->required()
                             ->unique(ignoreRecord: true),
-                        TextInput::make('storageDesignation')
-                            ->label('Storage Designation')
-                            ->required()
-                            ->maxLength(40),
+                        Select::make('leader_id')
+                            ->relationship(
+                                name: 'leader',
+                                modifyQueryUsing: fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->id)
+                            )
+                            ->getOptionLabelFromRecordUsing(
+                                fn($record) => $record->fullname
+                            )
+                            ->required(),
                     ]),
                 Select::make('study_design_id')
                     ->relationship(name: 'studyDesign', titleAttribute: 'type')
@@ -66,15 +71,6 @@ class ProjectsRelationManager extends RelationManager
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),
-                Select::make('leader_id')
-                    ->relationship(
-                        name: 'leader',
-                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->id)
-                    )
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) => $record->fullname
-                    )
-                    ->required(),
                 Fieldset::make('Subject ID')
                     ->schema([
                         TextInput::make('subjectID_prefix')
@@ -96,7 +92,7 @@ class ProjectsRelationManager extends RelationManager
                     ->schema([
                         TextInput::make('storageDesignation')
                             ->label('Storage Designation')
-                            // ->required()
+                            ->required()
                             ->maxLength(40),
                         Select::make('label_format')
                             ->label('Label Format')
@@ -165,7 +161,7 @@ class ProjectsRelationManager extends RelationManager
                             DB::beginTransaction();
                             $site = Site::create([
                                 'project_id' => $record->id,
-                                'name' => Auth::user()->institution,
+                                'name' => Auth::user()->team->institution->name,
                                 'description' => 'Project Creator\'s site',
                             ]);
                             $role = Role::create([
@@ -175,10 +171,10 @@ class ProjectsRelationManager extends RelationManager
                             ]);
                             $record->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $site->id]);
                             if ($record->leader_id !== Auth::user()->id) {
-                                if ($record->leader->institution !== $site->name) {
+                                if ($record->leader->team->institution->name !== $site->name) {
                                     $site = Site::create([
                                         'project_id' => $record->id,
-                                        'name' => $record->leader->institution,
+                                        'name' => $record->leader->team->institution->name,
                                         'description' => 'Project Leader\'s site',
                                     ]);
                                 }
