@@ -27,6 +27,10 @@ class TeamsTable
                     ->counts('members')
                     ->label('Members')
                     ->alignCenter(),
+                TextColumn::make('projects_count')
+                    ->counts('projects')
+                    ->label('Projects')
+                    ->alignCenter(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

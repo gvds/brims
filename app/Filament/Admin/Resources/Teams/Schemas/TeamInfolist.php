@@ -17,6 +17,10 @@ class TeamInfolist
                 TextEntry::make('leader.fullname')
                     ->label('Team Leader'),
                 TextEntry::make('description'),
+                TextEntry::make('members_count')
+                    ->label('Members'),
+                TextEntry::make('projects_count')
+                    ->label('Projects'),
             ])
             ->columns(3)
             ->extraAttributes(['class' => 'bg-white dark:bg-zinc-900 p-5 rounded-lg border border-zinc-200 dark:border-zinc-800']);
