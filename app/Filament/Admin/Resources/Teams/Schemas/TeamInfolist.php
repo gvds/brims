@@ -18,8 +18,10 @@ class TeamInfolist
                     ->label('Team Leader'),
                 TextEntry::make('description'),
                 TextEntry::make('members_count')
+                    ->counts('members')
                     ->label('Members'),
                 TextEntry::make('projects_count')
+                    ->counts('projects')
                     ->label('Projects'),
             ])
             ->columns(3)
