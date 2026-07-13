@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Institution;
+use CountryEnums\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class InstitutionFactory extends Factory
     {
         return [
             'name' => fake()->unique()->lexify('INST_????'),
-            'country' => fake()->randomElement(array_column(\CountryEnums\Country::cases(), 'value')),
+            'country' => Country::random(),
         ];
     }
 }
