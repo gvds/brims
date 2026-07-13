@@ -19,6 +19,7 @@ class InstitutionFactory extends Factory
     {
         return [
             'name' => fake()->unique()->lexify('INST_????'),
+            'country' => fake()->randomElement(array_column(\CountryEnums\Country::cases(), 'value')),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Institutions\Tables;
 
+use CountryEnums\Country;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -13,6 +14,9 @@ class InstitutionsTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('country')
+                    ->formatStateUsing(fn($state): ?string => Country::tryParse($state)?->label())
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
