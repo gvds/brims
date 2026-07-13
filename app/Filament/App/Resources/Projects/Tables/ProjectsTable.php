@@ -18,14 +18,14 @@ class ProjectsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query): void {
-                if (Auth::user()->system_role !== SystemRoles::SuperAdmin) {
-                    $query->where('team_id', Auth::user()->team_id);
-                    if (Auth::user()->team_role !== TeamRoles::Admin->value) {
-                        $query->whereRelation('members', 'users.id', '=', Auth::id());
-                    }
-                }
-            })
+            // ->modifyQueryUsing(function (Builder $query): void {
+            //     if (Auth::user()->system_role !== SystemRoles::SuperAdmin) {
+            //         $query->where('team_id', Auth::user()->team_id);
+            //         if (Auth::user()->team_role !== TeamRoles::Admin->value) {
+            //             $query->whereRelation('members', 'users.id', '=', Auth::id());
+            //         }
+            //     }
+            // })
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),
