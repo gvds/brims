@@ -2,7 +2,6 @@
 
 namespace App\Filament\Project\Resources\Projects\Schemas;
 
-use Dom\Text;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
@@ -52,6 +51,6 @@ class ProjectInfolist
                             ->limit(500),
                     ]),
             ])
-            ->extraAttributes(['class' => 'border border-gray-200 rounded-lg py-4 px-5 bg-gray-50 dark:bg-zinc-900 dark:border-zinc-800']);
+            ->extraAttributes(['class' => 'border border-gray-200 dark:border-zinc-800! rounded-lg py-4 px-5 bg-gray-50 dark:bg-zinc-900!']);
     }
 }

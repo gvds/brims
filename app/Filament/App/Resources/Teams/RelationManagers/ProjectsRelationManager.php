@@ -204,6 +204,7 @@ class ProjectsRelationManager extends RelationManager
                     }),
                 Action::make('new_redcap_project')
                     // ->color(Color::Teal)
+                    ->visible(fn(): bool => Auth::user()->can('create', Project::class))
                     ->modalHeading('Create New REDCap-Linked Project')
                     ->schema([
                         Select::make('redcapProject_id')
