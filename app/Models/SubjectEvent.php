@@ -45,6 +45,11 @@ class SubjectEvent extends Pivot
         return $this->hasMany(Specimen::class, 'subject_event_id');
     }
 
+    public function user(): HasOneThrough
+    {
+        return $this->hasOneThrough(User::class, Subject::class, 'id', 'id', 'subject_id', 'user_id');
+    }
+
     public function addEventIteration(CarbonImmutable $eventDate): void
     {
         SubjectEvent::create([
@@ -59,7 +64,7 @@ class SubjectEvent extends Pivot
         ]);
     }
 
-    public function log($data): void
+    public function log(array $data): void
     {
         $this->update([
             'status' => $data['eventStatus'],
@@ -67,6 +72,7 @@ class SubjectEvent extends Pivot
             'logDate' => $data['logDate'],
         ]);
     }
+
     #[\Override]
     protected function casts(): array
     {

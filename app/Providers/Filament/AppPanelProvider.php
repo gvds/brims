@@ -86,17 +86,17 @@ class AppPanelProvider extends PanelProvider
                         'record' => Auth::user()->team_id,
                     ]))
                     ->icon('heroicon-o-user-group')
-                    ->sort(2)
+                    ->sort(3)
                     ->visible(fn(): bool => Auth::user()->team_id !== null),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
-                    ->sort(3)
+                    ->sort(4)
                     ->visible(fn(): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
                 NavigationItem::make('Documentation')
                     ->url('/docs')
                     ->icon('heroicon-o-book-open')
-                    ->sort(4)
+                    ->sort(5)
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')
