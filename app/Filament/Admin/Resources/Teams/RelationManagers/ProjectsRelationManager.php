@@ -137,6 +137,8 @@ class ProjectsRelationManager extends RelationManager
                 TextColumn::make('public_release_date')
                     ->date('Y-m-d')
                     ->sortable(),
+                IconColumn::make('active')
+                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

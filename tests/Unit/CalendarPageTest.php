@@ -14,7 +14,8 @@ it('uses a progressively increasing content grid across breakpoints', function (
     expect($table->getContentGrid())->toBe([
         'sm' => 2,
         'md' => 3,
-        'lg' => 4,
-        'xl' => 5,
+        'xl' => 4,
+        '2xl' => 5,
+        '3xl' => 6
     ]);
 });

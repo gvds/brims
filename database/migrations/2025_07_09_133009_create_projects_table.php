@@ -30,6 +30,7 @@ return new class extends Migration
             $table->unsignedInteger('last_subject_number')->default(0);
             $table->unsignedInteger('redcapProject_id')->nullable()->unique();
             $table->string('label_format', 30);
+            $table->boolean('active')->default(1);
             $table->timestamps();
 
             $table->foreign('label_format')

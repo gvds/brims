@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Projects\Schemas;
 
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
@@ -36,16 +37,17 @@ class ProjectInfolist
                         TextEntry::make('storageDesignation')
                             ->label('Storage Designation'),
                         TextEntry::make('label_format'),
-
+                        TextEntry::make('subjects_count')
+                            ->label('Number of Subjects')
+                            ->counts('Subjects'),
                     ])
                     ->extraAttributes(['class' => 'min-w-full']),
                 Grid::make(2)
                     ->schema([
                         TextEntry::make('studydesign.type')
                             ->label('Study Design'),
-                        TextEntry::make('subjects_count')
-                            ->label('Number of Subjects')
-                            ->counts('Subjects'),
+                        IconEntry::make('active')
+                            ->boolean(),
                         TextEntry::make('description')
                             ->wrap(true)
                             ->limit(500),

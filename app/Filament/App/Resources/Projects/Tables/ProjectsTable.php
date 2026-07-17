@@ -9,6 +9,9 @@ use Filament\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -42,12 +45,19 @@ class ProjectsTable
                     ->trueIcon('heroicon-o-link')
                     ->trueColor('success')
                     ->alignCenter(),
+                IconColumn::make('active')
+                    ->boolean(),
             ])
             ->defaultSort('title')
             ->recordUrl(null)
             ->filters([
-                //
+                SelectFilter::make('active')
+                    ->options([
+                        1 => 'Active',
+                        0 => 'Inactive'
+                    ])
             ])
+            ->deferFilters(false)
             ->recordActions([
                 Action::make('access')
                     ->icon('heroicon-o-eye')
