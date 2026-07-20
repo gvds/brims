@@ -7,22 +7,12 @@ use App\Models\Project;
 use App\Models\SubjectEvent;
 use BackedEnum;
 use Filament\Pages\Page;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Grouping\Group;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class Calendar extends Page implements HasTable
+class Calendar extends Page
 {
-    use InteractsWithTable;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
@@ -30,12 +20,16 @@ class Calendar extends Page implements HasTable
 
     protected string $view = 'filament.app.pages.calendar';
 
-    protected array $substitutees;
     protected array $user_ids;
     public Collection $projects;
     public array $colours = [];
 
     public array $subjectEvents;
+
+    public Carbon $date;
+    public ?string $month;
+    public int $year;
+    public array $weeks = [];
 
     public static function canAccess(): bool
     {
@@ -44,21 +38,12 @@ class Calendar extends Page implements HasTable
 
     public function mount(): void
     {
-        $this->substitutees = Auth::user()->substitutees()->pluck('users.id')->toArray();
-        $this->user_ids = array_merge([$user_id = Auth::id()], $this->substitutees);
+        $this->date = now();
 
-        $this->subjectEvents = SubjectEvent::query()
-            ->with(['subject.project', 'event.arm'])
-            ->whereHas('user', function ($query) {
-                $query->whereIn('users.id', $this->user_ids);
-            })
-            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-            ->where('maxDate', '>=', now())
-            ->where('eventDate', '<=', now()->addDays(30))
-            ->orderBy('eventDate', 'asc')
-            ->get()
-            ->groupBy('eventDate')
-            ->toArray();
+        $this->year = $this->date->year;
+        $this->month = $this->date->monthName;
+
+        $this->getSubjectEvents();
 
         $this->projects = Project::where('active', true)
             ->whereHas(
@@ -69,6 +54,48 @@ class Calendar extends Page implements HasTable
             )->get();
 
         $this->colours = $this->generateDistinctColors($this->projects->count());
+
+        $this->generateCalendar();
+    }
+
+    private function getSubjectEvents()
+    {
+        $substitutees = Auth::user()->substitutees()->pluck('users.id')->toArray();
+        $this->user_ids = array_merge([$user_id = Auth::id()], $substitutees);
+
+        $this->subjectEvents = SubjectEvent::query()
+            ->with(['subject.project', 'event.arm'])
+            ->whereHas('user', function ($query) {
+                $query->whereIn('users.id', $this->user_ids);
+            })
+            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+            ->where('maxDate', '>=', $this->date)
+            ->where('eventDate', '<=', $this->date->copy()->addDays(30))
+            ->orderBy('eventDate', 'asc')
+            ->get()
+            ->groupBy('eventDate')
+            ->toArray();
+    }
+
+    private function generateCalendar()
+    {
+        $date = $this->date;
+        $startOfMonth = $date->startOfMonth();
+        $startWeek = $startOfMonth->weekOfYear;
+        $weekStartDate = Carbon::now()->setISODate($this->year, $startWeek, 1)->startOfWeek(Carbon::SUNDAY);
+        $endOfMonth = $date->endOfMonth();
+
+        $this->weeks = [];
+
+        // dd($this->subjectEvents);
+        while ($weekStartDate->lte($endOfMonth)) {
+            $this->weeks[] = [
+                'start' => $weekStartDate->copy(),
+                'end' => $weekStartDate->copy()->endOfWeek(Carbon::SATURDAY),
+                'events' => []
+            ];
+            $weekStartDate->addWeek();
+        }
     }
 
     private function generateDistinctColors($count = 1)
@@ -107,50 +134,17 @@ class Calendar extends Page implements HasTable
         return $colors;
     }
 
-
-    public function table(Table $table): Table
+    public function nextmonth()
     {
-        return $table
-            ->query(
-                SubjectEvent::query()
-                    ->with(['subject', 'event.arm'])
-                    ->whereHas('user', function ($query) {
-                        $query->whereIn('users.id', $this->user_ids);
-                    })
-                    ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                    ->where('maxDate', '>=', now())
-                    ->where('eventDate', '<=', now()->addDays(30))
-                    ->orderBy('eventDate', 'asc')
-            )
-            ->columns([
-                Stack::make([
-                    TextColumn::make('subject.fullname')
-                        ->label('Subject'),
-                    TextColumn::make('event.arm.name')
-                        ->prefix('Arm: '),
-                    TextColumn::make('event.name')
-                        ->prefix('Event: '),
-                ])
-                    ->extraAttributes(fn(SubjectEvent $record) => [
-                        'class' => '!items-start border-3 rounded-md px-2 py-1',
-                        'style' => 'color: ' . $this->colours[$record->subject->project->id]
-                    ]),
-            ])
-            ->defaultGroup(
-                Group::make('eventDate')
-                    ->label('Event Date')
-                    ->getTitleFromRecordUsing(fn($record): string => Carbon::parse($record->eventDate)->format('l, d M Y'))
-                    ->titlePrefixedWithLabel(false)
-            )
-            ->contentGrid([
-                'sm' => 2,
-                'md' => 3,
-                'xl' => 4,
-                '2xl' => 5,
-                '3xl' => 6
-            ])
-            ->filters([
-                //
-            ]);
+        $this->date->addMonth();
+        $this->getSubjectEvents();
+        $this->generateCalendar();
+    }
+
+    public function previousmonth()
+    {
+        $this->date->subMonth();
+        $this->getSubjectEvents();
+        $this->generateCalendar();
     }
 }
