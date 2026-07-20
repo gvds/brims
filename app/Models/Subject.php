@@ -101,9 +101,9 @@ class Subject extends Model
         }
     }
 
-    public function generateEvents($armBaselineDate = null): void
+    public function generateEvents($armBaselineDate = null, $switch = false): void
     {
-        if ($this->status !== SubjectStatus::Generated) {
+        if ($this->status !== SubjectStatus::Generated && !$switch) {
             throw new \Exception('Subject is not in Generated status');
         }
         $newevents = Event::where('arm_id', $this->arm_id)->get();
@@ -124,7 +124,7 @@ class Subject extends Model
 
                 // 'labelstatus' => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
                 'labelstatus' => match ($event->autolog) {
-                    true => LabelStatus::Generated,
+                    true => $switch === true ? LabelStatus::Queued : LabelStatus::Generated,
                     false => $event->event_order === 1 && $event->offset === 0 ? LabelStatus::Queued : LabelStatus::Pending,
                 },
             ]
@@ -148,7 +148,7 @@ class Subject extends Model
             $this->save();
 
             $armBaselineDate = new CarbonImmutable($armBaselineDate);
-            $this->generateEvents($armBaselineDate);
+            $this->generateEvents($armBaselineDate, switch: true);
             // $newevents = Event::where('arm_id', $this->arm_id)->get();
             // $newevents->each(fn($event) => $this->events()->attach(
             //     $event,
