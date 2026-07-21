@@ -38,10 +38,8 @@ class Calendar extends Page
 
     public function mount(): void
     {
-        $this->date = now();
-
-        $this->year = $this->date->year;
-        $this->month = $this->date->monthName;
+        $this->date = now()->startOfMonth();
+        // $this->date = now();
 
         $this->getSubjectEvents();
 
@@ -60,6 +58,9 @@ class Calendar extends Page
 
     private function getSubjectEvents()
     {
+        $this->year = $this->date->year;
+        $this->month = $this->date->monthName;
+
         $substitutees = Auth::user()->substitutees()->pluck('users.id')->toArray();
         $this->user_ids = array_merge([$user_id = Auth::id()], $substitutees);
 
@@ -79,10 +80,11 @@ class Calendar extends Page
 
     private function generateCalendar()
     {
-        $date = $this->date;
+        $date = $this->date->copy();
         $startOfMonth = $date->startOfMonth();
         $startWeek = $startOfMonth->weekOfYear;
-        $weekStartDate = Carbon::now()->setISODate($this->year, $startWeek, 1)->startOfWeek(Carbon::SUNDAY);
+        $weekStartDate = $this->date->copy()->startOfWeek(Carbon::SUNDAY);
+        // $weekStartDate = Carbon::now()->setISODate($this->year, $startWeek, 1)->startOfWeek(Carbon::SUNDAY);
         $endOfMonth = $date->endOfMonth();
 
         $this->weeks = [];
