@@ -39,7 +39,6 @@ class Calendar extends Page
     public function mount(): void
     {
         $this->date = now()->startOfMonth();
-        // $this->date = now();
 
         $this->getSubjectEvents();
 
