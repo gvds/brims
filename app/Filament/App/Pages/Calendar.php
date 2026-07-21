@@ -50,7 +50,7 @@ class Calendar extends Page
                 }
             )->get();
 
-        $this->colours = $this->generateDistinctColors($this->projects->count());
+        $this->colours = $this->generateDistinctColours($this->projects->count());
 
         $this->generateCalendar();
     }
@@ -99,9 +99,9 @@ class Calendar extends Page
         }
     }
 
-    private function generateDistinctColors($count = 1)
+    private function generateDistinctColours($count = 1)
     {
-        $colors = [];
+        $colours = [];
         for ($i = 0; $i < $count; $i++) {
             // Calculate hue, keeping saturation (100%) and lightness (50%) fixed
             $hue = ($i * (360 / $count)) % 360;
@@ -129,10 +129,9 @@ class Calendar extends Page
             $b = round(($b_base + $m) * 255);
 
             // Convert RGB to Hex and store
-            $colors[$this->projects[$i]->id] = sprintf("#%02X%02X%02X", $r, $g, $b);
+            $colours[$this->projects[$i]->id] = sprintf("#%02X%02X%02X", $r, $g, $b);
         }
-
-        return $colors;
+        return $colours;
     }
 
     public function nextmonth()

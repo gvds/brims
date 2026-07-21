@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-baseline">
             <div class='font-semibold text-xl mt-5 mb-2 ml-2'>{{ $month }} {{ $year }}</div>
             <div>
                 <span class="border border-zinc-300 dark:border-zinc-700 rounded-md shadow-.md bg-zinc-200 dark:bg-zinc-800 px-3 py-1 cursor-pointer" wire:click='previousmonth'>Previous</span>
