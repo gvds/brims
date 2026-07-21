@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Auth;
 
 class ListSpecimens extends ListRecords
 {
@@ -112,7 +113,10 @@ class ListSpecimens extends ListRecords
                     }),
             ])
                 ->label('Update Specimen Status')
-                ->button(),
+                ->button()
+                ->visible(fn(): bool => session('currentProject')->members()
+                    ->where('user_id', Auth::id())
+                    ->count() > 0),
             ExportAction::make('export')
                 ->label('Export')
                 ->color(Color::Indigo)

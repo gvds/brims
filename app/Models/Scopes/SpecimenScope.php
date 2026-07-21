@@ -17,6 +17,8 @@ class SpecimenScope implements Scope
     {
         session()->get('currentProject') ? $builder->whereRelation('specimenType', 'project_id', session()->get('currentProject')->id) : $builder;
         if (!Auth::user() || Auth::user()->system_role === SystemRoles::SuperAdmin) return;
-        $builder->where('site_id', session()->get('currentProject')->members->where('id', Auth::id())->first()?->pivot->site_id);
+        if (session()->get('currentProject')) {
+            session()->get('currentProject')->members->where('id', Auth::id())->count() > 0 ? $builder->where('site_id', session()->get('currentProject')->members->where('id', Auth::id())->first()->pivot->site_id) : $builder;
+        }
     }
 }

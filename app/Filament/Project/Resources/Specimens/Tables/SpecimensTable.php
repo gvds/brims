@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Auth;
 
 class SpecimensTable
 {
@@ -53,11 +54,6 @@ class SpecimensTable
                     ),
                 TextColumn::make('aliquot')
                     ->numeric(),
-                // TextColumn::make('volume')
-                //     ->formatStateUsing(fn($state, Model $record) => $state . $record->volumeUnit),
-                // TextColumn::make('thawcount')
-                //     ->label('Thaw Count')
-                //     ->numeric(),
                 TextColumn::make('loggedBy.fullname')
                     ->label('Logged By')
                     ->searchable(isIndividual: true, isGlobal: false),
@@ -166,7 +162,10 @@ class SpecimensTable
                         ->modifyQueryUsing(function ($query, $records) {
                             return $query->whereKey($records);
                         }),
-                ]),
+                ])->visible(fn(): bool => session('currentProject')->members()
+                    ->where('user_id', Auth::id())
+                    ->count() > 0),
+
             ]);
     }
 }

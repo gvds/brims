@@ -43,6 +43,9 @@ class ListSubjects extends ListRecords
                         ->maxValue(20)
                         ->required(),
                 ])
+                ->disabled(fn(): bool => session('currentProject')->members()
+                    ->where('user_id', Auth::id())
+                    ->count() === 0)
                 ->action(function (array $data): void {
                     try {
                         DB::beginTransaction();
