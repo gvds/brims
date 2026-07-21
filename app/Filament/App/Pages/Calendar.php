@@ -3,9 +3,11 @@
 namespace App\Filament\App\Pages;
 
 use App\Enums\EventStatus;
+use App\Enums\SystemRoles;
 use App\Models\Project;
 use App\Models\SubjectEvent;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Pages\Page;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -33,11 +35,37 @@ class Calendar extends Page
 
     public static function canAccess(): bool
     {
-        return Auth::user()->can('Manage:Subject');
+
+        if (Auth::user()->system_role === SystemRoles::SysAdmin) {
+            return true;
+        };
+
+        $canInAnyTenant = Auth::user()->getTenants(Filament::getPanel('project'))
+            ->contains(function ($tenant) {
+                // Switch the context to the iteration's tenant
+                Filament::setTenant($tenant);
+                // Check standard Laravel policy / Spatie permission
+                return Auth::user()->can('Manage:Subject');
+            });
+
+        Filament::setTenant(null);
+
+        return $canInAnyTenant;
     }
 
     public function mount(): void
     {
+        // $canInAnyTenant = Auth::user()->getTenants(Filament::getPanel('project'))
+        //     ->contains(function ($tenant) {
+        //         // Switch the context to the iteration's tenant
+        //         Filament::setTenant($tenant);
+        //         // Check standard Laravel policy / Spatie permission
+        //         return Auth::user()->can('Manage:Subject');
+        //     });
+
+        // Filament::setTenant(null);
+        // dd($canInAnyTenant);
+
         $this->date = now()->startOfMonth();
 
         $this->getSubjectEvents();

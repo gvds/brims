@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Projects\Resources\Arms\RelationManagers;
 
+use App\Models\Event;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -143,7 +144,11 @@ class EventsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data) {
+                        $data['event_order'] = Event::where('arm_id', $this->ownerRecord->id)->max('event_order') + 1;
+                        return $data;
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),
