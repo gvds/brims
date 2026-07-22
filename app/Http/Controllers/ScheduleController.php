@@ -35,7 +35,7 @@ class ScheduleController extends Controller
         $header = "($hstartdate - $henddate)";
 
         $this->fpdf = new Fpdf('L');
-        $this->fpdf->AddFont('Calibri', 'B', 'calibrib.php');
+        $this->fpdf->AddFont('Calibri', 'B', 'calibrib.php', public_path('fonts/'));
         $this->fpdf->SetDisplayMode('fullpage');
         $this->fpdf->SetMargins(5, 5);
         $this->fpdf->AddPage();
