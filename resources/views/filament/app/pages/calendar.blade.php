@@ -49,7 +49,7 @@
                                             <div style="color: color-mix(in srgb, {{ $this->colours[$event['subject']['project']['id']] }} 80%, light-dark(black, white));" class="border py-1 px-2 rounded-md font-semibold cursor-pointer">
                                             {{ $event['subject']['firstname'] . ' ' . $event['subject']['lastname'] }}
                                             </div>
-                                            <div class="pointer-events-none absolute mb-2 bottom-full left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded shadow-lg bg-zinc-200 text-zinc-900 px-3 py-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                            <div class="pointer-events-none absolute mb-2 bottom-full left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded shadow-lg bg-zinc-200 text-zinc-900 font-semibold px-3 py-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                                 <div>Arm: {{ $event['event']['arm']['name'] }}</div>
                                                 <div>Event: {{ $event['event']['name'] }}</div>
                                             </div>

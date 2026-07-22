@@ -55,17 +55,6 @@ class Calendar extends Page
 
     public function mount(): void
     {
-        // $canInAnyTenant = Auth::user()->getTenants(Filament::getPanel('project'))
-        //     ->contains(function ($tenant) {
-        //         // Switch the context to the iteration's tenant
-        //         Filament::setTenant($tenant);
-        //         // Check standard Laravel policy / Spatie permission
-        //         return Auth::user()->can('Manage:Subject');
-        //     });
-
-        // Filament::setTenant(null);
-        // dd($canInAnyTenant);
-
         $this->date = now()->startOfMonth();
 
         $this->getSubjectEvents();
@@ -111,7 +100,6 @@ class Calendar extends Page
         $startOfMonth = $date->startOfMonth();
         $startWeek = $startOfMonth->weekOfYear;
         $weekStartDate = $this->date->copy()->startOfWeek(Carbon::SUNDAY);
-        // $weekStartDate = Carbon::now()->setISODate($this->year, $startWeek, 1)->startOfWeek(Carbon::SUNDAY);
         $endOfMonth = $date->endOfMonth();
 
         $this->weeks = [];
@@ -133,15 +121,15 @@ class Calendar extends Page
         for ($i = 0; $i < $count; $i++) {
             // Calculate hue, keeping saturation (100%) and lightness (50%) fixed
             $hue = ($i * (360 / $count)) % 360;
-            $saturation = 1; // 70%
-            $lightness = 0.5;  // 50%
+            $saturation = 1;
+            $lightness = 0.5;
 
             // Convert HSL to RGB
             $c = $lightness * $saturation;
             $x = $c * (1 - abs(fmod($hue / 60, 2) - 1));
             $m = $lightness - ($c / 2);
 
-            // Determine base RGB ratios using PHP match expression
+            // Determine base RGB ratios
             [$r_base, $g_base, $b_base] = match (true) {
                 $hue < 60   => [$c, $x, 0],
                 $hue < 120  => [$x, $c, 0],
