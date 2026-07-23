@@ -20,19 +20,20 @@ class EventsOverdue extends TableWidget
     #[\Override]
     public function table(Table $table): Table
     {
-        $substitutees = Auth::user()->substitutees()
-            ->pluck('users.id');
+        $subjectManagers = Auth::user()->substitutees()
+            ->pluck('users.id')
+            ->push(Auth::id());
 
         return $table
             ->description('Click on a row to access the project')
             ->query(
-                fn (): Builder => Project::query()
+                fn(): Builder => Project::query()
                     ->whereRelation('members', 'user_id', Auth::id())
                     ->whereHas(
                         'subjects.subjectEvents',
-                        fn (Builder $query): Builder => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                        fn(Builder $query): Builder => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('maxDate', '<', today())
-                            ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
+                            ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $subjectManagers))
                     )
             )
             ->columns([
@@ -48,13 +49,16 @@ class EventsOverdue extends TableWidget
                     ->size('md'),
                 TextColumn::make('overdue_events_count')
                     ->label('Events')
-                    ->getStateUsing(fn (Project $record) => SubjectEvent::whereHas('subject', function (Builder $query) use ($record): void {
-                        $query->where('project_id', $record->id)
-                            ->where('user_id', Auth::id());
-                    })
-                        ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                        ->where('maxDate', '<', today())
-                        ->count()),
+                    ->getStateUsing(
+                        fn(Project $record) => SubjectEvent::whereHas(
+                            'subject',
+                            fn(Builder $query): Builder => $query->where('project_id', $record->id)
+                                ->whereIn('user_id', $subjectManagers)
+                        )
+                            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                            ->where('maxDate', '<', today())
+                            ->count()
+                    ),
             ])
             ->emptyStateHeading('')
             ->paginated(false);
