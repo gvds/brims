@@ -14,7 +14,12 @@ Route::get(
     ->name('newaccount');
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/schedule/{week}', ScheduleController::class)->name('schedule');
-    Route::get('/labels/print', LabelController::class)->name('labels.print');
-    Route::get('/storage-allocations/{storageAllocation}', StorageAllocationReportController::class)->name('storage-allocation-report');
+
+    Route::middleware(['auth', 'can:Manage:Subject'])->group(function (): void {
+        Route::get('/schedule/{week}', ScheduleController::class)->name('schedule');
+        Route::get('/labels/print', LabelController::class)->name('labels.print');
+    });
+
+    Route::get('/storage-allocations/{storageAllocation}', StorageAllocationReportController::class)
+        ->name('storage-allocation-report');
 });

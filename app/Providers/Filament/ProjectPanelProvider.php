@@ -22,6 +22,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
@@ -88,7 +89,8 @@ class ProjectPanelProvider extends PanelProvider
                 NavigationItem::make('Generate Schedule')
                     ->url('/schedule/thisweek', $shouldOpenInNewTab = true)
                     ->icon('heroicon-o-calendar')
-                    ->sort(3),
+                    ->sort(3)
+                    ->visible(fn() => Auth::user()->can('Manage:Subject')),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/Project/Widgets'), for: 'App\Filament\Project\Widgets')

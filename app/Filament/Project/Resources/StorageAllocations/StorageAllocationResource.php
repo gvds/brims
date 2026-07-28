@@ -13,9 +13,16 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class StorageAllocationResource extends Resource
 {
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->can('Manage:Specimen');
+    }
+
     protected static ?string $model = StorageAllocation::class;
 
     public static ?int $navigationSort = 7;

@@ -29,6 +29,11 @@ class LogPrimarySpecimens extends Page implements HasForms
 {
     use InteractsWithForms;
 
+    public static function canAccess(): bool
+    {
+        return Auth::user()->can('Manage:Specimen');
+    }
+
     protected static ?string $navigationLabel = 'Log Primary Specimens (2-Stage)';
 
     protected static ?string $title = 'Log Primary Specimens';

@@ -24,6 +24,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -32,6 +33,11 @@ class LogDerivativeSpecimens extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?int $navigationSort = 6;
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->can('Manage:Specimen');
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
 

@@ -22,6 +22,11 @@ class LabelQueue extends Page implements HasTable
 
     protected static ?int $navigationSort = 3;
 
+    public static function canAccess(): bool
+    {
+        return Auth::user()->can('Manage:Subject');
+    }
+
     /**
      * Match parent signature which accepts a BackedEnum as well as string|null.
      */
