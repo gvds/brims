@@ -106,7 +106,7 @@ it('cannot access the project panel of a project of which it is not a member', f
         ->assertStatus(404);
 });
 
-it('can access the project panel for another teams project', function () {
+it('can access the project panel for another teams project of which it is a member', function () {
     actingAs($this->user2);
     $this->get('/project/' . $this->project->id)
         ->assertStatus(200)
@@ -236,4 +236,30 @@ it('can edit an enrolled subject given Manage:Subject permission', function (): 
     $this->get('/project/' . $this->project->id . '/subjects/' . $subject->id . '/edit')
         ->assertOk()
         ->assertSee('Edit Subject');
+});
+
+it('can generate a schedule given Mangage:Subject permission', function (): void {
+    $permission = Permission::firstOrCreate(['name' => 'Manage:Subject']);
+    $this->user->givePermissionTo($permission);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    $subject = Subject::factory()->create([
+        'project_id' => $this->project->id,
+        'user_id' => $this->user->id,
+        'subjectID' => 'PP0001',
+        'site_id' => $this->project->sites->first()->id,
+        'arm_id' => $this->project->arms->first()->id,
+        'status' => SubjectStatus::Enrolled
+    ]);
+    $response = $this->get('/schedule/thisweek')
+        ->assertOk()
+        ->assertHeader('content-type', 'application/pdf')
+        ->assertHeader('Content-Disposition', 'inline; filename="schedule.pdf"');
+
+    $pdfContent = $response->getContent();
+
+    expect($pdfContent)
+        ->toStartWith('%PDF-')
+        ->toMatch('/F.*o.*l.*l.*o.*w.*u.*p/')
+        ->toMatch('/S.*c.*h.*e.*d.*u.*l.*e/');
 });
