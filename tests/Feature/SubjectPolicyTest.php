@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
+use App\Http\Middleware\SetUserTeam;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\Site;
@@ -12,6 +13,7 @@ use App\Models\Subject;
 use App\Models\Team;
 use App\Models\User;
 use App\Policies\SubjectPolicy;
+use Illuminate\Support\Facades\Route;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
@@ -54,6 +56,22 @@ function grantSubjectPermission(User $user, string $permissionName, Project $pro
 // ---------------------------------------------------------------------------
 // viewAny
 // ---------------------------------------------------------------------------
+
+it('sets the project team before the route-level Manage:Subject gate runs', function (): void {
+    ['project' => $project] = makeProjectInSession();
+    $user = User::factory()->create([
+        'system_role' => SystemRoles::User,
+        'team_id' => $project->team_id,
+    ]);
+    setPermissionsTeamId(999999);
+    grantSubjectPermission($user, 'Manage:Subject', $project);
+
+    $this->actingAs($user);
+
+    Route::get('/subject-access-check', fn() => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
+
+    $this->get('/subject-access-check')->assertOk();
+});
 
 describe('viewAny', function (): void {
     it('allows a SysAdmin to viewAny subjects', function (): void {

@@ -16,15 +16,16 @@ class SetUserTeam
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
-        if (!empty(Auth::user()) && session()->has('currentProject')) {
+        if (Auth::check() && session()->has('currentProject')) {
             setPermissionsTeamId(session('currentProject')->id);
         }
 
-        if (!empty(Auth::user())) {
+        $response = $next($request);
+
+        if (Auth::check()) {
             Auth::user()->unsetRelation('roles')->unsetRelation('permissions');
         }
-        // return $next($request);
+
         return $response;
     }
 }
