@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Project\Pages\Dashboard;
+use App\Filament\Project\Resources\Roles\RoleResource;
 use App\Models\Project;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant;
@@ -58,10 +59,12 @@ class ProjectPanelProvider extends PanelProvider
             ->tenantMiddleware([
                 SyncShieldTenant::class,
             ], isPersistent: true)
+            ->resources([
+                RoleResource::class,
+            ])
             ->plugins([
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Authorisation'),
-                // ->registerNavigation(1),
             ])
             ->globalSearch(false)
             ->colors([

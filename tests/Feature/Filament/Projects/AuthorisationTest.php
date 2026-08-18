@@ -114,7 +114,7 @@ it('can access the project panel for another teams project of which it is a memb
         ->assertSee('Project Configuration');
 });
 
-test('that user with no permissions cannot see any project function links', function (): void {
+test('that a user with no permissions cannot see any project function links', function (): void {
     $this->get('/project/' . $this->project->id)
         ->assertDontSee('Subjects')
         ->assertDontSee('Generate Schedule')
@@ -126,7 +126,7 @@ test('that user with no permissions cannot see any project function links', func
         ->assertDontSee('Roles');
 });
 
-test('that user with no permissions cannot see any relationmanagers under project configuration', function (): void {
+test('that a user with no permissions cannot see any relationmanagers under project configuration', function (): void {
     $this->get('/project/' . $this->project->id . '/projects/' . $this->project->id)
         ->assertSee('Title')
         ->assertDontSee('Members')
