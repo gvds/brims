@@ -3,7 +3,6 @@
 namespace App\Filament\Project\Resources\Specimens\Schemas;
 
 use App\Models\Specimen;
-use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
@@ -27,11 +26,13 @@ class SpecimenInfolist
                 TextEntry::make('originSite.name')
                     ->label('Origin Site'),
                 TextEntry::make('status'),
-                TextInput::make('aliquot'),
-                TextInput::make('volume')
-                    ->postfix(fn(Specimen $record) => $record->volumeUnit),
-                TextInput::make('thawcount')
-                    ->label('Thaw Count'),
+                TextEntry::make('aliquot'),
+                TextEntry::make('volume')
+                    ->suffix(fn(Specimen $record): string => ' ' . $record->volumeUnit),
+                TextEntry::make('thawcount')
+                    ->label('Thaw Count')
+                    ->badge()
+                    ->color(fn(int $state): string => $state === 0 ? 'info' : 'danger'),
                 TextEntry::make('loggedBy.fullname')
                     ->label('Logged By'),
                 TextEntry::make('loggedAt'),

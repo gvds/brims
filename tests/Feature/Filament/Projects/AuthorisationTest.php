@@ -6,8 +6,11 @@ use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Filament\Project\Resources\Subjects\Pages\ListSubjects;
 use App\Models\Arm;
+use App\Models\Event;
 use App\Models\Permission;
 use App\Models\Project;
+use App\Models\Specimen;
+use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\Team;
 use App\Models\User;
@@ -262,4 +265,83 @@ it('can generate a schedule given Mangage:Subject permission', function (): void
         ->toStartWith('%PDF-')
         ->toMatch('/F.*o.*l.*l.*o.*w.*u.*p/')
         ->toMatch('/S.*c.*h.*e.*d.*u.*l.*e/');
+});
+
+it('cannot access the specimens page without View:Specimens permission', function (): void {
+    $this->get('/project/' . $this->project->id . '/specimens')
+        ->assertForbidden();
+});
+
+it('can see the specimens link given View:Specimens permission', function (): void {
+    $permission = Permission::firstOrCreate(['name' => 'View:Specimen']);
+    $this->user->givePermissionTo($permission);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    $this->get('/project/' . $this->project->id)
+        ->assertSee('Specimens');
+});
+
+it('can access the specimens list page given View:Specimens permission', function (): void {
+    $permission = Permission::firstOrCreate(['name' => 'View:Specimen']);
+    $this->user->givePermissionTo($permission);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    $this->get('/project/' . $this->project->id . '/specimens')
+        ->assertOk()
+        ->assertSee('Export')
+        ->assertSee('Barcode');
+});
+
+it('can view a specimen given View:Specimen permission', function (): void {
+    $permission = Permission::firstOrCreate(['name' => 'View:Specimen']);
+    $this->user->givePermissionTo($permission);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    $barcode = 'ABC00001';
+
+    $subject = Subject::factory()->create([
+        'project_id' => $this->project->id,
+        'user_id' => $this->user->id,
+        'subjectID' => 'PP0001',
+        'site_id' => $this->project->sites->first()->id,
+        'arm_id' => $this->project->arms->first()->id,
+        'status' => SubjectStatus::Enrolled
+    ]);
+
+    $arm = $this->project->arms()->first();
+
+    $event = Event::factory()->create([
+        'arm_id' => $arm->id,
+    ]);
+
+    $subject_event = $subject->subjectEvents()->create([
+        'event_id' => $event->id,
+        'eventDate' => now(),
+        'minDate' => now(),
+        'maxDate' => now()->addDays(7),
+        'status' => 1,
+    ]);
+
+    $specimenType = Specimentype::factory()->create([
+        'project_id' => $this->project->id,
+    ]);
+
+    $specimen = Specimen::factory()
+        ->for($subject_event, 'subjectEvent')
+        ->for($specimenType, 'specimenType')
+        ->for($this->project->sites->first(), 'site')
+        ->create([
+            'project_id' => $this->project->id,
+            'barcode' => $barcode,
+            'aliquot' => 0,
+            'volume' => 5.0,
+            'origin_site_id' => $this->project->sites->first()->id,
+            'loggedBy_id' => $this->user->id,
+            'loggedAt' => now(),
+        ]);
+
+
+
+    $this->get('/project/' . $this->project->id . '/specimens/' . $specimen->id)
+        ->assertSee('View ' . $barcode);
 });
