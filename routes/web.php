@@ -3,6 +3,7 @@
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StorageAllocationReportController;
+use App\Http\Middleware\SetUserTeam;
 use App\Livewire\SetNewAccountPassword;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +16,8 @@ Route::get(
 
 Route::middleware('auth')->group(function (): void {
 
-    Route::middleware(['auth', 'can:Manage:Subject'])->group(function (): void {
+    // Route::middleware(['auth', 'can:Manage:Subject'])->group(function (): void {
+    Route::middleware([SetUserTeam::class, 'can:Manage:Subject'])->group(function (): void {
         Route::get('/schedule/{week}', ScheduleController::class)->name('schedule');
         Route::get('/labels/print', LabelController::class)->name('labels.print');
     });
