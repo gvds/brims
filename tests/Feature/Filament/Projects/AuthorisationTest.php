@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Filament\Project\Resources\Subjects\Pages\ListSubjects;
+use App\Filament\Project\Resources\Specimens\Pages\ViewSpecimen;
 use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Permission;
@@ -14,6 +15,7 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\Team;
 use App\Models\User;
+use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Artisan;
@@ -297,7 +299,59 @@ it('can view a specimen given View:Specimen permission', function (): void {
     $this->user->givePermissionTo($permission);
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    $barcode = 'ABC00001';
+    $subject = Subject::factory()->create([
+        'project_id' => $this->project->id,
+        'user_id' => $this->user->id,
+        'subjectID' => 'PP0001',
+        'site_id' => $this->project->sites->first()->id,
+        'arm_id' => $this->project->arms->first()->id,
+        'status' => SubjectStatus::Enrolled
+    ]);
+
+    $arm = $this->project->arms()->first();
+
+    $event = Event::factory()->create([
+        'arm_id' => $arm->id,
+    ]);
+
+    $subject_event = $subject->subjectEvents()->create([
+        'event_id' => $event->id,
+        'eventDate' => now(),
+        'minDate' => now(),
+        'maxDate' => now()->addDays(7),
+        'status' => 1,
+    ]);
+
+    $specimenType = Specimentype::factory()->create([
+        'project_id' => $this->project->id,
+    ]);
+
+    $specimen = Specimen::factory()
+        ->for($subject_event, 'subjectEvent')
+        ->for($specimenType, 'specimenType')
+        ->for($this->project->sites->first(), 'site')
+        ->create([
+            'project_id' => $this->project->id,
+            'barcode' => 'ABC00001',
+            'aliquot' => 0,
+            'volume' => 5.0,
+            'origin_site_id' => $this->project->sites->first()->id,
+            'loggedBy_id' => $this->user->id,
+            'loggedAt' => now(),
+        ]);
+
+
+
+    $this->get('/project/' . $this->project->id . '/specimens/' . $specimen->id)
+        ->assertSee('View ' . $specimen->barcode);
+});
+
+it('can edit a specimen given Manage:Specimen permission', function (): void {
+    $permission = Permission::firstOrCreate(['name' => 'View:Specimen']);
+    $permission2 = Permission::firstOrCreate(['name' => 'Manage:Specimen']);
+    $this->user->givePermissionTo($permission);
+    $this->user->givePermissionTo($permission2);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
     $subject = Subject::factory()->create([
         'project_id' => $this->project->id,
@@ -332,7 +386,7 @@ it('can view a specimen given View:Specimen permission', function (): void {
         ->for($this->project->sites->first(), 'site')
         ->create([
             'project_id' => $this->project->id,
-            'barcode' => $barcode,
+            'barcode' => 'ABC00001',
             'aliquot' => 0,
             'volume' => 5.0,
             'origin_site_id' => $this->project->sites->first()->id,
@@ -340,8 +394,8 @@ it('can view a specimen given View:Specimen permission', function (): void {
             'loggedAt' => now(),
         ]);
 
-
-
-    $this->get('/project/' . $this->project->id . '/specimens/' . $specimen->id)
-        ->assertSee('View ' . $barcode);
+    livewire(ViewSpecimen::class, ['record' => $specimen->id])
+        ->callAction(EditAction::class)
+        ->assertSee('Edit ' . $specimen->barcode)
+        ->assertHasNoFormErrors();
 });
