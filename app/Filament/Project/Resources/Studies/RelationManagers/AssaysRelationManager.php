@@ -68,7 +68,6 @@ class AssaysRelationManager extends RelationManager
                 }
             }
         }
-
         $this->files = $assayfiles;
         $this->infos = [];
 
