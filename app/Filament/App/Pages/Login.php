@@ -19,7 +19,7 @@ class Login extends BaseLogin
             ->components([
                 $this->getUsernameFormComponent(),
                 $this->getPasswordFormComponent()
-                    ->helperText(str('New users can set their password by clicking **"Forgot your password?"**')
+                    ->helperText(str('New users can set their password by clicking **"Forgot password?"**')
                         ->inlineMarkdown()
                         ->toHtmlString()),
                 $this->getRememberFormComponent(),
