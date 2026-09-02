@@ -24,7 +24,7 @@ class ProjectFactory extends Factory
             'description' => fake()->paragraph(),
             'submission_date' => fake()->date(),
             'public_release_date' => null,
-            'subjectID_prefix' => fake()->regexify('[A-Z]{2,5}'),
+            'subjectID_prefix' => fake()->regexify('[A-Z][A-Z0-9]{1,9}'),
             'subjectID_digits' => fake()->numberBetween(3, 5),
             'storageDesignation' => fake()->word(),
             'study_design_id' => StudyDesign::factory(),
