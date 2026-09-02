@@ -76,10 +76,8 @@ class ProjectsRelationManager extends RelationManager
                     ->schema([
                         TextInput::make('subjectID_prefix')
                             ->label('Prefix')
-                            ->hint('Between 2 and 10 uppercase characters or numbers')
-                            ->required()
-                            ->maxLength(10)
-                            ->minLength(2)
+                            ->hint('Between 2 and 10 uppercase characters or digits, starting with an uppercase letter')
+                            // ->required()
                             ->regex('/^[A-Z][A-Z0-9]{1,9}$/'),
                         TextInput::make('subjectID_digits')
                             ->label('Digits')
