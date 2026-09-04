@@ -41,34 +41,10 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
-        ],
-
-        'studyfiles' => [
-            'driver' => 'local',
-            'root' => storage_path('studyfiles'),
-            'url' => env('APP_URL') . '/studyfiles',
-            'visibility' => 'private',
-            'throw' => false,
-        ],
-
-        'assayfiles' => [
-            'driver' => 'local',
-            'root' => storage_path('assayfiles'),
-            'url' => env('APP_URL') . '/assayfiles',
-            'visibility' => 'private',
-            'throw' => false,
-        ],
-
-        'exports' => [
-            'driver' => 'local',
-            'root' => storage_path('exports'),
-            'url' => env('APP_URL') . '/exports',
-            'visibility' => 'private',
-            'throw' => false,
         ],
 
         's3' => [
@@ -82,12 +58,6 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'report' => false,
-            'http' => [
-                'connect_timeout' => 5,
-                'timeout' => 5,
-                'decode_content' => false,
-                'verify' => false,
-            ],
         ],
 
     ],

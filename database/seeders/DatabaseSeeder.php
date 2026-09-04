@@ -2,36 +2,24 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Institution;
+use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        Artisan::call('shield:generate --all --panel=project --option=permissions --no-interaction');
-        Institution::factory(2)
-            ->hasTeams(2)
-            ->create();
-        $this->call([
-            UserSeeder::class,
-            AssayDefinitionSeeder::class,
-            ProjectSeeder::class,
-            RoleSeeder::class,
-            ProjectMembersSeeder::class,
-            SpecimentypeSeeder::class,
-            EventSeeder::class,
-            SubjectSeeder::class,
-            SpecimenSeeder::class,
-            PublicationSeeder::class,
-            UnitDefinitionSeeder::class,
-            PhysicalUnitSeeder::class,
+        // User::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
         ]);
     }
 }

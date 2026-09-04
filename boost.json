@@ -1,25 +1,23 @@
 {
     "agents": [
-        "copilot"
+        "copilot",
+        "opencode"
     ],
     "cloud": false,
     "guidelines": true,
     "mcp": true,
-    "nightwatch_mcp": false,
+    "nightwatch": false,
     "packages": [
         "filament/filament",
-        "fruitcake/laravel-debugbar",
         "achyutn/filament-log-viewer"
     ],
-    "sail": true,
+    "sail": false,
     "skills": [
         "infer-conventions",
         "laravel-best-practices",
+        "testing-best-practices",
         "livewire-development",
-        "octane-development",
-        "pest-testing",
         "tailwindcss-development",
-        "filament-log-viewer-development",
-        "debug-using-debugbar"
+        "filament-log-viewer-development"
     ]
 }

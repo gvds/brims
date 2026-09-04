@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schedule;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
 
-Schedule::command('app:delete-old-exports')
-    ->hourly();
-
-Schedule::command('app:deactivate-inactive-users')
-    ->daily();
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');

@@ -1,11 +1,10 @@
 {
     "mcpServers": {
-        "laravel-boost": {
-            "command": "vendor/bin/sail",
+        "lerd": {
             "args": [
-                "artisan",
-                "boost:mcp"
-            ]
+                "mcp"
+            ],
+            "command": "lerd"
         }
     }
 }
