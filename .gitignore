@@ -23,6 +23,8 @@ Thumbs.db
 tests/Browser/Screenshots
 composer.lock
 package-lock.json
+/data
+/config/composer
 
 **/caddy
 frankenphp
