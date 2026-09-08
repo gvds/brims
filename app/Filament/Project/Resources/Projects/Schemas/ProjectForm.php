@@ -43,7 +43,7 @@ class ProjectForm
                             ->schema([
                                 TextInput::make('subjectID_prefix')
                                     ->label('Prefix')
-                                    ->hint('Between 2 and 10 uppercase characters or digits, starting with an uppercase letter')
+                                    ->helperText('Between 2 and 10 uppercase characters or digits, starting with an uppercase letter')
                                     ->required()
                                     ->regex('/^[A-Z][A-Z0-9]{1,9}$/'),
                                 TextInput::make('subjectID_digits')
