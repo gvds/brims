@@ -15,6 +15,8 @@ class SpecimenInfolist
         return $schema
             ->components([
                 TextEntry::make('barcode'),
+                TextEntry::make('subject.subjectID')
+                    ->label('Subject ID'),
                 TextEntry::make('subjectEvent.event.name')
                     ->label('Subject Event'),
                 TextEntry::make('specimenType.name')
@@ -53,6 +55,6 @@ class SpecimenInfolist
                     ->columns(4)
                     ->columnSpanFull(),
             ])
-            ->columns(3);
+            ->columns(4);
     }
 }

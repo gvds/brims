@@ -29,6 +29,9 @@ class SpecimensTable
             ->columns([
                 TextColumn::make('barcode')
                     ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('subject.subjectID')
+                    ->label('Subject ID')
+                    ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('subjectEvent.event.name')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('specimenType.name')
@@ -38,7 +41,8 @@ class SpecimensTable
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('originSite.name')
                     ->label('Origin Site')
-                    ->searchable(isIndividual: true, isGlobal: false),
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status')
                     ->badge()
                     ->searchable(
@@ -56,7 +60,8 @@ class SpecimensTable
                     ->numeric(),
                 TextColumn::make('loggedBy.fullname')
                     ->label('Logged By')
-                    ->searchable(isIndividual: true, isGlobal: false),
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('loggedAt')
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
