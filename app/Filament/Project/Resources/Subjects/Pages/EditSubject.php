@@ -7,6 +7,7 @@ use App\Filament\Project\Resources\Subjects\SubjectResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditSubject extends EditRecord
 {
@@ -26,5 +27,15 @@ class EditSubject extends EditRecord
     public function getRelationManagers(): array
     {
         return [];
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        if (isset($record->previous_arm_id) && $record->enroldate !== $data['enrolDate']) {
+            $data['previousArmBaselineDate'] = $data['enrolDate'];
+        }
+        $record->update($data);
+
+        return $record;
     }
 }

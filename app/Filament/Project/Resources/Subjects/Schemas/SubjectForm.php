@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
@@ -28,10 +29,18 @@ class SubjectForm
                     ->label('Site Name')
                     ->size(TextSize::Large)
                     ->weight(FontWeight::Bold),
-                TextEntry::make('arm.name')
-                    ->label('Current Arm')
-                    ->size(TextSize::Large)
-                    ->weight(FontWeight::Bold),
+
+                Fieldset::make('Arm')
+                    ->columns(2)
+                    ->components([
+                        TextEntry::make('arm.name')
+                            ->label('Current Arm')
+                            ->size(TextSize::Large)
+                            ->weight(FontWeight::Bold),
+                        TextEntry::make('previousArm.name')
+                            ->label('Previous Arm')
+                            ->weight(FontWeight::SemiBold),
+                    ]),
                 TextEntry::make('user.fullname')
                     ->label('Manager')
                     ->size(TextSize::Large)
