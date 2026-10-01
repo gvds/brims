@@ -190,7 +190,7 @@ return [
             App\Filament\Admin\Resources\Users\UserResource::class,
             App\Filament\Admin\Resources\UnitDefinitions\UnitDefinitionResource::class,
             App\Filament\Admin\Resources\PhysicalUnits\PhysicalUnitResource::class,
-            App\Filament\Project\Resources\Projects\ProjectResource::class,
+            // App\Filament\Project\Resources\Projects\ProjectResource::class,
             App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource::class,
             App\Filament\Project\Resources\Projects\Resources\Sites\SiteResource::class,
             App\Filament\Project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource::class,
