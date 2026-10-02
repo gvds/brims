@@ -20,6 +20,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SubjectsTable
 {
@@ -97,7 +98,17 @@ class SubjectsTable
                 ViewAction::make()
                     ->visible(fn(Subject $record): bool => $record->status !== SubjectStatus::Generated),
                 Action::make('enrol')
-                    ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Generated)
+                    // ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Generated)
+                    ->visible(function ($record): bool {
+                        Log::info('enrol visible', [
+                            'id' => $record?->getKey(),
+                            'raw' => $record?->getRawOriginal('status'),
+                            'type' => get_debug_type($record?->status),
+                            'value' => $record?->status,
+                        ]);
+
+                        return $record?->status === SubjectStatus::Generated;
+                    })
                     ->schema(SubjectForm::configure(new Schema)->columns(2)->getComponents())
                     ->action(function (array $data, Subject $record): void {
                         DB::beginTransaction();
