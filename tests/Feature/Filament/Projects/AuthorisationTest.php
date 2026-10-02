@@ -142,6 +142,21 @@ test('that a user with no permissions cannot see any relationmanagers under proj
         ->assertDontSee('Programmes');
 });
 
+it('shows every project relation manager to a user with View:Project permission', function (): void {
+    $permission = Permission::firstOrCreate(['name' => 'View:Project']);
+    $this->user->givePermissionTo($permission);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    $this->get('/project/' . $this->project->id . '/projects/' . $this->project->id)
+        ->assertOk()
+        ->assertSee('Members')
+        ->assertSee('Sites')
+        ->assertSee('Arms')
+        ->assertSee('Labwares')
+        ->assertSee('Specimen Types')
+        ->assertSee('Programmes');
+});
+
 it('cannot access the schedule route without Mangage:Subject permission', function (): void {
     $this->get('/schedule/thisweek')
         ->assertForbidden();

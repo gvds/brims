@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Projects\RelationManagers;
 
+use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\Role;
 use App\Models\Site;
@@ -20,11 +21,22 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 
 class MembersRelationManager extends RelationManager
 {
     protected static string $relationship = 'members';
+
+    #[\Override]
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        $user = Auth::user();
+
+        return $ownerRecord instanceof Project
+            && $user instanceof User
+            && $user->can('View:Project');
+    }
 
     #[\Override]
     public function isReadOnly(): bool
@@ -83,6 +95,7 @@ class MembersRelationManager extends RelationManager
                         Action::make('selectSubstitute')
                             ->label('Select Substitute')
                             ->icon('heroicon-o-user-plus')
+                            ->disabled(fn(User $record) => !$record->can('Manage:Subject'))
                             ->schema([
                                 Select::make('substitute_id')
                                     ->label('Select Substitute')
