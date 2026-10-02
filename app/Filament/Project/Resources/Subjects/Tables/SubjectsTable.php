@@ -33,8 +33,9 @@ class SubjectsTable
         return $table
             ->modifyQueryUsing(function ($query) use ($substitutees): void {
                 if (Auth::user()->team_role !== TeamRoles::Admin && ! in_array(Auth::user()->system_role, [SystemRoles::SysAdmin, SystemRoles::SuperAdmin])) {
-                    $query->where('user_id', Auth::id())
-                        ->orWhereIn('user_id', $substitutees);
+                    $query->where(fn($q) => $q
+                        ->where('user_id', Auth::id())
+                        ->orWhereIn('user_id', $substitutees));
                 }
             })
             ->columns([
@@ -98,17 +99,7 @@ class SubjectsTable
                 ViewAction::make()
                     ->visible(fn(Subject $record): bool => $record->status !== SubjectStatus::Generated),
                 Action::make('enrol')
-                    // ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Generated)
-                    ->visible(function ($record): bool {
-                        Log::info('enrol visible', [
-                            'id' => $record?->getKey(),
-                            'raw' => $record?->getRawOriginal('status'),
-                            'type' => get_debug_type($record?->status),
-                            'value' => $record?->status,
-                        ]);
-
-                        return $record?->status === SubjectStatus::Generated;
-                    })
+                    ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Generated)
                     ->schema(SubjectForm::configure(new Schema)->columns(2)->getComponents())
                     ->action(function (array $data, Subject $record): void {
                         DB::beginTransaction();
