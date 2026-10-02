@@ -95,9 +95,9 @@ class SubjectsTable
             ->recordUrl(fn($record): ?string => $record->status !== SubjectStatus::Generated ? route('filament.project.resources.subjects.view', ['tenant' => session('currentProject'), 'record' => $record]) : null)
             ->recordActions([
                 ViewAction::make()
-                    ->visible(fn($record): bool => $record->status !== SubjectStatus::Generated),
+                    ->visible(fn(Subject $record): bool => $record->status !== SubjectStatus::Generated),
                 Action::make('enrol')
-                    ->visible(fn($record): bool => $record->status === SubjectStatus::Generated)
+                    ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Generated)
                     ->schema(SubjectForm::configure(new Schema)->columns(2)->getComponents())
                     ->action(function (array $data, Subject $record): void {
                         DB::beginTransaction();
@@ -118,7 +118,7 @@ class SubjectsTable
                         }
                     }),
                 EditAction::make()
-                    ->visible(fn($record): bool => $record->status === SubjectStatus::Enrolled)
+                    ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Enrolled)
                     ->successNotification(
                         Notification::make()
                             ->title('Subject updated successfully')
