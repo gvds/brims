@@ -88,10 +88,12 @@ FilamentLogViewer::make()
 
 ## Examples
 
+Run Composer and Artisan commands through Lerd's `exec` MCP action (`composer` or `artisan`), passing each command and its options in `args`.
+
 ### Installation
 
 ```bash
-composer require achyutn/filament-log-viewer
+require achyutn/filament-log-viewer
 ```
 
 ### Plugin Registration
@@ -131,7 +133,7 @@ FilamentLogViewer::make()
 ### Publish Configuration
 
 ```bash
-php artisan vendor:publish --tag=filament-log-viewer-config
+vendor:publish --tag=filament-log-viewer-config
 ```
 
 Then edit `config/filament-log-viewer.php`:

@@ -16,19 +16,21 @@ Use `search-docs` for detailed Livewire 4 patterns and documentation.
 
 ### Creating Components
 
+Run all Artisan commands through Lerd's `exec` MCP action `artisan`; the command examples below show the arguments to pass to that action.
+
 ```bash
 
 # Single-file component (SFC - default in v4)
 
 # Creates: resources/views/components/⚡create-post.blade.php
 
-vendor/bin/sail artisan make:livewire create-post
+make:livewire create-post
 
 # Page component (SFC - Full Page in v4)
 
 # Creates: resources/views/pages/⚡create-post.blade.php
 
-vendor/bin/sail artisan make:livewire pages::create-post
+make:livewire pages::create-post
 
 # Multi-file component (MFC)
 
@@ -36,22 +38,22 @@ vendor/bin/sail artisan make:livewire pages::create-post
 
 #          resources/views/components/⚡create-post/create-post.blade.php
 
-vendor/bin/sail artisan make:livewire create-post --mfc
+make:livewire create-post --mfc
 
 # Class-based component (v3 style)
 
 # Creates: app/Livewire/CreatePost.php AND resources/views/livewire/create-post.blade.php
 
-vendor/bin/sail artisan make:livewire create-post --class
+make:livewire create-post --class
 
 # With namespace
 
-vendor/bin/sail artisan make:livewire Posts/CreatePost
+make:livewire Posts/CreatePost
 ```
 
 ### Converting Between Formats
 
-Use `vendor/bin/sail artisan livewire:convert create-post` to convert between single-file, multi-file, and class-based formats.
+Use `livewire:convert create-post` through Lerd's `exec` MCP action `artisan` to convert between single-file, multi-file, and class-based formats.
 
 ### Choosing a Component Format
 

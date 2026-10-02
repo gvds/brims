@@ -15,7 +15,6 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - livewire/livewire (LIVEWIRE) - v3
 - laravel/mcp (MCP) - v0
 - laravel/pint (PINT) - v1
-- laravel/sail (SAIL) - v1
 - laravel/telescope (TELESCOPE) - v5
 - pestphp/pest (PEST) - v4
 - phpunit/phpunit (PHPUNIT) - v12
@@ -35,7 +34,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - Do not change the application's dependencies without approval.
 
 ## Frontend Bundling
-- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `vendor/bin/sail npm run build`, `vendor/bin/sail npm run dev`, or `vendor/bin/sail composer run dev`. Ask them.
+- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run the project's configured Node package-manager build or dev command through Lerd. Ask them.
 
 ## Replies
 - Be concise in your explanations - focus on what's important rather than explaining obvious details.
@@ -110,33 +109,27 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ## Enums
 - Typically, keys in an Enum should be TitleCase. For example: `FavoritePerson`, `BestLake`, `Monthly`.
 
-=== sail rules ===
+=== lerd rules ===
 
-## Laravel Sail
+## Lerd
 
-- This project runs inside Laravel Sail's Docker containers. You MUST execute all commands through Sail.
-- Start services using `vendor/bin/sail up -d` and stop them with `vendor/bin/sail stop`.
-- Open the application in the browser by running `vendor/bin/sail open`.
-- Always prefix PHP, Artisan, Composer, and Node commands with `vendor/bin/sail`. Examples:
-    - Run Artisan Commands: `vendor/bin/sail artisan migrate`
-    - Install Composer packages: `vendor/bin/sail composer install`
-    - Execute Node commands: `vendor/bin/sail npm run dev`
-    - Execute PHP scripts: `vendor/bin/sail php [script]`
-- View all available Sail commands by running `vendor/bin/sail` without arguments.
+- This project uses Lerd for local development. Run Artisan and Composer through Lerd's `exec` MCP action (`artisan` or `composer`) with the command and options in `args`; do not run them through Sail or directly on the host.
+- Run Node package-manager commands through the project's Lerd-managed Node environment or configured worker; follow the package manager detected from `package.json` and lockfiles rather than invoking npm directly on the host.
+- Manage site and service lifecycle through Lerd's `site` and `service` MCP actions.
 
 === tests rules ===
 
 ## Test Enforcement
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
-- Run the minimum number of tests needed to ensure code quality and speed. Use `vendor/bin/sail artisan test --compact` with a specific filename or filter.
+- Run the minimum number of tests needed to ensure code quality and speed through Lerd's `exec` MCP action `artisan`, passing `args: ["test", "--compact", "<test-file-or-filter>"]`.
 
 === laravel/core rules ===
 
 ## Do Things the Laravel Way
 
-- Use `vendor/bin/sail artisan make:` commands to create new files (i.e. migrations, controllers, models, etc.). You can list available Artisan commands using the `list-artisan-commands` tool.
-- If you're creating a generic PHP class, use `vendor/bin/sail artisan make:class`.
+- Use Artisan `make:` commands to create new files (i.e. migrations, controllers, models, etc.) through Lerd's `exec` MCP action `artisan`. Discover commands with `args: ["list"]` and check parameters with `args: ["[command]", "--help"]`.
+- If you're creating a generic PHP class, run `make:class` through Lerd's `exec` MCP action `artisan`.
 - Pass `--no-interaction` to all Artisan commands to ensure they work without user input. You should also pass the correct `--options` to ensure correct behavior.
 
 ### Database
@@ -147,7 +140,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 - Use Laravel's query builder for very complex database operations.
 
 ### Model Creation
-- When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `list-artisan-commands` to check the available options to `vendor/bin/sail artisan make:model`.
+- When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `list-artisan-commands` to check the available options to `make:model --help` through Lerd's `exec` MCP action `artisan`.
 
 ### APIs & Eloquent Resources
 - For APIs, default to using Eloquent API Resources and API versioning unless existing API routes do not, then you should follow existing application convention.
@@ -171,10 +164,10 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ### Testing
 - When creating models for tests, use the factories for the models. Check if the factory has custom states that can be used before manually setting up the model.
 - Faker: Use methods such as `$this->faker->word()` or `fake()->randomDigit()`. Follow existing conventions whether to use `$this->faker` or `fake()`.
-- When creating tests, make use of `vendor/bin/sail artisan make:test [options] {name}` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
+- When creating tests, use `make:test [options] {name}` through Lerd's `exec` MCP action `artisan` to create a feature test, and pass `--unit` to create a unit test. Most tests should be feature tests.
 
 ### Vite Error
-- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `vendor/bin/sail npm run build` or ask the user to run `vendor/bin/sail npm run dev` or `vendor/bin/sail composer run dev`.
+- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, use the project's configured Node package-manager build or dev command through Lerd, or ask the user to run it through Lerd.
 
 === laravel/v12 rules ===
 
@@ -203,7 +196,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ## Livewire
 
 - Use the `search-docs` tool to find exact version-specific documentation for how to write Livewire and Livewire tests.
-- Use the `vendor/bin/sail artisan make:livewire [Posts\CreatePost]` Artisan command to create new components.
+- Use the `make:livewire [Posts\CreatePost]` Artisan command through Lerd's `exec` MCP action `artisan` to create new components.
 - State should live on the server, with the UI reflecting it.
 - All Livewire requests hit the Laravel backend; they're like regular HTTP requests. Always validate form data and run authorization checks in Livewire actions.
 
@@ -282,8 +275,8 @@ document.addEventListener('livewire:init', function () {
 
 ## Laravel Pint Code Formatter
 
-- You must run `vendor/bin/sail bin pint --dirty` before finalizing changes to ensure your code matches the project's expected style.
-- Do not run `vendor/bin/sail bin pint --test`, simply run `vendor/bin/sail bin pint` to fix any formatting issues.
+- Run Pint through Lerd's `exec` MCP action `vendor_run` with `bin: "pint"` and `args: ["--dirty"]` before finalizing changes to ensure your code matches the project's expected style.
+- Do not run Pint in test mode; use Lerd's `vendor_run` action to apply formatting.
 
 === pest/core rules ===
 
@@ -292,7 +285,7 @@ document.addEventListener('livewire:init', function () {
 - If you need to verify a feature is working, write or update a Unit / Feature test.
 
 ### Pest Tests
-- All tests must be written using Pest. Use `vendor/bin/sail artisan make:test --pest {name}`.
+- All tests must be written using Pest. Use `make:test --pest {name}` through Lerd's `exec` MCP action `artisan`.
 - You must not remove any tests or test files from the tests directory without approval. These are not temporary or helper files - these are core to the application.
 - Tests should test all of the happy paths, failure paths, and weird paths.
 - Tests live in the `tests/Feature` and `tests/Unit` directories.
@@ -305,9 +298,9 @@ it('is true', function () {
 
 ### Running Tests
 - Run the minimal number of tests using an appropriate filter before finalizing code edits.
-- To run all tests: `vendor/bin/sail artisan test --compact`.
-- To run all tests in a file: `vendor/bin/sail artisan test --compact tests/Feature/ExampleTest.php`.
-- To filter on a particular test name: `vendor/bin/sail artisan test --compact --filter=testName` (recommended after making a change to a related file).
+- To run all tests, pass `args: ["test", "--compact"]` to Lerd's `exec` MCP action `artisan`.
+- To run a file, pass `args: ["test", "--compact", "tests/Feature/ExampleTest.php"]`.
+- To filter on a particular test name, pass `args: ["test", "--compact", "--filter=testName"]` (recommended after making a change to a related file).
 - When the tests relating to your changes are passing, ask the user if they would like to run the entire test suite to ensure everything is still passing.
 
 ### Pest Assertions

@@ -11,21 +11,23 @@ compatibility: Requires Laravel with fruitcake/laravel-debugbar installed and de
 
 ## Debugging and optimizing workflow
 
+Run every command below through Lerd's `exec` MCP action `artisan`, passing the displayed command and options as `args`.
+
 1. Find the relevant request:
    ```bash
-   php artisan debugbar:find --issues --max=50
+   debugbar:find --issues --max=50
    ```
 2. Inspect the request summary to identify which collectors have data:
    ```bash
-   php artisan debugbar:get {id}
+   debugbar:get {id}
    ```
 3. Drill into the relevant collector based on the issue type:
    ```bash
-   php artisan debugbar:get {id} --collector=exceptions
+   debugbar:get {id} --collector=exceptions
    ```
 4. For query issues, use dedicated query analysis:
    ```bash
-   php artisan debugbar:queries {id}
+   debugbar:queries {id}
    ```
 5. Trace the problem to source code using backtraces, then fix and re-test.
 
@@ -35,23 +37,23 @@ compatibility: Requires Laravel with fruitcake/laravel-debugbar installed and de
 
 # List recent requests (shows summary with status, duration, memory, query count)
 
-php artisan debugbar:find
+debugbar:find
 
 # Filter by URI pattern (fnmatch) and/or HTTP method
 
-php artisan debugbar:find --uri="/api/*" --method=POST
+debugbar:find --uri="/api/*" --method=POST
 
 # Only show requests with issues (exceptions, slow queries, duplicates, errors)
 
-php artisan debugbar:find --issues --max=50
+debugbar:find --issues --max=50
 
 # Customize issue thresholds (defaults: --min-queries=50, --min-duration=1000, --min-duplicates=2)
 
-php artisan debugbar:find --issues --min-queries=10 --min-duration=500
+debugbar:find --issues --min-queries=10 --min-duration=500
 
 # Threshold options also work standalone, filtering on just that criteria
 
-php artisan debugbar:find --min-queries=20
+debugbar:find --min-queries=20
 ```
 
 `--issues` flags: exceptions, non-2xx status, high query count, slow queries, duplicate query groups, slow request duration, and failed queries. Issue filtering applies on top of the fetched result set — increase `--max` to scan further back.
@@ -62,12 +64,12 @@ php artisan debugbar:find --min-queries=20
 
 # Summary of all collectors (available collectors depend on config)
 
-php artisan debugbar:get latest
-php artisan debugbar:get {id}
+debugbar:get latest
+debugbar:get {id}
 
 # Full data for a specific collector
 
-php artisan debugbar:get {id} --collector=exceptions
+debugbar:get {id} --collector=exceptions
 ```
 
 Pick the collector by issue type:
@@ -79,16 +81,16 @@ Pick the collector by issue type:
 
 # Overview with duplicate detection and slow query flags
 
-php artisan debugbar:queries {id}
+debugbar:queries {id}
 
 # Backtrace and params for a specific statement
 
-php artisan debugbar:queries {id} --statement=N
+debugbar:queries {id} --statement=N
 
 # EXPLAIN plan or re-execute a SELECT
 
-php artisan debugbar:queries {id} --statement=N --explain
-php artisan debugbar:queries {id} --statement=N --result
+debugbar:queries {id} --statement=N --explain
+debugbar:queries {id} --statement=N --result
 ```
 
 Duplicate queries are a strong N+1 signal. Use `--statement=N` to get the backtrace and find the origin.

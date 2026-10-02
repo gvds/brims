@@ -33,9 +33,11 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
 
 Correct:
 ```bash
-php artisan env:encrypt --env=production --readable
-php artisan env:decrypt --env=production
+args: ["env:encrypt", "--env=production", "--readable"]
+args: ["env:decrypt", "--env=production"]
 ```
+
+Pass these arguments to Lerd's `exec` MCP action `artisan`.
 
 For cloud deployments, prefer the platform's native secret store (AWS Secrets Manager, Vault, etc.) and inject at runtime.
 

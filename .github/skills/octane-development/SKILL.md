@@ -71,7 +71,7 @@ Guard the driver, then run closures in parallel:
 
 These issues recur when developing applications on Octane. Guard against each one as you write code.
 
-- Avoid resolving `config()`, `app('config')`, or other container services in low-level worker boot code before the application is fully bootstrapped, especially when configuration is not cached. Resolve configuration after the application is booted, and never assume `php artisan config:cache` has run.
+- Avoid resolving `config()`, `app('config')`, or other container services in low-level worker boot code before the application is fully bootstrapped, especially when configuration is not cached. Resolve configuration after the application is booted, and never assume the `config:cache` Artisan command (run through Lerd's `exec` MCP action `artisan`) has run.
 - Never capture `Auth::user()` in a singleton, static property, or custom guard binding. It can leave one user logged in for later requests on the same worker, even after their cookie is cleared. Resolve authentication state per request and add stateful services to the `flush` list. See [State Isolation](#state-isolation-all-drivers).
 - Close per-request Redis, database, and HTTP client connections you open outside the framework's managed pools. Octane does not close them, so they can accumulate until the worker recycles. Reset them in a `RequestTerminated` listener.
 - Do not read PHP superglobals. `$_GET`, `$_POST`, and `$_SERVER` are not reliably populated under workers. Use the `Request` object instead.

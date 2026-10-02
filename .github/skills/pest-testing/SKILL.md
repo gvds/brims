@@ -16,13 +16,13 @@ Use `search-docs` for detailed Pest 4 patterns and documentation.
 
 ### Creating Tests
 
-All tests must be written using Pest. Use `vendor/bin/sail artisan make:test --pest {name}`.
+All tests must be written using Pest. Run Artisan commands through Lerd's `exec` MCP action `artisan`, passing the command and options in `args`. The command examples below show the arguments to pass to that action.
 
 The `{name}` argument should include only the path and test name, but should not include the test suite.
-- Incorrect: `vendor/bin/sail artisan make:test --pest Feature/SomeFeatureTest` will generate `tests/Feature/Feature/SomeFeatureTest.php`
-- Correct: `vendor/bin/sail artisan make:test --pest SomeControllerTest` will generate `tests/Feature/SomeControllerTest.php`
-- Incorrect: `vendor/bin/sail artisan make:test --pest --unit Unit/SomeServiceTest` will generate `tests/Unit/Unit/SomeServiceTest.php`
-- Correct: `vendor/bin/sail artisan make:test --pest --unit SomeServiceTest` will generate `tests/Unit/SomeServiceTest.php`
+- Incorrect: `make:test --pest Feature/SomeFeatureTest` will generate `tests/Feature/Feature/SomeFeatureTest.php`
+- Correct: `make:test --pest SomeControllerTest` will generate `tests/Feature/SomeControllerTest.php`
+- Incorrect: `make:test --pest --unit Unit/SomeServiceTest` will generate `tests/Unit/Unit/SomeServiceTest.php`
+- Correct: `make:test --pest --unit SomeServiceTest` will generate `tests/Unit/SomeServiceTest.php`
 
 ### Test Organization
 
@@ -43,9 +43,9 @@ it('is true', function () {
 
 ### Running Tests
 
-- Run minimal tests with filter before finalizing: `vendor/bin/sail artisan test --compact --filter=testName`.
-- Run all tests: `vendor/bin/sail artisan test --compact`.
-- Run file: `vendor/bin/sail artisan test --compact tests/Feature/ExampleTest.php`.
+- Run minimal tests with filter before finalizing: `test --compact --filter=testName`.
+- Run all tests: `test --compact`.
+- Run file: `test --compact tests/Feature/ExampleTest.php`.
 
 ## Assertions
 
