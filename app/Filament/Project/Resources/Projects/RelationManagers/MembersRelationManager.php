@@ -18,10 +18,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
 class MembersRelationManager extends RelationManager
@@ -88,43 +90,50 @@ class MembersRelationManager extends RelationManager
                     }),
                 TextColumn::make('projectSubstitute.fullname')
                     ->label('Substitute')
-                    ->icon('heroicon-o-pencil')
+                    // ->icon('heroicon-o-pencil')
+                    ->icon(fn(User $record) => $record->can('Manage:Subject') ? 'heroicon-o-pencil' : null)
                     ->badge()
                     ->placeholder(fn(): HtmlString => new HtmlString(Blade::render('<x-heroicon-o-pencil class="w-4 h-4 inline mr-1" />' . 'None')))
                     ->action(
                         Action::make('selectSubstitute')
                             ->label('Select Substitute')
                             ->icon('heroicon-o-user-plus')
-                            ->disabled(fn(User $record) => !$record->can('Manage:Subject'))
+                            ->authorize(fn(User $record): bool => Gate::allows(
+                                'setSubstitute',
+                                [$record->pivot, $this->ownerRecord],
+                            ))
                             ->schema([
                                 Select::make('substitute_id')
                                     ->label('Select Substitute')
                                     ->placeholder('Choose a substitute...')
-                                    ->options(function (User $record) {
-                                        // Get the current user's site from the pivot
-                                        $userSiteId = $record->pivot->site_id;
-
-                                        if (!$userSiteId) {
-                                            return [];
-                                        }
-
-                                        // Get all project members from the same site, excluding the current user
-                                        return $this->ownerRecord->members()
-                                            ->wherePivot('site_id', $userSiteId)
-                                            ->where('users.id', '!=', $record->id)
-                                            ->get()
-                                            ->pluck('fullname', 'id')
-                                            ->toArray();
-                                    })
+                                    ->options(fn(User $record): array => $this->getSubstituteOptions($record))
                                     ->searchable()
                                     ->preload()
                                     ->nullable(),
                             ])
                             ->action(function (User $record, array $data): void {
-                                // Update the substitute_id in the project_member pivot table
+                                $substituteId = $data['substitute_id'] ?? null;
+                                $authorizationArguments = [$record->pivot, $this->ownerRecord];
+
+                                if ($substituteId !== null) {
+                                    $substitute = $this->ownerRecord->members()
+                                        ->whereKey($substituteId)
+                                        ->first();
+
+                                    if (! $substitute) {
+                                        throw new AuthorizationException;
+                                    }
+
+                                    $authorizationArguments[] = $substitute;
+                                }
+
+                                if (! Gate::allows('setSubstitute', $authorizationArguments)) {
+                                    throw new AuthorizationException;
+                                }
+
                                 $this->ownerRecord->members()
                                     ->updateExistingPivot($record->id, [
-                                        'substitute_id' => $data['substitute_id'],
+                                        'substitute_id' => $substituteId,
                                     ]);
                             })
                             ->fillForm(fn(User $record): array => [
@@ -133,8 +142,7 @@ class MembersRelationManager extends RelationManager
                             ->modalHeading(fn(User $record): string => "Select Substitute for {$record->fullname}")
                             ->modalDescription('Choose a substitute from members of the same project site.')
                             ->modalSubmitActionLabel('Save Substitute')
-                            ->modalCancelActionLabel('Cancel')
-                            ->authorize('setSubstitute', ProjectMember::class),
+                            ->modalCancelActionLabel('Cancel'),
                     ),
             ])
             ->headerActions([
@@ -247,5 +255,23 @@ class MembersRelationManager extends RelationManager
             ->checkIfRecordIsSelectableUsing(
                 fn(Model $record): bool => $record->id === $this->getOwnerRecord()->leader_id ? false : true,
             );
+    }
+
+    /**
+     * @return array<int|string, string>
+     */
+    private function getSubstituteOptions(User $record): array
+    {
+        if (! $record->pivot->site_id || ! $record->can('Manage:Subject')) {
+            return [];
+        }
+
+        return $this->ownerRecord->members()
+            ->wherePivot('site_id', $record->pivot->site_id)
+            ->where('users.id', '!=', $record->id)
+            ->get()
+            ->filter(fn(User $member): bool => $member->can('Manage:Subject'))
+            ->pluck('fullname', 'id')
+            ->all();
     }
 }

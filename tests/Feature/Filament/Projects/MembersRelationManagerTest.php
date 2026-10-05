@@ -23,6 +23,7 @@
  */
 
 use App\Filament\Project\Resources\Projects\RelationManagers\MembersRelationManager;
+use App\Models\Permission;
 use App\Models\Project;
 use App\Models\Site;
 use App\Models\User;
@@ -555,5 +556,121 @@ describe('Data Integrity and Validation', function (): void {
             'project_id' => $otherProject->id,
             'user_id' => $newUser->id,
         ]);
+    });
+});
+
+describe('Substitute Authorization', function (): void {
+    afterEach(function (): void {
+        setPermissionsTeamId(null);
+    });
+
+    beforeEach(function (): void {
+        setPermissionsTeamId($this->project->id);
+
+        $this->subjectPermission = Permission::firstOrCreate([
+            'name' => 'Manage:Subject',
+            'guard_name' => 'web',
+        ]);
+        $this->adminRole = $this->project->roles()->create([
+            'name' => 'Admin',
+            'guard_name' => 'web',
+        ]);
+        $this->memberRole = $this->project->roles()->create([
+            'name' => 'OrdinaryMember',
+            'guard_name' => 'web',
+        ]);
+
+        $this->subjectMember = $this->users[2];
+        $this->substituteMember = $this->users[3];
+        $this->otherMember = $this->users[4];
+        $siteId = $this->sites->first()->id;
+
+        foreach ([$this->subjectMember, $this->substituteMember, $this->otherMember] as $member) {
+            $this->project->members()->attach($member->id, [
+                'role_id' => $this->memberRole->id,
+                'site_id' => $siteId,
+            ]);
+
+            $member->givePermissionTo($this->subjectPermission);
+        }
+
+        actingAs($this->subjectMember);
+    });
+
+    it('allows a subject manager to manage their own substitute but not another member’s', function (): void {
+        $ownMembership = $this->project->members()
+            ->whereKey($this->subjectMember->id)
+            ->firstOrFail()
+            ->pivot;
+        $otherMembership = $this->project->members()
+            ->whereKey($this->otherMember->id)
+            ->firstOrFail()
+            ->pivot;
+
+        expect($this->subjectMember->can('setSubstitute', [$ownMembership, $this->project]))->toBeTrue()
+            ->and($this->subjectMember->can('setSubstitute', [$ownMembership, $this->project, $this->substituteMember]))->toBeTrue()
+            ->and($this->subjectMember->can('setSubstitute', [$otherMembership, $this->project]))->toBeFalse();
+    });
+
+    it('allows a project admin to manage substitutes for eligible members', function (): void {
+        $this->project->members()->updateExistingPivot($this->subjectMember->id, [
+            'role_id' => $this->adminRole->id,
+        ]);
+        $this->subjectMember->revokePermissionTo($this->subjectPermission);
+
+        $membership = $this->project->members()
+            ->whereKey($this->otherMember->id)
+            ->firstOrFail()
+            ->pivot;
+
+        expect($this->subjectMember->can('setSubstitute', [$membership, $this->project]))->toBeTrue();
+    });
+
+    it('allows the project leader member to manage substitutes for eligible members', function (): void {
+        $this->project->update(['leader_id' => $this->subjectMember->id]);
+        $this->subjectMember->revokePermissionTo($this->subjectPermission);
+
+        $membership = $this->project->members()
+            ->whereKey($this->otherMember->id)
+            ->firstOrFail()
+            ->pivot;
+
+        expect($this->subjectMember->can('setSubstitute', [$membership, $this->project]))->toBeTrue();
+    });
+
+    it('does not allow substitutes for members without Manage:Subject permission', function (): void {
+        $this->project->members()->updateExistingPivot($this->subjectMember->id, [
+            'role_id' => $this->adminRole->id,
+        ]);
+        $this->subjectMember->revokePermissionTo($this->subjectPermission);
+        $this->otherMember->revokePermissionTo($this->subjectPermission);
+
+        $membership = $this->project->members()
+            ->whereKey($this->otherMember->id)
+            ->firstOrFail()
+            ->pivot;
+
+        expect($this->subjectMember->can('setSubstitute', [$membership, $this->project]))
+            ->toBeFalse();
+    });
+
+    it('requires a substitute to be an eligible project member at the same site', function (): void {
+        $membership = $this->project->members()
+            ->whereKey($this->subjectMember->id)
+            ->firstOrFail()
+            ->pivot;
+
+        expect($this->subjectMember->can('setSubstitute', [$membership, $this->project, $this->otherMember]))->toBeTrue();
+
+        $this->otherMember->revokePermissionTo($this->subjectPermission);
+
+        expect($this->subjectMember->can('setSubstitute', [$membership, $this->project, $this->otherMember]))->toBeFalse();
+
+        $this->otherMember->givePermissionTo($this->subjectPermission);
+        $this->project->members()->updateExistingPivot($this->otherMember->id, [
+            'site_id' => $this->sites->last()->id,
+        ]);
+
+        expect($this->subjectMember->can('setSubstitute', [$membership, $this->project, $this->otherMember]))->toBeFalse();
     });
 });
