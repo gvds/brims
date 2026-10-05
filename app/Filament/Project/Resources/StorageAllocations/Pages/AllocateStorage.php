@@ -19,6 +19,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -38,7 +39,7 @@ class AllocateStorage extends Page implements HasForms
 
     public Collection $specimenTypes;
 
-    public Collection $locationsCounts;
+    public SupportCollection $locationsCounts;
 
     public ?int $userSiteId = null;
 

@@ -80,6 +80,24 @@ describe('AllocateStorage Page', function (): void {
     });
 
     it('can load the page', function (): void {
+        $physicalUnit = PhysicalUnit::factory()->create([
+            'institution_id' => $this->team->institution_id,
+        ]);
+
+        $virtualUnit = VirtualUnit::factory()->create([
+            'physical_unit_id' => $physicalUnit->id,
+            'project_id' => $this->project->id,
+            'storageSpecimenType' => 'Frozen Plasma',
+            'active' => true,
+        ]);
+
+        Location::create([
+            'virtual_unit_id' => $virtualUnit->id,
+            'rack' => 1,
+            'box' => 'A',
+            'position' => 1,
+        ]);
+
         livewire(AllocateStorage::class)
             ->assertOk();
     });
