@@ -90,18 +90,20 @@ class MembersRelationManager extends RelationManager
                     }),
                 TextColumn::make('projectSubstitute.fullname')
                     ->label('Substitute')
-                    // ->icon('heroicon-o-pencil')
-                    ->icon(fn(User $record) => $record->can('Manage:Subject') ? 'heroicon-o-pencil' : null)
+                    ->icon(fn(User $record): ?string => $this->canManageSubstitute($record) ? 'heroicon-o-pencil' : null)
                     ->badge()
-                    ->placeholder(fn(): HtmlString => new HtmlString(Blade::render('<x-heroicon-o-pencil class="w-4 h-4 inline mr-1" />' . 'None')))
+                    ->placeholder(fn(User $record): HtmlString => new HtmlString(
+                        Blade::render(
+                            '<x-heroicon-o-pencil class="w-4 h-4 inline mr-1 '
+                                . ($this->canManageSubstitute($record) ? '' : 'invisible')
+                                . '" />None',
+                        ),
+                    ))
                     ->action(
                         Action::make('selectSubstitute')
                             ->label('Select Substitute')
                             ->icon('heroicon-o-user-plus')
-                            ->authorize(fn(User $record): bool => Gate::allows(
-                                'setSubstitute',
-                                [$record->pivot, $this->ownerRecord],
-                            ))
+                            ->authorize(fn(User $record): bool => $this->canManageSubstitute($record))
                             ->schema([
                                 Select::make('substitute_id')
                                     ->label('Select Substitute')
@@ -273,5 +275,10 @@ class MembersRelationManager extends RelationManager
             ->filter(fn(User $member): bool => $member->can('Manage:Subject'))
             ->pluck('fullname', 'id')
             ->all();
+    }
+
+    private function canManageSubstitute(User $record): bool
+    {
+        return Gate::allows('setSubstitute', [$record->pivot, $this->ownerRecord]);
     }
 }
