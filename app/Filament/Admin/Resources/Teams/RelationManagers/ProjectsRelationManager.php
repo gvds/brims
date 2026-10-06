@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Teams\RelationManagers;
 
+use App\Enums\SystemRoles;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
@@ -25,7 +26,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Support\Markdown;
 use Filament\Tables\Columns\IconColumn;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -59,7 +59,9 @@ class ProjectsRelationManager extends RelationManager
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where('team_id', $record->team_id)
+                                modifyQueryUsing: fn(Builder $query) => $query->where(fn(Builder $query) => $query
+                                    ->where('team_id', $this->getOwnerRecord()->getKey())
+                                    ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value]))
                             )
                             ->getOptionLabelFromRecordUsing(
                                 fn($record) => $record->fullname
@@ -229,7 +231,9 @@ class ProjectsRelationManager extends RelationManager
                                 Select::make('leader_id')
                                     ->relationship(
                                         name: 'leader',
-                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                        modifyQueryUsing: fn(Builder $query) => $query->where(fn(Builder $query) => $query
+                                            ->where('team_id', Auth::user()->team_id)
+                                            ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value]))
                                     )
                                     ->getOptionLabelFromRecordUsing(
                                         fn($record) => $record->fullname

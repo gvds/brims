@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use App\Filament\Admin\Resources\Teams\Pages\CreateTeam;
 use App\Filament\Admin\Resources\Teams\Pages\EditTeam;
@@ -13,6 +14,7 @@ use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -346,6 +348,52 @@ describe('TeamResource Leader Management', function (): void {
         // The select should be searchable by firstname and lastname
         // This tests that the relationship and search configuration is correct
         expect($component)->assertFormFieldExists('leader_id');
+    });
+
+    it('includes system administrators in the project leader options', function (): void {
+        $team = Team::factory()->create();
+        $teamMember = User::factory()->create(['team_id' => $team->id]);
+        $sysAdmin = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
+        $superAdmin = User::factory()->create(['system_role' => SystemRoles::SuperAdmin]);
+        $otherTeamMember = User::factory()->create();
+
+        $component = livewire(ProjectsRelationManager::class, [
+            'ownerRecord' => $team,
+            'pageClass' => EditTeam::class,
+        ])->mountTableAction('create');
+
+        $leaderOptions = $component->instance()
+            ->getMountedTableActionForm()
+            ->getComponent('leader_id')
+            ->getOptionsFromRelationship();
+
+        expect(array_keys($leaderOptions))
+            ->toContain($teamMember->id, $sysAdmin->id, $superAdmin->id)
+            ->not->toContain($otherTeamMember->id);
+    });
+
+    it('includes system administrators in REDCap project leader options', function (): void {
+        $teamMember = User::factory()->create(['team_id' => $this->team->id]);
+        $sysAdmin = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
+        $superAdmin = User::factory()->create(['system_role' => SystemRoles::SuperAdmin]);
+        $otherTeamMember = User::factory()->create();
+        $redcapConnection = Mockery::mock();
+        $redcapConnection->shouldReceive('select')->once()->andReturn([]);
+        DB::shouldReceive('connection')->with('redcap')->andReturn($redcapConnection);
+
+        $component = livewire(ProjectsRelationManager::class, [
+            'ownerRecord' => $this->team,
+            'pageClass' => EditTeam::class,
+        ])->mountTableAction('new_redcap_project');
+
+        $leaderOptions = $component->instance()
+            ->getMountedTableActionForm()
+            ->getComponent('leader_id')
+            ->getOptionsFromRelationship();
+
+        expect(array_keys($leaderOptions))
+            ->toContain($teamMember->id, $sysAdmin->id, $superAdmin->id)
+            ->not->toContain($otherTeamMember->id);
     });
 });
 

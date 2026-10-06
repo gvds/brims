@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources\Teams\RelationManagers;
 
+use App\Enums\SystemRoles;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
@@ -60,7 +61,10 @@ class ProjectsRelationManager extends RelationManager
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where('team_id', $record->team_id)
+                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where(
+                                    fn(Builder $query) => $query->where('team_id', $record->team_id)
+                                        ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
+                                )
                             )
                             ->getOptionLabelFromRecordUsing(
                                 fn($record) => $record->fullname

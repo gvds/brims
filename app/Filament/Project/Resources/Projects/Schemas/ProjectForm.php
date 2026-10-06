@@ -2,6 +2,7 @@
 
 namespace App\Filament\Project\Resources\Projects\Schemas;
 
+use App\Enums\SystemRoles;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -34,7 +35,10 @@ class ProjectForm
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where('team_id', $record->team_id)
+                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where(
+                                    fn(Builder $query) => $query->where('team_id', $record->team_id)
+                                        ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
+                                )
                             )
                             ->getOptionLabelFromRecordUsing(
                                 fn($record) => $record->fullname
