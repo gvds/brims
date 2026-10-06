@@ -25,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Support\Markdown;
 use Filament\Tables\Columns\IconColumn;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -58,7 +59,7 @@ class ProjectsRelationManager extends RelationManager
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->id)
+                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where('team_id', $record->team_id)
                             )
                             ->getOptionLabelFromRecordUsing(
                                 fn($record) => $record->fullname

@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectForm
@@ -33,7 +34,7 @@ class ProjectForm
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where('team_id', $record->team_id)
                             )
                             ->getOptionLabelFromRecordUsing(
                                 fn($record) => $record->fullname
