@@ -36,6 +36,8 @@ class MembersRelationManager extends RelationManager
     #[\Override]
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
+        $user = Auth::user();
+
         $tenantId = Filament::getTenant()?->getKey();
         $permissionTeamId = app(PermissionRegistrar::class)->getPermissionsTeamId();
 
@@ -46,7 +48,18 @@ class MembersRelationManager extends RelationManager
             'user_can_view_project' => Auth::user()->can('View:Project'),
         ]);
 
-        $user = Auth::user();
+        $member = $ownerRecord->members()->whereKey($user->getKey())->first();
+        $pivotRole = $ownerRecord->roles()->find($member?->pivot?->role_id);
+
+        logger()->debug('Project authorization roles', [
+            'project_member_role_id' => $member?->pivot?->role_id,
+            'project_member_role' => $pivotRole?->only(['id', 'name', 'project_id', 'guard_name']),
+            'spatie_roles' => $user->roles()
+                ->get(['roles.id', 'roles.name', 'roles.project_id', 'roles.guard_name'])
+                ->toArray(),
+            'has_admin_role' => $user->hasRole('Admin'),
+            'has_direct_permission' => $user->hasDirectPermission('View:Project'),
+        ]);
 
         return $ownerRecord instanceof Project
             && $user instanceof User
