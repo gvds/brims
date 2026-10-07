@@ -43,6 +43,7 @@ class MembersRelationManager extends RelationManager
             'tenant_id' => $tenantId,
             'permission_team_id' => $permissionTeamId,
             'project_id' => $ownerRecord->getKey(),
+            'user_can_view_project' => Auth::user()->can('View:Project'),
         ]);
 
         $user = Auth::user();
