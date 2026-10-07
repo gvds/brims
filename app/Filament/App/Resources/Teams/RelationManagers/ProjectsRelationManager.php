@@ -26,7 +26,6 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -61,8 +60,8 @@ class ProjectsRelationManager extends RelationManager
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where(
-                                    fn(Builder $query) => $query->where('team_id', $record->team_id)
+                                modifyQueryUsing: fn(Builder $query) => $query->where(
+                                    fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->getKey())
                                         ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
                                 )
                             )

@@ -38,30 +38,6 @@ class MembersRelationManager extends RelationManager
         return $ownerRecord instanceof Project
             && $user instanceof User
             && $user->can('View:Project');
-
-        // if (! ($ownerRecord instanceof Project) || ! ($user instanceof User)) {
-        //     return false;
-        // }
-
-        // if ($user->can('View:Project')) {
-        //     return true;
-        // }
-
-        // $member = $ownerRecord->members()
-        //     ->whereKey($user->getKey())
-        //     ->first();
-
-        // if (! $member || ! $member->pivot->role_id) {
-        //     return false;
-        // }
-
-        // return $ownerRecord->roles()
-        //     ->whereKey($member->pivot->role_id)
-        //     ->where('guard_name', config('auth.defaults.guard'))
-        //     ->whereHas('permissions', fn (Builder $query): Builder => $query
-        //         ->where('name', 'View:Project')
-        //         ->where('guard_name', config('auth.defaults.guard')))
-        //     ->exists();
     }
 
     #[\Override]
@@ -69,29 +45,6 @@ class MembersRelationManager extends RelationManager
     {
         return false;
     }
-
-    // public function form(Schema $schema): Schema
-    // {
-    //     return $schema
-    //         ->components([
-    //             TextInput::make('username')
-    //                 ->required(),
-    //             TextInput::make('firstname')
-    //                 ->required(),
-    //             TextInput::make('lastname')
-    //                 ->required(),
-    //             TextInput::make('email')
-    //                 ->email()
-    //                 ->required(),
-    //             TextInput::make('telephone')
-    //                 ->tel()
-    //                 ->default(null),
-    //             TextInput::make('institution')
-    //                 ->default(null),
-    //             ComponentsToggle::make('active')
-    //                 ->required(),
-    //         ]);
-    // }
 
     public function table(Table $table): Table
     {
