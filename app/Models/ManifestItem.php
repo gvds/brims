@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Enums\SpecimenStatus;
+use Database\Factories\ManifestItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ManifestItem extends Pivot
 {
-    /** @use HasFactory<\Database\Factories\ManifestItemFactory> */
+    /** @use HasFactory<ManifestItemFactory> */
     use HasFactory;
 
     protected $table = 'manifest_items';
@@ -25,6 +26,7 @@ class ManifestItem extends Pivot
     {
         return $this->belongsTo(Specimen::class);
     }
+
     #[\Override]
     protected function casts(): array
     {

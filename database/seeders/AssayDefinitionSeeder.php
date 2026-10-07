@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\AssayDefinition;
 use App\Models\Team;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AssayDefinitionSeeder extends Seeder

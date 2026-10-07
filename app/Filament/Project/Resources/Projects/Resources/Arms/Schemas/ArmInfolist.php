@@ -17,7 +17,7 @@ class ArmInfolist
                 Grid::make([
                     'default' => 1,
                     'sm' => 2,
-                    'lg' => 4
+                    'lg' => 4,
                 ])
                     ->schema([
                         TextEntry::make('name'),
@@ -30,7 +30,7 @@ class ArmInfolist
                 TextEntry::make('switcharms')
                     ->label('Switchable Arms')
                     ->inlineLabel(true)
-                    ->state(fn($record) => Arm::whereIn('id', $record->switcharms ?? [])->pluck('name')->implode(' | '))
+                    ->state(fn ($record) => Arm::whereIn('id', $record->switcharms ?? [])->pluck('name')->implode(' | '))
                     ->placeholder('--- No Switchable Arms ---')
                     ->listWithLineBreaks(),
 

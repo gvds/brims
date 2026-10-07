@@ -40,7 +40,6 @@ class SubjectEventsRelationManager extends RelationManager
         return false;
     }
 
-
     #[\Override]
     public function form(Schema $schema): Schema
     {
@@ -75,7 +74,7 @@ class SubjectEventsRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(
-                fn(Builder $query) => $query
+                fn (Builder $query) => $query
                     ->join('events', 'subject_event.event_id', '=', 'events.id')
                     ->join('arms', 'events.arm_id', '=', 'arms.id')
                     ->select('subject_event.*')
@@ -91,10 +90,10 @@ class SubjectEventsRelationManager extends RelationManager
                 SelectColumn::make('status')
                     ->options(EventStatus::class)
                     ->label('Status')
-                    ->disabled(fn(): bool => ! Auth::user()->can('Manage:Subject')),
+                    ->disabled(fn (): bool => ! Auth::user()->can('Manage:Subject')),
                 TextColumn::make('eventDate')
                     ->date('Y-m-d')
-                    ->extraAttributes(fn(SubjectEvent $record): array => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
+                    ->extraAttributes(fn (SubjectEvent $record): array => $record->status->value < EventStatus::Logged->value && $record->maxDate < today() ? ['class' => 'text-red-600 font-bold'] : []),
                 TextColumn::make('minDate')
                     ->date('Y-m-d'),
                 TextColumn::make('maxDate')
@@ -113,7 +112,7 @@ class SubjectEventsRelationManager extends RelationManager
                 SelectColumn::make('labelstatus')
                     ->options(LabelStatus::class)
                     ->label('Label Status')
-                    ->disabled(fn(): bool => ! Auth::user()->can('Manage:Subject')),
+                    ->disabled(fn (): bool => ! Auth::user()->can('Manage:Subject')),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -148,7 +147,7 @@ class SubjectEventsRelationManager extends RelationManager
                         $record->addEventIteration($eventDate);
                     })
                     ->visible(
-                        fn($record, $livewire): bool => $record->event->repeatable &&
+                        fn ($record, $livewire): bool => $record->event->repeatable &&
                             $record->status !== EventStatus::Cancelled &&
                             $record->iteration === SubjectEvent::where('event_id', $record->event->id)->max('iteration') &&
                             $record->eventDate > SubjectEvent::where('event_id', $record->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
@@ -164,7 +163,7 @@ class SubjectEventsRelationManager extends RelationManager
                                 ->default(today())
                                 ->required()
                                 ->beforeOrEqual('today')
-                                ->afterOrEqual(fn($livewire) => $livewire->getOwnerRecord()->armBaselineDate)
+                                ->afterOrEqual(fn ($livewire) => $livewire->getOwnerRecord()->armBaselineDate)
                                 ->label('Log Date'),
                             Select::make('eventStatus')
                                 ->label('Event Status')
@@ -182,7 +181,7 @@ class SubjectEventsRelationManager extends RelationManager
                     ->extraAttributes(['class' => 'py-1'])
                     ->requiresConfirmation()
                     ->visible(
-                        fn($record): bool => $record->status === EventStatus::Scheduled
+                        fn ($record): bool => $record->status === EventStatus::Scheduled
                     ),
             ])
             ->toolbarActions([

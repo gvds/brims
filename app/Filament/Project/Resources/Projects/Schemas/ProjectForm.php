@@ -5,15 +5,14 @@ namespace App\Filament\Project\Resources\Projects\Schemas;
 use App\Enums\SystemRoles;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class ProjectForm
 {
@@ -35,16 +34,16 @@ class ProjectForm
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where(
-                                    fn(Builder $query) => $query->where('team_id', $record->team_id)
+                                modifyQueryUsing: fn (Builder $query, Model $record) => $query->where(
+                                    fn (Builder $query) => $query->where('team_id', $record->team_id)
                                         ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
                                 )
                             )
                             ->getOptionLabelFromRecordUsing(
-                                fn($record) => $record->fullname
+                                fn ($record) => $record->fullname
                             )
                             ->required(),
-                        Fieldset::make("Subject ID")
+                        Fieldset::make('Subject ID')
                             ->schema([
                                 TextInput::make('subjectID_prefix')
                                     ->label('Prefix')
@@ -74,7 +73,7 @@ class ProjectForm
                             ->schema([
                                 DatePicker::make('submission_date'),
                                 DatePicker::make('public_release_date')
-                                    ->visibleOn('edit')
+                                    ->visibleOn('edit'),
                             ]),
                     ]),
             ])

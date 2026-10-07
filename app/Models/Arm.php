@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ArmFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Arm extends Model
 {
-    /** @use HasFactory<\Database\Factories\ArmFactory> */
+    /** @use HasFactory<ArmFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];

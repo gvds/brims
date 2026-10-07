@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Models\LabelSpecification;
 use App\Models\Project;
 use App\Models\Team;

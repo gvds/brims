@@ -18,7 +18,7 @@ class InstitutionForm
                 Select::make('country')
                     ->options(Country::getOptions())
                     ->in(Country::cases())
-                    ->required()
+                    ->required(),
             ]);
     }
 }

@@ -1,8 +1,7 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Gate;
 
 it('returns false for users without the update.event permission', function (): void {
     $user = User::factory()->create();
@@ -16,7 +15,7 @@ it('returns true for users with the update.event permission (Gate stubbed)', fun
     $user = User::factory()->create();
 
     // stub the gate for this test instead of relying on DB-spatie wiring
-    \Illuminate\Support\Facades\Gate::define('update.event', fn ($actor): bool => $actor->id === $user->id);
+    Gate::define('update.event', fn ($actor): bool => $actor->id === $user->id);
 
     $this->actingAs($user);
 

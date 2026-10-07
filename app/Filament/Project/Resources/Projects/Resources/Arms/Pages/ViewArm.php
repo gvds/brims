@@ -20,7 +20,7 @@ class ViewArm extends ViewRecord
             Action::make('return')
                 ->label('Return to Project')
                 ->color('gray')
-                ->url(fn(): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id, 'relation' => 2])),
+                ->url(fn (): string => ProjectResource::getUrl('view', ['record' => $this->record->project_id, 'relation' => 2])),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\LabwareFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,14 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Labware extends Model
 {
-    /** @use HasFactory<\Database\Factories\LabwareFactory> */
+    /** @use HasFactory<LabwareFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
+
     #[\Override]
     protected function casts(): array
     {

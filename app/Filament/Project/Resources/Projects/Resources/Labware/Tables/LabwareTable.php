@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class LabwareTable
 {
-
     public static function configure(Table $table): Table
     {
         return $table
@@ -36,7 +35,7 @@ class LabwareTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->recordClasses(fn(Model $record): string => isset($record->project_id) ? 'text-gray-500' : 'text-green-500')
+            ->recordClasses(fn (Model $record): string => isset($record->project_id) ? 'text-gray-500' : 'text-green-500')
             ->filters([
                 //
             ])
@@ -44,6 +43,7 @@ class LabwareTable
                 CreateAction::make()
                     ->mutateDataUsing(function (array $data): array {
                         self::regexPreAndPostfix($data);
+
                         return $data;
                     }),
             ])
@@ -51,10 +51,11 @@ class LabwareTable
                 EditAction::make()
                     ->mutateDataUsing(function (array $data): array {
                         self::regexPreAndPostfix($data);
+
                         return $data;
                     }),
                 DeleteAction::make()
-                    ->hidden(fn(Labware $record): bool => $record->specimenTypes->count() > 0)
+                    ->hidden(fn (Labware $record): bool => $record->specimenTypes->count() > 0),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -66,7 +67,7 @@ class LabwareTable
     private static function regexPreAndPostfix(array &$data): void
     {
         if ($data['barcodeFormat'][0] !== '^') {
-            $data['barcodeFormat'] = '^' . $data['barcodeFormat'];
+            $data['barcodeFormat'] = '^'.$data['barcodeFormat'];
         }
         if ($data['barcodeFormat'][-1] !== '$') {
             $data['barcodeFormat'] .= '$';

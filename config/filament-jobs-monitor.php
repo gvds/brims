@@ -1,5 +1,7 @@
 <?php
 
+use Croustibat\FilamentJobsMonitor\Resources\QueueMonitorResource;
+
 return [
     'resources' => [
         'enabled' => true,
@@ -10,7 +12,7 @@ return [
         'navigation_sort' => null,
         'sub_navigation_position' => null,
         'navigation_count_badge' => false,
-        'resource' => Croustibat\FilamentJobsMonitor\Resources\QueueMonitorResource::class,
+        'resource' => QueueMonitorResource::class,
         'cluster' => null,
         /**
          * Configure the sub-navigation position for the resource pages.

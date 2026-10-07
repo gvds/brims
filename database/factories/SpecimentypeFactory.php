@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Labware;
+use App\Models\Specimentype;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Specimentype>
+ * @extends Factory<Specimentype>
  */
 class SpecimentypeFactory extends Factory
 {
@@ -51,20 +53,20 @@ class SpecimentypeFactory extends Factory
                 'storageSpecimenType' => fake()->word(),
             ];
         }
+
         return [];
     }
 
     /**
-     * @param mixed $project_id
-     * @return Factory
+     * @param  mixed  $project_id
      */
     public function projectLabware($project_id): Factory
     {
         return $this->state(function (array $attributes) use ($project_id) {
             return [
                 'labware_id' => fake()->randomElement(
-                    \App\Models\Labware::where('project_id', $project_id)->pluck('id')
-                )
+                    Labware::where('project_id', $project_id)->pluck('id')
+                ),
             ];
         });
     }

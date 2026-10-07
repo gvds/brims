@@ -4,6 +4,8 @@ namespace App\Filament\Imports;
 
 use App\Enums\EventStatus;
 use App\Enums\LabelStatus;
+use App\Models\Event;
+use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Closure;
 use Filament\Actions\Imports\ImportColumn;
@@ -24,10 +26,10 @@ class SubjectEventImporter extends Importer
                 ->label('Subject ID')
                 ->requiredMapping()
                 ->relationship(name: 'subject', resolveUsing: 'subjectID')
-                ->rules(fn($options): array => [
+                ->rules(fn ($options): array => [
                     'required',
                     function (string $attribute, $value, Closure $fail) use ($options): void {
-                        if (! \App\Models\Subject::where('subjectID', $value)
+                        if (! Subject::where('subjectID', $value)
                             ->where('project_id', $options['project']->id)
                             ->exists()) {
                             $fail("The {$attribute} '{$value}' does not exist in this project.");
@@ -37,14 +39,14 @@ class SubjectEventImporter extends Importer
             ImportColumn::make('event')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'name')
-                ->rules(fn($options): array => [
+                ->rules(fn ($options): array => [
                     'required',
                     function ($value, Closure $fail) use ($options): void {
-                        $exists = \App\Models\Event::where('name', $value)
-                            ->whereHas('arm', fn($query) => $query->where('project_id', $options['project']->id))
+                        $exists = Event::where('name', $value)
+                            ->whereHas('arm', fn ($query) => $query->where('project_id', $options['project']->id))
                             ->exists();
 
-                        if (!$exists) {
+                        if (! $exists) {
                             $fail("The event '{$value}' does not exist in this project.");
                         }
                     },
@@ -64,7 +66,7 @@ class SubjectEventImporter extends Importer
                         return EventStatus::{$state}->value;
                     } catch (\Throwable) {
                         throw ValidationException::withMessages([
-                            'status' => "The event status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(EventStatus::cases(), 'name')) . '.',
+                            'status' => "The event status '{$state}' is not valid. Valid values are: ".implode(', ', array_column(EventStatus::cases(), 'name')).'.',
                         ]);
                     }
                 }),
@@ -79,7 +81,7 @@ class SubjectEventImporter extends Importer
                         return LabelStatus::{$state}->value;
                     } catch (\Throwable) {
                         throw ValidationException::withMessages([
-                            'labelstatus' => "The label status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(LabelStatus::cases(), 'name')) . '.',
+                            'labelstatus' => "The label status '{$state}' is not valid. Valid values are: ".implode(', ', array_column(LabelStatus::cases(), 'name')).'.',
                         ]);
                     }
                 }),
@@ -100,17 +102,17 @@ class SubjectEventImporter extends Importer
         $iteration = $this->data['iteration'];
         $event = $this->data['event'];
 
-        if (!$subjectID) {
+        if (! $subjectID) {
             return;
         }
 
-        $exists = SubjectEvent::whereHas('subject', fn($query) => $query->where('subjectID', $subjectID))
-            ->whereHas('event', fn($query) => $query->where('name', $event)->where('iteration', $iteration))
+        $exists = SubjectEvent::whereHas('subject', fn ($query) => $query->where('subjectID', $subjectID))
+            ->whereHas('event', fn ($query) => $query->where('name', $event)->where('iteration', $iteration))
             ->exists();
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'event' => "The combination of subject {$subjectID} event {$event} iteration {$iteration} already exists."
+                'event' => "The combination of subject {$subjectID} event {$event} iteration {$iteration} already exists.",
             ]);
         }
     }
@@ -118,15 +120,15 @@ class SubjectEventImporter extends Importer
     #[\Override]
     public function resolveRecord(): SubjectEvent
     {
-        return new SubjectEvent();
+        return new SubjectEvent;
     }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your subject event import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your subject event import has completed and '.Number::format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
         }
 
         return $body;

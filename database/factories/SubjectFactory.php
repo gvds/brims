@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
+ * @extends Factory<Subject>
  */
 class SubjectFactory extends Factory
 {
@@ -17,6 +18,7 @@ class SubjectFactory extends Factory
     public function definition(): array
     {
         $startdate = fake()->dateTimeBetween('-1 year', 'now');
+
         return [
             // 'subjectID' =>,
             // 'site_id' =>,

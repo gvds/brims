@@ -25,11 +25,11 @@ class REDCap
     {
 
         $fields = [
-            'token'   => $redcap_api_token,
-            'format'  => 'json',
-            'type'    => 'flat',
+            'token' => $redcap_api_token,
+            'format' => 'json',
+            'type' => 'flat',
             'returnFormat' => 'json',
-            'data'    => json_encode([$data])
+            'data' => json_encode([$data]),
         ];
 
         $fields = array_merge($fields, $params);
@@ -66,12 +66,12 @@ class REDCap
         $user_token = self::getOrGenerateToken($redcap_user, $project);
 
         // Create sites entries from REDCap DAGS
-        $redcap_dags = DB::connection('redcap')->select("select * from redcap_data_access_groups where project_id = " . $project->redcapProject_id);
+        $redcap_dags = DB::connection('redcap')->select('select * from redcap_data_access_groups where project_id = '.$project->redcapProject_id);
         foreach ($redcap_dags as $dag) {
             $site = Site::create([
                 'project_id' => $project->id,
                 'name' => $dag->group_name,
-                'description' => 'REDCap Data Access Group ' . $dag->group_name,
+                'description' => 'REDCap Data Access Group '.$dag->group_name,
             ]);
             if ($dag->group_id == $redcap_user->group_id) {
                 $user_site = $site->id;
@@ -98,7 +98,7 @@ class REDCap
 
         $redcap_arms = self::redcap_arms($user_token);
         if (isset($redcap_arms['error'])) {
-            if ($redcap_arms["error"] === "You cannot export arms for classic projects") {
+            if ($redcap_arms['error'] === 'You cannot export arms for classic projects') {
                 $redcap_arms = collect(json_decode('[{"arm_num":1,"name":"Arm 1"}]'));
             } else {
                 throw new Exception($redcap_arms['error']);
@@ -109,7 +109,7 @@ class REDCap
                 'project_id' => $project->id,
                 'name' => $redcap_arm->name,
                 // 'redcap_arm_id' => $redcap_arm->arm_id,
-                'arm_num' => $redcap_arm->arm_num
+                'arm_num' => $redcap_arm->arm_num,
             ]);
 
             // Create events
@@ -149,7 +149,7 @@ class REDCap
                 $duplicate = DB::connection('redcap')->select(
                     "SELECT count(api_token) as found FROM redcap_user_rights WHERE api_token = '$token'"
                 );
-                if (!$duplicate[0]->found) {
+                if (! $duplicate[0]->found) {
                     break;
                 }
                 throw new Exception('Could not create unique API token for the project user in the REDCap database');
@@ -159,6 +159,7 @@ class REDCap
                 redcap_user_rights.project_id = $project->redcapProject_id and
                 redcap_user_rights.username = '$project->leader->username'"
             );
+
             return $token;
         } else {
             return $redcap_user->api_token;
@@ -168,9 +169,10 @@ class REDCap
     private static function redcap_arms($redcap_api_token)
     {
         $params = [
-            'content' => 'arm'
+            'content' => 'arm',
         ];
         $arms = self::curl($params, $redcap_api_token);
+
         return collect(json_decode($arms))->sortBy('arm_num');
     }
 
@@ -178,9 +180,10 @@ class REDCap
     {
         $params = [
             'content' => 'event',
-            'arms' => $arms
+            'arms' => $arms,
         ];
         $events = self::curl($params, $redcap_api_token);
+
         return collect(json_decode($events))->sortBy('day_offset');
     }
 
@@ -189,7 +192,7 @@ class REDCap
         $arm = Arm::find($arm_id);
         $params = [
             'content' => 'event',
-            'arms' => [$arm->arm_num]
+            'arms' => [$arm->arm_num],
         ];
 
         $project = session('currentProject');
@@ -203,7 +206,7 @@ class REDCap
         $events = json_decode($events, true);
 
         if (array_key_exists('error', $events)) {
-            throw new Exception('REDCap Error: ' . $events['error']);
+            throw new Exception('REDCap Error: '.$events['error']);
         }
         $event_name = $events[0]['unique_event_name'];
 
@@ -221,7 +224,7 @@ class REDCap
         ];
         $response = self::curl($params, $token, $data);
         $returnmsg = json_decode((string) $response, true);
-        if (array_key_exists("error", $returnmsg)) {
+        if (array_key_exists('error', $returnmsg)) {
             throw new Exception($returnmsg['error']);
         } elseif ($returnmsg['count'] === 0) {
             throw new Exception('REDCap record was not created');

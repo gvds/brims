@@ -111,7 +111,7 @@ class Manifest extends Model
                         $item->subjectEvent->event->name,
                         $item->specimenType->name,
                         $item->aliquot,
-                        $item->volume . $item->specimenType->volumeUnit,
+                        $item->volume.$item->specimenType->volumeUnit,
                     ],
                     escape: '\\'
                 );
@@ -120,6 +120,7 @@ class Manifest extends Model
             fclose($handle);
         }, $filename, ['Content-Type' => 'text/csv']);
     }
+
     #[\Override]
     protected function casts(): array
     {

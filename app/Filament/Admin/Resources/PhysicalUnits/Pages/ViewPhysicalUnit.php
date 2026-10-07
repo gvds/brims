@@ -12,7 +12,7 @@ class ViewPhysicalUnit extends ViewRecord
     #[\Override]
     public function getTitle(): string
     {
-        return 'Physical Unit: ' . $this->record->name;
+        return 'Physical Unit: '.$this->record->name;
     }
 
     #[\Override]

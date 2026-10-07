@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Protocol;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Protocol>
+ * @extends Factory<Protocol>
  */
 class ProtocolFactory extends Factory
 {

@@ -33,7 +33,7 @@ class PhysicalUnitsTable
                     ->counts('virtualUnits')
                     ->alignCenter()
                     ->badge()
-                    ->color(fn($state): string => $state > 0 ? 'info' : 'gray')
+                    ->color(fn ($state): string => $state > 0 ? 'info' : 'gray')
                     ->label('Virtual Units'),
                 IconColumn::make('available')
                     ->boolean(),

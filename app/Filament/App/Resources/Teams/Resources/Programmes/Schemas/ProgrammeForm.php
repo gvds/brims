@@ -27,9 +27,9 @@ class ProgrammeForm
                 Select::make('user_id')
                     ->relationship(
                         'pi',
-                        modifyQueryUsing: fn($query, $livewire) => $query->where('team_id', $livewire->getParentRecord()->id)
+                        modifyQueryUsing: fn ($query, $livewire) => $query->where('team_id', $livewire->getParentRecord()->id)
                     )
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
                     ->searchable()
                     ->preload(),

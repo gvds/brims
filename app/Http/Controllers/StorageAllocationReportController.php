@@ -28,9 +28,9 @@ class StorageAllocationReportController extends Controller
         $this->fpdf->SetMargins(5, 5);
         $this->fpdf->AddPage();
         $this->fpdf->SetFont('Calibri', 'B', 16);
-        $this->fpdf->Cell(0, 9, $storageAllocation->project->title . ': Specimen Storage', 0, 1, 'C');
+        $this->fpdf->Cell(0, 9, $storageAllocation->project->title.': Specimen Storage', 0, 1, 'C');
         $this->fpdf->SetFont('Calibri', 'B', 14);
-        $this->fpdf->Cell(0, 9, '(' . $storageAllocation->created_at . ' - ' . $storageAllocation->user->fullname . ')', 0, 1, 'C');
+        $this->fpdf->Cell(0, 9, '('.$storageAllocation->created_at.' - '.$storageAllocation->user->fullname.')', 0, 1, 'C');
         $this->fpdf->SetFont('Calibri', 'B', 11);
         $this->fpdf->Cell(0, 0, '', 'T', 1, 'L');
         $this->fpdf->Cell(42, 7, 'Specimen Type', '', 0, 'L');
@@ -60,7 +60,7 @@ class StorageAllocationReportController extends Controller
                 $this->fpdf->Cell(40, 7, $storageLog->specimen->barcode, 0, 0, 'L');
             }
             if (! empty($storageLog->location_id)) {
-                $locstring = '[' . $storageLog->location->virtualUnit->physicalUnit->name . '] : ' . $storageLog->location->virtualUnit->virtualUnit . '   ' . $storageLog->location->rack . ' : ' . $storageLog->location->box . ' : ' . $storageLog->location->position;
+                $locstring = '['.$storageLog->location->virtualUnit->physicalUnit->name.'] : '.$storageLog->location->virtualUnit->virtualUnit.'   '.$storageLog->location->rack.' : '.$storageLog->location->box.' : '.$storageLog->location->position;
             } else {
                 $locstring = 'No Storage location allocated';
             }
@@ -91,7 +91,7 @@ class StorageAllocationReportController extends Controller
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="storage_report_' . $storageAllocation->id . '.pdf"',
+            'Content-Disposition' => 'inline; filename="storage_report_'.$storageAllocation->id.'.pdf"',
         ]);
     }
 }

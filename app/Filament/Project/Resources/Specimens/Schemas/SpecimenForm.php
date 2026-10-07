@@ -47,7 +47,7 @@ class SpecimenForm
                 Select::make('loggedBy_id')
                     ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
                     ->requiredIf(
-                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
+                        fn (Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
                         true
                     ),
                 DatePicker::make('loggedAt'),

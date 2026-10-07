@@ -18,6 +18,7 @@ class CreateUser extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $data['password'] = bcrypt(Str::random(25));
+
         return static::getModel()::create($data);
     }
 

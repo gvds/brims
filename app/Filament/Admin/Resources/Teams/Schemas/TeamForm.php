@@ -28,9 +28,9 @@ class TeamForm
                 Select::make('leader_id')
                     ->relationship(
                         name: 'leader',
-                        modifyQueryUsing: fn($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
+                        modifyQueryUsing: fn ($query, Model $record) => $query->where('team_id', $record->id)->where('team_role', 'Admin')
                     )
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
                     ->preload()
                     ->visibleOn(['edit']),

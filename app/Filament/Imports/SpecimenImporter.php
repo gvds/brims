@@ -3,7 +3,10 @@
 namespace App\Filament\Imports;
 
 use App\Enums\SpecimenStatus;
+use App\Models\Event;
 use App\Models\Specimen;
+use App\Models\Subject;
+use App\Models\SubjectEvent;
 use Closure;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
@@ -24,12 +27,12 @@ class SpecimenImporter extends Importer
                 ->rules(['required', 'max:20']),
             ImportColumn::make('subjectID')
                 ->requiredMapping()
-                ->fillRecordUsing(fn(): null => null)
+                ->fillRecordUsing(fn (): null => null)
                 ->rules(
-                    fn($options): array => [
+                    fn ($options): array => [
                         'required',
                         function (string $attribute, $value, Closure $fail) use ($options): void {
-                            if (! \App\Models\Subject::where('subjectID', $value)
+                            if (! Subject::where('subjectID', $value)
                                 ->where('project_id', $options['project']->id)
                                 ->exists()) {
                                 $fail("The {$attribute} '{$value}' does not exist in this project.");
@@ -39,12 +42,12 @@ class SpecimenImporter extends Importer
                 ),
             ImportColumn::make('event')
                 ->requiredMapping()
-                ->fillRecordUsing(fn(): null => null)
-                ->rules(fn($options): array => [
+                ->fillRecordUsing(fn (): null => null)
+                ->rules(fn ($options): array => [
                     'required',
                     function (string $attribute, $value, Closure $fail) use ($options): void {
-                        $exists = \App\Models\Event::where('name', $value)
-                            ->whereHas('arm', fn($query) => $query->where('project_id', $options['project']->id))
+                        $exists = Event::where('name', $value)
+                            ->whereHas('arm', fn ($query) => $query->where('project_id', $options['project']->id))
                             ->exists();
 
                         if (! $exists) {
@@ -54,7 +57,7 @@ class SpecimenImporter extends Importer
                 ]),
             ImportColumn::make('iteration')
                 ->requiredMapping()
-                ->fillRecordUsing(fn(): null => null)
+                ->fillRecordUsing(fn (): null => null)
                 ->numeric()
                 ->rules(['required', 'integer', 'min:1']),
             ImportColumn::make('specimenType')
@@ -76,7 +79,7 @@ class SpecimenImporter extends Importer
                         return SpecimenStatus::{$state}->value;
                     } catch (\Throwable) {
                         throw ValidationException::withMessages([
-                            'status' => "The status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(SpecimenStatus::cases(), 'name')) . '.',
+                            'status' => "The status '{$state}' is not valid. Valid values are: ".implode(', ', array_column(SpecimenStatus::cases(), 'name')).'.',
                         ]);
                     }
                 }),
@@ -139,17 +142,17 @@ class SpecimenImporter extends Importer
         }
 
         // Validate that the subject event exists with the given iteration
-        $subject = \App\Models\Subject::where('subjectID', $this->data['subjectID'])
+        $subject = Subject::where('subjectID', $this->data['subjectID'])
             ->where('project_id', $project->id)
             ->first();
 
         if ($subject) {
-            $event = \App\Models\Event::where('name', $this->data['event'])
-                ->whereHas('arm', fn($query) => $query->where('project_id', $project->id))
+            $event = Event::where('name', $this->data['event'])
+                ->whereHas('arm', fn ($query) => $query->where('project_id', $project->id))
                 ->first();
 
             if ($event) {
-                $subjectEventExists = \App\Models\SubjectEvent::where('subject_id', $subject->id)
+                $subjectEventExists = SubjectEvent::where('subject_id', $subject->id)
                     ->where('event_id', $event->id)
                     ->where('iteration', $this->data['iteration'])
                     ->exists();
@@ -168,7 +171,7 @@ class SpecimenImporter extends Importer
         $project = $this->options['project'];
 
         // Resolve subject_event_id from event name and iteration
-        $subject = \App\Models\Subject::where('subjectID', $this->data['subjectID'])
+        $subject = Subject::where('subjectID', $this->data['subjectID'])
             ->where('project_id', $project->id)
             ->first();
 
@@ -178,8 +181,8 @@ class SpecimenImporter extends Importer
             ]);
         }
 
-        $event = \App\Models\Event::where('name', $this->data['event'])
-            ->whereHas('arm', fn($query) => $query->where('project_id', $project->id))
+        $event = Event::where('name', $this->data['event'])
+            ->whereHas('arm', fn ($query) => $query->where('project_id', $project->id))
             ->first();
 
         if (! $event) {
@@ -188,7 +191,7 @@ class SpecimenImporter extends Importer
             ]);
         }
 
-        $subjectEvent = \App\Models\SubjectEvent::where('subject_id', $subject->id)
+        $subjectEvent = SubjectEvent::where('subject_id', $subject->id)
             ->where('event_id', $event->id)
             ->where('iteration', $this->data['iteration'])
             ->first();
@@ -213,10 +216,10 @@ class SpecimenImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your specimen import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your specimen import has completed and '.Number::format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
         }
 
         return $body;

@@ -20,7 +20,7 @@ class StudySpecimenImporter extends Importer
         return [
             ImportColumn::make('barcode')
                 ->requiredMapping()
-                ->rules(fn($options): array => [
+                ->rules(fn ($options): array => [
                     'required',
                     'max:20',
                     Rule::exists('specimens', 'barcode')
@@ -59,17 +59,17 @@ class StudySpecimenImporter extends Importer
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'event' => "The barcode {$this->data['barcode']} has already been added to this study."
+                'event' => "The barcode {$this->data['barcode']} has already been added to this study.",
             ]);
         }
     }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your study specimen import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your study specimen import has completed and '.Number::format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
         }
 
         return $body;

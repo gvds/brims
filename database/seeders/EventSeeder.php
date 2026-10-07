@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Arm;
 use App\Models\Event;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
@@ -22,13 +21,14 @@ class EventSeeder extends Seeder
                     ->for($arm)
                     ->sequence(function (Sequence $sequence) {
                         $offset = $sequence->index === 0 ? 0 : ($offset ?? 0) + fake()->numberBetween(7, 24);
+
                         return [
                             'event_order' => $sequence->index + 1,
                             'offset' => $offset,
                             'offset_ante_window' => $offset !== 0 ? fake()->numberBetween(0, 3) : null,
                             'offset_post_window' => $offset !== 0 ? fake()->numberBetween(0, 5) : null,
                             'autolog' => $sequence->index === 0 ? true : false,
-                            'repeatable' => $sequence->index === 0 ? false : fake()->randomElement([true, false])
+                            'repeatable' => $sequence->index === 0 ? false : fake()->randomElement([true, false]),
                         ];
                     })
                     ->create();

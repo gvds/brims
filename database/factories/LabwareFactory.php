@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Labware;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Labware>
+ * @extends Factory<Labware>
  */
 class LabwareFactory extends Factory
 {
@@ -18,7 +19,7 @@ class LabwareFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            'barcodeFormat' => '^' . fake()->regexify('[A-Z]{' . fake()->numberBetween(2, 4) . '}') . '\d{' . fake()->numberBetween(3, 8) . '}$',
+            'barcodeFormat' => '^'.fake()->regexify('[A-Z]{'.fake()->numberBetween(2, 4).'}').'\d{'.fake()->numberBetween(3, 8).'}$',
         ];
     }
 }

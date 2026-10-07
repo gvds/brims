@@ -71,12 +71,12 @@ class PhysicalunitsRelationManager extends RelationManager
                             }),
                         Select::make('user_id')
                             ->label('Administrator')
-                            ->options(fn(Get $get): array => $get('institution_id')
+                            ->options(fn (Get $get): array => $get('institution_id')
                                 ? User::query()
-                                ->where('institution_id', $get('institution_id'))
-                                ->get()
-                                ->pluck('fullname', 'id')
-                                ->toArray()
+                                    ->where('institution_id', $get('institution_id'))
+                                    ->get()
+                                    ->pluck('fullname', 'id')
+                                    ->toArray()
                                 : [])
                             ->searchable()
                             ->required(),
@@ -84,15 +84,15 @@ class PhysicalunitsRelationManager extends RelationManager
                             ->default(true),
                     ])
                     ->createAnother(false)
-                    ->visible(fn(): bool => $this->getOwnerRecord()->sections()->count() > 0)
+                    ->visible(fn (): bool => $this->getOwnerRecord()->sections()->count() > 0)
                     ->mutateDataUsing(function (array $data): array {
                         $data['unitDefinition_id'] = $this->getOwnerRecord()->getKey();
 
                         return $data;
                     })
-                    ->after(fn() => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
+                    ->after(fn () => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
             ])
-            ->recordUrl(fn($record): string => route('filament.admin.resources.physical-units.view', ['record' => $record]))
+            ->recordUrl(fn ($record): string => route('filament.admin.resources.physical-units.view', ['record' => $record]))
             ->recordActions([
                 EditAction::make()
                     ->schema([
@@ -108,8 +108,8 @@ class PhysicalunitsRelationManager extends RelationManager
                         Toggle::make('available'),
                     ]),
                 DeleteAction::make()
-                    ->visible(fn($record): bool => $record->virtualUnits()->count() === 0)
-                    ->after(fn() => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
+                    ->visible(fn ($record): bool => $record->virtualUnits()->count() === 0)
+                    ->after(fn () => $this->redirect(UnitDefinitionResource::getUrl('view', ['record' => $this->getOwnerRecord()]))),
             ]);
     }
 }

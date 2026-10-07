@@ -24,7 +24,7 @@ class EditUnitDefinition extends EditRecord
         return [
             ViewAction::make(),
             DeleteAction::make()
-                ->visible(fn(Model $record): bool => $record->physicalunits->count() === 0),
+                ->visible(fn (Model $record): bool => $record->physicalunits->count() === 0),
         ];
     }
 

@@ -27,6 +27,7 @@ class ArmsRelationManager extends RelationManager
                 CreateAction::make()
                     ->mutateDataUsing(function (array $data) {
                         $data['arm_num'] = Arm::where('project_id', $this->ownerRecord->id)->max('arm_num') + 1;
+
                         return $data;
                     }),
             ]);

@@ -37,8 +37,8 @@ class AssaysTable
                 TextColumn::make('assayfiles')
                     ->label('Files')
                     ->badge()
-                    ->getStateUsing(fn($record): int => is_array($record->assayfiles) ? count($record->assayfiles) : 0)
-                    ->color(fn($state): string => $state > 0 ? 'success' : 'gray'),
+                    ->getStateUsing(fn ($record): int => is_array($record->assayfiles) ? count($record->assayfiles) : 0)
+                    ->color(fn ($state): string => $state > 0 ? 'success' : 'gray'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -61,18 +61,18 @@ class AssaysTable
 
                         return $data;
                     })
-                    ->hidden(fn(): bool => $relationManager->getOwnerRecord()->locked)
+                    ->hidden(fn (): bool => $relationManager->getOwnerRecord()->locked)
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->modalContentFooter(fn($record) => view('filament.resources.assays.pages.partials.tus-uploader', [
+                    ->modalContentFooter(fn ($record) => view('filament.resources.assays.pages.partials.tus-uploader', [
                         'assay' => $record,
                         'infos' => $relationManager->infos,
                     ]))
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
                 EditAction::make()
-                    ->hidden(fn(): bool => $relationManager->getOwnerRecord()->locked)
+                    ->hidden(fn (): bool => $relationManager->getOwnerRecord()->locked)
                     ->modalWidth('w-full md:w-4/5 lg:w-3/5 xl:w-1/2 2xl:w-2/5'),
                 Action::make('download_all_files')
                     ->label('Download All Files')
@@ -80,7 +80,7 @@ class AssaysTable
                     ->color(Color::Indigo)
                     ->button()
                     ->extraAttributes(['class' => 'h-7 text-xs opacity-70'])
-                    ->hidden(fn(Model $record): bool => empty($record->assayfiles))
+                    ->hidden(fn (Model $record): bool => empty($record->assayfiles))
                     ->schema([
                         TextInput::make('expiration_days')
                             ->label('Link Expiration (days)')
@@ -119,12 +119,12 @@ class AssaysTable
                         }
 
                         $content = "Assay File Download Links for: {$record->name}\n";
-                        $content .= 'Generated: ' . now()->format('Y-m-d H:i:s') . "\n";
-                        $content .= 'Links expire: ' . now()->addDays($data['expiration_days'])->format('Y-m-d H:i:s') . "\n";
-                        $content .= str_repeat('-', 50) . "\n\n";
+                        $content .= 'Generated: '.now()->format('Y-m-d H:i:s')."\n";
+                        $content .= 'Links expire: '.now()->addDays($data['expiration_days'])->format('Y-m-d H:i:s')."\n";
+                        $content .= str_repeat('-', 50)."\n\n";
                         $content .= implode("\n\n", $temporarySignedUrls);
 
-                        $filename = 'download_links_' . str($record->name)->slug() . '_' . now()->format('Ymd_His') . '.txt';
+                        $filename = 'download_links_'.str($record->name)->slug().'_'.now()->format('Ymd_His').'.txt';
 
                         return response()->streamDownload(function () use ($content): void {
                             echo $content;
@@ -137,7 +137,7 @@ class AssaysTable
                         try {
                             foreach ($record->assayfiles ?? [] as $file) {
                                 Storage::disk('s3')->delete($file);
-                                Storage::disk('s3')->delete($file . '.info');
+                                Storage::disk('s3')->delete($file.'.info');
                             }
                         } catch (\Throwable $e) {
                             Log::warning('S3 unavailable during assay file deletion', [
@@ -154,8 +154,8 @@ class AssaysTable
                         }
                         $record->delete();
                     })
-                    ->hidden(fn(): bool => $relationManager->getOwnerRecord()->locked)
-                    ->modalHeading(fn($record): \Illuminate\Support\HtmlString => new HtmlString('Delete Assay<br/>' . $record->name))
+                    ->hidden(fn (): bool => $relationManager->getOwnerRecord()->locked)
+                    ->modalHeading(fn ($record): HtmlString => new HtmlString('Delete Assay<br/>'.$record->name))
                     ->modalDescription(new HtmlString('This will delete all associated data files.<br/>Are you sure you want to delete this assay?')),
             ]);
     }

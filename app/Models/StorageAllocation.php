@@ -27,6 +27,7 @@ class StorageAllocation extends Model
     {
         return $this->hasMany(StorageLog::class);
     }
+
     #[\Override]
     protected function casts(): array
     {

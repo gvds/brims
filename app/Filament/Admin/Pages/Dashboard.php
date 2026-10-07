@@ -8,19 +8,17 @@ use Filament\Support\Icons\Heroicon;
 
 class Dashboard extends BaseDashboard
 {
-
     public static ?int $navigationSort = 0;
 
-    public static string | BackedEnum | null $navigationIcon = Heroicon::ComputerDesktop;
-
+    public static string|BackedEnum|null $navigationIcon = Heroicon::ComputerDesktop;
 
     #[\Override]
-    public function getColumns(): int | array
+    public function getColumns(): int|array
     {
         return [
             'default' => 1,
             'xl' => 2,
-            '2xl' => 3
+            '2xl' => 3,
         ];
     }
 }

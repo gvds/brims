@@ -29,7 +29,7 @@ class SpecimentypesTable
                 IconColumn::make('pooled')
                     ->boolean(),
                 TextColumn::make('defaultVolume')
-                    ->formatStateUsing(fn(Specimentype $record): string => $record->defaultVolume . ' ' . $record->volumeUnit),
+                    ->formatStateUsing(fn (Specimentype $record): string => $record->defaultVolume.' '.$record->volumeUnit),
                 TextColumn::make('specimenGroup')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('labware.name')
@@ -43,7 +43,7 @@ class SpecimentypesTable
                 TextColumn::make('parentSpecimenType.name')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('transferDestinations')
-                    ->formatStateUsing(fn($state) => collect($state)->implode(', '))
+                    ->formatStateUsing(fn ($state) => collect($state)->implode(', '))
                     ->listWithLineBreaks()
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->size('xs'),

@@ -30,11 +30,11 @@ class SpecimenInfolist
                 TextEntry::make('status'),
                 TextEntry::make('aliquot'),
                 TextEntry::make('volume')
-                    ->suffix(fn(Specimen $record): string => ' ' . $record->volumeUnit),
+                    ->suffix(fn (Specimen $record): string => ' '.$record->volumeUnit),
                 TextEntry::make('thawcount')
                     ->label('Thaw Count')
                     ->badge()
-                    ->color(fn(int $state): string => $state === 0 ? 'info' : 'danger'),
+                    ->color(fn (int $state): string => $state === 0 ? 'info' : 'danger'),
                 TextEntry::make('loggedBy.fullname')
                     ->label('Logged By'),
                 TextEntry::make('loggedAt'),

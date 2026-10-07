@@ -54,8 +54,7 @@ class ProjectMemberPolicy
         ProjectMember $projectMember,
         Project $project,
         ?User $substitute = null,
-    ): bool
-    {
+    ): bool {
         if ((string) $projectMember->project_id !== (string) $project->getKey()) {
             return false;
         }

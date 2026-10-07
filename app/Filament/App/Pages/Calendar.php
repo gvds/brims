@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 
 class Calendar extends Page
 {
-
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?int $navigationSort = 2;
@@ -23,14 +22,19 @@ class Calendar extends Page
     protected string $view = 'filament.app.pages.calendar';
 
     protected array $user_ids;
+
     public Collection $projects;
+
     public array $colours = [];
 
     public array $subjectEvents;
 
     public Carbon $date;
+
     public ?string $month;
+
     public int $year;
+
     public array $weeks = [];
 
     public static function canAccess(): bool
@@ -38,12 +42,13 @@ class Calendar extends Page
 
         if (Auth::user()->system_role === SystemRoles::SysAdmin) {
             return true;
-        };
+        }
 
         $canInAnyTenant = Auth::user()->getTenants(Filament::getPanel('project'))
             ->contains(function ($tenant) {
                 // Switch the context to the iteration's tenant
                 Filament::setTenant($tenant);
+
                 // Check standard Laravel policy / Spatie permission
                 return Auth::user()->can('Manage:Subject');
             });
@@ -109,7 +114,7 @@ class Calendar extends Page
             $this->weeks[] = [
                 'start' => $weekStartDate->copy(),
                 'end' => $weekStartDate->copy()->endOfWeek(Carbon::SATURDAY),
-                'events' => []
+                'events' => [],
             ];
             $weekStartDate->addWeek();
         }
@@ -131,12 +136,12 @@ class Calendar extends Page
 
             // Determine base RGB ratios
             [$r_base, $g_base, $b_base] = match (true) {
-                $hue < 60   => [$c, $x, 0],
-                $hue < 120  => [$x, $c, 0],
-                $hue < 180  => [0, $c, $x],
-                $hue < 240  => [0, $x, $c],
-                $hue < 300  => [$x, 0, $c],
-                default     => [$c, 0, $x],
+                $hue < 60 => [$c, $x, 0],
+                $hue < 120 => [$x, $c, 0],
+                $hue < 180 => [0, $c, $x],
+                $hue < 240 => [0, $x, $c],
+                $hue < 300 => [$x, 0, $c],
+                default => [$c, 0, $x],
             };
 
             // Convert to 8-bit integer values
@@ -145,8 +150,9 @@ class Calendar extends Page
             $b = round(($b_base + $m) * 255);
 
             // Convert RGB to Hex and store
-            $colours[$this->projects[$i]->id] = sprintf("#%02X%02X%02X", $r, $g, $b);
+            $colours[$this->projects[$i]->id] = sprintf('#%02X%02X%02X', $r, $g, $b);
         }
+
         return $colours;
     }
 

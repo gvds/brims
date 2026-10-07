@@ -71,26 +71,26 @@ class ViewProject extends ViewRecord
                 ->color(Color::Indigo),
             ActionGroup::make([
                 ExportAction::make('subject_export')
-                    ->visible(fn(): bool => Gate::allows('viewAny', Subject::class))
+                    ->visible(fn (): bool => Gate::allows('viewAny', Subject::class))
                     ->label('Export Subjects')
                     ->color('gray')
                     ->exporter(SubjectExporter::class)
                     ->columnMapping(false)
-                    ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
+                    ->modifyQueryUsing(fn ($query) => $query->where('project_id', $this->record->id)),
                 ExportAction::make('subject_event_export')
-                    ->visible(fn(): bool => Gate::allows('viewAny', SubjectEvent::class))
+                    ->visible(fn (): bool => Gate::allows('viewAny', SubjectEvent::class))
                     ->label('Export Subject Events')
                     ->color('gray')
                     ->exporter(SubjectEventExporter::class)
                     ->columnMapping(false)
-                    ->modifyQueryUsing(fn($query) => $query->whereHas('subject', fn($query) => $query->where('project_id', $this->record->id))),
+                    ->modifyQueryUsing(fn ($query) => $query->whereHas('subject', fn ($query) => $query->where('project_id', $this->record->id))),
                 ExportAction::make('specimen_export')
-                    ->visible(fn(): bool => Gate::allows('viewAny', Specimen::class))
+                    ->visible(fn (): bool => Gate::allows('viewAny', Specimen::class))
                     ->label('Export Specimens')
                     ->color('gray')
                     ->exporter(SpecimenExporter::class)
                     ->columnMapping(false)
-                    ->modifyQueryUsing(fn($query) => $query->where('project_id', $this->record->id)),
+                    ->modifyQueryUsing(fn ($query) => $query->where('project_id', $this->record->id)),
             ])
                 ->label('Data Export')
                 ->button()

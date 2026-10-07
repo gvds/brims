@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\TeamScope;
+use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[ScopedBy(TeamScope::class)]
 class Team extends Model
 {
-    /** @use HasFactory<\Database\Factories\TeamFactory> */
+    /** @use HasFactory<TeamFactory> */
     use HasFactory;
 
     protected $guarded = ['id'];

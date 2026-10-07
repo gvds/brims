@@ -23,10 +23,9 @@ class StudydesignResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'type';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Utilities';
+    protected static string|UnitEnum|null $navigationGroup = 'Utilities';
 
     protected static ?int $navigationSort = 1;
-
 
     public static function form(Schema $schema): Schema
     {

@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Auth;
 
 class StorageAllocationResource extends Resource
 {
-
     public static function canAccess(): bool
     {
         return Auth::user()->can('Manage:Specimen');
@@ -75,7 +74,7 @@ class StorageAllocationResource extends Resource
                 // EditAction::make(),
                 // DeleteAction::make(),
                 Action::make('Print')
-                    ->url(fn(StorageAllocation $record): string => route('storage-allocation-report', ['storageAllocation' => $record->id]))
+                    ->url(fn (StorageAllocation $record): string => route('storage-allocation-report', ['storageAllocation' => $record->id]))
                     ->icon(Heroicon::OutlinedPrinter)
                     ->openUrlInNewTab(),
             ])

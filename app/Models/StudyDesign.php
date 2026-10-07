@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 #[UseFactory(StudydesignFactory::class)]
 class StudyDesign extends Model
 {
-    /** @use HasFactory<\Database\Factories\StudyDesignFactory> */
+    /** @use HasFactory<StudydesignFactory> */
     use HasFactory;
 
     protected $table = 'studydesigns';
@@ -18,6 +18,5 @@ class StudyDesign extends Model
     /**
      * Get the projects associated with the study design.
      */
-
     protected $guarded = ['id'];
 }

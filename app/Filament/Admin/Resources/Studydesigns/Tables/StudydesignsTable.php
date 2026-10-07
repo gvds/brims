@@ -18,7 +18,7 @@ class StudydesignsTable
                 TextColumn::make('type')
                     ->searchable(),
                 TextColumn::make('type_term_accession_number')
-                    ->url(fn($record) => Str::isUrl($record->type_term_accession_number) ? $record->type_term_accession_number : null, shouldOpenInNewTab: true),
+                    ->url(fn ($record) => Str::isUrl($record->type_term_accession_number) ? $record->type_term_accession_number : null, shouldOpenInNewTab: true),
                 TextColumn::make('type_term_reference')
                     ->searchable(),
                 TextColumn::make('created_at')

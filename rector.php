@@ -8,11 +8,11 @@ use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/app',
-        __DIR__ . '/resources',
-        __DIR__ . '/routes',
+        __DIR__.'/app',
+        __DIR__.'/resources',
+        __DIR__.'/routes',
         // __DIR__ . '/database',
-        __DIR__ . '/tests',
+        __DIR__.'/tests',
     ])
     // ->withSkip([
     //     RenamePropertyRector::class

@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\AssayDefinition;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AssayDefinition>
+ * @extends Factory<AssayDefinition>
  */
 class AssayDefinitionFactory extends Factory
 {
@@ -31,7 +32,7 @@ class AssayDefinitionFactory extends Factory
                         ['option_value' => '2', 'option_label' => Str::ucfirst(fake()->word())],
                         ['option_value' => '3', 'option_label' => Str::ucfirst(fake()->word())],
                     ],
-                    'required' => fake()->boolean()
+                    'required' => fake()->boolean(),
                 ],
                 [
                     'field_name' => fake()->word(),
@@ -40,8 +41,8 @@ class AssayDefinitionFactory extends Factory
                     'sub_type' => 'integer',
                     'min_value' => fake()->numberBetween(1, 10),
                     'max_value' => fake()->numberBetween(11, 100),
-                    'required' => fake()->boolean()
-                ]
+                    'required' => fake()->boolean(),
+                ],
             ],
             'created_at' => now(),
             'updated_at' => now(),

@@ -36,11 +36,11 @@ class ListSpecimens extends ListRecords
                     ])
                     ->action(function (array $data): void {
                         try {
-                            $specimen_count = (new LogSpecimenStatus())(SpecimenStatus::Used, $data['barcodes']);
+                            $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::Used, $data['barcodes']);
 
                             Notification::make()
                                 ->title('Specimens Logged as Used')
-                                ->body($specimen_count . ' specimens have been logged as used.')
+                                ->body($specimen_count.' specimens have been logged as used.')
                                 ->success()
                                 ->send();
                         } catch (\Throwable $th) {
@@ -63,11 +63,11 @@ class ListSpecimens extends ListRecords
                     ])
                     ->action(function (array $data): void {
                         try {
-                            $specimen_count = (new LogSpecimenStatus())(SpecimenStatus::LoggedOut, $data['barcodes']);
+                            $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::LoggedOut, $data['barcodes']);
 
                             Notification::make()
                                 ->title('Specimens Logged as Used')
-                                ->body($specimen_count . ' specimens have been logged out of storage.')
+                                ->body($specimen_count.' specimens have been logged out of storage.')
                                 ->success()
                                 ->send();
                         } catch (\Throwable $th) {
@@ -95,11 +95,11 @@ class ListSpecimens extends ListRecords
                     ])
                     ->action(function (array $data): void {
                         try {
-                            $specimen_count = (new LogSpecimenStatus())(SpecimenStatus::InStorage, $data['barcodes'], $data['thawed'] ?? false);
+                            $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::InStorage, $data['barcodes'], $data['thawed'] ?? false);
 
                             Notification::make()
                                 ->title('Specimens Logged as Used')
-                                ->body($specimen_count . ' specimens have been logged back into storage.')
+                                ->body($specimen_count.' specimens have been logged back into storage.')
                                 ->success()
                                 ->send();
                         } catch (\Throwable $th) {
@@ -114,7 +114,7 @@ class ListSpecimens extends ListRecords
             ])
                 ->label('Update Specimen Status')
                 ->button()
-                ->visible(fn(): bool => session('currentProject')->members()
+                ->visible(fn (): bool => session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() > 0),
             ExportAction::make('export')

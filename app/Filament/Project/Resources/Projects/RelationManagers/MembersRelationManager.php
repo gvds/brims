@@ -21,8 +21,8 @@ use Filament\Tables\Table;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
@@ -49,7 +49,7 @@ class MembersRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitle(fn(User $record): string => "{$record->firstname} {$record->lastname}")
+            ->recordTitle(fn (User $record): string => "{$record->firstname} {$record->lastname}")
             ->columns([
                 TextColumn::make('fullname')
                     ->searchable(),
@@ -59,7 +59,7 @@ class MembersRelationManager extends RelationManager
                 TextColumn::make('site_name')
                     ->label('Site')
                     ->getStateUsing(function (User $record) {
-                        if (!$record->pivot->site_id) {
+                        if (! $record->pivot->site_id) {
                             return null;
                         }
 
@@ -67,25 +67,25 @@ class MembersRelationManager extends RelationManager
                     }),
                 TextColumn::make('projectSubstitute.fullname')
                     ->label('Substitute')
-                    ->icon(fn(User $record): ?string => $this->canManageSubstitute($record) ? 'heroicon-o-pencil' : null)
+                    ->icon(fn (User $record): ?string => $this->canManageSubstitute($record) ? 'heroicon-o-pencil' : null)
                     ->badge()
-                    ->placeholder(fn(User $record): HtmlString => new HtmlString(
+                    ->placeholder(fn (User $record): HtmlString => new HtmlString(
                         Blade::render(
                             '<x-heroicon-o-pencil class="w-4 h-4 inline mr-1 '
-                                . ($this->canManageSubstitute($record) ? '' : 'invisible')
-                                . '" />None',
+                                .($this->canManageSubstitute($record) ? '' : 'invisible')
+                                .'" />None',
                         ),
                     ))
                     ->action(
                         Action::make('selectSubstitute')
                             ->label('Select Substitute')
                             ->icon('heroicon-o-user-plus')
-                            ->authorize(fn(User $record): bool => $this->canManageSubstitute($record))
+                            ->authorize(fn (User $record): bool => $this->canManageSubstitute($record))
                             ->schema([
                                 Select::make('substitute_id')
                                     ->label('Select Substitute')
                                     ->placeholder('Choose a substitute...')
-                                    ->options(fn(User $record): array => $this->getSubstituteOptions($record))
+                                    ->options(fn (User $record): array => $this->getSubstituteOptions($record))
                                     ->searchable()
                                     ->preload()
                                     ->nullable(),
@@ -115,10 +115,10 @@ class MembersRelationManager extends RelationManager
                                         'substitute_id' => $substituteId,
                                     ]);
                             })
-                            ->fillForm(fn(User $record): array => [
+                            ->fillForm(fn (User $record): array => [
                                 'substitute_id' => $record->pivot->substitute_id,
                             ])
-                            ->modalHeading(fn(User $record): string => "Select Substitute for {$record->fullname}")
+                            ->modalHeading(fn (User $record): string => "Select Substitute for {$record->fullname}")
                             ->modalDescription('Choose a substitute from members of the same project site.')
                             ->modalSubmitActionLabel('Save Substitute')
                             ->modalCancelActionLabel('Cancel'),
@@ -127,17 +127,17 @@ class MembersRelationManager extends RelationManager
             ->headerActions([
                 AttachAction::make()
                     ->authorize('attach', ProjectMember::class)
-                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('active', true))
+                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('active', true))
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['firstname', 'lastname'])
                     ->after(function (User $record, array $data): void {
                         $this->syncProjectRole($record, $data['role_id']);
                     })
-                    ->schema(fn(AttachAction $action): array => [
+                    ->schema(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
                         Select::make('role_id')
-                            ->label("Role")
-                            ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
+                            ->label('Role')
+                            ->options(fn () => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
                             ->required(),
                         Select::make('site_id')
                             ->label('Site')
@@ -151,16 +151,16 @@ class MembersRelationManager extends RelationManager
                     ->schema([
                         Select::make('role_id')
                             ->label('Role')
-                            ->options(fn()  => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
+                            ->options(fn () => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
                             ->required()
-                            ->disabled(fn(User $record): bool => $record->id === $this->ownerRecord->leader_id),
+                            ->disabled(fn (User $record): bool => $record->id === $this->ownerRecord->leader_id),
                         Select::make('site_id')
                             ->label('Site')
                             ->options(
                                 Site::where('project_id', $this->ownerRecord->id)->pluck('name', 'id')
                             ),
                         TextInput::make('redcap_token')
-                            ->visible(fn(): bool => $this->ownerRecord->redcapProject_id !== null),
+                            ->visible(fn (): bool => $this->ownerRecord->redcapProject_id !== null),
                     ])
                     ->before(function (User $record, array $data): void {
                         foreach ($record->roles as $role) {
@@ -192,7 +192,7 @@ class MembersRelationManager extends RelationManager
                     }),
                 DetachAction::make()
                     ->authorize('detach', ProjectMember::class)
-                    ->visible(fn(User $record): bool => $record->id !== $this->ownerRecord->leader_id),
+                    ->visible(fn (User $record): bool => $record->id !== $this->ownerRecord->leader_id),
                 // ->before(
                 //     function (User $record, DetachAction $action) {
                 //         if ($record->pivot->pivotParent->members->count() === 1) {
@@ -231,7 +231,7 @@ class MembersRelationManager extends RelationManager
                 ]),
             ])
             ->checkIfRecordIsSelectableUsing(
-                fn(Model $record): bool => $record->id === $this->getOwnerRecord()->leader_id ? false : true,
+                fn (Model $record): bool => $record->id === $this->getOwnerRecord()->leader_id ? false : true,
             );
     }
 
@@ -248,7 +248,7 @@ class MembersRelationManager extends RelationManager
             ->wherePivot('site_id', $record->pivot->site_id)
             ->where('users.id', '!=', $record->id)
             ->get()
-            ->filter(fn(User $member): bool => $member->can('Manage:Subject'))
+            ->filter(fn (User $member): bool => $member->can('Manage:Subject'))
             ->pluck('fullname', 'id')
             ->all();
     }

@@ -23,7 +23,7 @@ class LabelSpecificationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'format';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Utilities';
+    protected static string|UnitEnum|null $navigationGroup = 'Utilities';
 
     public static function form(Schema $schema): Schema
     {

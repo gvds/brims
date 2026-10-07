@@ -24,7 +24,7 @@ class PhysicalUnitResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Storage';
+    protected static string|UnitEnum|null $navigationGroup = 'Storage';
 
     protected static ?int $navigationSort = 2;
 

@@ -33,7 +33,7 @@ class ProjectInfolist
                             ->date('Y-m-d'),
                         TextEntry::make('subjectID_prefix')
                             ->label('Subject ID Format')
-                            ->formatStateUsing(fn($record): string => $record->subjectID_prefix . str_repeat('#', $record->subjectID_digits)),
+                            ->formatStateUsing(fn ($record): string => $record->subjectID_prefix.str_repeat('#', $record->subjectID_digits)),
                         TextEntry::make('storageDesignation')
                             ->label('Storage Designation'),
                         TextEntry::make('label_format'),

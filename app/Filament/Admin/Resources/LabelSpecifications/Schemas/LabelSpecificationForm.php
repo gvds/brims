@@ -77,6 +77,6 @@ class LabelSpecificationForm
                     ->default(null),
             ])
             ->columns(2)
-            ->extraAttributes(["class" => "max-w-1/3"]);
+            ->extraAttributes(['class' => 'max-w-1/3']);
     }
 }

@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 #[ScopedBy([SubjectEventScope::class])]
 class SubjectEvent extends Pivot
 {
-
     protected $guarded = ['id'];
 
     /**

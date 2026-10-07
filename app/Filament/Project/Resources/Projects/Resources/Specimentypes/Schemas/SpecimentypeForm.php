@@ -42,16 +42,16 @@ class SpecimentypeForm
                             ->relationship(
                                 name: 'parentSpecimenType',
                                 titleAttribute: 'name',
-                                modifyQueryUsing: fn(Builder $query, $livewire) => $query
+                                modifyQueryUsing: fn (Builder $query, $livewire) => $query
                                     ->where('project_id', $livewire->ownerRecord->id)
-                                    ->when($SpecimentypeModel, fn(Builder $query) => $query->where('id', '!=', $SpecimentypeModel->id))
+                                    ->when($SpecimentypeModel, fn (Builder $query) => $query->where('id', '!=', $SpecimentypeModel->id))
                             )
                             ->searchable()
                             ->preload()
                             ->default(null)
                             ->requiredIf('primary', false)
                             ->prohibitedIf('primary', true)
-                            ->disabled(fn(Get $get): bool => $get('primary')),
+                            ->disabled(fn (Get $get): bool => $get('primary')),
                     ])
                     ->columnSpanFull(),
                 TextInput::make('aliquots')

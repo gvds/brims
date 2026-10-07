@@ -8,6 +8,7 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
+use App\Rules\ValidPSE;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -79,6 +80,7 @@ class LogPrimarySpecimens extends Page implements HasForms
                 ->color('danger')
                 ->send();
             $this->redirect(route('filament.project.pages.dashboard', ['tenant' => session('currentProject')->id]));
+
             return;
         }
 
@@ -104,7 +106,7 @@ class LogPrimarySpecimens extends Page implements HasForms
                         TextInput::make('pse_barcode')
                             ->label('Project Subject Event Barcode')
                             ->helperText('Scan the barcode')
-                            ->rules([new \App\Rules\ValidPSE])
+                            ->rules([new ValidPSE])
                             ->statePath('pse_barcode')
                             ->autofocus()
                             // ->live(onBlur: true)
@@ -127,8 +129,8 @@ class LogPrimarySpecimens extends Page implements HasForms
                         $aliquotFields[] = Grid::make()
                             ->schema([
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
-                                    ->label('Aliquot ' . ($i + 1))
-                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/' . $type->Labware->barcodeFormat . '/')
+                                    ->label('Aliquot '.($i + 1))
+                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/'.$type->Labware->barcodeFormat.'/')
                                     ->disabled($this->specimens[$type->id][$i]['logged'] ?? false)
                                     ->extraAttributes(['style' => 'height: 30px']),
                                 TextInput::make("specimens.{$type->id}.{$i}.volume")
@@ -148,24 +150,24 @@ class LogPrimarySpecimens extends Page implements HasForms
                     $specimenTypes[] = Flex::make([
                         Grid::make(1)
                             ->schema([
-                                Action::make('addAliquot_' . $type->id)
+                                Action::make('addAliquot_'.$type->id)
                                     ->hiddenLabel()
-                                    ->action(fn() => $this->addAliquot($type->id))
+                                    ->action(fn () => $this->addAliquot($type->id))
                                     ->color('success')
                                     ->icon(Heroicon::Plus)
                                     ->outlined()
-                                    ->extraAttributes(['id' => 'addAliquot_' . $type->id]),
-                                Action::make('removeAliquot_' . $type->id)
+                                    ->extraAttributes(['id' => 'addAliquot_'.$type->id]),
+                                Action::make('removeAliquot_'.$type->id)
                                     ->hiddenLabel()
-                                    ->action(fn() => $this->removeAliquot($type->id))
+                                    ->action(fn () => $this->removeAliquot($type->id))
                                     ->color('danger')
                                     ->icon(Heroicon::Minus)
-                                    ->requiresConfirmation(fn(): bool => $this->logged($type->id))
-                                    ->modalHeading(fn() => $this->logged($type->id) ? 'Delete ' . $type->name . ' Aliquot ' . ($i) : null)
-                                    ->modalDescription(fn() => $this->logged($type->id) ? 'The aliquot with barcode ' . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '') . ' will be deleted. Are you sure you want to do this?' : null)
+                                    ->requiresConfirmation(fn (): bool => $this->logged($type->id))
+                                    ->modalHeading(fn () => $this->logged($type->id) ? 'Delete '.$type->name.' Aliquot '.($i) : null)
+                                    ->modalDescription(fn () => $this->logged($type->id) ? 'The aliquot with barcode '.($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '').' will be deleted. Are you sure you want to do this?' : null)
                                     ->outlined()
-                                    ->extraAttributes(['id' => 'removeAliquot_' . $type->id])
-                                    ->modalSubmitAction(fn(Action $action): \Filament\Actions\Action => $action->label('Delete')),
+                                    ->extraAttributes(['id' => 'removeAliquot_'.$type->id])
+                                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Delete')),
                             ])
                             ->grow(false),
                         Fieldset::make($type->name)
@@ -223,7 +225,7 @@ class LogPrimarySpecimens extends Page implements HasForms
         $this->validate([
             'pse_barcode' => [
                 'required',
-                new \App\Rules\ValidPSE,
+                new ValidPSE,
             ],
         ]);
 
@@ -324,8 +326,8 @@ class LogPrimarySpecimens extends Page implements HasForms
 
             Notification::make()
                 ->title('Specimens Logged')
-                ->body($loggedCount . ' primary specimens logged successfully.')
-                ->color(fn(): string => $loggedCount > 0 ? 'success' : 'warning')
+                ->body($loggedCount.' primary specimens logged successfully.')
+                ->color(fn (): string => $loggedCount > 0 ? 'success' : 'warning')
                 ->send();
 
             // Reset form for new entry
@@ -338,7 +340,7 @@ class LogPrimarySpecimens extends Page implements HasForms
 
             Notification::make()
                 ->title('Failed')
-                ->body('Failed to log primary specimens. ' . $th->getMessage())
+                ->body('Failed to log primary specimens. '.$th->getMessage())
                 ->color('danger')
                 ->send();
         }

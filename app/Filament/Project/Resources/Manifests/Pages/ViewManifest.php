@@ -23,7 +23,7 @@ class ViewManifest extends ViewRecord
     {
         return [
             EditAction::make()
-                ->visible(fn(): bool => $this->record->status === ManifestStatus::Open),
+                ->visible(fn (): bool => $this->record->status === ManifestStatus::Open),
             Action::make('ship')
                 ->label('Ship the Manifest')
                 ->button()
@@ -46,7 +46,7 @@ class ViewManifest extends ViewRecord
                         ->columns(1),
                 ])
                 ->requiresConfirmation()
-                ->visible(fn($record): bool => $record->status === ManifestStatus::Open && $record->specimens->count() > 0)
+                ->visible(fn ($record): bool => $record->status === ManifestStatus::Open && $record->specimens->count() > 0)
                 ->action(function ($record, $data): void {
                     try {
                         DB::beginTransaction();
@@ -67,7 +67,7 @@ class ViewManifest extends ViewRecord
                     } catch (\Exception $th) {
                         DB::rollBack();
                         Notification::make()
-                            ->title('Error shipping manifest: ' . $th->getMessage())
+                            ->title('Error shipping manifest: '.$th->getMessage())
                             ->danger()
                             ->send();
                     }
@@ -77,7 +77,7 @@ class ViewManifest extends ViewRecord
                 ->button()
                 ->color('info')
                 ->requiresConfirmation()
-                ->visible(fn($record): bool => $record->status === ManifestStatus::Shipped && $record->destinationSite_id === session('currentProject')->members()->where('user_id', Auth::id())->first()->pivot->site_id)
+                ->visible(fn ($record): bool => $record->status === ManifestStatus::Shipped && $record->destinationSite_id === session('currentProject')->members()->where('user_id', Auth::id())->first()->pivot->site_id)
                 ->action(function ($record, $livewire): void {
                     try {
                         DB::beginTransaction();
@@ -91,7 +91,7 @@ class ViewManifest extends ViewRecord
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         Notification::make()
-                            ->title('Error receiving manifest: ' . $th->getMessage())
+                            ->title('Error receiving manifest: '.$th->getMessage())
                             ->danger()
                             ->send();
                     }
@@ -106,11 +106,11 @@ class ViewManifest extends ViewRecord
                         $specimen->logOutOfManifest($specimen->pivot->priorSpecimenStatus);
                     });
                 })
-                ->visible(fn(): bool => $this->record->status === ManifestStatus::Open),
+                ->visible(fn (): bool => $this->record->status === ManifestStatus::Open),
             Action::make('export')
-                ->action(fn($record) => $record->export())
+                ->action(fn ($record) => $record->export())
                 ->color('info')
-                ->visible(fn($record): bool => $record->status !== ManifestStatus::Open),
+                ->visible(fn ($record): bool => $record->status !== ManifestStatus::Open),
         ];
     }
 }

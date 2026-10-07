@@ -14,12 +14,12 @@ use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 
 class SpecimensTable
@@ -49,8 +49,8 @@ class SpecimensTable
                     ->searchable(
                         query: function (Builder $query, string $search): Builder {
                             $matchingStatuses = collect(SpecimenStatus::cases())
-                                ->filter(fn($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
-                                ->map(fn($status) => $status->value);
+                                ->filter(fn ($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
+                                ->map(fn ($status) => $status->value);
 
                             return $query->whereIn('status', $matchingStatuses);
                         },
@@ -93,10 +93,10 @@ class SpecimensTable
                         ->icon(Heroicon::Cog6Tooth)
                         ->action(function (Collection $records): void {
                             try {
-                                $specimen_count = (new LogSpecimenStatus())(SpecimenStatus::Used, $records->pluck('barcode')->implode(','));
+                                $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::Used, $records->pluck('barcode')->implode(','));
                                 Notification::make()
                                     ->title('Specimens Logged as Used')
-                                    ->body($specimen_count . ' specimens have been logged as used.')
+                                    ->body($specimen_count.' specimens have been logged as used.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -113,10 +113,10 @@ class SpecimensTable
                         ->icon(Heroicon::ArrowUpTray)
                         ->action(function (Collection $records): void {
                             try {
-                                $specimen_count = (new LogSpecimenStatus())(SpecimenStatus::LoggedOut, $records->pluck('barcode')->implode(','));
+                                $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::LoggedOut, $records->pluck('barcode')->implode(','));
                                 Notification::make()
                                     ->title('Specimens Logged as Logged Out')
-                                    ->body($specimen_count . ' specimens have been logged as logged out.')
+                                    ->body($specimen_count.' specimens have been logged as logged out.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -141,10 +141,10 @@ class SpecimensTable
                         ->action(function (Collection $records, array $data): void {
                             $thawed = $data['thawed'] ?? false;
                             try {
-                                $specimen_count = (new LogSpecimenStatus())(SpecimenStatus::InStorage, $records->pluck('barcode')->implode(','), $thawed);
+                                $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::InStorage, $records->pluck('barcode')->implode(','), $thawed);
                                 Notification::make()
                                     ->title('Specimens Logged as Returned to Storage')
-                                    ->body($specimen_count . ' specimens have been logged as returned to storage.')
+                                    ->body($specimen_count.' specimens have been logged as returned to storage.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -192,7 +192,7 @@ class SpecimensTable
                         ->modifyQueryUsing(function ($query, $records) {
                             return $query->whereKey($records);
                         }),
-                ])->visible(fn(): bool => session('currentProject')->members()
+                ])->visible(fn (): bool => session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() > 0),
 

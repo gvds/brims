@@ -41,7 +41,7 @@ class ManifestInfolist
                     ]),
                 TextEntry::make('specimenTypes')
                     ->label('Specimen types')
-                    ->formatStateUsing(fn($state) => Specimentype::find($state)?->name)
+                    ->formatStateUsing(fn ($state) => Specimentype::find($state)?->name)
                     ->listWithLineBreaks()
                     ->bulleted()
                     ->size('xs')

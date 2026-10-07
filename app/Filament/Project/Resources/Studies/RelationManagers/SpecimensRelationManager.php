@@ -93,7 +93,7 @@ class SpecimensRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('subjectEvent.event.name')
                     ->label(new HtmlString('Event : iteration'))
-                    ->formatStateUsing(fn($state, $record): \Illuminate\Support\HtmlString => new HtmlString("$state : {$record->subjectEvent->iteration}"))
+                    ->formatStateUsing(fn ($state, $record): HtmlString => new HtmlString("$state : {$record->subjectEvent->iteration}"))
                     ->searchable(),
                 TextColumn::make('specimenType.name')
                     ->searchable(),
@@ -107,7 +107,7 @@ class SpecimensRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('volume')
                     ->numeric()
-                    ->formatStateUsing(fn($state, $record): string => $state ? "$state{$record->volumeUnit}" : ''),
+                    ->formatStateUsing(fn ($state, $record): string => $state ? "$state{$record->volumeUnit}" : ''),
                 TextColumn::make('loggedBy.username')
                     ->searchable(),
                 TextColumn::make('loggedAt')
@@ -127,14 +127,14 @@ class SpecimensRelationManager extends RelationManager
                     ->schema([
                         Select::make('specimen_type_filter')
                             ->label('Filter by Specimen Type')
-                            ->options(fn() => Specimentype::where('project_id', $this->ownerRecord->project_id)
+                            ->options(fn () => Specimentype::where('project_id', $this->ownerRecord->project_id)
                                 ->pluck('name', 'id'))
                             ->searchable()
                             ->placeholder('All specimen types')
                             ->live(),
                         Select::make('site_filter')
                             ->label('Filter by Site')
-                            ->options(fn() => Site::where('project_id', $this->ownerRecord->project_id)
+                            ->options(fn () => Site::where('project_id', $this->ownerRecord->project_id)
                                 ->pluck('name', 'id'))
                             ->searchable()
                             ->placeholder('All sites')
@@ -162,15 +162,15 @@ class SpecimensRelationManager extends RelationManager
                             ->required(),
                     ])
                     ->multiple()
-                    ->hidden(fn(): bool => $this->ownerRecord->locked)
+                    ->hidden(fn (): bool => $this->ownerRecord->locked)
                     ->attachAnother(false),
                 ImportAction::make()
                     ->importer(StudySpecimenImporter::class)
-                    ->options(fn(): array => [
+                    ->options(fn (): array => [
                         'study' => $this->ownerRecord,
                         'project' => $this->ownerRecord->project,
                     ])
-                    ->hidden(fn(): bool => $this->ownerRecord->locked)
+                    ->hidden(fn (): bool => $this->ownerRecord->locked)
                     ->color(Color::Indigo),
                 ExportAction::make()
                     ->label('Export Specimens')
@@ -180,13 +180,13 @@ class SpecimensRelationManager extends RelationManager
             ->recordActions([
                 // EditAction::make(),
                 DetachAction::make()
-                    ->hidden(fn(): bool => $this->ownerRecord->locked),
+                    ->hidden(fn (): bool => $this->ownerRecord->locked),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DetachBulkAction::make(),
                 ])
-                    ->hidden(fn(): bool => $this->ownerRecord->locked),
+                    ->hidden(fn (): bool => $this->ownerRecord->locked),
             ]);
     }
 }

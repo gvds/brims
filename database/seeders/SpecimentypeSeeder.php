@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Project;
 use App\Models\Specimentype;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SpecimentypeSeeder extends Seeder

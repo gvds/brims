@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\ManifestItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ManifestItem>
+ * @extends Factory<ManifestItem>
  */
 class ManifestItemFactory extends Factory
 {

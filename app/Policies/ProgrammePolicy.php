@@ -10,7 +10,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProgrammePolicy
 {
-
     use HandlesAuthorization;
 
     /**

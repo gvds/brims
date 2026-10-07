@@ -16,6 +16,6 @@ it('uses a progressively increasing content grid across breakpoints', function (
         'md' => 3,
         'xl' => 4,
         '2xl' => 5,
-        '3xl' => 6
+        '3xl' => 6,
     ]);
 });

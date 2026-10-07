@@ -18,13 +18,11 @@ class LabwareRelationManager extends RelationManager
         return false;
     }
 
-
     #[\Override]
     public function form(Schema $schema): Schema
     {
         return LabwareForm::configure($schema);
     }
-
 
     public function table(Table $table): Table
     {

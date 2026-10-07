@@ -16,7 +16,7 @@ class InstitutionsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('country')
-                    ->formatStateUsing(fn($state): ?string => Country::tryParse($state)?->label())
+                    ->formatStateUsing(fn ($state): ?string => Country::tryParse($state)?->label())
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

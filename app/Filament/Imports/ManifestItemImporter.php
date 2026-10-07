@@ -26,7 +26,7 @@ class ManifestItemImporter extends Importer
                     $record->specimen_id = $specimen?->id;
                     $record->priorSpecimenStatus = $specimen?->status;
                 })
-                ->rules(fn(array $options): array => [
+                ->rules(fn (array $options): array => [
                     'required',
                     function (string $attribute, mixed $value, \Closure $fail) use ($options): void {
                         $specimen = Specimen::where('barcode', $value)
@@ -52,7 +52,7 @@ class ManifestItemImporter extends Importer
     #[\Override]
     public function resolveRecord(): ManifestItem
     {
-        return new ManifestItem();
+        return new ManifestItem;
     }
 
     protected function beforeSave(): void
@@ -70,10 +70,10 @@ class ManifestItemImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your manifest items import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your manifest items import has completed and '.Number::format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
         }
 
         return $body;

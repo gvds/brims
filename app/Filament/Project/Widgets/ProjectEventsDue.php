@@ -3,7 +3,6 @@
 namespace App\Filament\Project\Widgets;
 
 use App\Enums\EventStatus;
-use App\Models\ProjectMember;
 use App\Models\SubjectEvent;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Support\Icons\Heroicon;
@@ -22,14 +21,15 @@ class ProjectEventsDue extends TableWidget
     {
         $substitutees = Auth::user()->substitutees()
             ->pluck('users.id');
+
         return $table
             ->description('Click on a row to access the subject record')
             ->query(
-                fn(): Builder => SubjectEvent::query()
+                fn (): Builder => SubjectEvent::query()
                     ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                     ->where('minDate', '<=', today())
                     ->where('maxDate', '>=', today())
-                    ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
+                    ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
             )
             ->columns([
                 TextColumn::make('subject.fullname')
@@ -44,7 +44,7 @@ class ProjectEventsDue extends TableWidget
             ->paginated(false)
             ->emptyStateHeading('')
             ->recordUrl(
-                fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => session('currentProject')->id, 'record' => $record->subject_id])
+                fn (SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => session('currentProject')->id, 'record' => $record->subject_id])
             );
     }
 }

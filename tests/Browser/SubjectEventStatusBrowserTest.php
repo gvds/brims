@@ -4,10 +4,15 @@ use App\Enums\EventStatus;
 use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Project;
+use App\Models\Role;
 use App\Models\Site;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
+use Spatie\Permission\Models\Permission;
 
 use function Pest\Laravel\actingAs;
 
@@ -35,7 +40,7 @@ beforeEach(function (): void {
 
     $this->arm = Arm::factory()
         ->for($this->project)
-        ->create([ 'arm_num' => 1 ]);
+        ->create(['arm_num' => 1]);
 
     $this->event = Event::factory()
         ->for($this->arm)
@@ -52,7 +57,7 @@ beforeEach(function (): void {
     // Ensure tenant middleware permits the request in trimmed test DBs by creating
     // the expected pivot row directly (avoid using attach() because some test DB
     // schemas require different pivot fields).
-    \Illuminate\Support\Facades\DB::table('project_member')->insert([
+    DB::table('project_member')->insert([
         'user_id' => $this->user->id,
         'project_id' => $this->project->id,
         'site_id' => $this->project->sites->first()->id,
@@ -64,7 +69,7 @@ beforeEach(function (): void {
 
 it('shows status as read-only for users without the update.event permission (browser)', function (): void {
     // allow viewing the record without depending on project pivot data
-    \Illuminate\Support\Facades\Gate::before(fn ($user, $ability): ?true => $ability === 'view' ? true : null);
+    Gate::before(fn ($user, $ability): ?true => $ability === 'view' ? true : null);
 
     $page = visit(route('filament.project.resources.subjects.view', ['tenant' => $this->project->id, 'record' => $this->subject->id]))
         ->assertSee('Status')
@@ -78,8 +83,8 @@ it('shows status as read-only for users without the update.event permission (bro
 
 it('shows status as editable for users with the update.event permission (browser)', function (): void {
     // allow viewing the record and stub update.event for editability
-    \Illuminate\Support\Facades\Gate::before(fn ($user, $ability): ?true => $ability === 'view' ? true : null);
-    \Illuminate\Support\Facades\Gate::define('update.event', fn ($actor): bool => $actor->id === $this->user->id);
+    Gate::before(fn ($user, $ability): ?true => $ability === 'view' ? true : null);
+    Gate::define('update.event', fn ($actor): bool => $actor->id === $this->user->id);
 
     $page = visit(route('filament.project.resources.subjects.view', ['tenant' => $this->project->id, 'record' => $this->subject->id]))
         ->assertSee('Status');
@@ -91,26 +96,26 @@ it('shows status as editable for users with the update.event permission (browser
 
 it('shows status as editable when user has a project-scoped role with update.event (browser)', function (): void {
     // create a project-scoped permission and role and assign to the user using DB inserts
-    $permissionId = \Spatie\Permission\Models\Permission::create(['name' => 'update.event', 'project_id' => $this->project->id])->id;
-    $viewPermissionId = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'View:Subject', 'project_id' => $this->project->id])->id;
+    $permissionId = Permission::create(['name' => 'update.event', 'project_id' => $this->project->id])->id;
+    $viewPermissionId = Permission::firstOrCreate(['name' => 'View:Subject', 'project_id' => $this->project->id])->id;
 
-    $role = \App\Models\Role::create(['name' => 'Project Updater', 'project_id' => $this->project->id]);
+    $role = Role::create(['name' => 'Project Updater', 'project_id' => $this->project->id]);
 
     // attach permissions to role (spatie pivot)
-    \Illuminate\Support\Facades\DB::table('role_has_permissions')->insert([
+    DB::table('role_has_permissions')->insert([
         ['permission_id' => $permissionId, 'role_id' => $role->id],
         ['permission_id' => $viewPermissionId, 'role_id' => $role->id],
     ]);
 
     // assign role to user in model_has_roles (team-aware) and ensure project_member pivot exists
-    \Illuminate\Support\Facades\DB::table('model_has_roles')->updateOrInsert([
+    DB::table('model_has_roles')->updateOrInsert([
         'role_id' => $role->id,
-        'model_type' => \App\Models\User::class,
+        'model_type' => User::class,
         'model_id' => $this->user->id,
         'project_id' => $this->project->id,
     ], []);
 
-    \Illuminate\Support\Facades\DB::table('project_member')->updateOrInsert([
+    DB::table('project_member')->updateOrInsert([
         'user_id' => $this->user->id,
         'project_id' => $this->project->id,
     ], [
@@ -121,7 +126,7 @@ it('shows status as editable when user has a project-scoped role with update.eve
     ]);
 
     // ensure current project is set for tenant + team resolver
-    \Illuminate\Support\Facades\Session::put('currentProject', $this->project);
+    Session::put('currentProject', $this->project);
 
     // refresh the user instance so newly-attached role/permission relations are reloaded
     $this->user = $this->user->fresh()->unsetRelation('roles')->unsetRelation('permissions');

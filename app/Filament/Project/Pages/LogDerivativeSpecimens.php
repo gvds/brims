@@ -8,6 +8,7 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
+use App\Rules\ValidPSE;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -77,7 +78,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     private function initializeUser(): void
     {
-        $this->user = session('currentProject')->members()->where('user_id', \Illuminate\Support\Facades\Auth::id())->first();
+        $this->user = session('currentProject')->members()->where('user_id', Auth::id())->first();
         if (! $this->user) {
             Notification::make()
                 ->title('Error')
@@ -85,6 +86,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                 ->color('danger')
                 ->send();
             $this->redirect(route('filament.project.pages.dashboard', ['tenant' => session('currentProject')->id]));
+
             return;
         }
 
@@ -119,7 +121,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             ->label('Parent Specimen Barcode')
                             ->helperText('Scan the parent specimen barcode')
                             ->statePath('parent_barcode')
-                            ->visible(fn($get): bool => $get('selection_route') === 'parent_barcode')
+                            ->visible(fn ($get): bool => $get('selection_route') === 'parent_barcode')
                             ->scopedExists(Specimen::class, 'barcode')
                             ->extraAttributes([
                                 'class' => 'w-full md:w-80',
@@ -129,7 +131,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             ->label('Project Subject Event Barcode')
                             ->helperText('Scan the PSE barcode')
                             ->statePath('pse_barcode')
-                            ->visible(fn($get): bool => $get('selection_route') === 'pse_barcode')
+                            ->visible(fn ($get): bool => $get('selection_route') === 'pse_barcode')
                             ->extraAttributes([
                                 'class' => 'w-full md:w-80',
                                 'x-on:keydown.enter.prevent' => '$wire.loadSubjectEventSpecimens()',
@@ -144,11 +146,11 @@ class LogDerivativeSpecimens extends Page implements HasForms
                         $potentialParents = [];
                         foreach ($potentialParentSpecimens as $potentialParentSpecimen) {
                             $barcode = $potentialParentSpecimen['barcode'];
-                            $potentialParents[] = TextEntry::make('barcode_' . $barcode)
-                                ->getStateUsing(fn(): mixed => $barcode)
+                            $potentialParents[] = TextEntry::make('barcode_'.$barcode)
+                                ->getStateUsing(fn (): mixed => $barcode)
                                 ->hiddenLabel()
                                 ->grow(false)
-                                ->action(Action::make('select_parent_' . $barcode)->action(fn() => $this->selectParentSpecimen($barcode)));
+                                ->action(Action::make('select_parent_'.$barcode)->action(fn () => $this->selectParentSpecimen($barcode)));
                         }
 
                         return [Flex::make($potentialParents)];
@@ -173,8 +175,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
                         $aliquotFields[] = Grid::make()
                             ->schema([
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
-                                    ->label('Aliquot ' . ($i + 1))
-                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/' . $type->Labware->barcodeFormat . '/')
+                                    ->label('Aliquot '.($i + 1))
+                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/'.$type->Labware->barcodeFormat.'/')
                                     ->disabled($this->specimens[$type->id][$i]['logged'] ?? false)
                                     ->extraAttributes(['style' => 'height: 30px']),
                                 TextInput::make("specimens.{$type->id}.{$i}.volume")
@@ -194,24 +196,24 @@ class LogDerivativeSpecimens extends Page implements HasForms
                     $specimenTypes[] = Flex::make([
                         Grid::make(1)
                             ->schema([
-                                Action::make('addAliquot_' . $type->id)
+                                Action::make('addAliquot_'.$type->id)
                                     ->hiddenLabel()
-                                    ->action(fn() => $this->addAliquot($type->id))
+                                    ->action(fn () => $this->addAliquot($type->id))
                                     ->color('success')
                                     ->icon(Heroicon::Plus)
                                     ->outlined()
-                                    ->extraAttributes(['id' => 'addAliquot_' . $type->id]),
-                                Action::make('removeAliquot_' . $type->id)
+                                    ->extraAttributes(['id' => 'addAliquot_'.$type->id]),
+                                Action::make('removeAliquot_'.$type->id)
                                     ->hiddenLabel()
-                                    ->action(fn() => $this->removeAliquot($type->id))
+                                    ->action(fn () => $this->removeAliquot($type->id))
                                     ->color('danger')
                                     ->icon(Heroicon::Minus)
-                                    ->requiresConfirmation(fn(): bool => $this->logged($type->id))
-                                    ->modalHeading(fn() => $this->logged($type->id) ? 'Delete ' . $type->name . ' Aliquot ' . ($i) : null)
-                                    ->modalDescription(fn() => $this->logged($type->id) ? 'The aliquot with barcode ' . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '') . ' will be deleted. Are you sure you want to do this?' : null)
+                                    ->requiresConfirmation(fn (): bool => $this->logged($type->id))
+                                    ->modalHeading(fn () => $this->logged($type->id) ? 'Delete '.$type->name.' Aliquot '.($i) : null)
+                                    ->modalDescription(fn () => $this->logged($type->id) ? 'The aliquot with barcode '.($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '').' will be deleted. Are you sure you want to do this?' : null)
                                     ->outlined()
-                                    ->extraAttributes(['id' => 'removeAliquot_' . $type->id])
-                                    ->modalSubmitAction(fn(Action $action): \Filament\Actions\Action => $action->label('Delete')),
+                                    ->extraAttributes(['id' => 'removeAliquot_'.$type->id])
+                                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Delete')),
                             ])
                             ->grow(false),
                         Fieldset::make($type->name)
@@ -240,7 +242,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
             return $form
                 ->components(
-                    [...$sections,]
+                    [...$sections]
                 );
         }
     }
@@ -250,6 +252,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
         $this->parent_barcode = $barcode;
         $this->loadSpecimenBarcodes();
     }
+
     public function loadSpecimenBarcodes(): void
     {
         $this->validate([
@@ -303,7 +306,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
         $this->validate([
             'pse_barcode' => [
                 'required',
-                new \App\Rules\ValidPSE,
+                new ValidPSE,
             ],
         ]);
         [$project_id, $subject_id, $subject_event_id] = explode('_', (string) $this->pse_barcode);
@@ -324,7 +327,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
             ->whereIn('specimenType_id', $parentalSpecimenTypes)
             ->get()
             ->groupBy('specimenType.name')
-            ->map(fn($group) => $group->values()->toArray());
+            ->map(fn ($group) => $group->values()->toArray());
 
         $this->stage = 1;
 
@@ -397,8 +400,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
             Notification::make()
                 ->title('Specimens Logged')
-                ->body($loggedCount . ' derivative specimens logged successfully.')
-                ->color(fn(): string => $loggedCount > 0 ? 'success' : 'warning')
+                ->body($loggedCount.' derivative specimens logged successfully.')
+                ->color(fn (): string => $loggedCount > 0 ? 'success' : 'warning')
                 ->send();
 
             // Reset form for new entry
@@ -411,7 +414,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
             Notification::make()
                 ->title('Failed')
-                ->body('Failed to log derivative specimens. ' . $th->getMessage())
+                ->body('Failed to log derivative specimens. '.$th->getMessage())
                 ->color('danger')
                 ->send();
         }

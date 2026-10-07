@@ -34,8 +34,9 @@ class ArmForm
                     ->options(
                         function (?Arm $record, Component $livewire): array {
                             $projectId = $record ? $record->project_id : $livewire->getOwnerRecord()->id;
+
                             return Arm::where('project_id', $projectId)
-                                ->when($record, fn($query) => $query->whereNot('id', $record->id))
+                                ->when($record, fn ($query) => $query->whereNot('id', $record->id))
                                 ->pluck('name', 'id')
                                 ->toArray();
                         }

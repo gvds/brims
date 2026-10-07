@@ -21,12 +21,14 @@ class SetNewAccountPassword extends Component implements HasActions, HasSchemas
     use InteractsWithSchemas;
 
     public ?array $data = [];
+
     public User $user;
 
     public function mount(): void
     {
-        if (!is_null($this->user->email_verified_at)) {
+        if (! is_null($this->user->email_verified_at)) {
             to_route('filament.app.auth.login');
+
             return;
         }
         $this->form->fill();

@@ -6,7 +6,6 @@ use App\Enums\SpecimenStatus;
 use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\SubjectEvent;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 

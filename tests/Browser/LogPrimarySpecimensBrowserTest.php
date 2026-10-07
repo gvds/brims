@@ -10,7 +10,6 @@ use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 use function Pest\Laravel\actingAs;
@@ -98,10 +97,10 @@ it('can add and remove aliquots via the browser', function (): void {
     $page->assertSee('Aliquot 1')
         ->assertSee('Aliquot 2');
 
-    $page->press('#addAliquot_' . $this->primarySpecimenTypes->first()->id)
+    $page->press('#addAliquot_'.$this->primarySpecimenTypes->first()->id)
         ->assertSee('Aliquot 3');
 
-    $page->press('#removeAliquot_' . $this->primarySpecimenTypes->first()->id)
+    $page->press('#removeAliquot_'.$this->primarySpecimenTypes->first()->id)
         ->assertDontSee('Aliquot 3');
 });
 
@@ -138,7 +137,7 @@ it('requires confirmation before removing a previously logged aliquot via the br
     $page->assertValue('form.specimens.1.0.barcode', 'EX12340')
         ->assertValue('form.specimens.1.1.barcode', 'EX12341');
 
-    $page->press('#removeAliquot_' . $this->primarySpecimenTypes->first()->id)
+    $page->press('#removeAliquot_'.$this->primarySpecimenTypes->first()->id)
         ->assertSee('Are you sure you want to do this?');
 
     $page->press('Delete')

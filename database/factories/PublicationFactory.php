@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Enums\PublicationStatus;
+use App\Models\Publication;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Publication>
+ * @extends Factory<Publication>
  */
 class PublicationFactory extends Factory
 {

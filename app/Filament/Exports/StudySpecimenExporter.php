@@ -45,16 +45,16 @@ class StudySpecimenExporter extends Exporter
                 ->label('SubjectID'),
             ExportColumn::make('loggedAt')
                 ->label('Logged Date')
-                ->formatStateUsing(fn(string $state): string => date('Y-m-d', strtotime($state))),
+                ->formatStateUsing(fn (string $state): string => date('Y-m-d', strtotime($state))),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your study specimen export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
+        $body = 'Your study specimen export has completed and '.Number::format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
+            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
         }
 
         return $body;

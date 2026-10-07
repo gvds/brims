@@ -40,7 +40,7 @@ class ScheduleController extends Controller
         $this->fpdf->SetMargins(5, 5);
         $this->fpdf->AddPage();
         $this->fpdf->SetFont('Calibri', 'B', 16);
-        $this->fpdf->Cell(0, 9, $currentProject->title . " project Followup Schedule - $header", 0, 1, 'C');
+        $this->fpdf->Cell(0, 9, $currentProject->title." project Followup Schedule - $header", 0, 1, 'C');
         $this->fpdf->SetFont('Calibri', 'B', 11);
         $this->fpdf->Cell(0, 0, '', 'T', 1, 'L');
         $this->fpdf->Cell(26, 7, 'Subject', '', 0, 'C');
@@ -64,17 +64,17 @@ class ScheduleController extends Controller
         // Schedule events
         SubjectEvent::whereHas(
             'subject',
-            fn($query) => $query->where('project_id', session('currentProject')->id)
+            fn ($query) => $query->where('project_id', session('currentProject')->id)
                 ->whereIn('user_id', $userIDList)
                 ->where('status', SubjectStatus::Enrolled)
         )
-            ->whereHas('event', fn($query) => $query->where('active', true))
+            ->whereHas('event', fn ($query) => $query->where('active', true))
             ->where('minDate', '<=', $enddate)
             ->where('status', '<', EventStatus::Scheduled)
             ->update(['status' => EventStatus::Scheduled]);
 
         $subjects = Subject::with([
-            'events' => fn($query) => $query->where('status', EventStatus::Scheduled)
+            'events' => fn ($query) => $query->where('status', EventStatus::Scheduled)
                 ->where('active', true)
                 ->orderBy('eventDate'),
         ])

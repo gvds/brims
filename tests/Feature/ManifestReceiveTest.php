@@ -157,7 +157,7 @@ it('throws an exception when receiving a non-shipped manifest', function (): voi
 })->throws(Exception::class, 'Only manifests with status "Shipped" can be received.');
 
 it('receives a manifest with multiple specimens', function (): void {
-    $specimens = collect([1, 2, 3])->map(fn(int $aliquot) => Specimen::factory()->create([
+    $specimens = collect([1, 2, 3])->map(fn (int $aliquot) => Specimen::factory()->create([
         'subject_event_id' => $this->subjectEvent->id,
         'specimenType_id' => $this->specimenType->id,
         'site_id' => $this->sourceSite->id,

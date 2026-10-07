@@ -29,7 +29,7 @@ class ListSubjects extends ListRecords
             Action::make('generate_subjects')
                 ->schema([
                     Select::make('arm')
-                        ->options(fn() => session('currentProject')
+                        ->options(fn () => session('currentProject')
                             ->arms
                             ->where('manual_enrol', true)
                             ->pluck('name', 'id')
@@ -43,7 +43,7 @@ class ListSubjects extends ListRecords
                         ->maxValue(20)
                         ->required(),
                 ])
-                ->disabled(fn(): bool => ! Auth::user()->can('Manage:Subject') || session('currentProject')->members()
+                ->disabled(fn (): bool => ! Auth::user()->can('Manage:Subject') || session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() === 0)
                 ->action(function (array $data): void {
@@ -54,7 +54,7 @@ class ListSubjects extends ListRecords
                         $lastSubjectNumber = $currentProject->last_subject_number;
                         for ($i = 1; $i <= $data['subjects']; $i++) {
                             $subject = Subject::create([
-                                'subjectID' => $currentProject->subjectID_prefix . str_pad(++$lastSubjectNumber, $currentProject->subjectID_digits, '0', STR_PAD_LEFT),
+                                'subjectID' => $currentProject->subjectID_prefix.str_pad(++$lastSubjectNumber, $currentProject->subjectID_digits, '0', STR_PAD_LEFT),
                                 'project_id' => $currentProject->id,
                                 'arm_id' => $data['arm'],
                                 'user_id' => Auth::id(),
@@ -71,7 +71,7 @@ class ListSubjects extends ListRecords
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         Notification::make()
-                            ->title('Error generating subjects: ' . $th->getMessage())
+                            ->title('Error generating subjects: '.$th->getMessage())
                             ->danger()
                             ->send()
                             ->persistent();

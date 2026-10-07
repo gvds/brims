@@ -32,14 +32,14 @@ class EditProject extends EditRecord
             $projectAdminRole = $record->roles()->where('name', 'Admin')->first();
             if ($record->members()->where('user_id', $record->leader_id)->count() == 0) {
                 $record->members()->attach($data['leader_id'], ['role_id' => $projectAdminRole->id]);
-            } else
+            } else {
                 $record->members()->updateExistingPivot($data['leader_id'], ['role_id' => $projectAdminRole->id]);
+            }
         }
         $record->update($data);
 
         return $record;
     }
-
 
     #[\Override]
     protected function getRedirectUrl(): string

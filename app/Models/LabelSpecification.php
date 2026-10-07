@@ -29,6 +29,6 @@ class LabelSpecification extends Model
         'width',
         'height',
         'font-size',
-        'padding'
+        'padding',
     ];
 }

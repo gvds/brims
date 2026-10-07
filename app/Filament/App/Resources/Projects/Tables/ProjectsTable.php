@@ -9,9 +9,7 @@ use Filament\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -54,8 +52,8 @@ class ProjectsTable
                 SelectFilter::make('active')
                     ->options([
                         1 => 'Active',
-                        0 => 'Inactive'
-                    ])
+                        0 => 'Inactive',
+                    ]),
             ])
             ->deferFilters(false)
             ->recordActions([

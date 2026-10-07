@@ -1,5 +1,28 @@
 <?php
 
+use App\Filament\Admin\Resources\Institutions\InstitutionResource;
+use App\Filament\Admin\Resources\LabelSpecifications\LabelSpecificationResource;
+use App\Filament\Admin\Resources\PhysicalUnits\PhysicalUnitResource;
+use App\Filament\Admin\Resources\Studydesigns\StudydesignResource;
+use App\Filament\Admin\Resources\UnitDefinitions\UnitDefinitionResource;
+use App\Filament\Admin\Resources\Users\UserResource;
+use App\Filament\App\Resources\Projects\ProjectResource;
+use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
+use App\Filament\App\Resources\Teams\Resources\Programmes\ProgrammeResource;
+use App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource;
+use App\Filament\App\Resources\Teams\TeamResource;
+use App\Filament\App\Widgets\EventsDue;
+use App\Filament\App\Widgets\EventsOverdue;
+use App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource;
+use App\Filament\Project\Resources\Projects\Resources\Labware\LabwareResource;
+use App\Filament\Project\Resources\Projects\Resources\Sites\SiteResource;
+use App\Filament\Project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource;
+use App\Models\ProjectMember;
+use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
+
 return [
 
     /*
@@ -173,30 +196,30 @@ return [
     'resources' => [
         'subject' => 'model',
         'manage' => [
-            App\Models\ProjectMember::class => [
+            ProjectMember::class => [
                 'setSubstitute',
             ],
         ],
         'exclude' => [
-            App\Filament\App\Resources\Teams\TeamResource::class,
-            App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource::class,
-            App\Filament\App\Resources\Projects\ProjectResource::class,
-            App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource::class,
-            App\Filament\App\Resources\Teams\Resources\Programmes\ProgrammeResource::class,
-            App\Filament\Admin\Resources\Studydesigns\StudydesignResource::class,
+            TeamResource::class,
+            ProtocolResource::class,
+            ProjectResource::class,
+            AssayDefinitionResource::class,
+            ProgrammeResource::class,
+            StudydesignResource::class,
             App\Filament\Admin\Resources\Teams\TeamResource::class,
-            App\Filament\Admin\Resources\Institutions\InstitutionResource::class,
-            App\Filament\Admin\Resources\LabelSpecifications\LabelSpecificationResource::class,
-            App\Filament\Admin\Resources\Users\UserResource::class,
-            App\Filament\Admin\Resources\UnitDefinitions\UnitDefinitionResource::class,
-            App\Filament\Admin\Resources\PhysicalUnits\PhysicalUnitResource::class,
+            InstitutionResource::class,
+            LabelSpecificationResource::class,
+            UserResource::class,
+            UnitDefinitionResource::class,
+            PhysicalUnitResource::class,
             // App\Filament\Project\Resources\Projects\ProjectResource::class,
-            App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource::class,
-            App\Filament\Project\Resources\Projects\Resources\Sites\SiteResource::class,
-            App\Filament\Project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource::class,
-            App\Filament\Project\Resources\Projects\Resources\Labware\LabwareResource::class,
+            ArmResource::class,
+            SiteResource::class,
+            SpecimentypeResource::class,
+            LabwareResource::class,
             // \Croustibat\FilamentJobsMonitor\Resources\QueueMonitorResource::class,
-            \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class,
+            RoleResource::class,
         ],
     ],
 
@@ -215,10 +238,10 @@ return [
         'subject' => 'class',
         'prefix' => 'view',
         'exclude' => [
-            \Filament\Pages\Dashboard::class,
-            \App\Filament\App\Pages\Dashboard::class,
-            \App\Filament\Project\Pages\Dashboard::class,
-            \App\Filament\Admin\Pages\Dashboard::class,
+            Dashboard::class,
+            App\Filament\App\Pages\Dashboard::class,
+            App\Filament\Project\Pages\Dashboard::class,
+            App\Filament\Admin\Pages\Dashboard::class,
         ],
     ],
 
@@ -237,10 +260,10 @@ return [
         'subject' => 'class',
         'prefix' => 'view',
         'exclude' => [
-            \Filament\Widgets\AccountWidget::class,
-            \Filament\Widgets\FilamentInfoWidget::class,
-            \App\Filament\App\Widgets\EventsDue::class,
-            \App\Filament\App\Widgets\EventsOverdue::class,
+            AccountWidget::class,
+            FilamentInfoWidget::class,
+            EventsDue::class,
+            EventsOverdue::class,
         ],
     ],
 

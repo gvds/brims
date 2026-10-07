@@ -17,8 +17,8 @@ class ManageStorageAllocations extends ManageRecords
         return [
             Action::make('allocate')
                 ->label('Allocate Storage')
-                ->url(fn(): string => static::getResource()::getUrl('allocate'))
-                ->disabled(fn(): bool => session('currentProject')->members()
+                ->url(fn (): string => static::getResource()::getUrl('allocate'))
+                ->disabled(fn (): bool => session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() === 0),
         ];

@@ -55,7 +55,7 @@ class MembersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(50),
                 Select::make('team_role')
-                    ->options(fn(): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
+                    ->options(fn (): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
                     ->required(),
                 TextInput::make('telephone')
                     ->prefix('+')
@@ -75,7 +75,7 @@ class MembersRelationManager extends RelationManager
                     ->label('')
                     ->circular()
                     ->imageSize(40)
-                    ->state(fn(User $record): ?string => $record->avatar_url ? asset('storage/' . $record->avatar_url) : null),
+                    ->state(fn (User $record): ?string => $record->avatar_url ? asset('storage/'.$record->avatar_url) : null),
                 TextColumn::make('username')
                     ->searchable(),
                 TextColumn::make('fullname')
@@ -103,7 +103,7 @@ class MembersRelationManager extends RelationManager
             ])
             ->filters([
                 Filter::make('active')
-                    ->query(fn($query) => $query->where('active', true))
+                    ->query(fn ($query) => $query->where('active', true))
                     ->label('Active')
                     ->toggle(),
             ])

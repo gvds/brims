@@ -230,7 +230,7 @@ describe('Arms Data Integrity', function (): void {
                 'name' => 'Test Arm',
                 'arm_num' => 1,
             ]);
-        })->toThrow(\Exception::class);
+        })->toThrow(Exception::class);
     });
 
     it('can be created with minimal required data', function (): void {

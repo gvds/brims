@@ -4,8 +4,8 @@ namespace Tests;
 
 use App\Enums\SystemRoles;
 use App\Models\Team;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 // beforeEach(function () {
 //     /** @var \App\Models\User $user */
@@ -27,6 +27,7 @@ use App\Models\User;
 abstract class TestCase extends BaseTestCase
 {
     protected Team $team;
+
     protected User $adminuser;
 
     #[\Override]
@@ -34,14 +35,14 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create([
             'system_role' => SystemRoles::SuperAdmin,
         ]);
 
         // $user->assignRole('super_admin');
 
-        /** @var \App\Models\Team $team */
+        /** @var Team $team */
         $team = Team::factory()->create([
             'leader_id' => $user->id,
         ]);

@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use App\Models\Arm;
 use App\Models\Project;
 use App\Models\Team;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
@@ -27,11 +25,11 @@ class ProjectSeeder extends Seeder
                 ->create([
                     'leader_id' => $team->leader->id,
                 ]);
-            $projects->each(function (Project $project) use ($team): void {
+            $projects->each(function (Project $project): void {
                 $arms = Arm::factory()
                     ->count(3)
                     ->for($project)
-                    ->sequence(fn(Sequence $sequence): array => [
+                    ->sequence(fn (Sequence $sequence): array => [
                         'arm_num' => $sequence->index + 1,
                         'manual_enrol' => $sequence->index === 0 ? true : false,
                     ])

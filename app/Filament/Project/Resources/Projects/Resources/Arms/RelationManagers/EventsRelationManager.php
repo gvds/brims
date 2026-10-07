@@ -40,7 +40,7 @@ class EventsRelationManager extends RelationManager
                             ->autocomplete(false)
                             ->autofocus(),
                         TextEntry::make('redcap_event_id')
-                            ->visible(fn($record): bool => isset($record->redcap_event_id)),
+                            ->visible(fn ($record): bool => isset($record->redcap_event_id)),
                         // ->integer()
                         // ->default(null),
                     ])
@@ -147,6 +147,7 @@ class EventsRelationManager extends RelationManager
                 CreateAction::make()
                     ->mutateDataUsing(function (array $data) {
                         $data['event_order'] = Event::where('arm_id', $this->ownerRecord->id)->max('event_order') + 1;
+
                         return $data;
                     }),
             ])

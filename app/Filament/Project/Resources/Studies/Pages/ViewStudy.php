@@ -2,9 +2,7 @@
 
 namespace App\Filament\Project\Resources\Studies\Pages;
 
-use App\Filament\Project\Resources\Projects\ProjectResource;
 use App\Filament\Project\Resources\Studies\StudyResource;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 

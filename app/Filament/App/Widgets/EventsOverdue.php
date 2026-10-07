@@ -27,13 +27,13 @@ class EventsOverdue extends TableWidget
         return $table
             ->description('Click on a row to access the project')
             ->query(
-                fn(): Builder => Project::query()
+                fn (): Builder => Project::query()
                     ->whereRelation('members', 'user_id', Auth::id())
                     ->whereHas(
                         'subjects.subjectEvents',
-                        fn(Builder $query): Builder => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                        fn (Builder $query): Builder => $query->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
                             ->where('maxDate', '<', today())
-                            ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $subjectManagers))
+                            ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $subjectManagers))
                     )
             )
             ->columns([
@@ -50,9 +50,9 @@ class EventsOverdue extends TableWidget
                 TextColumn::make('overdue_events_count')
                     ->label('Events')
                     ->getStateUsing(
-                        fn(Project $record) => SubjectEvent::whereHas(
+                        fn (Project $record) => SubjectEvent::whereHas(
                             'subject',
-                            fn(Builder $query): Builder => $query->where('project_id', $record->id)
+                            fn (Builder $query): Builder => $query->where('project_id', $record->id)
                                 ->whereIn('user_id', $subjectManagers)
                         )
                             ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])

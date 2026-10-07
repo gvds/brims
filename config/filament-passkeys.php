@@ -1,5 +1,7 @@
 <?php
 
+use Filament\View\PanelsRenderHook;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -10,7 +12,7 @@ return [
     | login page. See \Filament\View\PanelsRenderHook for available hooks.
     |
     */
-    'login_render_hook' => \Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
+    'login_render_hook' => PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
 
     /*
     |--------------------------------------------------------------------------
