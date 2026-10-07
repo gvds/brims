@@ -17,10 +17,10 @@ class TeamScope implements Scope
     {
         $user = Auth::user();
 
-        if (! $user || in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin])) {
+        if (! $user || in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
             return;
         }
 
-        $builder->where('id', $user->team_id);
+        $builder->where($model->qualifyColumn('id'), $user->team_id);
     }
 }

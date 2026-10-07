@@ -15,12 +15,24 @@ class SubjectScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        session()->get('currentProject') ? $builder->where('project_id', session()->get('currentProject')->id) : $builder;
-        if (!Auth::user() || Auth::user()->system_role === SystemRoles::SuperAdmin) return;
-        if (session()->get('currentProject')) {
-            session()->get('currentProject')->members->where('id', Auth::id())->count() > 0 ?
-                $builder->where('site_id', session()->get('currentProject')->members->where('id', Auth::id())->first()->pivot->site_id) :
-                $builder;
+        $project = session('currentProject');
+
+        if ($project) {
+            $builder->where($model->qualifyColumn('project_id'), $project->getKey());
+        }
+
+        $user = Auth::user();
+
+        if (! $project || ! $user || $user->system_role === SystemRoles::SuperAdmin) {
+            return;
+        }
+
+        $membership = $project->members()
+            ->whereKey($user->getAuthIdentifier())
+            ->first();
+
+        if ($membership) {
+            $builder->where($model->qualifyColumn('site_id'), $membership->pivot->site_id);
         }
     }
 }

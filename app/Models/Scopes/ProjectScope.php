@@ -16,12 +16,25 @@ class ProjectScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        session()->get('currentProject') ? $builder->where('projects.id', session()->get('currentProject')?->id) : $builder;
+        $project = session('currentProject');
 
-        if (!Auth::check() || in_array(Auth::user()?->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin])) return;
+        if ($project) {
+            $builder->where($model->qualifyColumn('id'), $project->getKey());
+        }
 
-        $userProjectIDs = ProjectMember::where('user_id', Auth::id())->pluck('project_id');
+        $user = Auth::user();
 
-        $builder->where('team_id', Auth::user()->team_id)->orWhereIn('projects.id', $userProjectIDs);
+        if (! $user || in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
+            return;
+        }
+
+        $userProjectIds = ProjectMember::query()
+            ->where('user_id', $user->getAuthIdentifier())
+            ->pluck('project_id');
+
+        $builder->where(function (Builder $query) use ($model, $user, $userProjectIds): void {
+            $query->where($model->qualifyColumn('team_id'), $user->team_id)
+                ->orWhereIn($model->qualifyColumn('id'), $userProjectIds);
+        });
     }
 }

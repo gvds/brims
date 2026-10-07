@@ -6,6 +6,7 @@ use App\Enums\SystemRoles;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class AssayDefinitionScope implements Scope
 {
@@ -14,8 +15,12 @@ class AssayDefinitionScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
+        $user = Auth::user();
 
-        $builder->where('team_id', auth()->user()->team_id);
+        if (! $user || $user->system_role === SystemRoles::SuperAdmin) {
+            return;
+        }
+
+        $builder->where($model->qualifyColumn('team_id'), $user->team_id);
     }
 }

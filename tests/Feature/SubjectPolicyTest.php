@@ -16,6 +16,8 @@ use App\Policies\SubjectPolicy;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\PermissionRegistrar;
 
+use function Pest\Laravel\actingAs;
+
 /**
  * Build a project with its owning team and a site, and store the project in session.
  * Also sets the Spatie permissions team ID so that permission assignments and
@@ -53,6 +55,69 @@ function grantSubjectPermission(User $user, string $permissionName, Project $pro
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 }
 
+describe('Subject global scope', function (): void {
+    it('limits project members to subjects at their assigned site', function (): void {
+        ['project' => $project, 'site' => $site] = makeProjectInSession();
+        $otherSite = Site::factory()->for($project)->create();
+        $otherProject = Project::factory()
+            ->for($project->team)
+            ->for($project->leader, 'leader')
+            ->create();
+        $otherProjectSite = Site::factory()->for($otherProject)->create();
+
+        $user = User::factory()->create(['system_role' => SystemRoles::User]);
+        $project->members()->attach($user, [
+            'role_id' => 'member',
+            'site_id' => $site->id,
+        ]);
+        actingAs($user);
+
+        Subject::factory()->create([
+            'subjectID' => 'SCOPE001',
+            'project_id' => $project->id,
+            'site_id' => $site->id,
+            'user_id' => $user->id,
+        ]);
+        Subject::factory()->create([
+            'subjectID' => 'SCOPE002',
+            'project_id' => $project->id,
+            'site_id' => $otherSite->id,
+            'user_id' => $user->id,
+        ]);
+        Subject::factory()->create([
+            'subjectID' => 'SCOPE003',
+            'project_id' => $otherProject->id,
+            'site_id' => $otherProjectSite->id,
+            'user_id' => $user->id,
+        ]);
+
+        expect(Subject::query()->pluck('subjectID')->all())->toBe(['SCOPE001']);
+    });
+});
+
+describe('Project global scope', function (): void {
+    it('keeps the selected project filter grouped with team and membership access', function (): void {
+        makeProjectInSession();
+        $otherTeam = Team::factory()->create();
+        $otherLeader = User::factory()->create([
+            'system_role' => SystemRoles::SuperAdmin,
+            'team_id' => $otherTeam->id,
+        ]);
+        $memberProject = Project::factory()
+            ->for($otherTeam)
+            ->for($otherLeader, 'leader')
+            ->create();
+        $user = User::factory()->create([
+            'system_role' => SystemRoles::User,
+            'team_id' => $otherTeam->id,
+        ]);
+        $memberProject->members()->attach($user, ['role_id' => 'member']);
+        actingAs($user);
+
+        expect(Project::query()->pluck('id')->all())->toBe([]);
+    });
+});
+
 // ---------------------------------------------------------------------------
 // viewAny
 // ---------------------------------------------------------------------------
@@ -68,7 +133,7 @@ it('sets the project team before the route-level Manage:Subject gate runs', func
 
     $this->actingAs($user);
 
-    Route::get('/subject-access-check', fn() => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
+    Route::get('/subject-access-check', fn () => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
 
     $this->get('/subject-access-check')->assertOk();
 });

@@ -15,10 +15,24 @@ class SubjectEventScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        session()->get('currentProject') ? $builder->whereRelation('subject', 'project_id', session()->get('currentProject')->id) : $builder;
-        if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
-        if (session()->get('currentProject')) {
-            session()->get('currentProject')->members->where('id', Auth::id())->count() > 0 ? $builder->whereRelation('subject', 'site_id', session()->get('currentProject')->members->where('id', auth()->id())->first()->pivot->site_id) : $builder;
+        $project = session('currentProject');
+
+        if ($project) {
+            $builder->whereRelation('subject', 'project_id', $project->getKey());
+        }
+
+        $user = Auth::user();
+
+        if (! $project || ! $user || $user->system_role === SystemRoles::SuperAdmin) {
+            return;
+        }
+
+        $membership = $project->members()
+            ->whereKey($user->getAuthIdentifier())
+            ->first();
+
+        if ($membership) {
+            $builder->whereRelation('subject', 'site_id', $membership->pivot->site_id);
         }
     }
 }

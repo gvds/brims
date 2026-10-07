@@ -14,8 +14,14 @@ class StudyScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (!auth()->user() || auth()->user()->system_role === SystemRoles::SuperAdmin) return;
+        $user = auth()->user();
 
-        $builder->where('project_id', session()->get('currentProject')?->id);
+        if (! $user || $user->system_role === SystemRoles::SuperAdmin) {
+            return;
+        }
+
+        $project = session('currentProject');
+
+        $builder->where($model->qualifyColumn('project_id'), $project?->getKey());
     }
 }
