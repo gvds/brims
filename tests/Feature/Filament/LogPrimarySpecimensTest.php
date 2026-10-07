@@ -2,9 +2,11 @@
 
 use App\Enums\SpecimenStatus;
 use App\Filament\Project\Pages\LogPrimarySpecimens;
+use App\Filament\Project\Resources\Specimens\Pages\ListSpecimens;
 use App\Models\Arm;
 use App\Models\Event;
 use App\Models\Labware;
+use App\Models\Permission;
 use App\Models\Project;
 use App\Models\Site;
 use App\Models\Specimen;
@@ -12,9 +14,13 @@ use App\Models\Specimentype;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\User;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\ViewException;
+use Spatie\Permission\PermissionRegistrar;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -473,6 +479,58 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
         // Check that stage one is still not completed
         expect($component->get('stageOneCompleted'))->toBeFalse();
     });
+});
+
+it('explains why parent specimens with derivatives cannot be bulk deleted', function (): void {
+    setPermissionsTeamId($this->project->id);
+
+    $viewPermission = Permission::firstOrCreate(['name' => 'View:Specimen', 'guard_name' => 'web']);
+    $deletePermission = Permission::firstOrCreate(['name' => 'Delete:Specimen', 'guard_name' => 'web']);
+    $this->user->givePermissionTo([$viewPermission, $deletePermission]);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+    Filament::setTenant($this->project);
+
+    $parentSpecimen = Specimen::factory()
+        ->for($this->subjectEvent, 'subjectEvent')
+        ->for($this->primarySpecimenTypes->first(), 'specimenType')
+        ->for($this->project->sites->first(), 'site')
+        ->for($this->user, 'loggedBy')
+        ->create([
+            'project_id' => $this->project->id,
+            'barcode' => 'PARENT001',
+            'origin_site_id' => $this->project->sites->first()->id,
+            'aliquot' => 0,
+            'loggedAt' => now(),
+        ]);
+
+    $derivativeSpecimen = Specimen::factory()
+        ->for($this->subjectEvent, 'subjectEvent')
+        ->for($this->primarySpecimenTypes->first(), 'specimenType')
+        ->for($this->project->sites->first(), 'site')
+        ->for($parentSpecimen, 'parentSpecimen')
+        ->for($this->user, 'loggedBy')
+        ->create([
+            'project_id' => $this->project->id,
+            'barcode' => 'DERIVATIVE001',
+            'origin_site_id' => $this->project->sites->first()->id,
+            'aliquot' => 0,
+            'loggedAt' => now(),
+        ]);
+
+    livewire(ListSpecimens::class)
+        ->selectTableRecords([$parentSpecimen->id])
+        ->callAction(TestAction::make(DeleteBulkAction::class)->table()->bulk())
+        ->assertNotified(Notification::make()
+            ->title('Cannot delete specimen')
+            ->body('The following selected specimens cannot be deleted because they have derivative specimens: PARENT001. Delete the derivative specimens first, then try again.')
+            ->danger()
+            ->persistent());
+
+    assertDatabaseHas(Specimen::class, ['id' => $parentSpecimen->id]);
+    assertDatabaseHas(Specimen::class, [
+        'id' => $derivativeSpecimen->id,
+        'parentSpecimen_id' => $parentSpecimen->id,
+    ]);
 });
 
 describe('LogPrimarySpecimens Form Reset', function (): void {

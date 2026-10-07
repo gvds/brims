@@ -5,6 +5,7 @@ namespace App\Filament\Project\Resources\Specimens\Tables;
 use App\actions\LogSpecimenStatus;
 use App\Enums\SpecimenStatus;
 use App\Filament\Exports\SpecimenExporter;
+use App\Models\Specimen;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -157,7 +158,31 @@ class SpecimensTable
                         })
                         ->requiresConfirmation(),
                     DeleteBulkAction::make()
-                        ->label('Delete'),
+                        ->label('Delete')
+                        ->before(function (DeleteBulkAction $action): void {
+                            $records = $action->getSelectedRecords();
+                            $specimenIdsWithDerivatives = Specimen::withoutGlobalScopes()
+                                ->whereIn('parentSpecimen_id', $records->modelKeys())
+                                ->distinct()
+                                ->pluck('parentSpecimen_id');
+                            $blockedBarcodes = $records
+                                ->filter(fn (Specimen $record): bool => $specimenIdsWithDerivatives->contains($record->getKey()))
+                                ->pluck('barcode')
+                                ->implode(', ');
+
+                            if (blank($blockedBarcodes)) {
+                                return;
+                            }
+
+                            Notification::make()
+                                ->title('Cannot delete specimen')
+                                ->body("The following selected specimens cannot be deleted because they have derivative specimens: {$blockedBarcodes}. Delete the derivative specimens first, then try again.")
+                                ->danger()
+                                ->persistent()
+                                ->send();
+
+                            $action->halt();
+                        }),
                     ExportAction::make('export')
                         ->label('Export')
                         ->color(Color::Indigo)
