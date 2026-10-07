@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
+use Filament\Facades\Filament;
+use Spatie\Permission\PermissionRegistrar;
+
 class MembersRelationManager extends RelationManager
 {
     protected static string $relationship = 'members';
@@ -33,6 +36,15 @@ class MembersRelationManager extends RelationManager
     #[\Override]
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
+        $tenantId = Filament::getTenant()?->getKey();
+        $permissionTeamId = app(PermissionRegistrar::class)->getPermissionsTeamId();
+
+        logger()->debug('Project authorization scope', [
+            'tenant_id' => $tenantId,
+            'permission_team_id' => $permissionTeamId,
+            'project_id' => $ownerRecord->getKey(),
+        ]);
+
         $user = Auth::user();
 
         return $ownerRecord instanceof Project
