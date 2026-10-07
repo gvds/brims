@@ -3,6 +3,7 @@
 namespace App\Models\Scopes;
 
 use App\Enums\SystemRoles;
+use App\Models\ProjectMember;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -15,24 +16,35 @@ class SubjectEventScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
+        $user = Auth::user();
+
+        if (! $user) {
+            $builder->whereKey([]);
+
+            return;
+        }
+
         $project = session('currentProject');
 
         if ($project) {
             $builder->whereRelation('subject', 'project_id', $project->getKey());
         }
 
-        $user = Auth::user();
-
-        if (! $project || ! $user || $user->system_role === SystemRoles::SuperAdmin) {
+        if (! $project || $user->system_role === SystemRoles::SuperAdmin) {
             return;
         }
 
-        $membership = $project->members()
-            ->whereKey($user->getAuthIdentifier())
+        $membership = ProjectMember::query()
+            ->where('project_id', $project->getKey())
+            ->where('user_id', $user->getAuthIdentifier())
             ->first();
 
-        if ($membership) {
-            $builder->whereRelation('subject', 'site_id', $membership->pivot->site_id);
+        if (! $membership) {
+            $builder->whereKey([]);
+
+            return;
         }
+
+        $builder->whereRelation('subject', 'site_id', $membership->site_id);
     }
 }

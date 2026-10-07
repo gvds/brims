@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AssayDefinition;
+use App\Models\Scopes\TeamScope;
 use App\Models\Team;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +14,7 @@ class AssayDefinitionSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::query()->each(function ($team) {
+        Team::withoutGlobalScope(TeamScope::class)->each(function ($team) {
             AssayDefinition::factory(8)
                 ->create([
                     'team_id' => $team->id,

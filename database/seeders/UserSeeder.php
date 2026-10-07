@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\SystemRoles;
 use App\Models\Team;
+use App\Models\Scopes\TeamScope;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -14,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::query()->each(function ($team) {
+        Team::withoutGlobalScope(TeamScope::class)->each(function ($team) {
             $leader = User::factory(1)
                 ->create([
                     'team_id' => $team->id,

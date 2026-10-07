@@ -17,10 +17,24 @@ class PhysicalUnitScope implements Scope
     {
         $user = Auth::user();
 
-        if (! $user || in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
+        if (! $user) {
+            $builder->whereKey([]);
+
             return;
         }
 
-        $builder->where($model->qualifyColumn('institution_id'), $user->team->institution_id);
+        if (in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
+            return;
+        }
+
+        $institutionId = $user->team?->institution_id;
+
+        if (! $institutionId) {
+            $builder->whereKey([]);
+
+            return;
+        }
+
+        $builder->where($model->qualifyColumn('institution_id'), $institutionId);
     }
 }

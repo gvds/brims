@@ -17,7 +17,13 @@ class AssayDefinitionScope implements Scope
     {
         $user = Auth::user();
 
-        if (! $user || $user->system_role === SystemRoles::SuperAdmin) {
+        if (! $user) {
+            $builder->whereKey([]);
+
+            return;
+        }
+
+        if ($user->system_role === SystemRoles::SuperAdmin) {
             return;
         }
 

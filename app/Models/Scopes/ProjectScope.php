@@ -24,7 +24,13 @@ class ProjectScope implements Scope
 
         $user = Auth::user();
 
-        if (! $user || in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
+        if (! $user) {
+            $builder->whereKey([]);
+
+            return;
+        }
+
+        if (in_array($user->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin], true)) {
             return;
         }
 

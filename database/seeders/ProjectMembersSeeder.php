@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Project;
 use App\Models\Role;
+use App\Models\Scopes\ProjectScope;
+use App\Models\Scopes\TeamScope;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,8 +17,8 @@ class ProjectMembersSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::all()->each(function (Team $team): void {
-            Project::where('team_id', $team->id)
+        Team::withoutGlobalScope(TeamScope::class)->get()->each(function (Team $team): void {
+            Project::withoutGlobalScope(ProjectScope::class)->where('team_id', $team->id)
                 ->get()
                 ->each(
                     function (Project $project) use ($team): void {

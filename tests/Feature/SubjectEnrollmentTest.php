@@ -25,6 +25,11 @@ it('marks the first event as logged during subject enrolment', function (): void
 
     $site = Site::factory()->for($project)->create();
     $user = User::factory()->create();
+    $project->members()->attach($user, [
+        'role_id' => 'member',
+        'site_id' => $site->id,
+    ]);
+    $this->actingAs($user);
     $arm = Arm::factory()->create(['project_id' => $project->id, 'arm_num' => 1]);
     $event = Event::factory()->create([
         'arm_id' => $arm->id,

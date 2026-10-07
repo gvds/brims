@@ -6,10 +6,15 @@ use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use App\Http\Middleware\SetUserTeam;
+use App\Models\AssayDefinition;
 use App\Models\Permission;
+use App\Models\PhysicalUnit;
 use App\Models\Project;
 use App\Models\Site;
+use App\Models\Specimen;
+use App\Models\Study;
 use App\Models\Subject;
+use App\Models\SubjectEvent;
 use App\Models\Team;
 use App\Models\User;
 use App\Policies\SubjectPolicy;
@@ -56,11 +61,40 @@ function grantSubjectPermission(User $user, string $permissionName, Project $pro
 }
 
 describe('Subject global scope', function (): void {
-    it('limits project members to subjects at their assigned site', function (): void {
+    it('does not expose project subjects without an authenticated user', function (): void {
         ['project' => $project, 'site' => $site] = makeProjectInSession();
+
+        Subject::factory()->create([
+            'subjectID' => 'SCOPE001',
+            'project_id' => $project->id,
+            'site_id' => $site->id,
+            'user_id' => $project->leader_id,
+        ]);
+
+        expect(Subject::query()->count())->toBe(0);
+    });
+
+    it('does not expose project subjects to a user without project membership', function (): void {
+        ['project' => $project, 'site' => $site] = makeProjectInSession();
+        $user = User::factory()->create(['system_role' => SystemRoles::User]);
+
+        Subject::factory()->create([
+            'subjectID' => 'SCOPE001',
+            'project_id' => $project->id,
+            'site_id' => $site->id,
+            'user_id' => $project->leader_id,
+        ]);
+
+        actingAs($user);
+
+        expect(Subject::query()->count())->toBe(0);
+    });
+
+    it('limits project members to subjects at their assigned site', function (): void {
+        ['team' => $team, 'project' => $project, 'site' => $site] = makeProjectInSession();
         $otherSite = Site::factory()->for($project)->create();
         $otherProject = Project::factory()
-            ->for($project->team)
+            ->for($team)
             ->for($project->leader, 'leader')
             ->create();
         $otherProjectSite = Site::factory()->for($otherProject)->create();
@@ -93,6 +127,25 @@ describe('Subject global scope', function (): void {
 
         expect(Subject::query()->pluck('subjectID')->all())->toBe(['SCOPE001']);
     });
+});
+
+it('denies unauthenticated queries across every globally scoped model', function (): void {
+    session()->forget('currentProject');
+
+    $queries = [
+        Team::query(),
+        Project::query(),
+        AssayDefinition::query(),
+        PhysicalUnit::query(),
+        Study::query(),
+        Subject::query(),
+        SubjectEvent::query(),
+        Specimen::query(),
+    ];
+
+    foreach ($queries as $query) {
+        expect($query->toSql())->toContain('0 = 1');
+    }
 });
 
 describe('Project global scope', function (): void {
@@ -159,6 +212,7 @@ describe('viewAny', function (): void {
             'team_id' => $team->id,
             'team_role' => TeamRoles::Admin->value,
         ]);
+        actingAs($teamAdmin);
 
         expect($teamAdmin->can('viewAny', Subject::class))->toBeTrue();
     });
@@ -321,6 +375,7 @@ describe('view with a Subject model', function (): void {
             'team_id' => $team->id,
             'team_role' => TeamRoles::Admin->value,
         ]);
+        actingAs($teamAdmin);
         $owner = User::factory()->create(['system_role' => SystemRoles::User]);
         $subject = Subject::factory()->create([
             'subjectID' => 'SUBJ008',

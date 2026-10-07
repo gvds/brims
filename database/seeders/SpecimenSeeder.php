@@ -3,9 +3,14 @@
 namespace Database\Seeders;
 
 use App\Enums\SpecimenStatus;
+use App\Models\Scopes\ProjectScope;
+use App\Models\Scopes\SpecimenScope;
+use App\Models\Scopes\SubjectEventScope;
+use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\SubjectEvent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
@@ -16,7 +21,16 @@ class SpecimenSeeder extends Seeder
      */
     public function run(): void
     {
-        SubjectEvent::with('subject.project')->where('status', 3)->each(function (SubjectEvent $subjectEvent): void {
+        SubjectEvent::withoutGlobalScope(SubjectEventScope::class)
+            ->with([
+                'subject' => fn (Builder $query) => $query
+                    ->withoutGlobalScope(SubjectScope::class)
+                    ->with([
+                        'project' => fn (Builder $query) => $query->withoutGlobalScope(ProjectScope::class),
+                    ]),
+            ])
+            ->where('status', 3)
+            ->each(function (SubjectEvent $subjectEvent): void {
             $project = $subjectEvent->subject->project->load('members');
             Specimentype::withoutGlobalScopes()->where('project_id', $project->id)->where('primary', true)->each(function (Specimentype $specimenType) use ($subjectEvent, $project): void {
                 Specimen::factory()
@@ -51,9 +65,9 @@ class SpecimenSeeder extends Seeder
                 $parentSpecimenType = $specimenType->parentSpecimenType;
 
                 if ($parentSpecimenType->pooled) {
-                    $parentSpecimens = Specimen::where('specimenType_id', $parentSpecimenType->id)->where('subject_event_id', $subjectEvent->id)->take(1)->get();
+                    $parentSpecimens = Specimen::withoutGlobalScope(SpecimenScope::class)->where('specimenType_id', $parentSpecimenType->id)->where('subject_event_id', $subjectEvent->id)->take(1)->get();
                 } else {
-                    $parentSpecimens = Specimen::where('specimenType_id', $parentSpecimenType->id)->where('subject_event_id', $subjectEvent->id)->get();
+                    $parentSpecimens = Specimen::withoutGlobalScope(SpecimenScope::class)->where('specimenType_id', $parentSpecimenType->id)->where('subject_event_id', $subjectEvent->id)->get();
                 }
                 $parentSpecimens->each(function (Specimen $parentSpecimen) use ($subjectEvent, $specimenType, $project): void {
                     Specimen::factory()

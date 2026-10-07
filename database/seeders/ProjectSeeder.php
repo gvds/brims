@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Arm;
 use App\Models\Project;
+use App\Models\Scopes\TeamScope;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
@@ -15,7 +16,7 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::all()->each(function (Team $team): void {
+        Team::withoutGlobalScope(TeamScope::class)->get()->each(function (Team $team): void {
             $projects = Project::factory()
                 ->count(3)
                 ->for($team)

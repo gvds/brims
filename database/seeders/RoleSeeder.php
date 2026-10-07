@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Project;
+use App\Models\Scopes\ProjectScope;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -13,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Project::each(function (Project $project): void {
+        Project::withoutGlobalScope(ProjectScope::class)->each(function (Project $project): void {
             Role::create([
                 'name' => 'Admin',
                 'guard_name' => 'web',

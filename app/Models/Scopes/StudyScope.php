@@ -6,6 +6,7 @@ use App\Enums\SystemRoles;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class StudyScope implements Scope
 {
@@ -14,9 +15,15 @@ class StudyScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        if (! $user || $user->system_role === SystemRoles::SuperAdmin) {
+        if (! $user) {
+            $builder->whereKey([]);
+
+            return;
+        }
+
+        if ($user->system_role === SystemRoles::SuperAdmin) {
             return;
         }
 
