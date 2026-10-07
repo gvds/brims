@@ -35,29 +35,33 @@ class MembersRelationManager extends RelationManager
     {
         $user = Auth::user();
 
-        if (! ($ownerRecord instanceof Project) || ! ($user instanceof User)) {
-            return false;
-        }
+        return $ownerRecord instanceof Project
+            && $user instanceof User
+            && $user->can('View:Project');
 
-        if ($user->can('View:Project')) {
-            return true;
-        }
+        // if (! ($ownerRecord instanceof Project) || ! ($user instanceof User)) {
+        //     return false;
+        // }
 
-        $member = $ownerRecord->members()
-            ->whereKey($user->getKey())
-            ->first();
+        // if ($user->can('View:Project')) {
+        //     return true;
+        // }
 
-        if (! $member || ! $member->pivot->role_id) {
-            return false;
-        }
+        // $member = $ownerRecord->members()
+        //     ->whereKey($user->getKey())
+        //     ->first();
 
-        return $ownerRecord->roles()
-            ->whereKey($member->pivot->role_id)
-            ->where('guard_name', config('auth.defaults.guard'))
-            ->whereHas('permissions', fn (Builder $query): Builder => $query
-                ->where('name', 'View:Project')
-                ->where('guard_name', config('auth.defaults.guard')))
-            ->exists();
+        // if (! $member || ! $member->pivot->role_id) {
+        //     return false;
+        // }
+
+        // return $ownerRecord->roles()
+        //     ->whereKey($member->pivot->role_id)
+        //     ->where('guard_name', config('auth.defaults.guard'))
+        //     ->whereHas('permissions', fn (Builder $query): Builder => $query
+        //         ->where('name', 'View:Project')
+        //         ->where('guard_name', config('auth.defaults.guard')))
+        //     ->exists();
     }
 
     #[\Override]
