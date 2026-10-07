@@ -26,9 +26,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
-use Filament\Facades\Filament;
-use Spatie\Permission\PermissionRegistrar;
-
 class MembersRelationManager extends RelationManager
 {
     protected static string $relationship = 'members';
@@ -38,32 +35,29 @@ class MembersRelationManager extends RelationManager
     {
         $user = Auth::user();
 
-        $tenantId = Filament::getTenant()?->getKey();
-        $permissionTeamId = app(PermissionRegistrar::class)->getPermissionsTeamId();
+        if (! ($ownerRecord instanceof Project) || ! ($user instanceof User)) {
+            return false;
+        }
 
-        logger()->debug('Project authorization scope', [
-            'tenant_id' => $tenantId,
-            'permission_team_id' => $permissionTeamId,
-            'project_id' => $ownerRecord->getKey(),
-            'user_can_view_project' => Auth::user()->can('View:Project'),
-        ]);
+        if ($user->can('View:Project')) {
+            return true;
+        }
 
-        $member = $ownerRecord->members()->whereKey($user->getKey())->first();
-        $pivotRole = $ownerRecord->roles()->find($member?->pivot?->role_id);
+        $member = $ownerRecord->members()
+            ->whereKey($user->getKey())
+            ->first();
 
-        logger()->debug('Project authorization roles', [
-            'project_member_role_id' => $member?->pivot?->role_id,
-            'project_member_role' => $pivotRole?->only(['id', 'name', 'project_id', 'guard_name']),
-            'spatie_roles' => $user->roles()
-                ->get(['roles.id', 'roles.name', 'roles.project_id', 'roles.guard_name'])
-                ->toArray(),
-            'has_admin_role' => $user->hasRole('Admin'),
-            'has_direct_permission' => $user->hasDirectPermission('View:Project'),
-        ]);
+        if (! $member || ! $member->pivot->role_id) {
+            return false;
+        }
 
-        return $ownerRecord instanceof Project
-            && $user instanceof User
-            && $user->can('View:Project');
+        return $ownerRecord->roles()
+            ->whereKey($member->pivot->role_id)
+            ->where('guard_name', config('auth.defaults.guard'))
+            ->whereHas('permissions', fn (Builder $query): Builder => $query
+                ->where('name', 'View:Project')
+                ->where('guard_name', config('auth.defaults.guard')))
+            ->exists();
     }
 
     #[\Override]
@@ -179,6 +173,9 @@ class MembersRelationManager extends RelationManager
                     ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('active', true))
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['firstname', 'lastname'])
+                    ->after(function (User $record, array $data): void {
+                        $this->syncProjectRole($record, $data['role_id']);
+                    })
                     ->schema(fn(AttachAction $action): array => [
                         $action->getRecordSelect(),
                         Select::make('role_id')
@@ -234,11 +231,7 @@ class MembersRelationManager extends RelationManager
                             }
                         }
 
-                        $role = Role::find($data['role_id']);
-                        if ($role) {
-                            setPermissionsTeamId($this->ownerRecord->id);
-                            $record->syncRoles($role);
-                        }
+                        $this->syncProjectRole($record, $data['role_id']);
                     }),
                 DetachAction::make()
                     ->authorize('detach', ProjectMember::class)
@@ -306,5 +299,13 @@ class MembersRelationManager extends RelationManager
     private function canManageSubstitute(User $record): bool
     {
         return Gate::allows('setSubstitute', [$record->pivot, $this->ownerRecord]);
+    }
+
+    private function syncProjectRole(User $user, int|string $roleId): void
+    {
+        $role = $this->ownerRecord->roles()->findOrFail($roleId);
+
+        setPermissionsTeamId($this->ownerRecord->getKey());
+        $user->syncRoles($role);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
+use App\Filament\Project\Resources\Projects\Pages\ViewProject;
+use App\Filament\Project\Resources\Projects\RelationManagers\MembersRelationManager;
 use App\Filament\Project\Resources\Subjects\Pages\ListSubjects;
 use App\Filament\Project\Resources\Specimens\Pages\ViewSpecimen;
 use App\Models\Arm;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Session;
 use Spatie\Permission\PermissionRegistrar;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Livewire\livewire;
 
 beforeEach(function (): void {
@@ -155,6 +158,57 @@ it('shows every project relation manager to a user with View:Project permission'
         ->assertSee('Labwares')
         ->assertSee('Specimen Types')
         ->assertSee('Programmes');
+});
+
+it('shows the members relation manager when the project membership role has View:Project permission', function (): void {
+    $permission = Permission::firstOrCreate([
+        'name' => 'View:Project',
+        'guard_name' => 'web',
+    ]);
+    $adminRole = $this->project->roles()->where('name', 'Admin')->firstOrFail();
+    $adminRole->givePermissionTo($permission);
+    $this->project->members()->updateExistingPivot($this->user->id, [
+        'role_id' => $adminRole->id,
+    ]);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+    $this->user->unsetRelation('roles')->unsetRelation('permissions');
+
+    expect($this->user->can('View:Project'))->toBeFalse();
+
+    $this->get('/project/' . $this->project->id . '/projects/' . $this->project->id)
+        ->assertOk()
+        ->assertSee('Members');
+});
+
+it('assigns the selected project role to a newly attached member in the project permission scope', function (): void {
+    $permission = Permission::firstOrCreate([
+        'name' => 'View:Project',
+        'guard_name' => 'web',
+    ]);
+    $adminRole = $this->project->roles()->where('name', 'Admin')->firstOrFail();
+    $adminRole->givePermissionTo($permission);
+    actingAs($this->superAdmin);
+    setPermissionsTeamId($this->project->id);
+
+    livewire(MembersRelationManager::class, [
+        'ownerRecord' => $this->project,
+        'pageClass' => ViewProject::class,
+    ])
+        ->mountTableAction('attach')
+        ->setTableActionData([
+            'recordId' => $this->user3->id,
+            'role_id' => $adminRole->id,
+            'site_id' => $this->project->sites->first()->id,
+        ])
+        ->callMountedTableAction();
+
+    assertDatabaseHas('model_has_roles', [
+        'project_id' => $this->project->id,
+        'role_id' => $adminRole->id,
+        'model_type' => User::class,
+        'model_id' => $this->user3->id,
+    ]);
+    expect($this->user3->fresh()->can('View:Project'))->toBeTrue();
 });
 
 it('cannot access the schedule route without Mangage:Subject permission', function (): void {
