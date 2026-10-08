@@ -28,6 +28,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class ProjectsRelationManager extends RelationManager
 {
@@ -60,13 +61,13 @@ class ProjectsRelationManager extends RelationManager
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn (Builder $query) => $query->where(
-                                    fn (Builder $query) => $query->where('team_id', $this->getOwnerRecord()->getKey())
+                                modifyQueryUsing: fn(Builder $query) => $query->where(
+                                    fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->getKey())
                                         ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
                                 )
                             )
                             ->getOptionLabelFromRecordUsing(
-                                fn ($record) => $record->fullname
+                                fn($record) => $record->fullname
                             )
                             ->required(),
                     ]),
@@ -178,12 +179,16 @@ class ProjectsRelationManager extends RelationManager
                                 'name' => Auth::user()->team->institution->name,
                                 'description' => 'Project Creator\'s site',
                             ]);
+                            setPermissionsTeamId($record->id);
                             $role = Role::create([
                                 'project_id' => $record->id,
                                 'name' => 'Admin',
                                 'guard_name' => 'web',
                             ]);
+                            $role->givePermissionTo(Permission::all());
+                            $user = Auth::user();
                             $record->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $site->id]);
+                            $user->syncRoles($role);
                             if ($record->leader_id !== Auth::user()->id) {
                                 if ($record->leader->team->institution->name !== $site->name) {
                                     $site = Site::create([
@@ -193,6 +198,7 @@ class ProjectsRelationManager extends RelationManager
                                     ]);
                                 }
                                 $record->members()->attach($record->leader, ['role_id' => $role->id, 'site_id' => $site->id]);
+                                $record->leader->syncRoles($role);
                             }
                             DB::commit();
                         } catch (\Throwable $th) {
@@ -200,7 +206,7 @@ class ProjectsRelationManager extends RelationManager
                             $record->delete();
                             Notification::make()
                                 ->title('Error setting up project!')
-                                ->body('There was an error setting up the project. '.$th->getMessage())
+                                ->body('There was an error setting up the project. ' . $th->getMessage())
                                 ->danger()
                                 ->persistent()
                                 ->send();
@@ -208,7 +214,7 @@ class ProjectsRelationManager extends RelationManager
                     }),
                 Action::make('new_redcap_project')
                     // ->color(Color::Teal)
-                    ->visible(fn (): bool => Auth::user()->can('create', Project::class))
+                    ->visible(fn(): bool => Auth::user()->can('create', Project::class))
                     ->modalHeading('Create New REDCap-Linked Project')
                     ->schema([
                         Select::make('redcapProject_id')
@@ -217,10 +223,10 @@ class ProjectsRelationManager extends RelationManager
                             ->preload()
                             ->searchDebounce(500)
                             ->options(function () {
-                                $query = "SELECT app_title, redcap_projects.project_id FROM redcap_projects INNER JOIN redcap_user_rights ON redcap_projects.project_id = redcap_user_rights.project_id WHERE username = '".Auth::user()->username."' AND design=1 AND api_token IS NOT null";
+                                $query = "SELECT app_title, redcap_projects.project_id FROM redcap_projects INNER JOIN redcap_user_rights ON redcap_projects.project_id = redcap_user_rights.project_id WHERE username = '" . Auth::user()->username . "' AND design=1 AND api_token IS NOT null";
                                 $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
                                 if (count($linked_redcap_projects) > 0) {
-                                    $query .= ' AND redcap_projects.project_id NOT IN ('.implode(',', $linked_redcap_projects).')';
+                                    $query .= ' AND redcap_projects.project_id NOT IN (' . implode(',', $linked_redcap_projects) . ')';
                                 }
                                 $query .= ' ORDER BY app_title';
                                 $redcap_projects = DB::connection('redcap')
@@ -244,10 +250,10 @@ class ProjectsRelationManager extends RelationManager
                                 Select::make('leader_id')
                                     ->relationship(
                                         name: 'leader',
-                                        modifyQueryUsing: fn (Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
                                     )
                                     ->getOptionLabelFromRecordUsing(
-                                        fn ($record) => $record->fullname
+                                        fn($record) => $record->fullname
                                     )
                                     ->required(),
                             ]),
@@ -293,7 +299,7 @@ class ProjectsRelationManager extends RelationManager
                             DB::rollBack();
                             Notification::make()
                                 ->title('Error creating project!')
-                                ->body('There was an error creating the project. '.$th->getMessage())
+                                ->body('There was an error creating the project. ' . $th->getMessage())
                                 ->danger()
                                 ->persistent()
                                 ->send();
@@ -312,9 +318,9 @@ class ProjectsRelationManager extends RelationManager
                         }
                     }),
                 DeleteAction::make()
-                    ->modalHeading(fn (Project $record): Markdown => Markdown::inline("Delete Project<br><br>*$record->title*<br><br>"))
+                    ->modalHeading(fn(Project $record): Markdown => Markdown::inline("Delete Project<br><br>*$record->title*<br><br>"))
                     ->modalDescription(Markdown::inline('**All data pertaining to this project will be deleted.<br><br>Are you sure you want to proceed?**'))
-                    ->after(fn (Project $record) => Role::where('project_id', $record->id)->delete()),
+                    ->after(fn(Project $record) => Role::where('project_id', $record->id)->delete()),
             ])
             ->toolbarActions([
                 // BulkActionGroup::make([
