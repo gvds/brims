@@ -200,6 +200,7 @@ class ProjectsRelationManager extends RelationManager
                                 $record->members()->attach($record->leader, ['role_id' => $role->id, 'site_id' => $site->id]);
                                 $record->leader->syncRoles($role);
                             }
+                            setPermissionsTeamId(null);
                             DB::commit();
                         } catch (\Throwable $th) {
                             DB::rollBack();
