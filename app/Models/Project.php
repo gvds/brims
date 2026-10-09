@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Collection;
 
 #[ScopedBy([ProjectScope::class])]
 class Project extends Model implements HasName
@@ -98,6 +99,12 @@ class Project extends Model implements HasName
     {
         return $this->belongsToMany(Programme::class)
             ->withTimestamps();
+    }
+
+    public function admins(): BelongsToMany
+    {
+        return $this->members()
+            ->wherePivot('role_id', Role::where('name', 'Admin')->first()?->id);
     }
 
     public function getFilamentName(): string

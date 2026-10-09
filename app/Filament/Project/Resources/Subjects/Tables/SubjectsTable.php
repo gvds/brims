@@ -3,40 +3,25 @@
 namespace App\Filament\Project\Resources\Subjects\Tables;
 
 use App\Enums\SubjectStatus;
-use App\Enums\SystemRoles;
-use App\Enums\TeamRoles;
 use App\Filament\Project\Resources\Subjects\Schemas\SubjectForm;
 use App\Models\Subject;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SubjectsTable
 {
     public static function configure(Table $table): Table
     {
-        $substitutees = Auth::user()->substitutees()
-            ->where('project_id', session('currentProject')->id)
-            ->pluck('users.id');
-
         return $table
-            ->modifyQueryUsing(function ($query) use ($substitutees): void {
-                if (Auth::user()->team_role !== TeamRoles::Admin && ! in_array(Auth::user()->system_role, [SystemRoles::SysAdmin, SystemRoles::SuperAdmin])) {
-                    $query->where(fn ($q) => $q
-                        ->where('user_id', Auth::id())
-                        ->orWhereIn('user_id', $substitutees));
-                }
-            })
             ->columns([
                 TextColumn::make('subjectID')
                     ->label('Subject ID')
@@ -86,19 +71,16 @@ class SubjectsTable
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('user_id')
-                    ->options(fn (): array => User::all()->pluck('fullname', 'id')->toArray())
+                    ->options(fn(): array => User::all()->pluck('fullname', 'id')->toArray())
                     ->attribute('fullname')
                     ->label('Manager')
                     ->searchable()
                     ->preload(),
             ])
             ->deferFilters(false)
-            ->recordUrl(fn ($record): ?string => $record->status !== SubjectStatus::Generated ? route('filament.project.resources.subjects.view', ['tenant' => session('currentProject'), 'record' => $record]) : null)
             ->recordActions([
-                ViewAction::make()
-                    ->visible(fn (Subject $record): bool => $record->status !== SubjectStatus::Generated),
                 Action::make('enrol')
-                    ->visible(fn (Subject $record): bool => $record->status === SubjectStatus::Generated)
+                    ->visible(fn(Subject $record): bool => $record->status === SubjectStatus::Generated)
                     ->schema(SubjectForm::configure(new Schema)->columns(2)->getComponents())
                     ->action(function (array $data, Subject $record): void {
                         DB::beginTransaction();
@@ -112,19 +94,13 @@ class SubjectsTable
                         } catch (\Throwable $th) {
                             DB::rollBack();
                             Notification::make()
-                                ->title('Error enrolling subject: '.$th->getMessage())
+                                ->title('Error enrolling subject: ' . $th->getMessage())
                                 ->danger()
                                 ->persistent()
                                 ->send();
                         }
                     }),
-                EditAction::make()
-                    ->visible(fn (Subject $record): bool => $record->status === SubjectStatus::Enrolled)
-                    ->successNotification(
-                        Notification::make()
-                            ->title('Subject updated successfully')
-                            ->success()
-                    ),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

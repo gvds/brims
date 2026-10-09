@@ -273,6 +273,30 @@ it('cannot access the create_subjects modal without Manage:Subject permission', 
         ->assertActionDisabled('generate_subjects');
 });
 
+it('allows a project admin to see every subject in the subjects table', function (): void {
+    $adminRole = $this->project->roles()->where('name', 'Admin')->firstOrFail();
+    $this->project->members()->updateExistingPivot($this->user->id, ['role_id' => $adminRole->id]);
+    Session::put('currentProject', $this->project->fresh());
+
+    $permission = Permission::firstOrCreate(['name' => 'View:Subject']);
+    $this->user->givePermissionTo($permission);
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    $assignedToAnotherMember = Subject::factory()->create([
+        'project_id' => $this->project->id,
+        'user_id' => $this->user3->id,
+        'subjectID' => 'PP0002',
+        'site_id' => $this->project->sites->last()->id,
+        'arm_id' => $this->project->arms->first()->id,
+        'status' => SubjectStatus::Enrolled,
+    ]);
+
+    actingAs($this->user);
+
+    livewire(ListSubjects::class)
+        ->assertCanSeeTableRecords([$assignedToAnotherMember]);
+});
+
 it('cannot edit an enrolled subject without Manage:Subject permission', function (): void {
     $permission = Permission::firstOrCreate(['name' => 'View:Subject']);
     $this->user->givePermissionTo($permission);
