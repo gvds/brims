@@ -10,8 +10,8 @@ use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\SubjectEvent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Seeder;
 
 class SpecimenSeeder extends Seeder
@@ -23,10 +23,10 @@ class SpecimenSeeder extends Seeder
     {
         SubjectEvent::withoutGlobalScope(SubjectEventScope::class)
             ->with([
-                'subject' => fn (Builder $query) => $query
+                'subject' => fn (BelongsTo $query) => $query
                     ->withoutGlobalScope(SubjectScope::class)
                     ->with([
-                        'project' => fn (Builder $query) => $query->withoutGlobalScope(ProjectScope::class),
+                        'project' => fn (BelongsTo $query) => $query->withoutGlobalScope(ProjectScope::class),
                     ]),
             ])
             ->where('status', 3)
