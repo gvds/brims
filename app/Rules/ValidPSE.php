@@ -2,6 +2,8 @@
 
 namespace App\Rules;
 
+use App\Models\Scopes\SubjectEventScope;
+use App\Models\Scopes\SubjectScope;
 use App\Models\Subject;
 use App\Models\SubjectEvent;
 use Closure;
@@ -34,7 +36,7 @@ class ValidPSE implements ValidationRule
         }
 
         // $subject = Subject::where('subjectID', $subjectID)->first();
-        $subject = Subject::find($subject_id);
+        $subject = Subject::withoutGlobalScope(SubjectScope::class)->find($subject_id);
 
         if (! $subject) {
             $fail('The Subject ID in the barcode does not match any Subject record in the current project.');
@@ -42,7 +44,7 @@ class ValidPSE implements ValidationRule
             return;
         }
 
-        $subjectEvent = SubjectEvent::find($subject_event_id);
+        $subjectEvent = SubjectEvent::withoutGlobalScope(SubjectEventScope::class)->find($subject_event_id);
 
         if (! $subjectEvent) {
             $fail('The Event ID in the barcode does not match any Event record in the current project.');
