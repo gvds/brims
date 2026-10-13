@@ -3,6 +3,8 @@
 namespace App\Filament\Project\Pages;
 
 use App\Enums\SpecimenStatus;
+use App\Models\Scopes\SubjectEventScope;
+use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\Subject;
@@ -129,8 +131,8 @@ class LogPrimarySpecimens extends Page implements HasForms
                         $aliquotFields[] = Grid::make()
                             ->schema([
                                 TextInput::make("specimens.{$type->id}.{$i}.barcode")
-                                    ->label('Aliquot '.($i + 1))
-                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/'.$type->Labware->barcodeFormat.'/')
+                                    ->label('Aliquot ' . ($i + 1))
+                                    ->regex(($this->specimens[$type->id][$i]['logged'] ?? false) ? '/.*/' : '/' . $type->Labware->barcodeFormat . '/')
                                     ->disabled($this->specimens[$type->id][$i]['logged'] ?? false)
                                     ->extraAttributes(['style' => 'height: 30px']),
                                 TextInput::make("specimens.{$type->id}.{$i}.volume")
@@ -150,24 +152,24 @@ class LogPrimarySpecimens extends Page implements HasForms
                     $specimenTypes[] = Flex::make([
                         Grid::make(1)
                             ->schema([
-                                Action::make('addAliquot_'.$type->id)
+                                Action::make('addAliquot_' . $type->id)
                                     ->hiddenLabel()
-                                    ->action(fn () => $this->addAliquot($type->id))
+                                    ->action(fn() => $this->addAliquot($type->id))
                                     ->color('success')
                                     ->icon(Heroicon::Plus)
                                     ->outlined()
-                                    ->extraAttributes(['id' => 'addAliquot_'.$type->id]),
-                                Action::make('removeAliquot_'.$type->id)
+                                    ->extraAttributes(['id' => 'addAliquot_' . $type->id]),
+                                Action::make('removeAliquot_' . $type->id)
                                     ->hiddenLabel()
-                                    ->action(fn () => $this->removeAliquot($type->id))
+                                    ->action(fn() => $this->removeAliquot($type->id))
                                     ->color('danger')
                                     ->icon(Heroicon::Minus)
-                                    ->requiresConfirmation(fn (): bool => $this->logged($type->id))
-                                    ->modalHeading(fn () => $this->logged($type->id) ? 'Delete '.$type->name.' Aliquot '.($i) : null)
-                                    ->modalDescription(fn () => $this->logged($type->id) ? 'The aliquot with barcode '.($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '').' will be deleted. Are you sure you want to do this?' : null)
+                                    ->requiresConfirmation(fn(): bool => $this->logged($type->id))
+                                    ->modalHeading(fn() => $this->logged($type->id) ? 'Delete ' . $type->name . ' Aliquot ' . ($i) : null)
+                                    ->modalDescription(fn() => $this->logged($type->id) ? 'The aliquot with barcode ' . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '') . ' will be deleted. Are you sure you want to do this?' : null)
                                     ->outlined()
-                                    ->extraAttributes(['id' => 'removeAliquot_'.$type->id])
-                                    ->modalSubmitAction(fn (Action $action): Action => $action->label('Delete')),
+                                    ->extraAttributes(['id' => 'removeAliquot_' . $type->id])
+                                    ->modalSubmitAction(fn(Action $action): Action => $action->label('Delete')),
                             ])
                             ->grow(false),
                         Fieldset::make($type->name)
@@ -230,8 +232,8 @@ class LogPrimarySpecimens extends Page implements HasForms
         ]);
 
         [$project_id, $subject_id, $subject_event_id] = explode('_', (string) $this->pse_barcode);
-        $this->subjectEvent = SubjectEvent::find($subject_event_id);
-        $this->subject = Subject::find($subject_id);
+        $this->subjectEvent = SubjectEvent::withoutGlobalScope(SubjectEventScope::class)->find($subject_event_id);
+        $this->subject = Subject::withoutGlobalScope(SubjectScope::class)->find($subject_id);
 
         if (! $this->subjectEvent) {
             Notification::make()
@@ -326,8 +328,8 @@ class LogPrimarySpecimens extends Page implements HasForms
 
             Notification::make()
                 ->title('Specimens Logged')
-                ->body($loggedCount.' primary specimens logged successfully.')
-                ->color(fn (): string => $loggedCount > 0 ? 'success' : 'warning')
+                ->body($loggedCount . ' primary specimens logged successfully.')
+                ->color(fn(): string => $loggedCount > 0 ? 'success' : 'warning')
                 ->send();
 
             // Reset form for new entry
@@ -340,7 +342,7 @@ class LogPrimarySpecimens extends Page implements HasForms
 
             Notification::make()
                 ->title('Failed')
-                ->body('Failed to log primary specimens. '.$th->getMessage())
+                ->body('Failed to log primary specimens. ' . $th->getMessage())
                 ->color('danger')
                 ->send();
         }
