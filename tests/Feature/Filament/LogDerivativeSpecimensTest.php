@@ -114,6 +114,7 @@ beforeEach(function (): void {
             'barcode' => 'PA1234',
             'volume' => 5.0,
             'aliquot' => 0,
+            'origin_site_id' => $this->project->sites->first()->id,
             'status' => SpecimenStatus::Logged,
             'loggedBy_id' => $this->user->id,
             'loggedAt' => now(),
