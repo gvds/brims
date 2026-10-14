@@ -195,6 +195,21 @@ describe('LogDerivativeSpecimens Stage 1 - Parent Barcode Validation', function 
         expect($component->get('subject')->id)->toBe($this->subject->id);
     });
 
+    it('loads parent specimen information when the subject event scope excludes its subject site', function (): void {
+        $this->subject->update([
+            'site_id' => $this->project->sites->last()->id,
+        ]);
+
+        $component = livewire(LogDerivativeSpecimens::class)
+            ->fillForm(['parent_barcode' => $this->parentSpecimen->barcode])
+            ->call('loadSpecimenBarcodes');
+
+        $component
+            ->assertSet('stage', 2)
+            ->assertSet('subjectEvent.id', $this->subjectEvent->id)
+            ->assertSet('subject.id', $this->subject->id);
+    });
+
     it('rejects non-existent parent barcode', function (): void {
         livewire(LogDerivativeSpecimens::class)
             ->fillForm(['parent_barcode' => 'NONEXISTENT'])
