@@ -3,6 +3,8 @@
 namespace App\Filament\Project\Pages;
 
 use App\Enums\SpecimenStatus;
+use App\Models\Scopes\SubjectEventScope;
+use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
 use App\Models\Specimentype;
 use App\Models\Subject;
