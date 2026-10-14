@@ -265,7 +265,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
             ],
         ]);
 
-        $this->parent_specimen = Specimen::withoutGlobalScopes([SubjectEventScope::class, SubjectScope::class])->with('subjectEvent', 'subjectEvent.subject')
+        $this->parent_specimen = Specimen::withoutGlobalScopes([SubjectEventScope::class, SubjectScope::class])
+            ->with('subjectEvent.subject')
             ->where('barcode', $this->parent_barcode)->first();
 
         $this->subjectEvent = $this->parent_specimen->subjectEvent;
