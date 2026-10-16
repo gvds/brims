@@ -2,14 +2,10 @@
 
 namespace App\Filament\Project\Resources\Projects\Schemas;
 
-use App\Models\Project;
 use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Collection;
 
 class ProjectInfolist
 {

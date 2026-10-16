@@ -24,12 +24,6 @@ class ProgrammeInfolist
                 TextEntry::make('description')
                     ->placeholder('-')
                     ->columnSpanFull(),
-                // TextEntry::make('created_at')
-                //     ->dateTime()
-                //     ->placeholder('-'),
-                // TextEntry::make('updated_at')
-                //     ->dateTime()
-                //     ->placeholder('-'),
             ])
             ->extraAttributes(['class' => 'w-1/2']);
     }
