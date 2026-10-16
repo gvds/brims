@@ -2,10 +2,14 @@
 
 namespace App\Filament\Project\Resources\Projects\Schemas;
 
+use App\Models\Project;
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProjectInfolist
 {
@@ -33,7 +37,7 @@ class ProjectInfolist
                             ->date('Y-m-d'),
                         TextEntry::make('subjectID_prefix')
                             ->label('Subject ID Format')
-                            ->formatStateUsing(fn ($record): string => $record->subjectID_prefix.str_repeat('#', $record->subjectID_digits)),
+                            ->formatStateUsing(fn($record): string => $record->subjectID_prefix . str_repeat('#', $record->subjectID_digits)),
                         TextEntry::make('storageDesignation')
                             ->label('Storage Designation'),
                         TextEntry::make('label_format'),
@@ -50,7 +54,8 @@ class ProjectInfolist
                             ->boolean(),
                         TextEntry::make('description')
                             ->wrap(true)
-                            ->limit(500),
+                            ->limit(500)
+                            ->columnSpanFull(),
                     ]),
             ])
             ->extraAttributes(['class' => 'border border-gray-200 dark:border-zinc-800! rounded-lg py-4 px-5 bg-gray-50 dark:bg-zinc-900!']);

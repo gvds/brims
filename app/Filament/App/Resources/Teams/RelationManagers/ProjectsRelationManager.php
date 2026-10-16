@@ -4,6 +4,7 @@ namespace App\Filament\App\Resources\Teams\RelationManagers;
 
 use App\Enums\SystemRoles;
 use App\Models\Project;
+use App\Models\Programme;
 use App\Models\Role;
 use App\Models\Site;
 use App\Services\REDCap;
@@ -13,8 +14,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -77,21 +76,13 @@ class ProjectsRelationManager extends RelationManager
                 Select::make('study_design_id')
                     ->relationship(name: 'studyDesign', titleAttribute: 'type')
                     ->required(),
-                Repeater::make('programmes')
-                    ->relationship()
-                    ->table([
-                        TableColumn::make('programme.name')
-                            ->hiddenHeaderLabel()
-                            ->markAsRequired()
-                    ])
-                    ->compact()
-                    ->schema([
-                        Select::make('programme_id')
-                            ->relationship(name: 'programme', titleAttribute: 'name')
-                            ->required()
-                            ->distinct()
-                            ->fixIndistinctState(),
-                    ]),
+                Select::make('programmes')
+                    ->multiple()
+                    ->relationship(name: 'programmes', titleAttribute: 'name')
+                    ->getOptionLabelFromRecordUsing(
+                        fn(Programme $record): string => "{$record->name} ({$record->funder}) - {$record->pi->fullname}"
+                    )
+                    ->preload(),
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),
@@ -156,7 +147,7 @@ class ProjectsRelationManager extends RelationManager
                 TextColumn::make('submission_date')
                     ->date('Y-m-d')
                     ->sortable(),
-                TextColumn::make('programmes.programme.name')
+                TextColumn::make('programmes.name')
                     ->label('Programmes')
                     ->listWithLineBreaks()
                     ->size(TextSize::ExtraSmall)

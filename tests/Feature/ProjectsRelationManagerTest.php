@@ -54,6 +54,36 @@ it('limits project leaders to the owning team and system administrators when cre
         ->not->toContain($otherTeamMember->id);
 });
 
+it('shows programme names and funders in project programme options', function (): void {
+    $team = Team::factory()->create();
+    $teamAdmin = User::factory()->create([
+        'team_id' => $team->id,
+        'team_role' => TeamRoles::Admin,
+    ]);
+    $programme = Programme::factory()->create([
+        'team_id' => $team->id,
+        'user_id' => $teamAdmin->id,
+        'name' => 'Example Programme',
+        'funder' => 'Example Funder',
+    ]);
+
+    $this->actingAs($teamAdmin);
+    Filament::setCurrentPanel('app');
+    Filament::bootCurrentPanel();
+
+    $component = Livewire::test(ProjectsRelationManager::class, [
+        'ownerRecord' => $team,
+        'pageClass' => EditTeam::class,
+    ])->mountTableAction('create');
+
+    $programmeOptions = $component->instance()
+        ->getMountedTableActionForm()
+        ->getComponent('programmes')
+        ->getOptionsFromRelationship();
+
+    expect($programmeOptions)->toHaveKey($programme->id, 'Example Programme (Example Funder)');
+});
+
 it('shows REDCap linked icon state for projects', function (): void {
     $team = Team::factory()->create();
 
