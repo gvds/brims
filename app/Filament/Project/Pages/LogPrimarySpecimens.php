@@ -3,6 +3,7 @@
 namespace App\Filament\Project\Pages;
 
 use App\Enums\SpecimenStatus;
+use App\Enums\StorageDestinations;
 use App\Models\Scopes\SubjectEventScope;
 use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
@@ -315,7 +316,7 @@ class LogPrimarySpecimens extends Page implements HasForms
                             'site_id' => $this->userSiteId,
                             'origin_site_id' => $this->userSiteId,
                             'project_id' => session('currentProject')->id,
-                            'status' => SpecimenStatus::Logged,
+                            'status' => $specimenData['storageDestination'] === StorageDestinations::Biorepository ? SpecimenStatus::InStorage : SpecimenStatus::Logged,
                             'loggedBy_id' => $this->user->id,
                             'loggedAt' => now(),
                         ]);
