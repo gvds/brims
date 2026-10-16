@@ -13,6 +13,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -21,6 +23,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\TextSize;
 use Filament\Support\Markdown;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -72,6 +75,21 @@ class ProjectsRelationManager extends RelationManager
                 Select::make('study_design_id')
                     ->relationship(name: 'studyDesign', titleAttribute: 'type')
                     ->required(),
+                Repeater::make('programmes')
+                    ->relationship()
+                    ->table([
+                        TableColumn::make('programme.name')
+                            ->hiddenHeaderLabel()
+                            ->markAsRequired()
+                    ])
+                    ->compact()
+                    ->schema([
+                        Select::make('programme_id')
+                            ->relationship(name: 'programme', titleAttribute: 'name')
+                            ->required()
+                            ->distinct()
+                            ->fixIndistinctState(),
+                    ]),
                 Textarea::make('description')
                     ->default(null)
                     ->columnSpanFull(),
@@ -136,9 +154,15 @@ class ProjectsRelationManager extends RelationManager
                 TextColumn::make('submission_date')
                     ->date('Y-m-d')
                     ->sortable(),
+                TextColumn::make('programmes.programme.name')
+                    ->label('Programmes')
+                    ->listWithLineBreaks()
+                    ->size(TextSize::ExtraSmall)
+                    ->placeholder('--- No Programmes ---'),
                 TextColumn::make('public_release_date')
                     ->date('Y-m-d')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('active')
                     ->boolean(),
                 TextColumn::make('created_at')

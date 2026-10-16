@@ -4,6 +4,7 @@ use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use App\Filament\App\Resources\Teams\Pages\EditTeam;
 use App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager;
+use App\Models\Programme;
 use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
@@ -86,4 +87,46 @@ it('shows REDCap linked icon state for projects', function (): void {
         ->assertCanSeeTableRecords([$projectNull, $projectLinked])
         ->assertTableColumnStateSet('redcapProject_id', false, $projectNull)
         ->assertTableColumnStateSet('redcapProject_id', true, $projectLinked);
+});
+
+it('shows linked programme names as a vertical list', function (): void {
+    $team = Team::factory()->create();
+    $admin = User::factory()->create([
+        'team_id' => $team->id,
+        'team_role' => TeamRoles::Admin,
+    ]);
+    $project = Project::factory()->create([
+        'team_id' => $team->id,
+        'leader_id' => $admin->id,
+    ]);
+    $programmeAttributes = [
+        'team_id' => $team->id,
+        'user_id' => $admin->id,
+        'funder' => 'Test Funder',
+    ];
+    $programmeOne = Programme::factory()->create([
+        ...$programmeAttributes,
+        'name' => 'Programme One',
+    ]);
+    $programmeTwo = Programme::factory()->create([
+        ...$programmeAttributes,
+        'name' => 'Programme Two',
+    ]);
+
+    $project->programmes()->create(['programme_id' => $programmeOne->id]);
+    $project->programmes()->create(['programme_id' => $programmeTwo->id]);
+
+    $this->actingAs($admin);
+
+    $component = Livewire::test(ProjectsRelationManager::class, [
+        'ownerRecord' => $team,
+        'pageClass' => EditTeam::class,
+    ])->assertCanSeeTableRecords([$project]);
+
+    $column = $component->instance()->getTable()->getColumn('programmes.programme.name');
+    $column->record($project);
+
+    expect($column->getState())
+        ->toContain('Programme One', 'Programme Two');
+    expect($column->isListWithLineBreaks())->toBeTrue();
 });

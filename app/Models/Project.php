@@ -95,10 +95,15 @@ class Project extends Model implements HasName
         return $this->belongsTo(StudyDesign::class);
     }
 
-    public function programmes(): BelongsToMany
+    // public function programmes(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Programme::class)
+    //         ->withTimestamps();
+    // }
+
+    public function programmes(): HasMany
     {
-        return $this->belongsToMany(Programme::class)
-            ->withTimestamps();
+        return $this->hasMany(ProgrammeProject::class);
     }
 
     public function admins(): BelongsToMany

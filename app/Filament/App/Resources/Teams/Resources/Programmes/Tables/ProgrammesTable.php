@@ -2,9 +2,7 @@
 
 namespace App\Filament\App\Resources\Teams\Resources\Programmes\Tables;
 
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -19,7 +17,7 @@ class ProgrammesTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('pi.fullname')
-                    ->label('PI')
+                    ->label('Principal Investigator')
                     ->searchable(),
                 TextColumn::make('funder')
                     ->searchable(),

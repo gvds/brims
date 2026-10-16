@@ -19,7 +19,7 @@ class ProgrammeInfolist
                 TextEntry::make('grantNumber')
                     ->placeholder('-'),
                 TextEntry::make('pi.fullname')
-                    ->label('PI')
+                    ->label('Principal Investigator')
                     ->placeholder('-'),
                 TextEntry::make('description')
                     ->placeholder('-')

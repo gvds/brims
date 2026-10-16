@@ -25,11 +25,12 @@ class ProgrammeForm
                     ->default(null)
                     ->maxLength(100),
                 Select::make('user_id')
+                    ->label('Principal Investigator')
                     ->relationship(
                         'pi',
-                        modifyQueryUsing: fn ($query, $livewire) => $query->where('team_id', $livewire->getParentRecord()->id)
+                        modifyQueryUsing: fn($query, $livewire) => $query->where('team_id', $livewire->getParentRecord()->id)
                     )
-                    ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
                     ->searchable()
                     ->preload(),
