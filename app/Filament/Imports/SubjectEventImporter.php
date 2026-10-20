@@ -20,42 +20,60 @@ class SubjectEventImporter extends Importer
 {
     protected static ?string $model = SubjectEvent::class;
 
+    /** @var array<string, int|null> */
+    protected array $subjectIdsBySubjectID = [];
+
+    /** @var array<string, int|null> */
+    protected array $armIdsByName = [];
+
+    /** @var array<string, int|null> */
+    protected array $eventIdsByArmAndName = [];
+
     public static function getColumns(): array
     {
         return [
             ImportColumn::make('subjectID')
                 ->label('Subject ID')
                 ->requiredMapping()
-                ->relationship(name: 'subject', resolveUsing: 'subjectID')
-                ->rules(fn($options): array => [
+                ->fillRecordUsing(function (SubjectEvent $record, $state, Importer $importer): void {
+                    if ($importer instanceof self) {
+                        $record->subject_id = $importer->resolveSubjectId($state);
+                    }
+                })
+                ->rules(fn (Importer $importer): array => [
                     'required',
-                    function (string $attribute, $value, Closure $fail) use ($options): void {
-                        if (! Subject::where('subjectID', $value)
-                            ->where('project_id', $options['project']->id)
-                            ->exists()) {
+                    function (string $attribute, $value, Closure $fail) use ($importer): void {
+                        if (! $importer instanceof self || ! $importer->resolveSubjectId($value)) {
                             $fail("The {$attribute} '{$value}' does not exist in this project.");
                         }
                     },
                 ]),
             ImportColumn::make('arm')
                 ->requiredMapping()
-                ->rules(fn($options): array => [
+                ->rules(fn (Importer $importer): array => [
                     'required',
-                    Rule::exists(Arm::class, 'name')
-                        ->where('project_id', $options['project']->id),
+                    function (string $attribute, $value, Closure $fail) use ($importer): void {
+                        if (! $importer instanceof self) {
+                            return;
+                        }
+
+                        if (! $importer->resolveArmId($value)) {
+                            $fail('validation.exists')->translate();
+                        }
+                    },
                 ])
-                ->fillRecordUsing(fn() => null),
+                ->fillRecordUsing(fn () => null),
             ImportColumn::make('event')
                 ->requiredMapping()
-                ->relationship(resolveUsing: 'name')
-                ->rules(fn($options, $data): array => [
+                ->fillRecordUsing(function (SubjectEvent $record, $state, Importer $importer): void {
+                    if ($importer instanceof self) {
+                        $record->event_id = $importer->resolveEventId($importer->getData()['arm'] ?? '', $state);
+                    }
+                })
+                ->rules(fn ($data, Importer $importer): array => [
                     'required',
-                    function (string $attribute, $value, Closure $fail) use ($options, $data): void {
-                        $exists = Event::where('name', $value)
-                            ->whereHas('arm', fn($query) => $query
-                                ->where('project_id', $options['project']->id)
-                                ->where('name', $data['arm'] ?? null))
-                            ->exists();
+                    function (string $attribute, $value, Closure $fail) use ($data, $importer): void {
+                        $exists = $importer instanceof self && $importer->resolveEventId($data['arm'] ?? '', $value);
 
                         if (! $exists) {
                             $fail("The event '{$value}' does not exist in this project.");
@@ -107,6 +125,52 @@ class SubjectEventImporter extends Importer
         ];
     }
 
+    protected function resolveSubjectId(string $subjectID): ?int
+    {
+        if (array_key_exists($subjectID, $this->subjectIdsBySubjectID)) {
+            return $this->subjectIdsBySubjectID[$subjectID];
+        }
+
+        $subjectId = Subject::query()
+            ->where('subjectID', $subjectID)
+            ->where('project_id', $this->options['project']->id)
+            ->value('id');
+
+        return $this->subjectIdsBySubjectID[$subjectID] = $subjectId === null ? null : (int) $subjectId;
+    }
+
+    protected function resolveArmId(string $armName): ?int
+    {
+        if (array_key_exists($armName, $this->armIdsByName)) {
+            return $this->armIdsByName[$armName];
+        }
+
+        $armId = Arm::query()
+            ->where('name', $armName)
+            ->where('project_id', $this->options['project']->id)
+            ->value('id');
+
+        return $this->armIdsByName[$armName] = $armId === null ? null : (int) $armId;
+    }
+
+    protected function resolveEventId(string $armName, string $eventName): ?int
+    {
+        $key = json_encode([$armName, $eventName], JSON_THROW_ON_ERROR);
+
+        if (array_key_exists($key, $this->eventIdsByArmAndName)) {
+            return $this->eventIdsByArmAndName[$key];
+        }
+
+        $eventId = Event::query()
+            ->where('name', $eventName)
+            ->whereHas('arm', fn ($query) => $query
+                ->where('project_id', $this->options['project']->id)
+                ->where('name', $armName))
+            ->value('id');
+
+        return $this->eventIdsByArmAndName[$key] = $eventId === null ? null : (int) $eventId;
+    }
+
     protected function afterValidate(): void
     {
         $subjectID = $this->data['subjectID'];
@@ -118,10 +182,18 @@ class SubjectEventImporter extends Importer
             return;
         }
 
-        $exists = SubjectEvent::whereHas('subject', fn($query) => $query->where('subjectID', $subjectID))
-            ->whereHas('event', fn($query) => $query->where('name', $event)
-                ->where('iteration', $iteration)
-                ->whereHas('arm', fn($query) => $query->where('name', $arm)))
+        $subjectId = $this->resolveSubjectId($subjectID);
+        $eventId = $this->resolveEventId($arm, $event);
+
+        if (! $subjectId || ! $eventId) {
+            return;
+        }
+
+        $exists = SubjectEvent::query()
+            ->withoutGlobalScopes()
+            ->where('subject_id', $subjectId)
+            ->where('event_id', $eventId)
+            ->where('iteration', $iteration)
             ->exists();
 
         if ($exists) {
