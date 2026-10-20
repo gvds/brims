@@ -12,4 +12,5 @@ services:
       version: "12"
   - rustfs
 workers:
+  - queue
   - vite
