@@ -39,23 +39,22 @@ class SubjectEventImporter extends Importer
                 ]),
             ImportColumn::make('arm')
                 ->requiredMapping()
-                ->relationship(resolveUsing: 'name')
                 ->rules(fn($options): array => [
                     'required',
                     Rule::exists(Arm::class, 'name')
-                        ->where('project_id', $options['project_id']),
+                        ->where('project_id', $options['project']->id),
                 ])
                 ->fillRecordUsing(fn() => null),
             ImportColumn::make('event')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'name')
-                ->rules(fn($options, $originalData): array => [
+                ->rules(fn($options, $data): array => [
                     'required',
-                    function ($value, Closure $fail) use ($options, $originalData): void {
+                    function (string $attribute, $value, Closure $fail) use ($options, $data): void {
                         $exists = Event::where('name', $value)
                             ->whereHas('arm', fn($query) => $query
                                 ->where('project_id', $options['project']->id)
-                                ->where('name', $originalData['arm']))
+                                ->where('name', $data['arm'] ?? null))
                             ->exists();
 
                         if (! $exists) {
@@ -113,18 +112,21 @@ class SubjectEventImporter extends Importer
         $subjectID = $this->data['subjectID'];
         $iteration = $this->data['iteration'];
         $event = $this->data['event'];
+        $arm = $this->data['arm'];
 
         if (! $subjectID) {
             return;
         }
 
         $exists = SubjectEvent::whereHas('subject', fn($query) => $query->where('subjectID', $subjectID))
-            ->whereHas('event', fn($query) => $query->where('name', $event)->where('iteration', $iteration))
+            ->whereHas('event', fn($query) => $query->where('name', $event)
+                ->where('iteration', $iteration)
+                ->whereHas('arm', fn($query) => $query->where('name', $arm)))
             ->exists();
 
         if ($exists) {
             throw ValidationException::withMessages([
-                'event' => "The combination of subject {$subjectID} event {$event} iteration {$iteration} already exists.",
+                'event' => "The combination of subject '{$subjectID}' arm '{$arm}' event '{$event}' iteration {$iteration} already exists.",
             ]);
         }
     }
