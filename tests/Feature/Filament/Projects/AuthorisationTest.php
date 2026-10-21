@@ -142,7 +142,7 @@ test('that a user with no permissions cannot see any relationmanagers under proj
         ->assertDontSee('Members')
         ->assertDontSee('Sites')
         ->assertDontSee('Arms')
-        ->assertDontSee('Labwares')
+        ->assertDontSee('Labware')
         ->assertDontSee('Specimen Types')
         ->assertDontSee('Programmes');
 });
@@ -157,7 +157,7 @@ it('shows every project relation manager to a user with View:Project permission'
         ->assertSee('Members')
         ->assertSee('Sites')
         ->assertSee('Arms')
-        ->assertSee('Labwares')
+        ->assertSee('Labware')
         ->assertSee('Specimen Types')
         ->assertSee('Programmes');
 });
@@ -508,7 +508,7 @@ it('can edit a specimen given Manage:Specimen permission', function (): void {
         ]);
 
     livewire(ViewSpecimen::class, ['record' => $specimen->id])
+        ->assertActionVisible(EditAction::class)
         ->callAction(EditAction::class)
-        ->assertSee('Edit ' . $specimen->barcode)
         ->assertHasNoFormErrors();
 });

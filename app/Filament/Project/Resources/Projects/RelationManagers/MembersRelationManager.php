@@ -37,7 +37,14 @@ class MembersRelationManager extends RelationManager
 
         return $ownerRecord instanceof Project
             && $user instanceof User
-            && $user->can('View:Project');
+            && (
+                $user->can('View:Project')
+                || ProjectMember::query()
+                    ->where('project_id', $ownerRecord->getKey())
+                    ->where('user_id', $user->getKey())
+                    ->whereHas('role.permissions', fn (Builder $query): Builder => $query->where('name', 'View:Project'))
+                    ->exists()
+            );
     }
 
     #[\Override]
