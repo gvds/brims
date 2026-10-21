@@ -64,6 +64,7 @@ it('updates manifest_items, specimen site, and specimen status on receive', func
         'subject_event_id' => $this->subjectEvent->id,
         'specimenType_id' => $this->specimenType->id,
         'site_id' => $this->sourceSite->id,
+        'origin_site_id' => $this->sourceSite->id,
         'project_id' => $this->project->id,
         'status' => SpecimenStatus::Transferred,
         'aliquot' => 1,
@@ -112,6 +113,7 @@ it('creates an audit log entry when receiving a manifest', function (): void {
         'subject_event_id' => $this->subjectEvent->id,
         'specimenType_id' => $this->specimenType->id,
         'site_id' => $this->sourceSite->id,
+        'origin_site_id' => $this->sourceSite->id,
         'project_id' => $this->project->id,
         'status' => SpecimenStatus::Transferred,
         'aliquot' => 1,
@@ -157,10 +159,11 @@ it('throws an exception when receiving a non-shipped manifest', function (): voi
 })->throws(Exception::class, 'Only manifests with status "Shipped" can be received.');
 
 it('receives a manifest with multiple specimens', function (): void {
-    $specimens = collect([1, 2, 3])->map(fn (int $aliquot) => Specimen::factory()->create([
+    $specimens = collect([1, 2, 3])->map(fn(int $aliquot) => Specimen::factory()->create([
         'subject_event_id' => $this->subjectEvent->id,
         'specimenType_id' => $this->specimenType->id,
         'site_id' => $this->sourceSite->id,
+        'origin_site_id' => $this->sourceSite->id,
         'project_id' => $this->project->id,
         'status' => SpecimenStatus::Transferred,
         'aliquot' => $aliquot,

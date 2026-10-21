@@ -3,11 +3,13 @@
 use App\Enums\SystemRoles;
 use App\Enums\TeamRoles;
 use App\Filament\App\Resources\Teams\Pages\EditTeam;
+use App\Filament\App\Resources\Teams\Pages\ViewTeam;
 use App\Filament\App\Resources\Teams\RelationManagers\ProjectsRelationManager;
 use App\Models\Programme;
 use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
+use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Livewire\Livewire;
 
@@ -42,7 +44,7 @@ it('limits project leaders to the owning team and system administrators when cre
     $component = Livewire::test(ProjectsRelationManager::class, [
         'ownerRecord' => $team,
         'pageClass' => EditTeam::class,
-    ])->mountTableAction('create');
+    ])->mountAction(TestAction::make('create')->table());
 
     $leaderOptions = $component->instance()
         ->getMountedTableActionForm()
@@ -58,7 +60,7 @@ it('shows programme names and funders in project programme options', function ()
     $team = Team::factory()->create();
     $teamAdmin = User::factory()->create([
         'team_id' => $team->id,
-        'team_role' => TeamRoles::Admin,
+        'team_role' => TeamRoles::Admin->value,
     ]);
     $programme = Programme::factory()->create([
         'team_id' => $team->id,
@@ -73,15 +75,18 @@ it('shows programme names and funders in project programme options', function ()
 
     $component = Livewire::test(ProjectsRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => EditTeam::class,
-    ])->mountTableAction('create');
+        'pageClass' => ViewTeam::class,
+    ])->mountAction(TestAction::make('create')->table());
 
     $programmeOptions = $component->instance()
         ->getMountedTableActionForm()
         ->getComponent('programmes')
         ->getOptionsFromRelationship();
 
-    expect($programmeOptions)->toHaveKey($programme->id, 'Example Programme (Example Funder)');
+    expect($programmeOptions)->toHaveKey(
+        $programme->id,
+        "Example Programme (Example Funder) - {$teamAdmin->fullname}",
+    );
 });
 
 it('shows REDCap linked icon state for projects', function (): void {
@@ -112,7 +117,7 @@ it('shows REDCap linked icon state for projects', function (): void {
 
     $component = Livewire::test(ProjectsRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => EditTeam::class,
+        'pageClass' => ViewTeam::class,
     ])
         ->assertCanSeeTableRecords([$projectNull, $projectLinked])
         ->assertTableColumnStateSet('redcapProject_id', false, $projectNull)
@@ -123,7 +128,7 @@ it('shows linked programme names as a vertical list', function (): void {
     $team = Team::factory()->create();
     $admin = User::factory()->create([
         'team_id' => $team->id,
-        'team_role' => TeamRoles::Admin,
+        'team_role' => TeamRoles::Admin->value,
     ]);
     $project = Project::factory()->create([
         'team_id' => $team->id,
@@ -143,17 +148,16 @@ it('shows linked programme names as a vertical list', function (): void {
         'name' => 'Programme Two',
     ]);
 
-    $project->programmes()->create(['programme_id' => $programmeOne->id]);
-    $project->programmes()->create(['programme_id' => $programmeTwo->id]);
+    $project->programmes()->attach([$programmeOne->id, $programmeTwo->id]);
 
     $this->actingAs($admin);
 
     $component = Livewire::test(ProjectsRelationManager::class, [
         'ownerRecord' => $team,
-        'pageClass' => EditTeam::class,
+        'pageClass' => ViewTeam::class,
     ])->assertCanSeeTableRecords([$project]);
 
-    $column = $component->instance()->getTable()->getColumn('programmes.programme.name');
+    $column = $component->instance()->getTable()->getColumn('programmes.name');
     $column->record($project);
 
     expect($column->getState())

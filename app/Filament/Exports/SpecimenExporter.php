@@ -14,6 +14,24 @@ class SpecimenExporter extends Exporter
 {
     protected static ?string $model = Specimen::class;
 
+    /**
+     * @param  array<string, string>  $columnMap
+     * @param  array<string, mixed>  $options
+     */
+    public function __construct(Export $export, array $columnMap, array $options)
+    {
+        $validColumnNames = array_map(
+            fn (ExportColumn $column): string => $column->getName(),
+            static::getColumns(),
+        );
+
+        parent::__construct(
+            $export,
+            array_intersect_key($columnMap, array_flip($validColumnNames)),
+            $options,
+        );
+    }
+
     #[\Override]
     public function getFormats(): array
     {

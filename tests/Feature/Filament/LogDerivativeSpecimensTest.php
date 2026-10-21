@@ -146,7 +146,7 @@ describe('LogDerivativeSpecimens Page Initialization', function (): void {
         actingAs($user);
 
         // The page will throw an error since the user is not a member
-        expect(fn () => livewire(LogDerivativeSpecimens::class))
+        expect(fn() => livewire(LogDerivativeSpecimens::class))
             ->toThrow(ViewException::class);
     });
 
@@ -226,6 +226,7 @@ describe('LogDerivativeSpecimens Stage 1 - Parent Barcode Validation', function 
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'DV1234',
                 'volume' => 1.5,
                 'aliquot' => 0,
@@ -358,6 +359,7 @@ describe('LogDerivativeSpecimens Stage 2 - Specimen Entry', function (): void {
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'LG5678',
                 'aliquot' => 0,
                 'status' => SpecimenStatus::Logged,
@@ -481,6 +483,7 @@ describe('LogDerivativeSpecimens Specimen Submission', function (): void {
             ->for($this->user, 'loggedBy')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'EXISTING456',
                 'aliquot' => 0,
                 'status' => SpecimenStatus::Logged,
@@ -731,6 +734,7 @@ describe('LogDerivativeSpecimens Edge Cases', function (): void {
                 ->for($this->project->sites->first(), 'site')
                 ->create([
                     'project_id' => $this->project->id,
+                    'origin_site_id' => $this->project->sites->first()->id,
                     'barcode' => "MULTI{$i}",
                     'aliquot' => $i,
                     'status' => SpecimenStatus::Logged,
@@ -761,6 +765,7 @@ describe('LogDerivativeSpecimens Edge Cases', function (): void {
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'PA9999',
                 'volume' => 5.0,
                 'aliquot' => 0,
@@ -787,7 +792,7 @@ describe('LogDerivativeSpecimens by PSE', function (): void {
         });
 
         $component = livewire(LogDerivativeSpecimens::class)
-            ->fillForm(['pse_barcode' => $this->project->id.'_'.$this->subject->id.'_'.$this->subjectEvent->id])
+            ->fillForm(['pse_barcode' => $this->project->id . '_' . $this->subject->id . '_' . $this->subjectEvent->id])
             ->call('loadSubjectEventSpecimens')
             ->assertSet('stage', 1);
 
