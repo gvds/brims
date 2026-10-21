@@ -6,5 +6,9 @@
                 "copilot/claude-3.7-sonnet"
             ]
         }
+    },
+    "phpunit.command": "lerd test ${phpunitargs}",
+    "phpunit.paths": {
+        "${workspaceFolder}": "."
     }
 }

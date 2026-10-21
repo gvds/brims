@@ -1,21 +1,21 @@
 <?php
 
+use App\Enums\SystemRoles;
 use App\Filament\App\Pages\Calendar;
 use App\Models\User;
-use Filament\Tables\Table;
+use Filament\Facades\Filament;
 
-it('uses a progressively increasing content grid across breakpoints', function (): void {
-    $user = User::factory()->create();
+use function Pest\Laravel\actingAs;
+use function Pest\Livewire\livewire;
 
-    $this->actingAs($user);
+it('renders the calendar as a seven-column week grid', function (): void {
+    Filament::setCurrentPanel('app');
+    Filament::bootCurrentPanel();
 
-    $page = new Calendar;
-    $table = Calendar::table(new Table($page));
+    $user = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
+    actingAs($user);
 
-    expect($table->getContentGrid())->toBe([
-        'sm' => 2,
-        'lg' => 3,
-        'xl' => 4,
-        '2xl' => 5,
-    ]);
+    livewire(Calendar::class)
+        ->assertOk()
+        ->assertSee('grid-cols-7');
 });

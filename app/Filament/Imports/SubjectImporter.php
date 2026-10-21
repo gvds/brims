@@ -23,15 +23,15 @@ class SubjectImporter extends Importer
             ImportColumn::make('subjectID')
                 ->label('Subject ID')
                 ->requiredMapping()
-                ->rules(fn ($options): array => [
+                ->rules(fn($options): array => [
                     'required',
                     'unique:subjects,subjectID',
-                    'regex:/^'.$options['project']->subjectID_prefix.'\d{'.$options['project']->subjectID_digits.'}$/',
+                    'regex:/^' . $options['project']->subjectID_prefix . '\d{' . $options['project']->subjectID_digits . '}$/',
                 ]),
             ImportColumn::make('site')
                 ->requiredMapping()
                 ->relationship(resolveUsing: 'name')
-                ->rules(fn ($options): array => [
+                ->rules(fn($options): array => [
                     'required',
                     Rule::exists('sites', 'name')->where('project_id', $options['project']->id),
                 ]),
@@ -40,10 +40,13 @@ class SubjectImporter extends Importer
                 ->relationship(resolveUsing: 'username')
                 ->rules(['required']),
             ImportColumn::make('firstname')
-                ->rules(['max:20']),
+                ->rules(['max:20'])
+                ->sensitive(),
             ImportColumn::make('lastname')
-                ->rules(['max:30']),
-            ImportColumn::make('address'),
+                ->rules(['max:30'])
+                ->sensitive(),
+            ImportColumn::make('address')
+                ->sensitive(),
             ImportColumn::make('enrolDate')
                 ->requiredMapping()
                 ->rules(['date']),
@@ -63,7 +66,7 @@ class SubjectImporter extends Importer
                         return SubjectStatus::{$state}->value;
                     } catch (\Throwable) {
                         throw ValidationException::withMessages([
-                            'status' => "The status '{$state}' is not valid. Valid values are: ".implode(', ', array_column(SubjectStatus::cases(), 'name')).'.',
+                            'status' => "The status '{$state}' is not valid. Valid values are: " . implode(', ', array_column(SubjectStatus::cases(), 'name')) . '.',
                         ]);
                     }
                 }),
@@ -81,10 +84,10 @@ class SubjectImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your subject import has completed and '.Number::format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
+        $body = 'Your subject import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
         }
 
         return $body;

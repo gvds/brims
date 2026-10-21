@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('team_role', 20)->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('avatar_url', 255)->nullable();
             $table->string('telephone', 20)->nullable();
             $table->boolean('active')->default(1);
             $table->string('password');
