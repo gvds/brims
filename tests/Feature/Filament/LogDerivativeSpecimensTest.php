@@ -14,7 +14,6 @@ use App\Models\SubjectEvent;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\ViewException;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -145,9 +144,8 @@ describe('LogDerivativeSpecimens Page Initialization', function (): void {
         $user = $nonMemberUser;
         actingAs($user);
 
-        // The page will throw an error since the user is not a member
-        expect(fn() => livewire(LogDerivativeSpecimens::class))
-            ->toThrow(ViewException::class);
+        livewire(LogDerivativeSpecimens::class)
+            ->assertForbidden();
     });
 
     it('shows stage one form initially', function (): void {
@@ -498,12 +496,19 @@ describe('LogDerivativeSpecimens Specimen Submission', function (): void {
 
         $specimenTypeId = $this->derivativeSpecimenTypes->first()->id;
 
+        $component->call('$refresh');
+
+        expect(array_keys($component->instance()->form->getFlatFields(withHidden: true)))
+            ->toContain("specimens.{$specimenTypeId}.1.barcode");
+
         $component
             ->fillForm([
-                "specimens.{$specimenTypeId}.1.barcode" => 'NEW789',
+                "specimens.{$specimenTypeId}.1.barcode" => 'NW7890',
                 "specimens.{$specimenTypeId}.1.volume" => 2.0,
             ])
-            ->call('submit');
+            ->call('submit')
+            ->assertHasNoFormErrors()
+            ->assertNotified('Specimens Logged');
 
         // Count derivative specimens for this parent
         $derivativeCount = Specimen::where('parentSpecimen_id', $this->parentSpecimen->id)->count();

@@ -304,11 +304,10 @@ class LogDerivativeSpecimens extends Page implements HasForms
         }
 
         foreach ($this->specimenTypes as $type) {
-            if (count($specimens[$type->id] ?? []) > 0) {
-                continue;
-            }
-            for ($i = 0; $i < (int) ($type->aliquots); $i++) {
-                $specimens[$type->id][$i]['volume'] = $type->defaultVolume;
+            $specimens[$type->id] ??= [];
+
+            for ($i = 0; $i < max((int) $type->aliquots, count($specimens[$type->id])); $i++) {
+                $specimens[$type->id][$i]['volume'] ??= $type->defaultVolume;
             }
         }
         $this->specimens = $specimens;
@@ -327,8 +326,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
             ],
         ]);
         [$project_id, $subject_id, $subject_event_id] = explode('_', (string) $this->pse_barcode);
-        $this->subjectEvent = SubjectEvent::withoutGlobalScopes(SubjectEventScope::class)->find($subject_event_id);
-        $this->subject = Subject::withoutGlobalScopes(SubjectScope::class)->find($subject_id);
+        $this->subjectEvent = SubjectEvent::withoutGlobalScopes([SubjectEventScope::class])->find($subject_event_id);
+        $this->subject = Subject::withoutGlobalScopes([SubjectScope::class])->find($subject_id);
 
         if (! $this->subjectEvent) {
             return;
@@ -403,7 +402,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                             'site_id' => $this->userSiteId,
                             'origin_site_id' => $this->userSiteId,
                             'project_id' => session('currentProject')->id,
-                            'status' => $specimenData['storageDestination'] === StorageDestinations::Biorepository ? SpecimenStatus::InStorage : SpecimenStatus::Logged,
+                            'status' => ($specimenData['storageDestination'] ?? null) === StorageDestinations::Biorepository ? SpecimenStatus::InStorage : SpecimenStatus::Logged,
                             'loggedBy_id' => $this->user->id,
                             'loggedAt' => now(),
                             'parentSpecimen_id' => $this->parent_specimen->id,
