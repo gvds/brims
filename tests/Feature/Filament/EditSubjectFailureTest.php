@@ -5,7 +5,6 @@ use App\Filament\Project\Resources\Subjects\Pages\EditSubject;
 use App\Models\Project;
 use App\Models\Site;
 use App\Models\Subject;
-use App\Models\User;
 
 it('does not show saved notification or persist changes when handleRecordUpdate fails', function (): void {
     // Prepare required related models (project, site, user)
@@ -16,7 +15,7 @@ it('does not show saved notification or persist changes when handleRecordUpdate 
 
     $site = Site::factory()->create([
         'project_id' => $project->id,
-        'name' => $this->adminuser->institution,
+        'name' => 'Test Site',
     ]);
 
     // Subject in Generated status triggers the branch that builds events

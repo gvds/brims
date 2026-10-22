@@ -114,7 +114,7 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
 
         livewire(AllocateStorage::class)
             ->assertSee($specimenType->name)
@@ -136,7 +136,7 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
 
         livewire(AllocateStorage::class)
             ->assertDontSee($specimenType->name);
@@ -157,7 +157,7 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::InStorage]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::InStorage]);
 
         livewire(AllocateStorage::class)
             ->assertDontSee($specimenType->name);
@@ -178,7 +178,7 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->otherSite)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->otherSite->id, 'status' => SpecimenStatus::Logged]);
 
         livewire(AllocateStorage::class)
             ->assertDontSee($specimenType->name);
@@ -205,9 +205,11 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
 
-        $physicalUnit = PhysicalUnit::factory()->create();
+        $physicalUnit = PhysicalUnit::factory()->create([
+            'institution_id' => $this->team->institution_id,
+        ]);
 
         $virtualUnit = VirtualUnit::factory()->create([
             'physical_unit_id' => $physicalUnit->id,
@@ -253,9 +255,11 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
 
-        $physicalUnit = PhysicalUnit::factory()->create();
+        $physicalUnit = PhysicalUnit::factory()->create([
+            'institution_id' => $this->team->institution_id,
+        ]);
 
         $virtualUnit = VirtualUnit::factory()->create([
             'physical_unit_id' => $physicalUnit->id,
@@ -296,7 +300,7 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
 
         livewire(AllocateStorage::class)
             ->set('data.specimenTypeIds', [$specimenType->id])
@@ -318,9 +322,11 @@ describe('AllocateStorage Page', function (): void {
             ->for($specimenType, 'specimenType')
             ->for($this->project)
             ->for($this->site)
-            ->create([...$this->specimenDefaults, 'status' => SpecimenStatus::Logged]);
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
 
-        $physicalUnit = PhysicalUnit::factory()->create();
+        $physicalUnit = PhysicalUnit::factory()->create([
+            'institution_id' => $this->team->institution_id,
+        ]);
 
         $virtualUnit = VirtualUnit::factory()->create([
             'physical_unit_id' => $physicalUnit->id,

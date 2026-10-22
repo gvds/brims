@@ -15,7 +15,6 @@ it('filters invalid exporter column map keys', function () {
     $exporter = new SpecimenExporter($export, $columnMap, []);
 
     $reflection = new ReflectionProperty($exporter, 'columnMap');
-    $reflection->setAccessible(true);
 
     $filteredColumnMap = $reflection->getValue($exporter);
 

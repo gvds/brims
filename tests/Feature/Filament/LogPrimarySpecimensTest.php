@@ -19,7 +19,6 @@ use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\ViewException;
 use Spatie\Permission\PermissionRegistrar;
 
 use function Pest\Laravel\actingAs;
@@ -126,10 +125,8 @@ describe('LogPrimarySpecimens Page Initialization', function (): void {
         $user = $nonMemberUser;
         actingAs($user);
 
-        // The page will throw an error since the user is not a member
-        // In a real application, this would be handled by middleware or route guards
-        expect(fn () => livewire(LogPrimarySpecimens::class))
-            ->toThrow(ViewException::class);
+        livewire(LogPrimarySpecimens::class)
+            ->assertForbidden();
     });
 
     it('shows stage one form initially', function (): void {
@@ -193,6 +190,7 @@ describe('LogPrimarySpecimens Stage 1 - PSE Barcode Validation', function (): vo
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'EX1234',
                 'volume' => 3.5,
                 'aliquot' => 0,
@@ -329,6 +327,7 @@ describe('LogPrimarySpecimens Stage 2 - Specimen Entry', function (): void {
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'LG1234',
                 'aliquot' => 0, // Use 0-based index for array access
                 'status' => SpecimenStatus::Logged,
@@ -423,6 +422,7 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
             ->for($this->user, 'loggedBy')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'EXISTING123',
                 'aliquot' => 0,
                 'status' => SpecimenStatus::Logged,
@@ -436,9 +436,11 @@ describe('LogPrimarySpecimens Specimen Submission', function (): void {
 
         $specimenTypeId = $this->primarySpecimenTypes->first()->id;
 
+        $component->call('$refresh');
+
         $component
             ->fillForm([
-                "specimens.{$specimenTypeId}.1.barcode" => 'NEW456',
+                "specimens.{$specimenTypeId}.1.barcode" => 'NW0456',
                 "specimens.{$specimenTypeId}.1.volume" => 4.0,
             ])
             ->call('submit');

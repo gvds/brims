@@ -14,7 +14,6 @@ use App\Models\SubjectEvent;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\ViewException;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
@@ -145,9 +144,8 @@ describe('LogDerivativeSpecimens Page Initialization', function (): void {
         $user = $nonMemberUser;
         actingAs($user);
 
-        // The page will throw an error since the user is not a member
-        expect(fn () => livewire(LogDerivativeSpecimens::class))
-            ->toThrow(ViewException::class);
+        livewire(LogDerivativeSpecimens::class)
+            ->assertForbidden();
     });
 
     it('shows stage one form initially', function (): void {
@@ -226,6 +224,7 @@ describe('LogDerivativeSpecimens Stage 1 - Parent Barcode Validation', function 
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'DV1234',
                 'volume' => 1.5,
                 'aliquot' => 0,
@@ -358,6 +357,7 @@ describe('LogDerivativeSpecimens Stage 2 - Specimen Entry', function (): void {
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'LG5678',
                 'aliquot' => 0,
                 'status' => SpecimenStatus::Logged,
@@ -481,6 +481,7 @@ describe('LogDerivativeSpecimens Specimen Submission', function (): void {
             ->for($this->user, 'loggedBy')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'EXISTING456',
                 'aliquot' => 0,
                 'status' => SpecimenStatus::Logged,
@@ -495,12 +496,19 @@ describe('LogDerivativeSpecimens Specimen Submission', function (): void {
 
         $specimenTypeId = $this->derivativeSpecimenTypes->first()->id;
 
+        $component->call('$refresh');
+
+        expect(array_keys($component->instance()->form->getFlatFields(withHidden: true)))
+            ->toContain("specimens.{$specimenTypeId}.1.barcode");
+
         $component
             ->fillForm([
-                "specimens.{$specimenTypeId}.1.barcode" => 'NEW789',
+                "specimens.{$specimenTypeId}.1.barcode" => 'NW7890',
                 "specimens.{$specimenTypeId}.1.volume" => 2.0,
             ])
-            ->call('submit');
+            ->call('submit')
+            ->assertHasNoFormErrors()
+            ->assertNotified('Specimens Logged');
 
         // Count derivative specimens for this parent
         $derivativeCount = Specimen::where('parentSpecimen_id', $this->parentSpecimen->id)->count();
@@ -731,6 +739,7 @@ describe('LogDerivativeSpecimens Edge Cases', function (): void {
                 ->for($this->project->sites->first(), 'site')
                 ->create([
                     'project_id' => $this->project->id,
+                    'origin_site_id' => $this->project->sites->first()->id,
                     'barcode' => "MULTI{$i}",
                     'aliquot' => $i,
                     'status' => SpecimenStatus::Logged,
@@ -761,6 +770,7 @@ describe('LogDerivativeSpecimens Edge Cases', function (): void {
             ->for($this->project->sites->first(), 'site')
             ->create([
                 'project_id' => $this->project->id,
+                'origin_site_id' => $this->project->sites->first()->id,
                 'barcode' => 'PA9999',
                 'volume' => 5.0,
                 'aliquot' => 0,
@@ -787,7 +797,7 @@ describe('LogDerivativeSpecimens by PSE', function (): void {
         });
 
         $component = livewire(LogDerivativeSpecimens::class)
-            ->fillForm(['pse_barcode' => $this->project->id.'_'.$this->subject->id.'_'.$this->subjectEvent->id])
+            ->fillForm(['pse_barcode' => $this->project->id . '_' . $this->subject->id . '_' . $this->subjectEvent->id])
             ->call('loadSubjectEventSpecimens')
             ->assertSet('stage', 1);
 
