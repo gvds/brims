@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Subject;
 use Carbon\CarbonImmutable;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectProgress extends ChartWidget
 {
@@ -33,17 +34,21 @@ class ProjectProgress extends ChartWidget
         $project = Project::find(session('currentProject')->id);
 
         /** @var array<int, array<string, int>> $dailyCounts site_id => [enrolDate => count] */
-        $dailyCounts = Subject::withoutGlobalScopes()
-            ->where('project_id', $project->id)
-            ->whereNotNull('enrolDate')
-            ->selectRaw('site_id, enrolDate, COUNT(*) as total')
-            ->groupBy('site_id', 'enrolDate')
-            ->get()
-            ->groupBy('site_id')
-            ->map(fn($rows) => $rows->pluck('total', 'enrolDate')->map(fn($total): int => (int) $total)->all())
-            ->all();
+        $dailyCounts = Cache::remember(
+            'subject_counts',
+            120,
+            fn () => Subject::withoutGlobalScopes()
+                ->where('project_id', $project->id)
+                ->whereNotNull('enrolDate')
+                ->selectRaw('site_id, enrolDate, COUNT(*) as total')
+                ->groupBy('site_id', 'enrolDate')
+                ->get()
+                ->groupBy('site_id')
+                ->map(fn ($rows) => $rows->pluck('total', 'enrolDate')->map(fn ($total): int => (int) $total)->all())
+                ->all()
+        );
 
-        $firstEnrolDate = collect($dailyCounts)->flatMap(fn(array $days): array => array_keys($days))->min();
+        $firstEnrolDate = collect($dailyCounts)->flatMap(fn (array $days): array => array_keys($days))->min();
         $start = CarbonImmutable::parse($project->submission_date ?? $firstEnrolDate ?? today())->startOfMonth();
 
         $monthEnds = [];
@@ -60,7 +65,7 @@ class ProjectProgress extends ChartWidget
             foreach ($monthEnds as $monthEnd) {
                 $cutoff = $monthEnd->toDateString();
                 $data[] = (int) collect($days)
-                    ->filter(fn(int $total, string $date): bool => substr($date, 0, 10) <= $cutoff)
+                    ->filter(fn (int $total, string $date): bool => substr($date, 0, 10) <= $cutoff)
                     ->sum();
             }
 
@@ -77,7 +82,7 @@ class ProjectProgress extends ChartWidget
 
         return [
             'datasets' => $datasets,
-            'labels' => array_map(fn(CarbonImmutable $monthEnd): string => $monthEnd->format('M Y'), $monthEnds),
+            'labels' => array_map(fn (CarbonImmutable $monthEnd): string => $monthEnd->format('M Y'), $monthEnds),
         ];
     }
 

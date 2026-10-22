@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectEventsDue extends TableWidget
 {
@@ -19,18 +20,29 @@ class ProjectEventsDue extends TableWidget
     #[\Override]
     public function table(Table $table): Table
     {
-        $substitutees = Auth::user()->substitutees()
-            ->pluck('users.id');
-
         return $table
             ->description('Click on a row to access the subject record')
-            ->query(
-                fn (): Builder => SubjectEvent::query()
-                    ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                    ->where('minDate', '<=', today())
-                    ->where('maxDate', '>=', today())
-                    ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
-            )
+            ->query(function (): Builder {
+                $dueEventIds = Cache::remember(
+                    'project_events_due.'.session('currentProject')->id.'.'.Auth::id(),
+                    120,
+                    function (): array {
+                        $userIds = Auth::user()->substitutees
+                            ->pluck('users.id')
+                            ->push(Auth::id());
+
+                        return SubjectEvent::query()
+                            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                            ->where('minDate', '<=', today())
+                            ->where('maxDate', '>=', today())
+                            ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $userIds))
+                            ->pluck('id')
+                            ->all();
+                    }
+                );
+
+                return SubjectEvent::query()->whereKey($dueEventIds);
+            })
             ->columns([
                 TextColumn::make('subject.fullname')
                     ->icon(Heroicon::ChevronDoubleRight),
