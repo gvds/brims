@@ -37,19 +37,19 @@ class ProjectProgress extends ChartWidget
         $dailyCounts = Cache::remember(
             'subject_counts',
             120,
-            fn () => Subject::withoutGlobalScopes()
+            fn() => Subject::withoutGlobalScopes()
                 ->where('project_id', $project->id)
                 ->whereNotNull('enrolDate')
                 ->selectRaw('site_id, enrolDate, COUNT(*) as total')
                 ->groupBy('site_id', 'enrolDate')
                 ->get()
                 ->groupBy('site_id')
-                ->map(fn ($rows) => $rows->pluck('total', 'enrolDate')->map(fn ($total): int => (int) $total)->all())
+                ->map(fn($rows) => $rows->pluck('total', 'enrolDate')->map(fn($total): int => (int) $total)->all())
                 ->all()
         );
 
-        $firstEnrolDate = collect($dailyCounts)->flatMap(fn (array $days): array => array_keys($days))->min();
-        $start = CarbonImmutable::parse($project->submission_date ?? $firstEnrolDate ?? today())->startOfMonth();
+        $firstEnrolDate = collect($dailyCounts)->flatMap(fn(array $days): array => array_keys($days))->min();
+        $start = CarbonImmutable::parse($firstEnrolDate ?? today())->startOfMonth();
 
         $monthEnds = [];
         for ($month = $start; $month->lessThanOrEqualTo(today()); $month = $month->addMonth()) {
@@ -65,7 +65,7 @@ class ProjectProgress extends ChartWidget
             foreach ($monthEnds as $monthEnd) {
                 $cutoff = $monthEnd->toDateString();
                 $data[] = (int) collect($days)
-                    ->filter(fn (int $total, string $date): bool => substr($date, 0, 10) <= $cutoff)
+                    ->filter(fn(int $total, string $date): bool => substr($date, 0, 10) <= $cutoff)
                     ->sum();
             }
 
@@ -75,14 +75,14 @@ class ProjectProgress extends ChartWidget
                 'borderColor' => $colour,
                 'backgroundColor' => $colour,
                 'borderWidth' => 2,
-                'tension' => 0.2,
+                'tension' => 0,
                 'fill' => false,
             ];
         }
 
         return [
             'datasets' => $datasets,
-            'labels' => array_map(fn (CarbonImmutable $monthEnd): string => $monthEnd->format('M Y'), $monthEnds),
+            'labels' => array_map(fn(CarbonImmutable $monthEnd): string => $monthEnd->format('M Y'), $monthEnds),
         ];
     }
 
