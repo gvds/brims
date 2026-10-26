@@ -262,6 +262,16 @@ class ProjectsRelationManager extends RelationManager
                                     )
                                     ->required(),
                             ]),
+                        Select::make('study_design_id')
+                            ->relationship(name: 'studyDesign', titleAttribute: 'type')
+                            ->required(),
+                        Select::make('programmes')
+                            ->multiple()
+                            ->relationship(name: 'programmes', titleAttribute: 'name')
+                            ->getOptionLabelFromRecordUsing(
+                                fn(Programme $record): string => "{$record->name} ({$record->funder}) - {$record->pi->fullname}"
+                            )
+                            ->preload(),
                         Textarea::make('description')
                             ->default(null)
                             ->columnSpanFull(),
@@ -291,7 +301,12 @@ class ProjectsRelationManager extends RelationManager
                                     ->relationship('labelSpecification', 'format')
                                     ->required(),
                             ]),
-                        DatePicker::make('submission_date'),
+                        Grid::make(2)
+                            ->schema([
+                                DatePicker::make('submission_date'),
+                                DatePicker::make('public_release_date')
+                                    ->visibleOn(['view', 'edit']),
+                            ]),
                     ])
                     ->action(function (array $data): void {
                         DB::beginTransaction();
