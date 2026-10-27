@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Arm;
 use App\Models\Event;
+use App\Models\Permission;
+use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
 use App\Models\Subject;
@@ -49,15 +51,20 @@ class REDCap
         return curl_exec($ch);
     }
 
-    public static function setupREDCapProject($project): void
+    public static function setupREDCapProject(Project $project): void
     {
+        setPermissionsTeamId($project->id);
+
+        $user = Auth::user();
+
         $role = Role::create([
             'project_id' => $project->id,
             'name' => 'Admin',
             'guard_name' => 'web',
         ]);
+        $role->givePermissionTo(Permission::all());
 
-        $redcap_user = self::getREDCapUser($project->redcapProject_id, Auth::user());
+        $redcap_user = self::getREDCapUser($project->redcapProject_id, $user);
         if (empty($redcap_user)) {
             throw new Exception('The assigned current user\'s username was not found in the REDCap project');
         }
@@ -66,22 +73,23 @@ class REDCap
         $user_token = self::getOrGenerateToken($redcap_user, $project);
 
         // Create sites entries from REDCap DAGS
-        $redcap_dags = DB::connection('redcap')->select('select * from redcap_data_access_groups where project_id = '.$project->redcapProject_id);
+        $redcap_dags = DB::connection('redcap')->select('select * from redcap_data_access_groups where project_id = ' . $project->redcapProject_id);
         foreach ($redcap_dags as $dag) {
             $site = Site::create([
                 'project_id' => $project->id,
                 'name' => $dag->group_name,
-                'description' => 'REDCap Data Access Group '.$dag->group_name,
+                'description' => 'REDCap Data Access Group ' . $dag->group_name,
             ]);
             if ($dag->group_id == $redcap_user->group_id) {
                 $user_site = $site->id;
             }
         }
 
-        $project->members()->attach(Auth::user(), ['role_id' => $role->id, 'site_id' => $user_site ?? null, 'redcap_token' => $user_token]);
+        $project->members()->attach($user, ['role_id' => $role->id, 'site_id' => $user_site ?? null, 'redcap_token' => $user_token]);
+        $user->syncRoles($role);
 
         // Add project leader if different from current user
-        if ($project->leader_id !== Auth::id()) {
+        if ($project->leader_id !== $user->id) {
             $redcap_leader = self::getREDCapUser($project->redcapProject_id, $project->leader);
             if (empty($redcap_leader)) {
                 throw new Exception('The assigned leader\'s username was not found in the REDCap project');
@@ -94,6 +102,7 @@ class REDCap
                 }
             }
             $project->members()->attach($project->leader, ['role_id' => $role->id, 'site_id' => $leader_site ?? null, 'redcap_token' => $leader_token]);
+            $project->leader->syncRoles($role);
         }
 
         $redcap_arms = self::redcap_arms($user_token);
@@ -128,6 +137,7 @@ class REDCap
                 ]);
             }
         }
+        setPermissionsTeamId(null);
     }
 
     private static function getREDCapUser($redcapProject_id, $user)
@@ -206,7 +216,7 @@ class REDCap
         $events = json_decode($events, true);
 
         if (array_key_exists('error', $events)) {
-            throw new Exception('REDCap Error: '.$events['error']);
+            throw new Exception('REDCap Error: ' . $events['error']);
         }
         $event_name = $events[0]['unique_event_name'];
 
