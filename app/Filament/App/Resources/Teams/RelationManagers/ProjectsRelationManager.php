@@ -2,8 +2,6 @@
 
 namespace App\Filament\App\Resources\Teams\RelationManagers;
 
-use App\Enums\SystemRoles;
-use App\Models\Programme;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
@@ -13,21 +11,15 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Fieldset;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
 use Filament\Support\Markdown;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -48,78 +40,7 @@ class ProjectsRelationManager extends RelationManager
     {
         // return ProjectForm::configure($schema)->extraAttributes(['class' => 'w-full']);
         return $schema
-            ->components([
-                TextInput::make('title')
-                    ->autocomplete(false)
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(100)
-                    ->minLength(5),
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('identifier')
-                            ->autocomplete(false)
-                            ->required()
-                            ->unique(ignoreRecord: true),
-                        Select::make('leader_id')
-                            ->relationship(
-                                name: 'leader',
-                                modifyQueryUsing: fn(Builder $query) => $query->where(
-                                    fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->getKey())
-                                        ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
-                                )
-                            )
-                            ->getOptionLabelFromRecordUsing(
-                                fn($record) => $record->fullname
-                            )
-                            ->required(),
-                    ]),
-                Select::make('study_design_id')
-                    ->relationship(name: 'studyDesign', titleAttribute: 'type')
-                    ->required(),
-                Select::make('programmes')
-                    ->multiple()
-                    ->relationship(name: 'programmes', titleAttribute: 'name')
-                    ->getOptionLabelFromRecordUsing(
-                        fn(Programme $record): string => "{$record->name} ({$record->funder}) - {$record->pi->fullname}"
-                    )
-                    ->preload(),
-                Textarea::make('description')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Fieldset::make('Subject ID')
-                    ->schema([
-                        TextInput::make('subjectID_prefix')
-                            ->label('Prefix')
-                            ->helperText('Between 2 and 10 uppercase characters or digits, starting with an uppercase letter')
-                            ->required()
-                            ->regex('/^[A-Z][A-Z0-9]{1,9}$/'),
-                        TextInput::make('subjectID_digits')
-                            ->label('Digits')
-                            ->numeric()
-                            ->required()
-                            ->minValue(2)
-                            ->maxValue(8)
-                            ->hint('The number of digits in a subject ID'),
-                    ]),
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('storageDesignation')
-                            ->label('Storage Designation')
-                            ->required()
-                            ->maxLength(40),
-                        Select::make('label_format')
-                            ->label('Label Format')
-                            ->relationship('labelSpecification', 'format')
-                            ->required(),
-                    ]),
-                Grid::make(2)
-                    ->schema([
-                        DatePicker::make('submission_date'),
-                        DatePicker::make('public_release_date')
-                            ->visibleOn(['view', 'edit']),
-                    ]),
-            ])
+            ->components(Project::formComponents($this->getOwnerRecord()->getKey()))
             ->columns(1);
     }
 
@@ -221,111 +142,42 @@ class ProjectsRelationManager extends RelationManager
                         }
                     }),
                 Action::make('new_redcap_project')
-                    // ->color(Color::Teal)
                     ->visible(fn(): bool => Auth::user()->can('create', Project::class))
                     ->modalHeading('Create New REDCap-Linked Project')
-                    ->schema([
-                        Select::make('redcapProject_id')
-                            ->label('Select Redcap Project')
-                            ->searchable()
-                            ->preload()
-                            ->searchDebounce(500)
-                            ->options(function () {
-                                $linked_redcap_projects = Project::whereNotNull('redcapProject_id')->pluck('redcapProject_id')->toArray();
+                    ->schema(fn(Schema $schema): Schema => $schema
+                        ->components([
+                            Select::make('redcapProject_id')
+                                ->label('Select Redcap Project')
+                                ->searchable()
+                                ->preload()
+                                ->searchDebounce(500)
+                                ->options(function () {
+                                    $linked_redcap_projects = Project::whereNotNull('redcapProject_id')->pluck('redcapProject_id')->toArray();
+                                    try {
+                                        return DB::connection('redcap')
+                                            ->table('redcap_projects')
+                                            ->join('redcap_user_rights', 'redcap_projects.project_id', '=', 'redcap_user_rights.project_id')
+                                            ->where('username', Auth::user()->username)
+                                            ->where('design', 1)
+                                            ->whereNotNull('api_token')
+                                            ->whereNotIn('redcap_projects.project_id', $linked_redcap_projects)
+                                            ->orderBy('app_title')
+                                            ->pluck('app_title', 'redcap_projects.project_id')
+                                            ->toArray();
+                                    } catch (QueryException $e) {
+                                        Notification::make()
+                                            ->title('REDCap unavailable')
+                                            ->body('Could not connect to the REDCap database. Please try again later.')
+                                            ->danger()
+                                            ->send();
 
-                                try {
-                                    return DB::connection('redcap')
-                                        ->table('redcap_projects')
-                                        ->join('redcap_user_rights', 'redcap_projects.project_id', '=', 'redcap_user_rights.project_id')
-                                        ->where('username', Auth::user()->username)
-                                        ->where('design', 1)
-                                        ->whereNotNull('api_token')
-                                        ->whereNotIn('redcap_projects.project_id', $linked_redcap_projects)
-                                        ->orderBy('app_title')
-                                        ->pluck('app_title', 'redcap_projects.project_id')
-                                        ->toArray();
-                                } catch (QueryException $e) {
-                                    Notification::make()
-                                        ->title('REDCap unavailable')
-                                        ->body('Could not connect to the REDCap database. Please try again later.')
-                                        ->danger()
-                                        ->send();
-
-                                    return [];
-                                }
-                            })
-                            ->required(),
-                        TextInput::make('title')
-                            ->autocomplete(false)
-                            ->required()
-                            ->unique()
-                            ->maxLength(100)
-                            ->minLength(5),
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('identifier')
-                                    ->autocomplete(false)
-                                    ->required()
-                                    ->unique(ignoreRecord: true),
-                                Select::make('leader_id')
-                                    ->relationship(
-                                        name: 'leader',
-                                        modifyQueryUsing: fn(Builder $query) => $query->where(
-                                            fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->getKey())
-                                                ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
-                                        )
-                                    )
-                                    ->getOptionLabelFromRecordUsing(
-                                        fn($record) => $record->fullname
-                                    )
-                                    ->required(),
-                            ]),
-                        Select::make('study_design_id')
-                            ->relationship(name: 'studyDesign', titleAttribute: 'type')
-                            ->required(),
-                        Select::make('programmes')
-                            ->multiple()
-                            ->relationship(name: 'programmes', titleAttribute: 'name')
-                            ->getOptionLabelFromRecordUsing(
-                                fn(Programme $record): string => "{$record->name} ({$record->funder}) - {$record->pi->fullname}"
-                            )
-                            ->preload(),
-                        Textarea::make('description')
-                            ->default(null)
-                            ->columnSpanFull(),
-                        Fieldset::make('Subject ID')
-                            ->schema([
-                                TextInput::make('subjectID_prefix')
-                                    ->label('Prefix')
-                                    ->helperText('Between 2 and 10 uppercase characters or digits, starting with an uppercase letter')
-                                    ->required()
-                                    ->regex('/^[A-Z][A-Z0-9]{1,9}$/'),
-                                TextInput::make('subjectID_digits')
-                                    ->label('Digits')
-                                    ->numeric()
-                                    ->required()
-                                    ->minValue(2)
-                                    ->maxValue(8)
-                                    ->hint('The number of digits in a subject ID'),
-                            ]),
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('storageDesignation')
-                                    ->label('Storage Designation')
-                                    ->required()
-                                    ->maxLength(40),
-                                Select::make('label_format')
-                                    ->label('Label Format')
-                                    ->relationship('labelSpecification', 'format')
-                                    ->required(),
-                            ]),
-                        Grid::make(2)
-                            ->schema([
-                                DatePicker::make('submission_date'),
-                                DatePicker::make('public_release_date')
-                                    ->visibleOn(['view', 'edit']),
-                            ]),
-                    ])
+                                        return [];
+                                    }
+                                })
+                                ->required(),
+                            ...Project::formComponents($this->getOwnerRecord()->getKey()),
+                        ])
+                        ->columns(1))
                     ->action(function (array $data): void {
                         DB::beginTransaction();
                         try {

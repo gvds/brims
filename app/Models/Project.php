@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
+use App\Enums\SystemRoles;
 use App\Models\Scopes\ProjectScope;
 use Database\Factories\ProjectFactory;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Models\Contracts\HasName;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -115,5 +124,84 @@ class Project extends Model implements HasName
     public function roles(): HasMany
     {
         return $this->hasMany(Role::class);
+    }
+
+    /**
+     * @return array<int, Component>
+     */
+    public static function formComponents(int|string $teamId): array
+    {
+        return [
+            TextInput::make('title')
+                ->autocomplete(false)
+                ->required()
+                ->unique(ignoreRecord: true)
+                ->maxLength(100)
+                ->minLength(5),
+            Grid::make(2)
+                ->schema([
+                    TextInput::make('identifier')
+                        ->autocomplete(false)
+                        ->required()
+                        ->unique(ignoreRecord: true),
+                    Select::make('leader_id')
+                        ->relationship(
+                            name: 'leader',
+                            modifyQueryUsing: fn (Builder $query) => $query->where(
+                                fn (Builder $query) => $query->where('team_id', $teamId)
+                                    ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
+                            )
+                        )
+                        ->getOptionLabelFromRecordUsing(
+                            fn ($record) => $record->fullname
+                        )
+                        ->required(),
+                ]),
+            Select::make('study_design_id')
+                ->relationship(name: 'studyDesign', titleAttribute: 'type')
+                ->required(),
+            Select::make('programmes')
+                ->multiple()
+                ->relationship(name: 'programmes', titleAttribute: 'name')
+                ->getOptionLabelFromRecordUsing(
+                    fn (Programme $record): string => "{$record->name} ({$record->funder}) - {$record->pi->fullname}"
+                )
+                ->preload(),
+            Textarea::make('description')
+                ->default(null)
+                ->columnSpanFull(),
+            Fieldset::make('Subject ID')
+                ->schema([
+                    TextInput::make('subjectID_prefix')
+                        ->label('Prefix')
+                        ->helperText('Between 2 and 10 uppercase characters or digits, starting with an uppercase letter')
+                        ->required()
+                        ->regex('/^[A-Z][A-Z0-9]{1,9}$/'),
+                    TextInput::make('subjectID_digits')
+                        ->label('Digits')
+                        ->numeric()
+                        ->required()
+                        ->minValue(2)
+                        ->maxValue(8)
+                        ->hint('The number of digits in a subject ID'),
+                ]),
+            Grid::make(2)
+                ->schema([
+                    TextInput::make('storageDesignation')
+                        ->label('Storage Designation')
+                        ->required()
+                        ->maxLength(40),
+                    Select::make('label_format')
+                        ->label('Label Format')
+                        ->relationship('labelSpecification', 'format')
+                        ->required(),
+                ]),
+            Grid::make(2)
+                ->schema([
+                    DatePicker::make('submission_date'),
+                    DatePicker::make('public_release_date')
+                        ->visibleOn(['view', 'edit']),
+                ]),
+        ];
     }
 }
