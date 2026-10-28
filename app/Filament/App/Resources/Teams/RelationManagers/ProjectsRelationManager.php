@@ -3,8 +3,8 @@
 namespace App\Filament\App\Resources\Teams\RelationManagers;
 
 use App\Enums\SystemRoles;
-use App\Models\Project;
 use App\Models\Programme;
+use App\Models\Project;
 use App\Models\Role;
 use App\Models\Site;
 use App\Services\REDCap;
@@ -28,6 +28,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -230,16 +231,28 @@ class ProjectsRelationManager extends RelationManager
                             ->preload()
                             ->searchDebounce(500)
                             ->options(function () {
-                                $query = "SELECT app_title, redcap_projects.project_id FROM redcap_projects INNER JOIN redcap_user_rights ON redcap_projects.project_id = redcap_user_rights.project_id WHERE username = '" . Auth::user()->username . "' AND design=1 AND api_token IS NOT null";
-                                $linked_redcap_projects = Project::whereNot('redcapProject_id', 'null')->pluck('redcapProject_id')->toArray();
-                                if (count($linked_redcap_projects) > 0) {
-                                    $query .= ' AND redcap_projects.project_id NOT IN (' . implode(',', $linked_redcap_projects) . ')';
-                                }
-                                $query .= ' ORDER BY app_title';
-                                $redcap_projects = DB::connection('redcap')
-                                    ->select($query);
+                                $linked_redcap_projects = Project::whereNotNull('redcapProject_id')->pluck('redcapProject_id')->toArray();
 
-                                return collect($redcap_projects)->pluck('app_title', 'project_id')->toArray();
+                                try {
+                                    return DB::connection('redcap')
+                                        ->table('redcap_projects')
+                                        ->join('redcap_user_rights', 'redcap_projects.project_id', '=', 'redcap_user_rights.project_id')
+                                        ->where('username', Auth::user()->username)
+                                        ->where('design', 1)
+                                        ->whereNotNull('api_token')
+                                        ->whereNotIn('redcap_projects.project_id', $linked_redcap_projects)
+                                        ->orderBy('app_title')
+                                        ->pluck('app_title', 'redcap_projects.project_id')
+                                        ->toArray();
+                                } catch (QueryException $e) {
+                                    Notification::make()
+                                        ->title('REDCap unavailable')
+                                        ->body('Could not connect to the REDCap database. Please try again later.')
+                                        ->danger()
+                                        ->send();
+
+                                    return [];
+                                }
                             })
                             ->required(),
                         TextInput::make('title')
@@ -257,7 +270,10 @@ class ProjectsRelationManager extends RelationManager
                                 Select::make('leader_id')
                                     ->relationship(
                                         name: 'leader',
-                                        modifyQueryUsing: fn(Builder $query) => $query->where('team_id', Auth::user()->team_id)
+                                        modifyQueryUsing: fn(Builder $query) => $query->where(
+                                            fn(Builder $query) => $query->where('team_id', $this->getOwnerRecord()->getKey())
+                                                ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
+                                        )
                                     )
                                     ->getOptionLabelFromRecordUsing(
                                         fn($record) => $record->fullname
