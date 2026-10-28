@@ -73,7 +73,11 @@ class PhysicalunitsRelationManager extends RelationManager
                             ->label('Administrator')
                             ->options(fn (Get $get): array => $get('institution_id')
                                 ? User::query()
-                                    ->where('institution_id', $get('institution_id'))
+                                    ->whereHas(
+                                        'team',
+                                        fn ($query) => $query
+                                            ->where('institution_id', $get('institution_id'))
+                                    )
                                     ->get()
                                     ->pluck('fullname', 'id')
                                     ->toArray()
@@ -103,7 +107,19 @@ class PhysicalunitsRelationManager extends RelationManager
                         TextInput::make('serial')
                             ->maxLength(30),
                         Select::make('user_id')
-                            ->relationship('administrator', 'fullname')
+                            ->relationship(
+                                name: 'administrator',
+                                modifyQueryUsing: fn ($query, Model $record) => $query
+                                    ->whereHas(
+                                        'team',
+                                        fn ($query) => $query
+                                            ->where('institution_id', $record->institution_id)
+                                    )
+                                    ->orderBy('firstname')->orderBy('lastname'),
+                            )
+                            ->getOptionLabelFromRecordUsing(fn (Model $record): string => $record->fullname)
+                            ->searchable(['firstname', 'lastname'])
+                            ->preload()
                             ->required(),
                         Toggle::make('available'),
                     ]),
