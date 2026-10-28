@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Date;
 
 it('charts cumulative enrolment per site by month from the submission date', function (): void {
     Date::setTestNow('2026-04-15');
+    $this->actingAs($this->adminuser);
 
     $project = Project::factory()
         ->for(Team::factory())

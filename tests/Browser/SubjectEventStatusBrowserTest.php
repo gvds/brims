@@ -68,8 +68,12 @@ beforeEach(function (): void {
 });
 
 it('shows status as read-only for users without the update.event permission (browser)', function (): void {
-    // allow viewing the record without depending on project pivot data
-    Gate::before(fn ($user, $ability): ?true => $ability === 'view' ? true : null);
+    // The fixture uses an admin user, so explicitly deny updates while allowing the view.
+    Gate::before(fn ($user, $ability): ?true => match ($ability) {
+        'view' => true,
+        'update.event' => false,
+        default => null,
+    });
 
     $page = visit(route('filament.project.resources.subjects.view', ['tenant' => $this->project->id, 'record' => $this->subject->id]))
         ->assertSee('Status')
