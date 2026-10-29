@@ -127,7 +127,7 @@ class LabelQueue extends Page implements HasTable
             Action::make('print')
                 ->label('Print')
                 ->icon('heroicon-o-printer')
-                ->url(fn (SubjectEvent $record): string => route('labels.print', ['id' => [$record->id], 'labelFormat' => session('currentProject')->label_format]))
+                ->url(fn (SubjectEvent $record): string => route('labels.print', ['ids' => [$record->id], 'labelFormat' => session('currentProject')->label_format]))
                 ->openUrlInNewTab(),
         ];
     }

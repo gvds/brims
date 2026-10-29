@@ -69,9 +69,9 @@ it('loads the label queue page and shows queued events', function (): void {
         ->assertOk()
         ->assertCanSeeTableRecords([$this->subjectEvent])
         // ensure the single-record print action is rendered as a downloadable URL (prevents Livewire from returning binary)
-        ->assertSee(route('labels.print', ['ids' => [$this->subjectEvent->id]]))
+        ->assertSee(route('labels.print', ['ids' => [$this->subjectEvent->id], 'labelFormat' => $this->project->label_format]))
         // header action: print all labels for the project
-        ->assertSee(route('labels.print'));
+        ->assertSee(route('labels.print', ['labelFormat' => $this->project->label_format]));
 });
 
 it('can clear a single queued label from the queue', function (): void {
