@@ -69,7 +69,7 @@ beforeEach(function (): void {
 
 it('shows status as read-only for users without the update.event permission (browser)', function (): void {
     // The fixture uses an admin user, so explicitly deny updates while allowing the view.
-    Gate::before(fn ($user, $ability): ?true => match ($ability) {
+    Gate::before(fn ($user, $ability): ?bool => match ($ability) {
         'view' => true,
         'update.event' => false,
         default => null,

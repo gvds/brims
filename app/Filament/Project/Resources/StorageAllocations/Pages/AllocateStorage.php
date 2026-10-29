@@ -53,15 +53,15 @@ class AllocateStorage extends Page implements HasForms
             ->pivot
             ->site_id;
 
+        $loggedAtUserSite = fn ($query) => $query
+            ->where('status', SpecimenStatus::Logged)
+            ->where('site_id', $this->userSiteId);
+
         $this->specimenTypes = Specimentype::query()
             ->where('project_id', $this->project->id)
             ->whereNotNull('storageSpecimenType')
-            ->withCount([
-                'specimens' => fn ($query) => $query
-                    ->where('status', SpecimenStatus::Logged)
-                    ->where('site_id', $this->userSiteId),
-            ])
-            ->having('specimens_count', '>', 0)
+            ->whereHas('specimens', $loggedAtUserSite)
+            ->withCount(['specimens' => $loggedAtUserSite])
             ->get();
 
         $this->locationsCounts = VirtualUnit::query()

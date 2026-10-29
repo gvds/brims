@@ -20,6 +20,7 @@ use App\Models\Subject;
 use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\EditAction;
+use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\Artisan;
@@ -216,13 +217,11 @@ it('assigns the selected project role to a newly attached member in the project 
         'ownerRecord' => $this->project,
         'pageClass' => ViewProject::class,
     ])
-        ->mountAction('attach')
-        ->fillForm([
+        ->callAction(TestAction::make('attach')->table(), data: [
             'recordId' => $this->user3->id,
             'role_id' => $adminRole->id,
             'site_id' => $this->project->sites->first()->id,
-        ])
-        ->callMountedAction();
+        ]);
 
     assertDatabaseHas('model_has_roles', [
         'project_id' => $this->project->id,

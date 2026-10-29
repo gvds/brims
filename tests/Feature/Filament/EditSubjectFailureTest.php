@@ -18,7 +18,6 @@ it('does not show saved notification or persist changes when handleRecordUpdate 
         'name' => 'Test Site',
     ]);
 
-    // Subject in Generated status triggers the branch that builds events
     $subject = Subject::factory()->create([
         'subjectID' => 'TST12345',
         'project_id' => $project->id,
@@ -30,9 +29,7 @@ it('does not show saved notification or persist changes when handleRecordUpdate 
     // Use the pre-created admin user from the test harness
     $this->actingAs($this->adminuser);
 
-    // Call the page's handleRecordUpdate directly to assert that the
-    // exception bubbles and the record isn't partially saved. This avoids
-    // rendering the full Filament page in the test environment.
+    // Call handleRecordUpdate directly to avoid rendering the full Filament page.
     $page = new class extends EditSubject
     {
         public function callHandleRecordUpdate($record, array $data)
@@ -41,11 +38,15 @@ it('does not show saved notification or persist changes when handleRecordUpdate 
         }
     };
 
-    $this->expectException(Throwable::class);
+    $originalEnrolDate = $subject->fresh()->enrolDate;
 
-    $page->callHandleRecordUpdate($subject, ['enrolDate' => 'not-a-valid-date']);
+    Subject::updating(function (): void {
+        throw new RuntimeException('Update failed');
+    });
 
-    // Ensure the subject was not transitioned to Enrolled (no partial save)
-    $subject->refresh();
-    expect($subject->status)->toBe(SubjectStatus::Generated->value);
+    expect(fn () => $page->callHandleRecordUpdate($subject, ['enrolDate' => '2026-01-15']))
+        ->toThrow(RuntimeException::class, 'Update failed');
+
+    expect($subject->fresh()->status)->toBe(SubjectStatus::Generated)
+        ->and($subject->fresh()->enrolDate)->toBe($originalEnrolDate);
 });
