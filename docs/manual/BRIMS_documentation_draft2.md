@@ -67,44 +67,44 @@ This manual is written for three groups of staff who work with BRIMS as part of 
 This includes research nurses, study coordinators, and field staff who enrol participants, record follow-up events, and monitor participant progress through a study.
 
 Relevant chapters are:
-- Chapter 3 — Enrolling and Managing Participants
-- Chapter 4 — Recording Events and Follow-up
+- [Chapter 3 — Enrolling and Managing Participants](#chapter-3-enrolling-and-managing-participants)
+- [Chapter 4 — Recording Events and Follow-up](#chapter-4-recording-events-and-follow-up)
 
 ### Laboratory and Specimen Handling Staff
 
 This includes laboratory technicians, biobank staff, and anyone responsible for logging, storing, or shipping biological specimens.
 
 Relevant chapters are:
-- Chapter 5 — Logging Specimens
-- Chapter 6 — Managing Specimen Storage
-- Chapter 7 — Preparing and Receiving Shipments
+- [Chapter 5 — Logging Specimens](#chapter-5-logging-specimens)
+- [Chapter 6 — Managing Specimen Storage](#chapter-6-managing-specimen-storage)
+- [Chapter 7 — Preparing and Receiving Shipments](#chapter-7-preparing-and-receiving-shipments)
 
 ### Project Managers and Data Managers
 
 This includes project leaders, study administrators, and data managers responsible for configuring the system, linking data to studies, and producing reports.
 
 Relevant chapters are:
-- Chapter 2 — Setting Up a Project
-- Chapter 8 — Studies, Assay Data, and Publications
-- Chapter 9 — Searching, Reviewing, Exporting, and Importing Data
-- Chapter 11 — REDCap Integration
-- Chapter 12 — Administration Guide
+- [Chapter 2 — Setting Up a Project](#chapter-2-setting-up-a-project)
+- [Chapter 8 — Studies, Assay Data, and Publications](#chapter-8-studies-assay-data-and-publications)
+- [Chapter 9 — Searching, Reviewing, Exporting, and Importing Data](#chapter-9-searching-reviewing-exporting-and-importing-data)
+- [Chapter 11 — REDCap Integration](#chapter-11-redcap-integration)
+- [Chapter 12 — Administration Guide](#chapter-12-administration-guide)
 
 ---
 
 ## How to Use This Manual
 
-If you are new to BRIMS, read Chapter 1 — Getting Started first. This chapter explains how to sign in, how to navigate the system, and how your role affects what you can see and do.
+If you are new to BRIMS, read [Chapter 1 — Getting Started](#chapter-1-getting-started) first. This chapter explains how to sign in, how to navigate the system, and how your role affects what you can see and do.
 
 After that, follow the reading path for your role above.
 
-If you are troubleshooting a specific problem, go directly to Chapter 10 — Troubleshooting Common Problems.
+If you are troubleshooting a specific problem, go directly to [Chapter 10 — Troubleshooting Common Problems](#chapter-10-troubleshooting-common-problems).
 
-For REDCap integration setup and troubleshooting, refer to Chapter 11 — REDCap Integration.
+For REDCap integration setup and troubleshooting, refer to [Chapter 11 — REDCap Integration](#chapter-11-redcap-integration).
 
-For system administration tasks including user management and reference data configuration, refer to Chapter 12 — Administration Guide.
+For system administration tasks including user management and reference data configuration, refer to [Chapter 12 — Administration Guide](#chapter-12-administration-guide).
 
-For definitions of terms used across the system and this manual, refer to Chapter 13 — Glossary.
+For definitions of terms used across the system and this manual, refer to [Chapter 13 — Glossary](#chapter-13-glossary).
 
 ### Notes on Format
 
@@ -301,7 +301,7 @@ These practices are emphasised throughout the relevant chapters, but establishin
 | Find a participant | **Subjects** list |
 | Find a specimen | **Specimens** list |
 | Check your role | Contact your project administrator |
-| Report a problem | See Chapter 10 — Troubleshooting |
+| Report a problem | See [Chapter 10 — Troubleshooting Common Problems](#chapter-10-troubleshooting-common-problems) |
 
 ---
 
@@ -344,7 +344,7 @@ Navigate to your team's **Projects** section and select **New Project**.
 | **Title** | The full name of the project. This must be unique across the system. |
 | **Identifier** | A short alphanumeric code used to reference the project (e.g. `BRIM-001`). This must also be unique across the system. |
 | **Project Leader** | The user assigned as project lead. They are automatically added as a project administrator on creation. |
-| **Label Format** | The label specification that defines the format used for printing participant labels in this project. Label specifications are configured in advance by a system administrator (see Chapter 12 — Administration Guide). |
+| **Label Format** | The label specification that defines the format used for printing participant labels in this project. Label specifications are configured in advance by a system administrator (see [Chapter 12 — Administration Guide](#chapter-12-administration-guide)). |
 | **Subject ID Prefix** | Two to ten uppercase letters that will be prepended to all participant identifiers (e.g. `BRI`). |
 | **Subject ID Digits** | The number of digits in the numeric part of the participant ID (between two and eight). |
 
@@ -360,7 +360,7 @@ Navigate to your team's **Projects** section and select **New Project**.
 
 > **Important — Subject ID format:** The prefix and digit count together define the format of every participant identifier the system will generate. For example, a prefix of `BRI` with six digits produces IDs such as `BRI000001`, `BRI000002`, and so on. Choose this format according to your study protocol and confirm it with your team before saving. This setting is difficult to change once participants have been enrolled and identifiers have been issued.
 
-> **REDCap projects:** If this project needs to be linked to REDCap, do not use the standard project form. Instead, use the **Create New REDCap-Linked Project** option available from the team Projects section. See Chapter 11 — REDCap Integration for full setup and troubleshooting guidance.
+> **REDCap projects:** If this project needs to be linked to REDCap, do not use the standard project form. Instead, use the **Create New REDCap-Linked Project** option available from the team Projects section. See [Chapter 11 — REDCap Integration](#chapter-11-redcap-integration) for full setup and troubleshooting guidance.
 
 ### 2.1.3 What BRIMS creates automatically
 
@@ -372,7 +372,7 @@ When you save a new project, BRIMS sets up the following automatically:
 
 These defaults are a starting point. Review them before proceeding with the rest of the setup, particularly the initial site name and the Admin role permissions.
 
-Sections 2.2 to 2.6 cover the core project configuration steps accessed through **Project Configuration** in the main navigation panel. Select your project from the list of projects using the **Access** button, then open **Project Configuration** to find the tabs for Members, Sites, Arms, Labware and Specimen Types. Section 2.7 covers import value mappings and section 2.8 covers linking the project to team-level programmes.
+Sections [2.2](#22-adding-sites) to [2.6](#26-creating-studies) cover the core project configuration steps accessed through **Project Configuration** in the main navigation panel. Select your project from the list of projects using the **Access** button, then open **Project Configuration** to find the tabs for Members, Sites, Arms, Labware and Specimen Types. Section [2.7](#27-import-value-mappings) covers import value mappings and section [2.8](#28-linking-a-project-to-programmes) covers linking the project to team-level programmes.
 
 ---
 
@@ -1021,10 +1021,10 @@ Before logging specimens, confirm that:
 
 - The participant record exists and is enrolled
 - The relevant subject event has been scheduled
-- Specimen types and labware have been configured for the project (see Chapter 2 — Setting Up a Project)
+- Specimen types and labware have been configured for the project (see [Chapter 2 — Setting Up a Project](#chapter-2-setting-up-a-project))
 - You have the physical barcodes ready for scanning
 
-If the participant is not yet enrolled or the event has not been created, logging cannot proceed correctly. Return to Chapter 3 — Enrolling and Managing Participants or Chapter 4 — Recording Events and Follow-up if those steps are incomplete.
+If the participant is not yet enrolled or the event has not been created, logging cannot proceed correctly. Return to [Chapter 3 — Enrolling and Managing Participants](#chapter-3-enrolling-and-managing-participants) or [Chapter 4 — Recording Events and Follow-up](#chapter-4-recording-events-and-follow-up) if those steps are incomplete.
 
 ---
 
@@ -1317,7 +1317,7 @@ BRIMS does not have a dedicated specimen-by-specimen retrieval screen in the Spe
 - Use **Log as Used** to record that specimens have been consumed in an assay (sets status to **Used**)
 - Use **Log Return** to record that specimens have been returned to storage after a brief removal (sets status back to **In Storage**, with the option to increment the thaw count)
 
-Refer to Chapter 5 — Logging Specimens for instructions on using these bulk actions in the Specimens list.
+Refer to [Chapter 5 — Logging Specimens](#chapter-5-logging-specimens) for instructions on using these bulk actions in the Specimens list.
 
 > **Caution:** Always update the status when specimens are moved. If specimens are removed from storage without being logged out, the storage records will not reflect the real situation. This makes it more difficult to locate specimens later and creates inaccuracies in storage traceability reports.
 
@@ -1720,7 +1720,7 @@ Use the filtering and search capabilities to support day-to-day operational revi
 
 Navigate to a **Subject** record and view the **Subject Events** section. Events highlighted in red are overdue and awaiting logging. You can also scan the event list for Scheduled events that have passed their expected date.
 
-See Chapter 4 — Recording Events and Follow-up for more detail.
+See [Chapter 4 — Recording Events and Follow-up](#chapter-4-recording-events-and-follow-up) for more detail.
 
 ### 9.3.2 Review specimens awaiting storage
 
@@ -1787,7 +1787,7 @@ BRIMS does not have a single dedicated audit view across all record types. Recor
 - **Timestamps** on each record (created at, updated at, logged at, shipped date, received date, etc.)
 - **Status fields** that reflect the current state of the workflow
 - **Linked records** — for example, a specimen record links back to the subject event, and the subject event links back to the participant, providing a traceability chain through the system
-- **Specimen Audit Log** — the specimen detail (View) page includes a full audit log of every status change, including previous and new status, who made the change, and when (see Chapter 5, section 5.5.3)
+- **Specimen Audit Log** — the specimen detail (View) page includes a full audit log of every status change, including previous and new status, who made the change, and when (see [Chapter 5, section 5.5.3](#553-viewing-a-specimen-record))
 
 When a discrepancy needs to be investigated:
 
@@ -1802,7 +1802,7 @@ When a discrepancy needs to be investigated:
 
 Storage allocation reports are printed from the **Specimen Storage** list rather than the export system. Each allocation record has a **Print** action that opens a printable report listing the physical location assigned to each specimen.
 
-Refer to Chapter 6 — Managing Specimen Storage for details.
+Refer to [Chapter 6 — Managing Specimen Storage](#chapter-6-managing-specimen-storage) for details.
 
 ---
 
@@ -1810,7 +1810,7 @@ Refer to Chapter 6 — Managing Specimen Storage for details.
 
 BRIMS supports bulk import of subject, subject event, and specimen records from a CSV file. This is intended for migrating data from another system, not for day-to-day data entry. Imports are accessed from the project detail page — open the project via **Access**, which takes you to the **Configure Project Details** page, then select the **Data Import** button group.
 
-> **Important — data preparation:** Before running any import, prepare your source file carefully and review the Import Value Mappings configuration for your project (see Chapter 2 — Setting Up a Project, section 2.7). The import process validates each row and will reject rows that contain unrecognised values or fail business rule checks. Failed rows do not prevent other rows in the same file from being processed — only the valid rows are committed.
+> **Important — data preparation:** Before running any import, prepare your source file carefully and review the Import Value Mappings configuration for your project (see [Chapter 2 — Setting Up a Project, section 2.7](#27-import-value-mappings)). The import process validates each row and will reject rows that contain unrecognised values or fail business rule checks. Failed rows do not prevent other rows in the same file from being processed — only the valid rows are committed.
 
 > **Important — data sensitivity:** Import files may contain participant identifiers, specimen barcodes, and other sensitive research data. Handle import files according to your organisation's data governance procedures and delete them securely after use.
 
@@ -1963,7 +1963,7 @@ Before troubleshooting, gather the relevant reference information: project name,
 ### 10.2.4 The wrong arm is linked to a participant
 
 - Review the current arm assignment on the participant record.
-- If the arm needs to be changed, see Chapter 3 — Enrolling and Managing Participants, section 3.6 for the arm switch process. Note that switching arm will cancel any pending events on the old arm.
+- If the arm needs to be changed, see [Chapter 3 — Enrolling and Managing Participants, section 3.6](#36-switching-a-participants-arm) for the arm switch process. Note that switching arm will cancel any pending events on the old arm.
 
 ---
 
@@ -2007,7 +2007,7 @@ Before troubleshooting, gather the relevant reference information: project name,
 ### 10.4.4 A specimen has the wrong status
 
 - Review the specimen record and check all status fields and timestamps.
-- If the status needs to be corrected and there is a clear operational reason to do so, an authorised user can edit the record directly (see Chapter 5 — Logging Specimens, section 5.6).
+- If the status needs to be corrected and there is a clear operational reason to do so, an authorised user can edit the record directly (see [Chapter 5 — Logging Specimens, section 5.6](#56-editing-a-specimen-record)).
 - Where possible, use the logging workflows (Log Out, Log Return, Log as Used) rather than editing status directly, as these preserve the correct audit trail.
 
 ---
@@ -2099,7 +2099,7 @@ Providing accurate details when you escalate will help resolve the issue faster.
 | Log Event button missing | Check event status — must be Scheduled |
 | Barcode rejected at PSE scan | Correct project selected; event exists |
 | Specimen barcode fails | Labware barcode format vs physical label |
-| Update Specimen Status error | See section 10.4.5 — check barcode, status, and site |
+| Update Specimen Status error | See [section 10.4.5](#1045-the-update-specimen-status-action-returns-an-error) — check barcode, status, and site |
 | Specimen type disabled in allocation | Insufficient storage capacity configured |
 | Cannot edit manifest | Status must be Open |
 | Cannot receive manifest | Your site must match the destination site |
@@ -2129,7 +2129,7 @@ When a BRIMS project is linked to a REDCap project, certain participant and work
 
 REDCap-linked projects are created differently from standard BRIMS projects. They must be set up using the dedicated **Create New REDCap-Linked Project** workflow rather than the standard project creation form.
 
-> **Caution:** If a project that requires REDCap integration is created using the standard project form, it cannot be linked to REDCap after the fact. Always confirm whether REDCap integration is required before creating a new project. See Chapter 2 — Setting Up a Project for guidance on project creation.
+> **Caution:** If a project that requires REDCap integration is created using the standard project form, it cannot be linked to REDCap after the fact. Always confirm whether REDCap integration is required before creating a new project. See [Chapter 2 — Setting Up a Project](#chapter-2-setting-up-a-project) for guidance on project creation.
 
 ---
 
@@ -2170,7 +2170,7 @@ After creating a REDCap-linked project and configuring member tokens, verify tha
 
 1. Have an affected user sign in and confirm that REDCap-dependent workflow options are visible.
 2. Run a test action that relies on the REDCap link and confirm that the expected data is returned.
-3. If issues are found, refer to the troubleshooting steps in section 11.5 below.
+3. If issues are found, refer to the troubleshooting steps in [section 11.5](#115-troubleshooting-redcap-integration) below.
 
 ---
 
@@ -2351,7 +2351,7 @@ Programmes are team-level records that represent funded research initiatives spa
 
 ### 12.6.2 Linking programmes to projects
 
-Once a programme exists at the team level, it can be linked to one or more projects within the same team. See section 2.8 — Linking a Project to Programmes for the project-side workflow.
+Once a programme exists at the team level, it can be linked to one or more projects within the same team. See [section 2.8 — Linking a Project to Programmes](#28-linking-a-project-to-programmes) for the project-side workflow.
 
 ### 12.6.3 Reviewing programmes
 
@@ -2371,7 +2371,7 @@ Before onboarding a new project, confirm that the following are in place:
 - [ ] At least one label specification has been created and is available for the project
 - [ ] If the project uses REDCap: the project has been created using the **Create New REDCap-Linked Project** workflow and member tokens are configured
 
-> **Tip:** Walking through this checklist before a project begins active enrolment will prevent the most common setup errors. See Chapter 2 — Setting Up a Project for the full project configuration workflow, and Chapter 11 — REDCap Integration if the project requires a REDCap link.
+> **Tip:** Walking through this checklist before a project begins active enrolment will prevent the most common setup errors. See [Chapter 2 — Setting Up a Project](#chapter-2-setting-up-a-project) for the full project configuration workflow, and [Chapter 11 — REDCap Integration](#chapter-11-redcap-integration) if the project requires a REDCap link.
 
 ---
 
@@ -2471,7 +2471,7 @@ A project-level configuration record that translates field values used in an imp
 
 ### Institution
 
-A named organisation associated with users in BRIMS. Institutions are managed at the system level from the Admin panel. See Chapter 12 — Administration Guide, section 12.4.
+A named organisation associated with users in BRIMS. Institutions are managed at the system level from the Admin panel. See [Chapter 12 — Administration Guide, section 12.4](#124-managing-institutions).
 
 ### Labware
 

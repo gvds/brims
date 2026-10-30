@@ -1,7 +1,6 @@
 {
     "agents": [
-        "copilot",
-        "claude_code"
+        "copilot"
     ],
     "cloud": false,
     "guidelines": true,
@@ -9,7 +8,6 @@
     "nightwatch": false,
     "packages": [
         "filament/filament",
-        "fruitcake/laravel-debugbar",
         "achyutn/filament-log-viewer"
     ],
     "sail": false,
@@ -18,10 +16,8 @@
         "laravel-best-practices",
         "testing-best-practices",
         "livewire-development",
-        "octane-development",
         "tailwindcss-development",
         "filament-log-viewer-development",
-        "filament-development",
-        "debug-using-debugbar"
+        "filament-development"
     ]
 }

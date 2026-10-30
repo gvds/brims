@@ -94,7 +94,7 @@ class AppPanelProvider extends PanelProvider
                     ->sort(4)
                     ->visible(fn (): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
                 NavigationItem::make('Documentation')
-                    ->url('/docs')
+                    ->url(fn (): string => route('documentation'), shouldOpenInNewTab: true)
                     ->icon('heroicon-o-book-open')
                     ->sort(5),
             ])
