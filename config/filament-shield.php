@@ -242,6 +242,7 @@ return [
             App\Filament\App\Pages\Dashboard::class,
             App\Filament\Project\Pages\Dashboard::class,
             App\Filament\Admin\Pages\Dashboard::class,
+            App\Filament\App\Pages\Calendar::class,
         ],
     ],
 
