@@ -23,10 +23,13 @@ class ProjectsTable
                 if (in_array(Auth::user()->system_role, [SystemRoles::SuperAdmin, SystemRoles::SysAdmin])) {
                     return;
                 }
-                $query->where('team_id', Auth::user()->team_id);
-                if (Auth::user()->team_role !== TeamRoles::Admin->value) {
-                    $query->whereRelation('members', 'users.id', '=', Auth::id());
+                if (Auth::user()->team_role === TeamRoles::Admin->value && 'team_id' === Auth::user()->team_id) {
+                    $query->where(fn(Builder $q) => $q
+                        ->whereRelation('members', 'users.id', '=', Auth::id())
+                        ->orWhere('team_id', Auth::user()->team_id));
+                    return;
                 }
+                $query->whereRelation('members', 'users.id', '=', Auth::id());
             })
             ->columns([
                 TextColumn::make('id')
