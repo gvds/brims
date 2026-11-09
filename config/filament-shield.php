@@ -1,11 +1,15 @@
 <?php
 
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use App\Filament\Admin\Resources\Institutions\InstitutionResource;
 use App\Filament\Admin\Resources\LabelSpecifications\LabelSpecificationResource;
 use App\Filament\Admin\Resources\PhysicalUnits\PhysicalUnitResource;
 use App\Filament\Admin\Resources\Studydesigns\StudydesignResource;
 use App\Filament\Admin\Resources\UnitDefinitions\UnitDefinitionResource;
 use App\Filament\Admin\Resources\Users\UserResource;
+use App\Filament\Admin\Widgets\ActiveUsersChart;
+use App\Filament\Admin\Widgets\ProjectsChart;
+use App\Filament\Admin\Widgets\StatsOverview;
 use App\Filament\App\Resources\Projects\ProjectResource;
 use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use App\Filament\App\Resources\Teams\Resources\Programmes\ProgrammeResource;
@@ -19,6 +23,7 @@ use App\Filament\Project\Resources\Projects\Resources\Sites\SiteResource;
 use App\Filament\Project\Resources\Projects\Resources\Specimentypes\SpecimentypeResource;
 use App\Models\ProjectMember;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
+use Croustibat\FilamentJobsMonitor\Resources\QueueMonitorResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -218,7 +223,7 @@ return [
             SiteResource::class,
             SpecimentypeResource::class,
             LabwareResource::class,
-            // \Croustibat\FilamentJobsMonitor\Resources\QueueMonitorResource::class,
+            QueueMonitorResource::class,
             RoleResource::class,
         ],
     ],
@@ -243,6 +248,7 @@ return [
             App\Filament\Project\Pages\Dashboard::class,
             App\Filament\Admin\Pages\Dashboard::class,
             App\Filament\App\Pages\Calendar::class,
+            FilamentLogViewer::class,
         ],
     ],
 
@@ -265,6 +271,9 @@ return [
             FilamentInfoWidget::class,
             EventsDue::class,
             EventsOverdue::class,
+            StatsOverview::class,
+            ActiveUsersChart::class,
+            ProjectsChart::class,
         ],
     ],
 
