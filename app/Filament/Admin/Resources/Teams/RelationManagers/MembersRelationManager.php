@@ -58,7 +58,7 @@ class MembersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(50),
                 Select::make('team_role')
-                    ->options(fn (): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
+                    ->options(fn(): array|string => $this->ownerRecord->members->count() === 0 ? TeamRoles::admin() : TeamRoles::class)
                     ->required(),
                 TextInput::make('telephone')
                     ->prefix('+')
@@ -84,8 +84,8 @@ class MembersRelationManager extends RelationManager
                 TextColumn::make('telephone')
                     ->prefix('+')
                     ->searchable(),
-                TextColumn::make('institution')
-                    ->label('Institution'),
+                // TextColumn::make('institution')
+                //     ->label('Institution'),
                 TextColumn::make('team_role')
                     ->label('Role'),
                 IconColumn::make('active')
@@ -101,22 +101,22 @@ class MembersRelationManager extends RelationManager
             ])
             ->filters([
                 Filter::make('active')
-                    ->query(fn ($query) => $query->where('active', true))
+                    ->query(fn($query) => $query->where('active', true))
                     ->label('Active')
                     ->toggle(),
             ])
             ->deferFilters(false)
             ->headerActions([
                 AssociateAction::make()
-                    ->recordTitle(fn (User $record): string => $record->fullname)
-                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('active', true))
+                    ->recordTitle(fn(User $record): string => $record->fullname)
+                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('active', true))
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['firstname', 'lastname'])
-                    ->schema(fn (AssociateAction $action): array => [
+                    ->schema(fn(AssociateAction $action): array => [
                         $action->getRecordSelect(),
                         Select::make('role_id')
                             ->label('Role')
-                            ->options(fn () => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
+                            ->options(fn() => Role::where('project_id', $this->ownerRecord->id)->pluck('name', 'id'))
                             ->required(),
                         Select::make('site_id')
                             ->label('Site')

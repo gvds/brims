@@ -23,7 +23,7 @@ class REDCap
         //
     }
 
-    private static function curl(array $params, $redcap_api_token, array $data = [])
+    private static function curl(array $params, string $redcap_api_token, array $data = [])
     {
 
         $fields = [
