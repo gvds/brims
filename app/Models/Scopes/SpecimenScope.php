@@ -45,6 +45,11 @@ class SpecimenScope implements Scope
             return;
         }
 
+        // if the user is a project admin, they can see all specimens in the project
+        if ($membership->role->name === 'Admin') {
+            return;
+        }
+
         $builder->where($model->qualifyColumn('site_id'), $membership->site_id);
     }
 }

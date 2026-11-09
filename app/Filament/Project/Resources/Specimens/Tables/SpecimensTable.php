@@ -5,7 +5,9 @@ namespace App\Filament\Project\Resources\Specimens\Tables;
 use App\actions\LogSpecimenStatus;
 use App\Enums\SpecimenStatus;
 use App\Filament\Exports\SpecimenExporter;
+use App\Models\Scopes\SubjectEventScope;
 use App\Models\Specimen;
+use App\Models\SubjectEvent;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -27,12 +29,24 @@ class SpecimensTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn(Builder $query): Builder => $query->with([
+                'subjectEvent' => fn($query) => $query->withoutGlobalScope(SubjectEventScope::class),
+                'subjectEvent.arm',
+                'subjectEvent.event',
+            ]))
             ->columns([
                 TextColumn::make('barcode')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('subject.subjectID')
                     ->label('Subject ID')
                     ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('subjectEvent.arm.name')
+                    ->label('Arm')
+                    ->searchable(
+                        query: fn(Builder $query, string $search): Builder => self::searchSubjectEvent($query, 'event.arm', 'arms.name', $search),
+                        isIndividual: true,
+                        isGlobal: false
+                    ),
                 TextColumn::make('subjectEvent.event.name')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('specimenType.name')
@@ -49,8 +63,8 @@ class SpecimensTable
                     ->searchable(
                         query: function (Builder $query, string $search): Builder {
                             $matchingStatuses = collect(SpecimenStatus::cases())
-                                ->filter(fn ($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
-                                ->map(fn ($status) => $status->value);
+                                ->filter(fn($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
+                                ->map(fn($status) => $status->value);
 
                             return $query->whereIn('status', $matchingStatuses);
                         },
@@ -96,7 +110,7 @@ class SpecimensTable
                                 $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::Used, $records->pluck('barcode')->implode(','));
                                 Notification::make()
                                     ->title('Specimens Logged as Used')
-                                    ->body($specimen_count.' specimens have been logged as used.')
+                                    ->body($specimen_count . ' specimens have been logged as used.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -116,7 +130,7 @@ class SpecimensTable
                                 $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::LoggedOut, $records->pluck('barcode')->implode(','));
                                 Notification::make()
                                     ->title('Specimens Logged as Logged Out')
-                                    ->body($specimen_count.' specimens have been logged as logged out.')
+                                    ->body($specimen_count . ' specimens have been logged as logged out.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -144,7 +158,7 @@ class SpecimensTable
                                 $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::InStorage, $records->pluck('barcode')->implode(','), $thawed);
                                 Notification::make()
                                     ->title('Specimens Logged as Returned to Storage')
-                                    ->body($specimen_count.' specimens have been logged as returned to storage.')
+                                    ->body($specimen_count . ' specimens have been logged as returned to storage.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -166,7 +180,7 @@ class SpecimensTable
                                 ->distinct()
                                 ->pluck('parentSpecimen_id');
                             $blockedBarcodes = $records
-                                ->filter(fn (Specimen $record): bool => $specimenIdsWithDerivatives->contains($record->getKey()))
+                                ->filter(fn(Specimen $record): bool => $specimenIdsWithDerivatives->contains($record->getKey()))
                                 ->pluck('barcode')
                                 ->implode(', ');
 
@@ -192,10 +206,24 @@ class SpecimensTable
                         ->modifyQueryUsing(function ($query, $records) {
                             return $query->whereKey($records);
                         }),
-                ])->visible(fn (): bool => session('currentProject')->members()
+                ])->visible(fn(): bool => session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() > 0),
 
             ]);
+    }
+
+    /**
+     * Restrict specimens to those whose subject event matches the search term,
+     * bypassing the site restriction of SubjectEventScope (SpecimenScope already limits the rows).
+     */
+    private static function searchSubjectEvent(Builder $query, string $relation, string $column, string $search): Builder
+    {
+        return $query->whereIn(
+            'specimens.subject_event_id',
+            SubjectEvent::withoutGlobalScope(SubjectEventScope::class)
+                ->whereHas($relation, fn(Builder $relationQuery): Builder => $relationQuery->where($column, 'like', "%{$search}%"))
+                ->select('subject_event.id')
+        );
     }
 }
