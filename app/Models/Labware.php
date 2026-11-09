@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Labware extends Model
 {
@@ -31,5 +32,10 @@ class Labware extends Model
     public function specimenTypes(): HasMany
     {
         return $this->hasMany(Specimentype::class);
+    }
+
+    public function specimens(): HasManyThrough
+    {
+        return $this->hasManyThrough(Specimen::class, Specimentype::class, 'labware_id', 'specimenType_id');
     }
 }
