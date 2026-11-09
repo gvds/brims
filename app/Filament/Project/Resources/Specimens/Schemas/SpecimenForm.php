@@ -10,6 +10,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 
 class SpecimenForm
 {
@@ -55,8 +56,10 @@ class SpecimenForm
                     ->default(0),
                 Select::make('loggedBy_id')
                     ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
+                    ->getOptionLabelFromRecordUsing(fn (Model $record): string => $record->fullname)
+                    ->searchable(['firstname', 'lastname'])
                     ->requiredIf(
-                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
+                        fn (Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
                         true
                     ),
                 DatePicker::make('loggedAt'),
