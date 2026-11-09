@@ -59,15 +59,16 @@ class SpecimenForm
                     ->relationship(
                         name: 'loggedBy',
                         titleAttribute: 'firstname',
-                        modifyQueryUsing: fn (Builder $query) => $query->whereHas(
+                        modifyQueryUsing: fn(Builder $query) => $query->whereHas(
                             'projects',
-                            fn (Builder $projectQuery) => $projectQuery->whereKey(session('currentProject')->id)
+                            fn(Builder $projectQuery) => $projectQuery->whereKey(session('currentProject')->id)
                         )
                     )
-                    ->getOptionLabelFromRecordUsing(fn (Model $record): string => $record->fullname)
+                    ->getOptionLabelFromRecordUsing(fn(Model $record): string => $record->fullname)
                     ->searchable(['firstname', 'lastname'])
+                    ->preload()
                     ->requiredIf(
-                        fn (Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
+                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
                         true
                     ),
                 DatePicker::make('loggedAt'),
