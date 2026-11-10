@@ -176,7 +176,7 @@ class REDCap
         }
     }
 
-    private static function redcap_arms($redcap_api_token)
+    private static function redcap_arms(string $redcap_api_token)
     {
         $params = [
             'content' => 'arm',
@@ -186,7 +186,7 @@ class REDCap
         return collect(json_decode($arms))->sortBy('arm_num');
     }
 
-    private static function redcap_events($redcap_api_token, $arms = [])
+    private static function redcap_events(string $redcap_api_token, $arms = [])
     {
         $params = [
             'content' => 'event',
