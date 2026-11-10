@@ -117,7 +117,7 @@ class REDCap
             $arm = Arm::create([
                 'project_id' => $project->id,
                 'name' => $redcap_arm->name,
-                // 'redcap_arm_id' => $redcap_arm->arm_id,
+                'redcap_arm_id' => $redcap_arm->arm_id ?? null,
                 'arm_num' => $redcap_arm->arm_num,
             ]);
 
@@ -132,7 +132,7 @@ class REDCap
                     'offset_ante_window' => $redcap_event->offset_min,
                     'offset_post_window' => $redcap_event->offset_max,
                     'event_order' => $event_order++,
-                    // 'redcap_event_id' => $redcap_event->event_id,
+                    'redcap_event_id' => $redcap_event->event_id ?? null,
                     'autolog' => $redcap_event->day_offset == 0 ? true : false,
                 ]);
             }

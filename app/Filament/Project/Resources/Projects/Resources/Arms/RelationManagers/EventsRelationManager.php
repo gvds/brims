@@ -41,8 +41,6 @@ class EventsRelationManager extends RelationManager
                             ->autofocus(),
                         TextEntry::make('redcap_event_id')
                             ->visible(fn($record): bool => isset($record->redcap_event_id)),
-                        // ->integer()
-                        // ->default(null),
                     ])
                     ->columnSpanFull(),
                 TextInput::make('offset')
@@ -103,7 +101,7 @@ class EventsRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('redcap_event_id')
                     ->label('REDCap Event ID')
-                    ->alignCenter(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('autolog')
                     ->boolean(),
                 TextColumn::make('offset')
