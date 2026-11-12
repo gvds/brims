@@ -373,7 +373,7 @@ class LogPrimarySpecimens extends Page implements HasForms
                 ->action('submit');
         } else {
             $actions[] = Action::make('proceed')
-                ->label('Validate Barcode')
+                ->label('Load Specimen Form')
                 ->color('success')
                 ->action('loadSpecimenBarcodes');
         }
