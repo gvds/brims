@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             PublicationSeeder::class,
             UnitDefinitionSeeder::class,
             PhysicalUnitSeeder::class,
+            StudySeeder::class,
         ]);
     }
 }

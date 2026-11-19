@@ -19,9 +19,18 @@ class Study extends Model
 
     protected $guarded = ['id'];
 
-    public function project(): BelongsTo
+    // public function project(): BelongsTo
+    // {
+    //     return $this->belongsTo(Project::class);
+    // }
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Team::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function specimens(): BelongsToMany

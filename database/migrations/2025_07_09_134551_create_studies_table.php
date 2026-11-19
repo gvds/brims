@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Project;
+use App\Models\Team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('studies', function (Blueprint $table): void {
             $table->id();
-            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
+            // $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->string('identifier', 100)->unique();
             $table->string('title', 100);
             $table->text('description')->nullable();
@@ -25,8 +27,10 @@ return new class extends Migration
             $table->boolean('locked')->default(false);
             $table->timestamps();
 
-            $table->unique(['project_id', 'identifier']);
-            $table->unique(['project_id', 'title']);
+            // $table->unique(['project_id', 'identifier']);
+            // $table->unique(['project_id', 'title']);
+            $table->unique(['team_id', 'identifier']);
+            $table->unique(['team_id', 'title']);
         });
     }
 
