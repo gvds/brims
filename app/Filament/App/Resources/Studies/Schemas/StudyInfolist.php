@@ -18,6 +18,9 @@ class StudyInfolist
                         TextEntry::make('title'),
                         TextEntry::make('identifier'),
                     ]),
+                TextEntry::make('project.title')
+                    ->label('Projects')
+                    ->badge(),
                 TextEntry::make('description'),
                 Grid::make(3)
                     ->schema([

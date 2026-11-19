@@ -29,6 +29,6 @@ class EditStudy extends EditRecord
     #[\Override]
     protected function getRedirectUrl(): ?string
     {
-        return $this->getResource()::getUrl('view', ['project' => $this->record->project, 'record' => $this->getRecord()]);
+        return $this->getResource()::getUrl('view', ['record' => $this->getRecord()]);
     }
 }

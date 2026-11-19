@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function (): void {
     });
 
     Route::get('/documentation', fn(): BinaryFileResponse => response()
-        ->file(base_path('docs/documentation.html')))
+        ->file(base_path('documentation/documentation.html')))
         ->name('documentation');
 
     Route::get('/storage-allocations/{storageAllocation}', StorageAllocationReportController::class)

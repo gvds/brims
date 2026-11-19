@@ -24,11 +24,11 @@ class StudySpecimenImporter extends Importer
                     'required',
                     'max:20',
                     Rule::exists('specimens', 'barcode')
-                        ->where('project_id', $options['project']->id),
+                        ->whereIn('project_id', $options['projectIds']),
                 ])
                 ->fillRecordUsing(function ($record, $state, $options): void {
                     $specimen = Specimen::where('barcode', $state)
-                        ->where('project_id', $options['project']->id)
+                        ->whereIn('project_id', $options['projectIds'])
                         ->first();
 
                     if (! $specimen) {

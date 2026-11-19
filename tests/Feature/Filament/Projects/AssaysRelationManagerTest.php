@@ -42,15 +42,13 @@ beforeEach(function (): void {
         'leader_id' => $this->adminuser->id,
     ]);
 
-    // Set the current project in session to work with StudyScope
-    session()->put('currentProject', $this->project);
-
-    // Create a test study for the project
+    // Create a test study for the team and link it to the project
     $this->study = Study::factory()->create([
-        'project_id' => $this->project->id,
+        'team_id' => $this->team->id,
         'identifier' => 'TEST_STUDY_001',
         'title' => 'Test Study for Assays',
     ]);
+    $this->study->project()->attach($this->project);
 
     // Create an assay definition
     $this->assayDefinition = AssayDefinition::factory()->create([
@@ -610,7 +608,7 @@ describe('AssayDefinition Integration', function (): void {
 describe('Business Logic Validation', function (): void {
     it('maintains study context isolation', function (): void {
         $anotherStudy = Study::factory()->create([
-            'project_id' => $this->project->id,
+            'team_id' => $this->team->id,
             'identifier' => 'ANOTHER_STUDY_001',
             'title' => 'Another Test Study',
         ]);

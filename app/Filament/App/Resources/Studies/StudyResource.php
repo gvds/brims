@@ -20,7 +20,7 @@ class StudyResource extends Resource
 {
     protected static ?string $model = Study::class;
 
-    public static ?int $navigationSort = 9;
+    public static ?int $navigationSort = 3;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
@@ -42,6 +42,7 @@ class StudyResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\MembersRelationManager::class,
             RelationManagers\SpecimensRelationManager::class,
             RelationManagers\AssaysRelationManager::class,
         ];

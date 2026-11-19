@@ -25,6 +25,14 @@ class SpecimensRelationManager extends RelationManager
 {
     protected static string $relationship = 'specimens';
 
+    /**
+     * @return array<int, int>
+     */
+    protected function linkedProjectIds(): array
+    {
+        return $this->ownerRecord->project()->pluck('projects.id')->all();
+    }
+
     #[\Override]
     public function isReadOnly(): bool
     {
@@ -127,14 +135,14 @@ class SpecimensRelationManager extends RelationManager
                     ->schema([
                         Select::make('specimen_type_filter')
                             ->label('Filter by Specimen Type')
-                            ->options(fn () => Specimentype::where('project_id', $this->ownerRecord->project_id)
+                            ->options(fn () => Specimentype::whereIn('project_id', $this->linkedProjectIds())
                                 ->pluck('name', 'id'))
                             ->searchable()
                             ->placeholder('All specimen types')
                             ->live(),
                         Select::make('site_filter')
                             ->label('Filter by Site')
-                            ->options(fn () => Site::where('project_id', $this->ownerRecord->project_id)
+                            ->options(fn () => Site::whereIn('project_id', $this->linkedProjectIds())
                                 ->pluck('name', 'id'))
                             ->searchable()
                             ->placeholder('All sites')
@@ -146,7 +154,7 @@ class SpecimensRelationManager extends RelationManager
                             ->preload()
                             ->options(function (Get $get) {
                                 $query = Specimen::query()
-                                    ->where('project_id', $this->ownerRecord->project_id)
+                                    ->whereIn('project_id', $this->linkedProjectIds())
                                     ->whereNotIn('id', $this->ownerRecord->specimens()->pluck('specimens.id'));
 
                                 if ($specimenTypeId = $get('specimen_type_filter')) {
@@ -168,7 +176,7 @@ class SpecimensRelationManager extends RelationManager
                     ->importer(StudySpecimenImporter::class)
                     ->options(fn (): array => [
                         'study' => $this->ownerRecord,
-                        'project' => $this->ownerRecord->project,
+                        'projectIds' => $this->linkedProjectIds(),
                     ])
                     ->hidden(fn (): bool => $this->ownerRecord->locked)
                     ->color(Color::Indigo),

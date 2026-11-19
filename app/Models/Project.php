@@ -65,10 +65,11 @@ class Project extends Model implements HasName
         return $this->hasMany(Subject::class);
     }
 
-    // public function studies(): HasMany
-    // {
-    //     return $this->hasMany(Study::class);
-    // }
+    public function studies(): BelongsToMany
+    {
+        return $this->belongsToMany(Study::class)
+            ->withTimestamps();
+    }
 
     public function members(): BelongsToMany
     {

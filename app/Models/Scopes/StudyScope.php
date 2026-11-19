@@ -27,8 +27,13 @@ class StudyScope implements Scope
             return;
         }
 
-        $project = session('currentProject');
-
-        $builder->where($model->qualifyColumn('project_id'), $project?->getKey());
+        $builder->where(
+            fn (Builder $q) => $q
+                ->where($model->qualifyColumn('team_id'), $user->team_id)
+                ->orWhereHas(
+                    'members',
+                    fn (Builder $q) => $q->where('users.id', $user->id)
+                )
+        );
     }
 }

@@ -29,7 +29,7 @@ class StudyPolicy
 
     public function update(AuthUser $authUser, Study $study): bool
     {
-        return evaluate_permission($authUser, 'Manage:Study');
+        return $study->isLead($authUser);
     }
 
     public function delete(AuthUser $authUser, Study $study): bool

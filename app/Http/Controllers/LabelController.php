@@ -29,7 +29,7 @@ class LabelController extends Controller
             exit;
         }
         // $validated = $request->validate([
-        //     'id' => ['array'],
+        //     'ids' => ['array'],
         //     'id.*' => ['integer', 'exists:subject_event,id'],
         //     'labelFormat' => [
         //         'string',
@@ -41,7 +41,7 @@ class LabelController extends Controller
         $subjectEvents = SubjectEvent::join('subjects', 'subject_id', 'subjects.id')
             ->join('events', 'event_id', 'events.id')
             ->join('arms', 'events.arm_id', 'arms.id')
-            ->when($request->has('id'), fn($query) => $query->whereIn('subject_event.id', $request->input('id', [])))
+            ->when($request->has('ids'), fn($query) => $query->whereIn('subject_event.id', $request->input('ids', [])))
             ->whereHas('subject', fn(Builder $q) => $q
                 ->where('project_id', session('currentProject')->id)
                 ->whereIn('status', [SubjectStatus::Enrolled, SubjectStatus::Generated])

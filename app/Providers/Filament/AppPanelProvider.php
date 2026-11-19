@@ -36,7 +36,7 @@ class AppPanelProvider extends PanelProvider
 
         FilamentView::registerRenderHook(
             name: 'panels::head.end',
-            hook: fn (): string => Blade::render(string: "@vite('resources/js/app.js')"),
+            hook: fn(): string => Blade::render(string: "@vite('resources/js/app.js')"),
         );
     }
 
@@ -81,28 +81,19 @@ class AppPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Team')
-                    ->url(fn (): string => route('filament.app.resources.teams.view', [
-                        'record' => Auth::user()->team_id,
-                    ]))
-                    ->icon('heroicon-o-user-group')
-                    ->sort(3)
-                    ->visible(fn (): bool => Auth::user()->team_id !== null),
                 NavigationItem::make('Admin')
                     ->url('/admin')
                     ->icon('heroicon-o-wrench')
-                    ->sort(4)
-                    ->visible(fn (): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
+                    ->sort(5)
+                    ->visible(fn(): bool => Auth::user()->canAccessPanel(Filament::getPanel('admin'))),
                 NavigationItem::make('Documentation')
-                    ->url(fn (): string => route('documentation'), shouldOpenInNewTab: true)
+                    ->url(fn(): string => route('documentation'), shouldOpenInNewTab: true)
                     ->icon('heroicon-o-book-open')
-                    ->sort(5),
+                    ->sort(6),
             ])
             ->databaseNotifications()
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\Filament\App\Widgets')
             // ->widgets([
-            // AccountWidget::class,
-            // FilamentInfoWidget::class,
             // ])
             ->middleware([
                 EncryptCookies::class,
