@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Studies\RelationManagers;
+namespace App\Filament\App\Resources\Studies\RelationManagers;
 
 use App\Filament\Exports\StudySpecimenExporter;
 use App\Filament\Imports\StudySpecimenImporter;

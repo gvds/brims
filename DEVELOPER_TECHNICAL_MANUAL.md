@@ -96,8 +96,8 @@ Most business CRUD workflows are implemented through Filament resources rather t
 ### 6.1 Panel Domains
 
 - `app/Filament/Admin`: resources for users, teams, institutions, unit definitions, physical units (with virtual unit relation managers), study designs and label specifications; dashboard page; widgets `ActiveUsersChart`, `ProjectsChart`, `StatsOverview`
-- `app/Filament/App`: pages `Dashboard`, `Calendar`, `EditProfile`, `Login`; resources `Projects` and `Teams`; widgets `EventsDue`, `EventsOverdue`
-- `app/Filament/Project`: pages `Dashboard`, `LabelQueue`, `LogPrimarySpecimens`, `LogDerivativeSpecimens`; resources `Subjects`, `Studies`, `Specimens`, `Manifests`, `StorageAllocations`, `Publications`, `Roles` (Shield) and `Projects` (project configuration: members, events, assays, specimen types, sites, labware, etc., as relation managers); widgets `ProjectEventsDue`, `ProjectEventsOverdue`, `ProjectProgress`
+- `app/Filament/App`: pages `Dashboard`, `Calendar`, `EditProfile`, `Login`; resources `Projects`, `Studies` and `Teams`; widgets `EventsDue`, `EventsOverdue`
+- `app/Filament/Project`: pages `Dashboard`, `LabelQueue`, `LogPrimarySpecimens`, `LogDerivativeSpecimens`; resources `Subjects`, `Specimens`, `Manifests`, `StorageAllocations`, `Publications`, `Roles` (Shield) and `Projects` (project configuration: members, events, assays, specimen types, sites, labware, etc., as relation managers); widgets `ProjectEventsDue`, `ProjectEventsOverdue`, `ProjectProgress`
 - `app/Filament/Imports` and `app/Filament/Exports`: Filament importer/exporter classes (subjects, subject events, specimens, study specimens, manifest items). These run on the queue, so a queue worker is required for them to work. Export files are written to the `exports` disk (`storage/exports`)
 
 Resources follow the Filament 5 layout: `XResource.php` plus `Pages/`, `Schemas/`, `Tables/` and `RelationManagers/` subfolders.

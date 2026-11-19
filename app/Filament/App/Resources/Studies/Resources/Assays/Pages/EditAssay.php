@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Project\Resources\Studies\Resources\Assays\Pages;
+namespace App\Filament\App\Resources\Studies\Resources\Assays\Pages;
 
-use App\Filament\Project\Resources\Studies\Resources\Assays\AssayResource;
+use App\Filament\App\Resources\Studies\Resources\Assays\AssayResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

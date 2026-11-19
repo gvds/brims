@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Studies\Resources\Assays\Tables;
+namespace App\Filament\App\Resources\Studies\Resources\Assays\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;

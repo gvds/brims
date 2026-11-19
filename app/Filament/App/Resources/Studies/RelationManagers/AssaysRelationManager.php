@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Project\Resources\Studies\RelationManagers;
+namespace App\Filament\App\Resources\Studies\RelationManagers;
 
-use App\Filament\Project\Resources\Studies\Resources\Assays\Schemas\AssayForm;
-use App\Filament\Project\Resources\Studies\Resources\Assays\Tables\AssaysTable;
+use App\Filament\App\Resources\Studies\Resources\Assays\Schemas\AssayForm;
+use App\Filament\App\Resources\Studies\Resources\Assays\Tables\AssaysTable;
 use App\Models\Assay;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;

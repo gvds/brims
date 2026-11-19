@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Project\Resources\Studies\Resources\Assays;
+namespace App\Filament\App\Resources\Studies\Resources\Assays;
 
-use App\Filament\Project\Resources\Studies\Resources\Assays\Schemas\AssayForm;
-use App\Filament\Project\Resources\Studies\Resources\Assays\Tables\AssaysTable;
-use App\Filament\Project\Resources\Studies\StudyResource;
+use App\Filament\App\Resources\Studies\Resources\Assays\Schemas\AssayForm;
+use App\Filament\App\Resources\Studies\Resources\Assays\Tables\AssaysTable;
+use App\Filament\App\Resources\Studies\StudyResource;
 use App\Models\Assay;
 use BackedEnum;
 use Filament\Resources\Resource;

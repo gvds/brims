@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Project\Resources\Studies\Resources\Assays\Schemas;
+namespace App\Filament\App\Resources\Studies\Resources\Assays\Schemas;
 
 use App\Models\AssayDefinition;
 use Filament\Forms\Components\Checkbox;
