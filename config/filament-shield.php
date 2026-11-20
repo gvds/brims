@@ -17,6 +17,7 @@ use App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource;
 use App\Filament\App\Resources\Teams\TeamResource;
 use App\Filament\App\Widgets\EventsDue;
 use App\Filament\App\Widgets\EventsOverdue;
+use App\Filament\App\Resources\Studies\StudyResource;
 use App\Filament\Project\Resources\Projects\Resources\Arms\ArmResource;
 use App\Filament\Project\Resources\Projects\Resources\Labware\LabwareResource;
 use App\Filament\Project\Resources\Projects\Resources\Sites\SiteResource;
@@ -225,6 +226,7 @@ return [
             LabwareResource::class,
             QueueMonitorResource::class,
             RoleResource::class,
+            StudyResource::class,
         ],
     ],
 
