@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,11 +26,18 @@ class StudyForm
                 TextInput::make('identifier')
                     ->autocomplete(false)
                     ->required(),
-                Select::make('project')
+                // Toggle::make('project_linked')
+                //     ->label('Project-linked Study')
+                //     ->live()
+                //     ->disabled(fn (Get $get) => $get('projects') !== [])
+                //     ->dehydrated()
+                //     ->helperText('If checked, this study is linked to one or more projects.'),
+                Select::make('projects')
                     ->label('Projects')
-                    ->relationship('project', 'title')
+                    ->relationship('projects', 'title')
                     ->multiple()
                     ->preload()
+                    // ->live()
                     ->searchable()
                     ->helperText('A project cannot be removed while its specimens are attached to this study, or while that would leave a study member who is neither a team admin nor a member of another linked project.')
                     ->rules([
@@ -45,6 +53,8 @@ class StudyForm
                             }
                         },
                     ])
+                    // ->disabled(fn (Get $get) => $get('project_linked') === false)
+                    // ->saved()
                     ->columnSpanFull(),
                 Textarea::make('description')
                     ->default(null)
@@ -67,12 +77,12 @@ class StudyForm
      */
     private static function projectRemovalViolation(Study $study, array $projectIds): ?string
     {
-        $removedProjectIds = $study->project()
+        $removedProjectIds = $study->projects()
             ->pluck('projects.id')
             ->diff($projectIds)
             ->all();
 
-        $blockedTitles = $study->project()
+        $blockedTitles = $study->projects()
             ->whereKey($study->projectIdsWithSpecimens($removedProjectIds))
             ->pluck('projects.title');
 

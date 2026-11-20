@@ -29,7 +29,7 @@ class Study extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function project(): BelongsToMany
+    public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class)
             ->withTimestamps();
@@ -70,7 +70,7 @@ class Study extends Model
     {
         return static::eligibleMembersQuery(
             $this->team_id,
-            $this->project()->pluck('projects.id')->all(),
+            $this->projects()->pluck('projects.id')->all(),
         );
     }
 

@@ -79,7 +79,7 @@ it('creates a study owned by the team of the creating user and linked to the cho
         ->fillForm([
             'title' => 'Cohort Study',
             'identifier' => 'COHORT_001',
-            'project' => [$project->id],
+            'projects' => [$project->id],
         ])
         ->call('create')
         ->assertHasNoFormErrors();
@@ -87,7 +87,7 @@ it('creates a study owned by the team of the creating user and linked to the cho
     $study = Study::where('identifier', 'COHORT_001')->firstOrFail();
 
     expect($study->team_id)->toBe($this->team->id)
-        ->and($study->project->modelKeys())->toBe([$project->id]);
+        ->and($study->projects->modelKeys())->toBe([$project->id]);
 
     assertDatabaseHas('study_member', ['study_id' => $study->id, 'user_id' => $this->adminuser->id, 'role' => 'lead']);
 });
@@ -108,21 +108,21 @@ it('adds projects to an existing study', function (): void {
     $study = createStudyLedBy($this->adminuser);
 
     livewire(EditStudy::class, ['record' => $study->getKey()])
-        ->fillForm(['project' => $projects->modelKeys()])
+        ->fillForm(['projects' => $projects->modelKeys()])
         ->call('save')
         ->assertHasNoFormErrors();
 
-    expect($study->project()->pluck('projects.id')->all())->toEqualCanonicalizing($projects->modelKeys());
+    expect($study->projects()->pluck('projects.id')->all())->toEqualCanonicalizing($projects->modelKeys());
 });
 
 it('removes a project whose specimens are not attached to the study', function (): void {
     $project = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $study = createStudyLedBy($this->adminuser);
-    $study->project()->attach($project);
+    $study->projects()->attach($project);
     createSpecimenInProject($project, $this->adminuser);
 
     livewire(EditStudy::class, ['record' => $study->getKey()])
-        ->fillForm(['project' => []])
+        ->fillForm(['projects' => []])
         ->call('save')
         ->assertHasNoFormErrors();
 
@@ -132,13 +132,13 @@ it('removes a project whose specimens are not attached to the study', function (
 it('rejects removing a project while its specimens are attached to the study', function (): void {
     $project = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $study = createStudyLedBy($this->adminuser);
-    $study->project()->attach($project);
+    $study->projects()->attach($project);
     $study->specimens()->attach(createSpecimenInProject($project, $this->adminuser));
 
     livewire(EditStudy::class, ['record' => $study->getKey()])
-        ->fillForm(['project' => []])
+        ->fillForm(['projects' => []])
         ->call('save')
-        ->assertHasFormErrors(['project']);
+        ->assertHasFormErrors(['projects']);
 
     assertDatabaseHas('project_study', ['study_id' => $study->id, 'project_id' => $project->id]);
 });
@@ -147,15 +147,15 @@ it('keeps a project with attached specimens while another project is removed', f
     $keptProject = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $removedProject = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $study = createStudyLedBy($this->adminuser);
-    $study->project()->attach([$keptProject->id, $removedProject->id]);
+    $study->projects()->attach([$keptProject->id, $removedProject->id]);
     $study->specimens()->attach(createSpecimenInProject($keptProject, $this->adminuser));
 
     livewire(EditStudy::class, ['record' => $study->getKey()])
-        ->fillForm(['project' => [$keptProject->id]])
+        ->fillForm(['projects' => [$keptProject->id]])
         ->call('save')
         ->assertHasNoFormErrors();
 
-    expect($study->project()->pluck('projects.id')->all())->toBe([$keptProject->id]);
+    expect($study->projects()->pluck('projects.id')->all())->toBe([$keptProject->id]);
 });
 
 it('attaches a member to a study with a role', function (): void {
@@ -243,7 +243,7 @@ it('searches users by name when choosing a member to attach', function (): void 
 it('only offers team admins and members of linked projects as attachable members', function (): void {
     $project = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $study = createStudyLedBy($this->adminuser);
-    $study->project()->attach($project);
+    $study->projects()->attach($project);
     $teamAdmin = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Admin->value, 'firstname' => 'Zqa']);
     $projectMember = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Member->value, 'firstname' => 'Zqb']);
     $project->members()->attach($projectMember->id, ['role_id' => 'Member']);
@@ -260,15 +260,15 @@ it('only offers team admins and members of linked projects as attachable members
 it('rejects removing a project that a study member depends on for eligibility', function (): void {
     $project = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $study = createStudyLedBy($this->adminuser);
-    $study->project()->attach($project);
+    $study->projects()->attach($project);
     $projectMember = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Member->value]);
     $project->members()->attach($projectMember->id, ['role_id' => 'Member']);
     $study->members()->attach($projectMember, ['role' => StudyRoles::Lead->value]);
 
     livewire(EditStudy::class, ['record' => $study->getKey()])
-        ->fillForm(['project' => []])
+        ->fillForm(['projects' => []])
         ->call('save')
-        ->assertHasFormErrors(['project']);
+        ->assertHasFormErrors(['projects']);
 
     assertDatabaseHas('project_study', ['study_id' => $study->id, 'project_id' => $project->id]);
 });
@@ -276,13 +276,13 @@ it('rejects removing a project that a study member depends on for eligibility', 
 it('removes a project when its members remain eligible as team admins', function (): void {
     $project = Project::factory()->create(['team_id' => $this->team->id, 'leader_id' => $this->adminuser->id]);
     $study = createStudyLedBy($this->adminuser);
-    $study->project()->attach($project);
+    $study->projects()->attach($project);
     $teamAdmin = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Admin->value]);
     $project->members()->attach($teamAdmin->id, ['role_id' => 'Member']);
     $study->members()->attach($teamAdmin, ['role' => StudyRoles::Lead->value]);
 
     livewire(EditStudy::class, ['record' => $study->getKey()])
-        ->fillForm(['project' => []])
+        ->fillForm(['projects' => []])
         ->call('save')
         ->assertHasNoFormErrors();
 
@@ -295,7 +295,7 @@ it('rejects creating a study when the creator is neither a team admin nor a memb
     livewire(CreateStudy::class)
         ->fillForm(['title' => 'Cohort Study', 'identifier' => 'COHORT_001'])
         ->call('create')
-        ->assertHasFormErrors(['project']);
+        ->assertHasFormErrors(['projects']);
 
     assertDatabaseMissing('studies', ['identifier' => 'COHORT_001']);
 });

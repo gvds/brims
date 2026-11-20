@@ -18,9 +18,26 @@ class StudyInfolist
                         TextEntry::make('title'),
                         TextEntry::make('identifier'),
                     ]),
-                TextEntry::make('project.title')
+                // Fieldset::make('Projects')
+                //     ->schema([
+                //         TextEntry::make('project_linked')
+                //             ->hiddenLabel()
+                //             ->state('Non Project-linked Study')
+                //             ->extraAttributes(['class' => 'italic text-gray-500 dark:text-gray-400'])
+                //             ->size('xs')
+                //             ->visible(fn($record): bool => $record->project_linked == false),
+                //         TextEntry::make('projects.title')
+                //             ->hiddenLabel()
+                //             ->badge()
+                //             ->visible(fn($record): bool => $record->project_linked == true),
+                //     ])
+                //     ->contained(false)
+                //     ->extraAttributes(['class' => 'py-1']),
+                TextEntry::make('projects.title')
                     ->label('Projects')
-                    ->badge(),
+                    ->default('No Projects linked to this study')
+                    ->badge(fn($record) => $record->projects->isNotEmpty())
+                    ->extraAttributes(fn($record) => $record->projects->isEmpty() ? ['class' => 'italic text-xs text-gray-500 dark:text-gray-400'] : []),
                 TextEntry::make('description'),
                 Grid::make(3)
                     ->schema([

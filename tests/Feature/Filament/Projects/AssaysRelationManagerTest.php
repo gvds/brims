@@ -48,7 +48,7 @@ beforeEach(function (): void {
         'identifier' => 'TEST_STUDY_001',
         'title' => 'Test Study for Assays',
     ]);
-    $this->study->project()->attach($this->project);
+    $this->study->projects()->attach($this->project);
 
     // Create an assay definition
     $this->assayDefinition = AssayDefinition::factory()->create([
