@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\StudyRoles;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class StudyMembers extends Pivot
+class StudyMember extends Pivot
 {
     protected $table = 'study_member';
 

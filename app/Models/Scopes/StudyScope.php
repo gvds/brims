@@ -3,6 +3,7 @@
 namespace App\Models\Scopes;
 
 use App\Enums\SystemRoles;
+use App\Enums\TeamRoles;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -19,7 +20,6 @@ class StudyScope implements Scope
 
         if (! $user) {
             $builder->whereKey([]);
-
             return;
         }
 
@@ -27,13 +27,14 @@ class StudyScope implements Scope
             return;
         }
 
-        $builder->where(
-            fn (Builder $q) => $q
-                ->where($model->qualifyColumn('team_id'), $user->team_id)
-                ->orWhereHas(
-                    'members',
-                    fn (Builder $q) => $q->where('users.id', $user->id)
-                )
+        if ($user->team_role === TeamRoles::Admin) {
+            $builder->where($model->qualifyColumn('team_id'), $user->team_id);
+            return;
+        }
+
+        $builder->whereHas(
+            'members',
+            fn(Builder $query) => $query->where('users.id', $user->id)
         );
     }
 }

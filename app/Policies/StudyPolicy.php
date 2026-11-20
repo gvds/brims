@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\StudyRoles;
+use App\Enums\TeamRoles;
 use App\Models\Study;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
@@ -14,31 +16,32 @@ class StudyPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'View:Study');
+        return true;
     }
 
     public function view(AuthUser $authUser, Study $study): bool
     {
-        return evaluate_permission($authUser, 'View:Study');
+        return true;
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'Manage:Study');
+        return $authUser->team_role === TeamRoles::Admin;
     }
 
     public function update(AuthUser $authUser, Study $study): bool
     {
-        return $study->isLead($authUser);
+        return $authUser->team_role === TeamRoles::Admin ||
+            $study->members()->where('user_id', $authUser->id)->where('role', StudyRoles::Lead)->exists();
     }
 
     public function delete(AuthUser $authUser, Study $study): bool
     {
-        return evaluate_permission($authUser, 'Delete:Study');
+        return $authUser->team_role === TeamRoles::Admin;
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'Delete:Study');
+        return $authUser->team_role === TeamRoles::Admin;
     }
 }

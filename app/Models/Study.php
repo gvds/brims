@@ -38,7 +38,7 @@ class Study extends Model
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'study_member')
-            ->using(StudyMembers::class)
+            ->using(StudyMember::class)
             ->withPivot(['role'])
             ->withTimestamps();
     }

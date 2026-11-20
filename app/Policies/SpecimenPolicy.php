@@ -14,6 +14,7 @@ class SpecimenPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
+        return true;
         return evaluate_permission($authUser, 'View:Specimen');
     }
 

@@ -11,6 +11,7 @@ use App\Filament\Admin\Widgets\ActiveUsersChart;
 use App\Filament\Admin\Widgets\ProjectsChart;
 use App\Filament\Admin\Widgets\StatsOverview;
 use App\Filament\App\Resources\Projects\ProjectResource;
+use App\Filament\App\Resources\Studies\Resources\Assays\AssayResource;
 use App\Filament\App\Resources\Teams\Resources\AssayDefinitions\AssayDefinitionResource;
 use App\Filament\App\Resources\Teams\Resources\Programmes\ProgrammeResource;
 use App\Filament\App\Resources\Teams\Resources\Protocols\ProtocolResource;
@@ -227,6 +228,7 @@ return [
             QueueMonitorResource::class,
             RoleResource::class,
             StudyResource::class,
+            AssayResource::class,
         ],
     ],
 

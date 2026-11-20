@@ -13,12 +13,12 @@ class UserPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'View:User');
+        return true;
+        // return evaluate_permission($authUser, 'View:User');
     }
 
     public function view(AuthUser $authUser): bool
     {
-
         return evaluate_permission($authUser, 'View:User');
     }
 

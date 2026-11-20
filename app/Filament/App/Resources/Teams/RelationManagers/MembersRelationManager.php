@@ -4,10 +4,8 @@ namespace App\Filament\App\Resources\Teams\RelationManagers;
 
 use App\Enums\TeamRoles;
 use App\Models\User;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -119,9 +117,6 @@ class MembersRelationManager extends RelationManager
                         return $data;
                     }),
                 // AttachAction::make(),
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }
