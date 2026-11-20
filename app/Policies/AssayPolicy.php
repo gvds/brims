@@ -7,8 +7,10 @@ namespace App\Policies;
 use App\Enums\StudyRoles;
 use App\Enums\TeamRoles;
 use App\Models\Assay;
+use Filament\Facades\Filament;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
+use Illuminate\Support\Facades\Route;
 
 class AssayPolicy
 {
@@ -16,7 +18,10 @@ class AssayPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        if (Filament::getCurrentPanel()->getId() === 'app') {
+            return true;
+        }
+        return Route::current()->getName() === 'filament.app.resources.studies.view';
     }
 
     public function view(AuthUser $authUser, Assay $assay): bool
