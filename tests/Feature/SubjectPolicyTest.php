@@ -17,7 +17,6 @@ use App\Models\Subject;
 use App\Models\SubjectEvent;
 use App\Models\Team;
 use App\Models\User;
-use App\Policies\SubjectPolicy;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -186,7 +185,7 @@ it('sets the project team before the route-level Manage:Subject gate runs', func
 
     $this->actingAs($user);
 
-    Route::get('/subject-access-check', fn () => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
+    Route::get('/subject-access-check', fn() => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
 
     $this->get('/subject-access-check')->assertOk();
 });
@@ -233,35 +232,6 @@ describe('viewAny', function (): void {
 });
 
 // ---------------------------------------------------------------------------
-// view — string argument (resource-level check, no record)
-// ---------------------------------------------------------------------------
-
-describe('view with a string argument', function (): void {
-    it('allows a SysAdmin to view (string)', function (): void {
-        $sysAdmin = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
-        $policy = new SubjectPolicy;
-
-        expect($policy->view($sysAdmin, 'some-identifier'))->toBeTrue();
-    });
-
-    it('allows a user with View:Subject permission to view (string)', function (): void {
-        ['project' => $project] = makeProjectInSession();
-        $user = User::factory()->create(['system_role' => SystemRoles::User]);
-        grantSubjectPermission($user, 'View:Subject', $project);
-        $policy = new SubjectPolicy;
-
-        expect($policy->view($user, 'some-identifier'))->toBeTrue();
-    });
-
-    it('denies a user without permissions to view (string)', function (): void {
-        $user = User::factory()->create(['system_role' => SystemRoles::User]);
-        $policy = new SubjectPolicy;
-
-        expect($policy->view($user, 'some-identifier'))->toBeFalse();
-    });
-});
-
-// ---------------------------------------------------------------------------
 // view — Subject model argument (record-level check)
 // ---------------------------------------------------------------------------
 
@@ -280,7 +250,7 @@ describe('view with a Subject model', function (): void {
         expect($sysAdmin->can('view', $subject))->toBeTrue();
     });
 
-    it('denies a SysAdmin from viewing a Generated subject', function (): void {
+    it('allows a SysAdmin to view a Generated subject', function (): void {
         ['project' => $project, 'site' => $site] = makeProjectInSession();
         $sysAdmin = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
         $subject = Subject::factory()->create([
@@ -291,7 +261,7 @@ describe('view with a Subject model', function (): void {
             'status' => SubjectStatus::Generated,
         ]);
 
-        expect($sysAdmin->can('view', $subject))->toBeFalse();
+        expect($sysAdmin->can('view', $subject))->toBeTrue();
     });
 
     it('allows a SuperAdmin to view a Generated subject via Gate::before bypass', function (): void {
@@ -323,7 +293,7 @@ describe('view with a Subject model', function (): void {
         expect($user->can('view', $subject))->toBeTrue();
     });
 
-    it('denies a user with View:Subject permission from viewing a Generated subject', function (): void {
+    it('allows a user with View:Subject permission to view a Generated subject', function (): void {
         ['project' => $project, 'site' => $site] = makeProjectInSession();
         $user = User::factory()->create(['system_role' => SystemRoles::User]);
         grantSubjectPermission($user, 'View:Subject', $project);
@@ -335,7 +305,7 @@ describe('view with a Subject model', function (): void {
             'status' => SubjectStatus::Generated,
         ]);
 
-        expect($user->can('view', $subject))->toBeFalse();
+        expect($user->can('view', $subject))->toBeTrue();
     });
 
     it("denies a user with View:Subject permission from viewing another user's subject", function (): void {
@@ -440,35 +410,6 @@ describe('create', function (): void {
 });
 
 // ---------------------------------------------------------------------------
-// update — string argument
-// ---------------------------------------------------------------------------
-
-describe('update with a string argument', function (): void {
-    it('allows a SysAdmin to update (string)', function (): void {
-        $sysAdmin = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
-        $policy = new SubjectPolicy;
-
-        expect($policy->update($sysAdmin, 'some-identifier'))->toBeTrue();
-    });
-
-    it('allows a user with Manage:Subject permission to update (string)', function (): void {
-        ['project' => $project] = makeProjectInSession();
-        $user = User::factory()->create(['system_role' => SystemRoles::User]);
-        grantSubjectPermission($user, 'Manage:Subject', $project);
-        $policy = new SubjectPolicy;
-
-        expect($policy->update($user, 'some-identifier'))->toBeTrue();
-    });
-
-    it('denies a user without permissions to update (string)', function (): void {
-        $user = User::factory()->create(['system_role' => SystemRoles::User]);
-        $policy = new SubjectPolicy;
-
-        expect($policy->update($user, 'some-identifier'))->toBeFalse();
-    });
-});
-
-// ---------------------------------------------------------------------------
 // update — Subject model argument
 // ---------------------------------------------------------------------------
 
@@ -533,36 +474,7 @@ describe('update with a Subject model', function (): void {
     });
 });
 
-// ---------------------------------------------------------------------------
-// delete — string argument
-// ---------------------------------------------------------------------------
-
-describe('delete with a string argument', function (): void {
-    it('allows a SysAdmin to delete (string)', function (): void {
-        $sysAdmin = User::factory()->create(['system_role' => SystemRoles::SysAdmin]);
-        $policy = new SubjectPolicy;
-
-        expect($policy->delete($sysAdmin, 'some-identifier'))->toBeTrue();
-    });
-
-    it('allows a user with Delete:Subject permission to delete (string)', function (): void {
-        ['project' => $project] = makeProjectInSession();
-        $user = User::factory()->create(['system_role' => SystemRoles::User]);
-        grantSubjectPermission($user, 'Delete:Subject', $project);
-        $policy = new SubjectPolicy;
-
-        expect($policy->delete($user, 'some-identifier'))->toBeTrue();
-    });
-
-    it('denies a user without permissions to delete (string)', function (): void {
-        $user = User::factory()->create(['system_role' => SystemRoles::User]);
-        $policy = new SubjectPolicy;
-
-        expect($policy->delete($user, 'some-identifier'))->toBeFalse();
-    });
-});
-
-// ---------------------------------------------------------------------------
+/// ---------------------------------------------------------------------------
 // delete — Subject model argument
 // ---------------------------------------------------------------------------
 

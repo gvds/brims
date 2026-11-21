@@ -23,9 +23,9 @@ class LabwareTable
                     ->searchable(),
                 TextColumn::make('barcodeFormat'),
                 TextColumn::make('specimenTypes.name'),
-                TextColumn::make('specimenTypes_count')
-                    ->label('Specimen Types')
-                    ->counts('specimenTypes'),
+                TextColumn::make('specimens_count')
+                    ->label('Specimens')
+                    ->counts('specimens'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

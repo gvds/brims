@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Specimen;
+use Filament\Facades\Filament;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 
@@ -14,6 +15,9 @@ class SpecimenPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
+        if (Filament::getCurrentPanel()->getId() === 'app') {
+            return true;
+        }
         return evaluate_permission($authUser, 'View:Specimen');
     }
 

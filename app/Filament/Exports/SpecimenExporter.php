@@ -21,7 +21,7 @@ class SpecimenExporter extends Exporter
     public function __construct(Export $export, array $columnMap, array $options)
     {
         $validColumnNames = array_map(
-            fn (ExportColumn $column): string => $column->getName(),
+            fn(ExportColumn $column): string => $column->getName(),
             static::getColumns(),
         );
 
@@ -52,6 +52,8 @@ class SpecimenExporter extends Exporter
             ExportColumn::make('barcode'),
             ExportColumn::make('subjectEvent.subject.subjectID')
                 ->label('Subject ID'),
+            ExportColumn::make('subjectEvent.event.arm.name')
+                ->label('Arm Name'),
             ExportColumn::make('subjectEvent.event.name')
                 ->label('Event Name'),
             ExportColumn::make('subjectEvent.iteration')
@@ -61,7 +63,7 @@ class SpecimenExporter extends Exporter
             ExportColumn::make('originSite.name')
                 ->label('Origin Site'),
             ExportColumn::make('status')
-                ->formatStateUsing(fn (SpecimenStatus $state): string => $state->name),
+                ->formatStateUsing(fn(SpecimenStatus $state): string => $state->name),
             ExportColumn::make('parentSpecimen.barcode')
                 ->label('Parent Barcode')
                 ->enabledByDefault(false),
@@ -74,20 +76,20 @@ class SpecimenExporter extends Exporter
                 ->enabledByDefault(false),
             ExportColumn::make('loggedAt')
                 ->enabledByDefault(false),
-            ExportColumn::make('usedBy.username')
-                ->label('Used By')
-                ->enabledByDefault(false),
-            ExportColumn::make('usedAt')
-                ->enabledByDefault(false),
+            // ExportColumn::make('usedBy.username')
+            //     ->label('Used By')
+            //     ->enabledByDefault(false),
+            // ExportColumn::make('usedAt')
+            //     ->enabledByDefault(false),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your specimen export has completed and '.Number::format($export->successful_rows).' '.str('row')->plural($export->successful_rows).' exported.';
+        $body = 'Your specimen export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' '.Number::format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to export.';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
         }
 
         return $body;

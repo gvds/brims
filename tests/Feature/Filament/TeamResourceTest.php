@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\Teams\Pages\ListTeams;
 use App\Filament\Admin\Resources\Teams\RelationManagers\MembersRelationManager;
 use App\Filament\Admin\Resources\Teams\RelationManagers\ProjectsRelationManager;
 use App\Filament\Admin\Resources\Teams\TeamResource;
+use App\Models\Institution;
 use App\Models\Team;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
@@ -85,7 +86,8 @@ describe('TeamResource List Page', function (): void {
 
         expect(fn () => Team::where('name', 'NoAuthTeam')->first())->not->toThrow(Exception::class);
 
-        expect(Team::where('name', 'NoAuthTeam')->first()->name)->toBe('NoAuthTeam');
+        expect(Team::where('name', 'NoAuthTeam')->first())->toBeNull();
+        expect(Team::withoutGlobalScopes()->where('name', 'NoAuthTeam')->exists())->toBeTrue();
     });
 
     it('can edit team from table action', function (): void {
@@ -105,13 +107,15 @@ describe('TeamResource Create Page', function (): void {
     });
 
     it('can create a team with required fields', function (): void {
+        $institution = Institution::factory()->create();
         livewire(CreateTeam::class)
             ->fillForm([
                 'name' => 'New Research Team',
                 'description' => 'A team focused on clinical research',
+                'institution_id' => $institution->id,
             ])
             ->call('create')
-            ->assertRedirect();
+            ->assertSuccessful();
 
         assertDatabaseHas('teams', [
             'name' => 'New Research Team',
@@ -119,13 +123,15 @@ describe('TeamResource Create Page', function (): void {
         ]);
     });
 
-    it('can create a team with only name', function (): void {
+    it('can create a team without a description', function (): void {
+        $institution = Institution::factory()->create();
         livewire(CreateTeam::class)
             ->fillForm([
                 'name' => 'Minimal Team',
+                'institution_id' => $institution->id,
             ])
             ->call('create')
-            ->assertRedirect();
+            ->assertSuccessful();
 
         assertDatabaseHas('teams', [
             'name' => 'Minimal Team',
@@ -360,7 +366,7 @@ describe('TeamResource Leader Management', function (): void {
         $component = livewire(ProjectsRelationManager::class, [
             'ownerRecord' => $team,
             'pageClass' => EditTeam::class,
-        ])->mountTableAction('create');
+        ])->mountAction(TestAction::make('create')->table());
 
         $leaderOptions = $component->instance()
             ->getMountedTableActionForm()
@@ -384,7 +390,7 @@ describe('TeamResource Leader Management', function (): void {
         $component = livewire(ProjectsRelationManager::class, [
             'ownerRecord' => $this->team,
             'pageClass' => EditTeam::class,
-        ])->mountTableAction('new_redcap_project');
+        ])->mountAction(TestAction::make('new_redcap_project')->table());
 
         $leaderOptions = $component->instance()
             ->getMountedTableActionForm()
@@ -409,8 +415,9 @@ describe('TeamResource Access Control', function (): void {
         livewire(CreateTeam::class)
             ->assertForbidden();
 
+        // TeamScope hides all teams from guests, so the record cannot be resolved
         livewire(EditTeam::class, ['record' => $team->getRouteKey()])
-            ->assertForbidden();
+            ->assertNotFound();
     });
 
     it('allows admin users to access all team functions', function (): void {

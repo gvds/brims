@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Filament\App\Resources\Studies\Resources\Assays\Pages;
+
+use App\Filament\App\Resources\Studies\Resources\Assays\AssayResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+
+class ListAssays extends ListRecords
+{
+    protected static string $resource = AssayResource::class;
+
+    #[\Override]
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make(),
+        ];
+    }
+}

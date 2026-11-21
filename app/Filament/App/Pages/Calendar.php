@@ -39,23 +39,27 @@ class Calendar extends Page
 
     public static function canAccess(): bool
     {
+        $user = Auth::user();
 
-        if (Auth::user()->system_role === SystemRoles::SysAdmin) {
+        if ($user->system_role === SystemRoles::SysAdmin) {
             return true;
         }
 
-        $canInAnyTenant = Auth::user()->getTenants(Filament::getPanel('project'))
-            ->contains(function ($tenant) {
-                // Switch the context to the iteration's tenant
-                Filament::setTenant($tenant);
+        $originalTeamId = getPermissionsTeamId();
 
-                // Check standard Laravel policy / Spatie permission
-                return Auth::user()->can('Manage:Subject');
-            });
+        try {
+            return $user->getTenants(Filament::getPanel('project'))
+                ->contains(function (Project $project) use ($user): bool {
+                    // Spatie roles are scoped per project and cached on the user model
+                    setPermissionsTeamId($project->id);
+                    $user->unsetRelation('roles')->unsetRelation('permissions');
 
-        Filament::setTenant(null);
-
-        return $canInAnyTenant;
+                    return $user->can('Manage:Subject');
+                });
+        } finally {
+            setPermissionsTeamId($originalTeamId);
+            $user->unsetRelation('roles')->unsetRelation('permissions');
+        }
     }
 
     public function mount(): void

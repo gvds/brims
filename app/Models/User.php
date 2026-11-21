@@ -77,9 +77,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // if ($panel->getId() === 'project' && session()->missing('currentProject')) {
         if ($panel->getId() === 'project') {
-            // return false;
             return session()->has('currentProject');
         }
 
@@ -137,7 +135,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return 'storage/' . $this->avatar_url;
+        return 'storage/'.$this->avatar_url;
     }
 
     public function getTenants(Panel $panel): Collection
@@ -157,7 +155,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     protected function fullname(): Attribute
     {
         return new Attribute(
-            get: fn(): string => $this->firstname . ' ' . $this->lastname,
+            get: fn (): string => $this->firstname.' '.$this->lastname,
         );
     }
 
@@ -174,14 +172,14 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     protected function isTeamLeader(): Attribute
     {
         return new Attribute(
-            get: fn(): bool => $this->team && $this->id === $this->team->leader_id,
+            get: fn (): bool => $this->team && $this->id === $this->team->leader_id,
         );
     }
 
     protected function isTeamAdmin(): Attribute
     {
         return new Attribute(
-            get: fn(): bool => $this->team && $this->team_role === TeamRoles::Admin->value,
+            get: fn (): bool => $this->team && $this->team_role === TeamRoles::Admin->value,
         );
     }
 
@@ -189,6 +187,14 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     {
         return $this->belongsToMany(Project::class, 'project_member')
             ->withPivot(['id', 'role_id', 'site_id', 'substitute_id', 'redcap_token'])
+            ->withTimestamps();
+    }
+
+    public function studies(): BelongsToMany
+    {
+        return $this->belongsToMany(Study::class, 'study_member')
+            ->using(StudyMember::class)
+            ->withPivot(['role'])
             ->withTimestamps();
     }
 

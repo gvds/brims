@@ -53,15 +53,15 @@ class AllocateStorage extends Page implements HasForms
             ->pivot
             ->site_id;
 
+        $loggedAtUserSite = fn($query) => $query
+            ->where('status', SpecimenStatus::Logged)
+            ->where('site_id', $this->userSiteId);
+
         $this->specimenTypes = Specimentype::query()
             ->where('project_id', $this->project->id)
             ->whereNotNull('storageSpecimenType')
-            ->withCount([
-                'specimens' => fn ($query) => $query
-                    ->where('status', SpecimenStatus::Logged)
-                    ->where('site_id', $this->userSiteId),
-            ])
-            ->having('specimens_count', '>', 0)
+            ->whereHas('specimens', $loggedAtUserSite)
+            ->withCount(['specimens' => $loggedAtUserSite])
             ->get();
 
         $this->locationsCounts = VirtualUnit::query()
@@ -70,7 +70,7 @@ class AllocateStorage extends Page implements HasForms
             ->withCount('freeLocations')
             ->get()
             ->groupBy('storageSpecimenType')
-            ->map(fn (Collection $units): int => $units->sum('free_locations_count'));
+            ->map(fn(Collection $units): int => $units->sum('free_locations_count'));
 
         $this->form->fill();
     }
@@ -95,17 +95,17 @@ class AllocateStorage extends Page implements HasForms
                     ->options($this->specimenTypes->pluck('name', 'id')->all())
                     ->descriptions(
                         $this->specimenTypes->mapWithKeys(function (Specimentype $type) use ($insufficientStorage): array {
-                            $description = "{$type->specimens_count} ".str('specimen')->plural($type->specimens_count);
+                            $description = "{$type->specimens_count} " . str('specimen')->plural($type->specimens_count);
 
                             if ($insufficientStorage->get($type->id)) {
                                 $available = $this->locationsCounts->get($type->storageSpecimenType, 0);
-                                $description .= " — Insufficient storage: {$available} ".str('location')->plural($available).' available';
+                                $description .= " — Insufficient storage: {$available} " . str('location')->plural($available) . ' available';
                             }
 
                             return [$type->id => $description];
                         })->all()
                     )
-                    ->disableOptionWhen(fn (string $value): bool => $insufficientStorage->get((int) $value, false))
+                    ->disableOptionWhen(fn(string $value): bool => $insufficientStorage->get((int) $value, false))
                     ->required(),
             ])
             ->statePath('data');
@@ -145,8 +145,9 @@ class AllocateStorage extends Page implements HasForms
                 $locations = Location::query()
                     ->whereRelation('virtualUnit', 'project_id', $this->project->id)
                     ->whereRelation('virtualUnit', 'storageSpecimenType', $specimenType->storageSpecimenType)
+                    ->where('used', false)
                     ->unless($reuse_locations, function ($query): void {
-                        $query->where('used', false);
+                        $query->where('virgin', true);
                     })
                     ->limit($specimens->count())
                     ->lockForUpdate()

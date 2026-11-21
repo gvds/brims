@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectEventsOverdue extends TableWidget
 {
@@ -21,17 +22,28 @@ class ProjectEventsOverdue extends TableWidget
     #[\Override]
     public function table(Table $table): Table
     {
-        $substitutees = Auth::user()->substitutees()
-            ->pluck('users.id');
-
         return $table
             ->description('Click on a row to access the subject record')
-            ->query(
-                fn (): Builder => SubjectEvent::query()
-                    ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
-                    ->where('maxDate', '<', today())
-                    ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $substitutees->push(Auth::id())))
-            )
+            ->query(function (): Builder {
+                $overdueEventIds = Cache::remember(
+                    'project_events_overdue.' . session('currentProject')->id . '.' . Auth::id(),
+                    120,
+                    function (): array {
+                        $userIds = Auth::user()->substitutees
+                            ->pluck('users.id')
+                            ->push(Auth::id());
+
+                        return SubjectEvent::query()
+                            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                            ->where('maxDate', '<', today())
+                            ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $userIds))
+                            ->pluck('id')
+                            ->all();
+                    }
+                );
+
+                return SubjectEvent::query()->whereKey($overdueEventIds);
+            })
             ->columns([
                 TextColumn::make('subject.fullname')
                     ->icon(Heroicon::ChevronDoubleRight),
@@ -46,7 +58,7 @@ class ProjectEventsOverdue extends TableWidget
             ->emptyStateHeading('')
             ->recordUrl(
                 // fn(SubjectEvent $record) => dd(session('currentProject')->id)
-                fn (SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => session('currentProject')->id, 'record' => $record->subject_id])
+                fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => session('currentProject')->id, 'record' => $record->subject_id])
             );
     }
 }

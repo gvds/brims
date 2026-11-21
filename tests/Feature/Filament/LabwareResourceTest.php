@@ -73,7 +73,7 @@ describe('LabwareResource Table Functionality', function (): void {
             ->assertCanSeeTableRecords($this->labware)
             ->assertCanRenderTableColumn('name')
             ->assertCanRenderTableColumn('barcodeFormat')
-            ->assertCanRenderTableColumn('specimenTypes_count');
+            ->assertCanRenderTableColumn('specimens_count');
     });
 
     it('can bulk delete multiple labware records', function (): void {

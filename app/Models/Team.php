@@ -52,4 +52,9 @@ class Team extends Model
     {
         return $this->hasMany(Programme::class);
     }
+
+    public function studies(): HasMany
+    {
+        return $this->hasMany(Study::class);
+    }
 }

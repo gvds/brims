@@ -20,7 +20,6 @@ class ProjectSeeder extends Seeder
             $projects = Project::factory()
                 ->count(3)
                 ->for($team)
-                ->hasStudies(4)
                 ->hasSites(2)
                 ->hasLabware(5)
                 ->create([
@@ -30,7 +29,7 @@ class ProjectSeeder extends Seeder
                 $arms = Arm::factory()
                     ->count(3)
                     ->for($project)
-                    ->sequence(fn (Sequence $sequence): array => [
+                    ->sequence(fn(Sequence $sequence): array => [
                         'arm_num' => $sequence->index + 1,
                         'manual_enrol' => $sequence->index === 0 ? true : false,
                     ])

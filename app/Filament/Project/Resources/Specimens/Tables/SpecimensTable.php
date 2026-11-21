@@ -5,7 +5,9 @@ namespace App\Filament\Project\Resources\Specimens\Tables;
 use App\actions\LogSpecimenStatus;
 use App\Enums\SpecimenStatus;
 use App\Filament\Exports\SpecimenExporter;
+use App\Models\Scopes\SubjectEventScope;
 use App\Models\Specimen;
+use App\Models\SubjectEvent;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -27,12 +29,24 @@ class SpecimensTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
+                'subjectEvent' => fn ($query) => $query->withoutGlobalScope(SubjectEventScope::class),
+                'subjectEvent.arm',
+                'subjectEvent.event',
+            ]))
             ->columns([
                 TextColumn::make('barcode')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('subject.subjectID')
                     ->label('Subject ID')
                     ->searchable(isIndividual: true, isGlobal: false),
+                TextColumn::make('subjectEvent.arm.name')
+                    ->label('Arm')
+                    ->searchable(
+                        query: fn (Builder $query, string $search): Builder => self::searchSubjectEvent($query, 'event.arm', 'arms.name', $search),
+                        isIndividual: true,
+                        isGlobal: false
+                    ),
                 TextColumn::make('subjectEvent.event.name')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('specimenType.name')
@@ -58,7 +72,8 @@ class SpecimensTable
                         isGlobal: false
                     ),
                 TextColumn::make('aliquot')
-                    ->numeric(),
+                    ->numeric()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('loggedBy.fullname')
                     ->label('Logged By')
                     ->searchable(isIndividual: true, isGlobal: false)
@@ -69,7 +84,8 @@ class SpecimensTable
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('parentSpecimen.barcode')
                     ->label('Parent Barcode')
-                    ->searchable(isIndividual: true, isGlobal: false),
+                    ->searchable(isIndividual: true, isGlobal: false)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -197,5 +213,19 @@ class SpecimensTable
                     ->count() > 0),
 
             ]);
+    }
+
+    /**
+     * Restrict specimens to those whose subject event matches the search term,
+     * bypassing the site restriction of SubjectEventScope (SpecimenScope already limits the rows).
+     */
+    private static function searchSubjectEvent(Builder $query, string $relation, string $column, string $search): Builder
+    {
+        return $query->whereIn(
+            'specimens.subject_event_id',
+            SubjectEvent::withoutGlobalScope(SubjectEventScope::class)
+                ->whereHas($relation, fn (Builder $relationQuery): Builder => $relationQuery->where($column, 'like', "%{$search}%"))
+                ->select('subject_event.id')
+        );
     }
 }

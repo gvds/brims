@@ -6,6 +6,7 @@ use App\Models\Specimen;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class SpecimenInfolist
@@ -17,8 +18,15 @@ class SpecimenInfolist
                 TextEntry::make('barcode'),
                 TextEntry::make('subject.subjectID')
                     ->label('Subject ID'),
-                TextEntry::make('subjectEvent.event.name')
-                    ->label('Subject Event'),
+                TextEntry::make('subjectEvent.event.arm.name')
+                    ->label('Arm'),
+                Grid::make(2)
+                    ->schema([
+                        TextEntry::make('subjectEvent.event.name')
+                            ->label('Event'),
+                        TextEntry::make('subjectEvent.iteration')
+                            ->label('Iteration'),
+                    ]),
                 TextEntry::make('specimenType.name')
                     ->label('Specimen Type'),
                 TextEntry::make('parentSpecimen.barcode')
@@ -30,11 +38,11 @@ class SpecimenInfolist
                 TextEntry::make('status'),
                 TextEntry::make('aliquot'),
                 TextEntry::make('volume')
-                    ->suffix(fn (Specimen $record): string => ' '.$record->volumeUnit),
+                    ->suffix(fn(Specimen $record): string => ' ' . $record->volumeUnit),
                 TextEntry::make('thawcount')
                     ->label('Thaw Count')
                     ->badge()
-                    ->color(fn (int $state): string => $state === 0 ? 'info' : 'danger'),
+                    ->color(fn(int $state): string => $state === 0 ? 'info' : 'danger'),
                 TextEntry::make('loggedBy.fullname')
                     ->label('Logged By'),
                 TextEntry::make('loggedAt'),

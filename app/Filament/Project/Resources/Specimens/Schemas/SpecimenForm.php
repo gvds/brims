@@ -7,8 +7,11 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class SpecimenForm
 {
@@ -17,8 +20,16 @@ class SpecimenForm
         return $schema
             ->components([
                 TextEntry::make('barcode'),
-                TextEntry::make('subjectEvent.event.name')
-                    ->label('Subject Event'),
+                Grid::make(2)
+                    ->schema([
+                        TextEntry::make('subjectEvent.event.arm.name')
+                            ->label('Arm'),
+                        TextEntry::make('subjectEvent.event.name')
+                            ->label('Event'),
+                        TextEntry::make('subjectEvent.iteration')
+                            ->label('Event Iteration'),
+                    ])
+                    ->columns(3),
                 Select::make('specimenType_id')
                     ->relationship(name: 'specimenType', titleAttribute: 'name')
                     ->required(),
@@ -45,9 +56,19 @@ class SpecimenForm
                     ->numeric()
                     ->default(0),
                 Select::make('loggedBy_id')
-                    ->relationship(name: 'loggedBy', titleAttribute: 'firstname')
+                    ->relationship(
+                        name: 'loggedBy',
+                        titleAttribute: 'firstname',
+                        modifyQueryUsing: fn(Builder $query) => $query->whereHas(
+                            'projects',
+                            fn(Builder $projectQuery) => $projectQuery->whereKey(session('currentProject')->id)
+                        )
+                    )
+                    ->getOptionLabelFromRecordUsing(fn(Model $record): string => $record->fullname)
+                    ->searchable(['firstname', 'lastname'])
+                    ->preload()
                     ->requiredIf(
-                        fn (Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
+                        fn(Get $get): bool => in_array($get('status'), [SpecimenStatus::Logged, SpecimenStatus::LoggedOut]),
                         true
                     ),
                 DatePicker::make('loggedAt'),
