@@ -21,34 +21,40 @@ class AssayPolicy
         if (Filament::getCurrentPanel()->getId() === 'app') {
             return true;
         }
+
         return Route::current()->getName() === 'filament.app.resources.studies.view';
     }
 
     public function view(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->team_role === TeamRoles::Admin ||
+        return $this->isAdminOfStudyTeam($authUser, $assay) ||
             $assay->study->members()->where('user_id', $authUser->id)->exists();
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->team_role === TeamRoles::Admin;
+        return $authUser->team_role === TeamRoles::Admin->value;
     }
 
     public function update(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->team_role === TeamRoles::Admin ||
+        return $this->isAdminOfStudyTeam($authUser, $assay) ||
             $assay->study->members()->where('user_id', $authUser->id)->where('role', StudyRoles::Lead)->exists();
     }
 
     public function delete(AuthUser $authUser, Assay $assay): bool
     {
-        return $authUser->team_role === TeamRoles::Admin ||
+        return $this->isAdminOfStudyTeam($authUser, $assay) ||
             $assay->study->members()->where('user_id', $authUser->id)->where('role', StudyRoles::Lead)->exists();
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
         return false;
+    }
+
+    private function isAdminOfStudyTeam(AuthUser $authUser, Assay $assay): bool
+    {
+        return $authUser->team_role === TeamRoles::Admin->value && $authUser->team_id === $assay->study->team_id;
     }
 }

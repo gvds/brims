@@ -22,7 +22,7 @@ class MembersRelationManager extends RelationManager
     #[\Override]
     public function isReadOnly(): bool
     {
-        return ! $this->getOwnerRecord()->isLead(Auth::user());
+        return Auth::user()->cannot('update', $this->getOwnerRecord());
     }
 
     public function table(Table $table): Table

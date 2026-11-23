@@ -312,7 +312,7 @@ it('shows the study role name of each member in the members table', function ():
 
 it('forbids editing a study to users who are not its lead', function (): void {
     $study = createStudyLedBy($this->adminuser);
-    $nonLead = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Admin->value]);
+    $nonLead = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Member->value]);
     $study->members()->attach($nonLead, ['role' => StudyRoles::Member->value]);
     actingAs($nonLead);
 
@@ -322,7 +322,7 @@ it('forbids editing a study to users who are not its lead', function (): void {
 
 it('hides the member actions from users who are not a lead of the study', function (): void {
     $study = createStudyLedBy($this->adminuser);
-    $nonLead = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Admin->value]);
+    $nonLead = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Member->value]);
     $study->members()->attach($nonLead, ['role' => StudyRoles::Member->value]);
     actingAs($nonLead);
 
@@ -331,4 +331,43 @@ it('hides the member actions from users who are not a lead of the study', functi
         ->assertActionHidden(TestAction::make(AttachAction::class)->table())
         ->assertActionHidden(TestAction::make(EditAction::class)->table($nonLead))
         ->assertActionHidden(TestAction::make(DetachAction::class)->table($nonLead));
+});
+
+it('lets a team admin create a study and become its lead', function (): void {
+    $teamAdmin = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Admin->value]);
+    actingAs($teamAdmin);
+
+    livewire(CreateStudy::class)
+        ->fillForm(['title' => 'Admin Study', 'identifier' => 'ADMIN_001'])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $study = Study::where('identifier', 'ADMIN_001')->firstOrFail();
+    expect($study->team_id)->toBe($this->team->id)
+        ->and($study->isLead($teamAdmin))->toBeTrue();
+});
+
+it('forbids a team member from creating a study', function (): void {
+    actingAs(User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Member->value]));
+
+    livewire(CreateStudy::class)->assertForbidden();
+});
+
+it('gives a team admin the same access as a lead on studies they are not a member of', function (): void {
+    $study = createStudyLedBy($this->adminuser);
+    $teamAdmin = User::factory()->create(['team_id' => $this->team->id, 'team_role' => TeamRoles::Admin->value]);
+    actingAs($teamAdmin);
+
+    livewire(EditStudy::class, ['record' => $study->getKey()])->assertSuccessful();
+
+    livewire(MembersRelationManager::class, ['ownerRecord' => $study, 'pageClass' => ViewStudy::class])
+        ->assertActionVisible(TestAction::make(AttachAction::class)->table());
+});
+
+it('gives a team admin no access to studies of another team', function (): void {
+    $otherTeamAdmin = User::factory()->create(['team_id' => Team::factory()->create()->id, 'team_role' => TeamRoles::Admin->value]);
+    $study = createStudyLedBy($this->adminuser);
+
+    expect($otherTeamAdmin->can('update', $study))->toBeFalse()
+        ->and($otherTeamAdmin->can('delete', $study))->toBeFalse();
 });

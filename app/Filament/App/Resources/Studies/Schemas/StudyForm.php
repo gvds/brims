@@ -9,7 +9,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +21,7 @@ class StudyForm
                 TextInput::make('title')
                     ->autocomplete(false)
                     ->required()
-                    ->unique(ignorable: fn(?Study $record): ?Study => $record),
+                    ->unique(ignorable: fn (?Study $record): ?Study => $record),
                 TextInput::make('identifier')
                     ->autocomplete(false)
                     ->required(),
@@ -41,7 +40,7 @@ class StudyForm
                     ->searchable()
                     ->helperText('A project cannot be removed while its specimens are attached to this study, or while that would leave a study member who is neither a team admin nor a member of another linked project.')
                     ->rules([
-                        fn(?Study $record): Closure => function (string $attribute, mixed $value, Closure $fail) use ($record): void {
+                        fn (?Study $record): Closure => function (string $attribute, mixed $value, Closure $fail) use ($record): void {
                             $projectIds = $value ?? [];
 
                             $message = $record
@@ -87,13 +86,13 @@ class StudyForm
             ->pluck('projects.title');
 
         if ($blockedTitles->isNotEmpty()) {
-            return 'Cannot remove ' . $blockedTitles->join(', ') . ': specimens from ' . ($blockedTitles->count() > 1 ? 'these projects are' : 'this project is') . ' attached to the study.';
+            return 'Cannot remove '.$blockedTitles->join(', ').': specimens from '.($blockedTitles->count() > 1 ? 'these projects are' : 'this project is').' attached to the study.';
         }
 
         $ineligibleMembers = $study->membersIneligibleWithProjects($projectIds);
 
         if ($ineligibleMembers->isNotEmpty()) {
-            return 'Cannot remove these projects: ' . $ineligibleMembers->pluck('fullname')->join(', ') . ' would no longer be eligible to be study members. Remove them from the study first.';
+            return 'Cannot remove these projects: '.$ineligibleMembers->pluck('fullname')->join(', ').' would no longer be eligible to be study members. Remove them from the study first.';
         }
 
         return null;

@@ -20,6 +20,7 @@ class StudyScope implements Scope
 
         if (! $user) {
             $builder->whereKey([]);
+
             return;
         }
 
@@ -27,8 +28,9 @@ class StudyScope implements Scope
             return;
         }
 
-        if ($user->team_role === TeamRoles::Admin) {
+        if ($user->team_role === TeamRoles::Admin->value) {
             $builder->where($model->qualifyColumn('team_id'), $user->team_id);
+
             return;
         }
 
