@@ -35,7 +35,7 @@ class AllocateStorage extends Page implements HasForms
 
     public ?array $data = [];
 
-    public ?Project $project;
+    public ?Project $project = null;
 
     public Collection $specimenTypes;
 

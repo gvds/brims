@@ -62,7 +62,7 @@ class SubjectEventImporter extends Importer
                         }
                     },
                 ])
-                ->fillRecordUsing(fn () => null),
+                ->fillRecordUsing(fn (): null => null),
             ImportColumn::make('event')
                 ->requiredMapping()
                 ->fillRecordUsing(function (SubjectEvent $record, $state, Importer $importer): void {

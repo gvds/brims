@@ -31,7 +31,7 @@ class Calendar extends Page
 
     public Carbon $date;
 
-    public ?string $month;
+    public ?string $month = null;
 
     public int $year;
 
@@ -71,7 +71,7 @@ class Calendar extends Page
         $this->projects = Project::where('active', true)
             ->whereHas(
                 'subjects',
-                function ($query) {
+                function ($query): void {
                     $query->whereIn('user_id', $this->user_ids);
                 }
             )->get();
@@ -91,7 +91,7 @@ class Calendar extends Page
 
         $this->subjectEvents = SubjectEvent::query()
             ->with(['subject.project', 'event.arm'])
-            ->whereHas('user', function ($query) {
+            ->whereHas('user', function ($query): void {
                 $query->whereIn('users.id', $this->user_ids);
             })
             ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])

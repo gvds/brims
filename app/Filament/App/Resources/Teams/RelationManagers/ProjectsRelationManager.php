@@ -164,7 +164,7 @@ class ProjectsRelationManager extends RelationManager
                                             ->orderBy('app_title')
                                             ->pluck('app_title', 'redcap_projects.project_id')
                                             ->toArray();
-                                    } catch (QueryException $e) {
+                                    } catch (QueryException) {
                                         Notification::make()
                                             ->title('REDCap unavailable')
                                             ->body('Could not connect to the REDCap database. Please try again later.')

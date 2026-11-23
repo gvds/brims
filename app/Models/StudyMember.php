@@ -11,7 +11,10 @@ class StudyMember extends Pivot
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'role' => StudyRoles::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'role' => StudyRoles::class,
+        ];
+    }
 }

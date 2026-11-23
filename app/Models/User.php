@@ -185,14 +185,14 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'project_member')
+        return $this->belongsToMany(Project::class, \App\Models\ProjectMember::class)
             ->withPivot(['id', 'role_id', 'site_id', 'substitute_id', 'redcap_token'])
             ->withTimestamps();
     }
 
     public function studies(): BelongsToMany
     {
-        return $this->belongsToMany(Study::class, 'study_member')
+        return $this->belongsToMany(Study::class, \App\Models\StudyMember::class)
             ->using(StudyMember::class)
             ->withPivot(['role'])
             ->withTimestamps();

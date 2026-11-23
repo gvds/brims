@@ -64,7 +64,7 @@ class Specimen extends Model
 
     public function studies(): BelongsToMany
     {
-        return $this->belongsToMany(Study::class, 'study_specimens')
+        return $this->belongsToMany(Study::class, \App\Models\StudySpecimen::class)
             // ->using(StudySpecimen::class)
             ->withTimestamps();
     }
@@ -167,7 +167,7 @@ class Specimen extends Model
 
     public function manifests(): BelongsToMany
     {
-        return $this->belongsToMany(Manifest::class, 'manifest_items')
+        return $this->belongsToMany(Manifest::class, \App\Models\ManifestItem::class)
             ->using(ManifestItem::class)
             ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
             ->withTimestamps();

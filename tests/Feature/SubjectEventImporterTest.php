@@ -21,7 +21,7 @@ use Illuminate\Validation\ValidationException;
 
 use function Pest\Laravel\actingAs;
 
-it('only resolves supported relationships for subject event import columns', function () {
+it('only resolves supported relationships for subject event import columns', function (): void {
     $importer = new SubjectEventImporter(new Import, [], []);
 
     $recordProperty = new ReflectionProperty(Importer::class, 'record');
@@ -38,7 +38,7 @@ it('only resolves supported relationships for subject event import columns', fun
     }
 });
 
-it('validates the event column with Laravel validation callback arguments', function () {
+it('validates the event column with Laravel validation callback arguments', function (): void {
     $project = new Project;
     $project->id = 1;
 
@@ -77,7 +77,7 @@ it('validates the event column with Laravel validation callback arguments', func
         ->toBe("The event 'Unknown event' does not exist in this project.");
 });
 
-it('reuses relationship lookups and checks duplicates using foreign keys', function () {
+it('reuses relationship lookups and checks duplicates using foreign keys', function (): void {
     $user = User::factory()->create([
         'system_role' => SystemRoles::SuperAdmin,
     ]);

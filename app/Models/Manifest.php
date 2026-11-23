@@ -44,7 +44,7 @@ class Manifest extends Model
 
     public function specimens(): BelongsToMany
     {
-        return $this->belongsToMany(Specimen::class, 'manifest_items')
+        return $this->belongsToMany(Specimen::class, \App\Models\ManifestItem::class)
             ->using(ManifestItem::class)
             ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
             ->withTimestamps();

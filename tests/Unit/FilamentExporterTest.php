@@ -3,7 +3,7 @@
 use App\Filament\Exports\SpecimenExporter;
 use Filament\Actions\Exports\Models\Export;
 
-it('filters invalid exporter column map keys', function () {
+it('filters invalid exporter column map keys', function (): void {
     $export = new Export;
 
     $columnMap = [

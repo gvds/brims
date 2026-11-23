@@ -37,7 +37,7 @@ class StudyInfolist
                     ->label('Projects')
                     ->default('No Projects linked to this study')
                     ->badge(fn($record) => $record->projects->isNotEmpty())
-                    ->extraAttributes(fn($record) => $record->projects->isEmpty() ? ['class' => 'italic text-xs text-gray-500 dark:text-gray-400'] : []),
+                    ->extraAttributes(fn($record): array => $record->projects->isEmpty() ? ['class' => 'italic text-xs text-gray-500 dark:text-gray-400'] : []),
                 TextEntry::make('description'),
                 Grid::make(3)
                     ->schema([

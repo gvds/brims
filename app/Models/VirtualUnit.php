@@ -78,12 +78,12 @@ class VirtualUnit extends Model
 
     public function consolidate()
     {
-        if (($gaplocations = $this->gaplocations()->get())->count() === 0) {
+        if (($gaplocations = $this->gaplocations()->get())->isEmpty()) {
             throw new Exception('There are no gaps in this virtual unit');
         }
         $usedlocations = $this->usedlocations()->get();
         $relocations = [];
-        while ($gaplocations->count() > 0 && ($usedlocations->last()?->id ?? null) > ($gaplocations->last()?->id ?? null)) {
+        while ($gaplocations->isNotEmpty() && ($usedlocations->last()?->id ?? null) > ($gaplocations->last()?->id ?? null)) {
             $gaplocation = $gaplocations->shift();
             $usedlocation = $usedlocations->pop();
             $relocations[$gaplocation->id] = clone $usedlocation;

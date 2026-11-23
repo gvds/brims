@@ -212,8 +212,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
                                     ->color('danger')
                                     ->icon(Heroicon::Minus)
                                     ->requiresConfirmation(fn(): bool => $this->logged($type->id))
-                                    ->modalHeading(fn() => $this->logged($type->id) ? 'Delete ' . $type->name . ' Aliquot ' . ($i) : null)
-                                    ->modalDescription(fn() => $this->logged($type->id) ? 'The aliquot with barcode ' . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '') . ' will be deleted. Are you sure you want to do this?' : null)
+                                    ->modalHeading(fn(): ?string => $this->logged($type->id) ? 'Delete ' . $type->name . ' Aliquot ' . ($i) : null)
+                                    ->modalDescription(fn(): ?string => $this->logged($type->id) ? 'The aliquot with barcode ' . ($this->specimens[$type->id][count($this->specimens[$type->id]) - 1]['barcode'] ?? '') . ' will be deleted. Are you sure you want to do this?' : null)
                                     ->outlined()
                                     ->extraAttributes(['id' => 'removeAliquot_' . $type->id])
                                     ->modalSubmitAction(fn(Action $action): Action => $action->label('Delete')),

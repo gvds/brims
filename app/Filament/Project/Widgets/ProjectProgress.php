@@ -13,7 +13,7 @@ class ProjectProgress extends ChartWidget
     protected ?string $heading = 'Cumulative Enrolment by Site';
 
     /** @var list<string> */
-    private const SITE_COLOURS = [
+    private const array SITE_COLOURS = [
         '#2563eb',
         '#dc2626',
         '#16a34a',

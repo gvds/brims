@@ -235,9 +235,7 @@ it('searches users by name when choosing a member to attach', function (): void 
 
     livewire(MembersRelationManager::class, ['ownerRecord' => $study, 'pageClass' => ViewStudy::class])
         ->mountAction(TestAction::make(AttachAction::class)->table())
-        ->assertSchemaComponentExists('recordId', 'mountedActionSchema0', function (Select $select) use ($match): bool {
-            return $select->getSearchResults('Zelda') === [$match->id => 'Zelda Marsh'];
-        });
+        ->assertSchemaComponentExists('recordId', 'mountedActionSchema0', fn(Select $select): bool => $select->getSearchResults('Zelda') === [$match->id => 'Zelda Marsh']);
 });
 
 it('only offers team admins and members of linked projects as attachable members', function (): void {
@@ -252,9 +250,7 @@ it('only offers team admins and members of linked projects as attachable members
 
     livewire(MembersRelationManager::class, ['ownerRecord' => $study, 'pageClass' => ViewStudy::class])
         ->mountAction(TestAction::make(AttachAction::class)->table())
-        ->assertSchemaComponentExists('recordId', 'mountedActionSchema0', function (Select $select) use ($teamAdmin, $projectMember): bool {
-            return array_keys($select->getSearchResults('Zq')) === [$teamAdmin->id, $projectMember->id];
-        });
+        ->assertSchemaComponentExists('recordId', 'mountedActionSchema0', fn(Select $select): bool => array_keys($select->getSearchResults('Zq')) === [$teamAdmin->id, $projectMember->id]);
 });
 
 it('rejects removing a project that a study member depends on for eligibility', function (): void {

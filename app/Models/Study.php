@@ -37,7 +37,7 @@ class Study extends Model
 
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'study_member')
+        return $this->belongsToMany(User::class, \App\Models\StudyMember::class)
             ->using(StudyMember::class)
             ->withPivot(['role'])
             ->withTimestamps();
@@ -127,7 +127,7 @@ class Study extends Model
 
     public function specimens(): BelongsToMany
     {
-        return $this->belongsToMany(Specimen::class, 'study_specimens')
+        return $this->belongsToMany(Specimen::class, \App\Models\StudySpecimen::class)
             // ->using(StudySpecimen::class)
             ->withTimestamps();
     }

@@ -41,7 +41,7 @@ it('charts cumulative enrolment per site by month from the submission date', fun
     $enrol($siteB, '2026-02-10', 'B1');
 
     $widget = new ProjectProgress;
-    $data = (new ReflectionMethod($widget, 'getData'))->invoke($widget);
+    $data = new ReflectionMethod($widget, 'getData')->invoke($widget);
 
     expect($data['labels'])->toBe(['Jan 2026', 'Feb 2026', 'Mar 2026', 'Apr 2026'])
         ->and($data['datasets'])->toHaveCount(2)

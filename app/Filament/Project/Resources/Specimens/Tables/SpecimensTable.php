@@ -205,9 +205,7 @@ class SpecimensTable
                         ->exporter(SpecimenExporter::class)
                         ->accessSelectedRecords()
                         ->columnMappingColumns(3)
-                        ->modifyQueryUsing(function ($query, $records) {
-                            return $query->whereKey($records);
-                        }),
+                        ->modifyQueryUsing(fn($query, $records) => $query->whereKey($records)),
                 ])->visible(fn (): bool => session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() > 0),

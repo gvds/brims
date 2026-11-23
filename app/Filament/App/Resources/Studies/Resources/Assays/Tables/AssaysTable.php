@@ -66,7 +66,7 @@ class AssaysTable
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->modalContentFooter(fn ($record) => view('filament.resources.assays.pages.partials.tus-uploader', [
+                    ->modalContentFooter(fn ($record): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('filament.resources.assays.pages.partials.tus-uploader', [
                         'assay' => $record,
                         'infos' => $relationManager->infos,
                     ]))

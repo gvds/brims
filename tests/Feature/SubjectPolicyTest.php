@@ -185,7 +185,7 @@ it('sets the project team before the route-level Manage:Subject gate runs', func
 
     $this->actingAs($user);
 
-    Route::get('/subject-access-check', fn() => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
+    Route::get('/subject-access-check', fn(): string => 'ok')->middleware(['auth', SetUserTeam::class, 'can:Manage:Subject']);
 
     $this->get('/subject-access-check')->assertOk();
 });

@@ -24,7 +24,7 @@ class LabelController extends Controller
     public function __invoke(Request $request)
     {
         $labelFormats = LabelSpecification::all()->pluck('format');
-        if (! $labelFormats->contains($request->labelFormat)) {
+        if ($labelFormats->doesntContain($request->labelFormat)) {
             echo "The '" . $request->labelFormat . "' label format specified for this project is not valid.";
             exit;
         }

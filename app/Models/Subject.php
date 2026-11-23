@@ -60,7 +60,7 @@ class Subject extends Model
 
     public function events(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class, 'subject_event', 'subject_id', 'event_id')
+        return $this->belongsToMany(Event::class, \App\Models\SubjectEvent::class, 'subject_id', 'event_id')
             ->using(SubjectEvent::class)
             ->withPivot('id', 'iteration', 'status', 'labelstatus', 'eventDate', 'minDate', 'maxDate', 'logDate')
             ->withTimestamps();

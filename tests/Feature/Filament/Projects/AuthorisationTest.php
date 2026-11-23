@@ -104,20 +104,20 @@ beforeEach(function (): void {
     Filament::bootCurrentPanel();
 });
 
-it('can access the project panel of a project of which it is a member', function () {
+it('can access the project panel of a project of which it is a member', function (): void {
     $this->get('/project/'.$this->project->id)
         ->assertStatus(200)
         ->assertSee('Main Panel')
         ->assertSee('Project Configuration');
 });
 
-it('cannot access the project panel of a project of which it is not a member', function () {
+it('cannot access the project panel of a project of which it is not a member', function (): void {
     actingAs($this->user3);
     $this->get('/project/'.$this->project->id)
         ->assertStatus(404);
 });
 
-it('can access the project panel for another teams project of which it is a member', function () {
+it('can access the project panel for another teams project of which it is a member', function (): void {
     actingAs($this->user2);
     $this->get('/project/'.$this->project->id)
         ->assertStatus(200)
