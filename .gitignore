@@ -21,15 +21,8 @@
 /database/testing*
 Thumbs.db
 tests/Browser/Screenshots
-composer.lock
-package-lock.json
 /data
 /config/composer
-
-**/caddy
-frankenphp
-frankenphp-worker.php
-/config/octane.php
 
 # Playwright
 node_modules/
@@ -38,4 +31,3 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-.env.lerd_override
