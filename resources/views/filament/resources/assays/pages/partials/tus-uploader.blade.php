@@ -48,8 +48,11 @@
             </template>
         </div>
     </div>
-    <!-- Upload Dropzone -->
+
     <div class="font-semibold text-sm">Assay Files</div>
+
+    <!-- Upload Dropzone -->
+    @can('update', $assay->study)
     <div class="rounded-md border bg-gray-100 p-4 mt-1">
         <div
             id="drag-drop-area"
@@ -77,6 +80,7 @@
             >
         </div>
     </div>
+    @endcan
 
     <!-- Upload Progress & Controls -->
     <div class='p-4 mt-5 border border-gray-300 rounded-md bg-white' x-show="uploads.length > 0">

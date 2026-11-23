@@ -19,6 +19,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 
 class SpecimensRelationManager extends RelationManager
@@ -170,7 +171,7 @@ class SpecimensRelationManager extends RelationManager
                             ->required(),
                     ])
                     ->multiple()
-                    ->hidden(fn(): bool => $this->ownerRecord->locked)
+                    ->hidden(fn(): bool => $this->ownerRecord->locked || Auth::user()->cannot('update', $this->ownerRecord))
                     ->attachAnother(false),
                 ImportAction::make()
                     ->importer(StudySpecimenImporter::class)
@@ -178,7 +179,7 @@ class SpecimensRelationManager extends RelationManager
                         'study' => $this->ownerRecord,
                         'projectIds' => $this->linkedProjectIds(),
                     ])
-                    ->hidden(fn(): bool => $this->ownerRecord->locked)
+                    ->hidden(fn(): bool => $this->ownerRecord->locked || Auth::user()->cannot('update', $this->ownerRecord))
                     ->color(Color::Indigo),
                 ExportAction::make()
                     ->label('Export Specimens')
@@ -188,13 +189,13 @@ class SpecimensRelationManager extends RelationManager
             ->recordActions([
                 // EditAction::make(),
                 DetachAction::make()
-                    ->hidden(fn(): bool => $this->ownerRecord->locked),
+                    ->hidden(fn(): bool => $this->ownerRecord->locked || Auth::user()->cannot('update', $this->ownerRecord)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DetachBulkAction::make(),
+                    DetachBulkAction::make()
+                        ->hidden(fn(): bool => $this->ownerRecord->locked || Auth::user()->cannot('update', $this->ownerRecord)),
                 ])
-                    ->hidden(fn(): bool => $this->ownerRecord->locked),
             ]);
     }
 }

@@ -21,9 +21,9 @@ class AssaysRelationManager extends RelationManager
 
     public $infos = [];
 
-    public $files = null;
+    public ?array $files = null;
 
-    public $filename = null;
+    public ?string $filename = null;
 
     #[\Override]
     public function isReadOnly(): bool
@@ -64,7 +64,7 @@ class AssaysRelationManager extends RelationManager
         foreach ($assays as $assay) {
             if (is_array($assay->assayfiles)) {
                 foreach ($assay->assayfiles as $file) {
-                    $assayfiles[] = $file.'.info';
+                    $assayfiles[] = $file . '.info';
                 }
             }
         }
@@ -100,7 +100,7 @@ class AssaysRelationManager extends RelationManager
         }
     }
 
-    public function download($file, $filename)
+    public function download(string $file, string $filename)
     {
         try {
             if (! Storage::disk('s3')->exists($file)) {
@@ -131,13 +131,13 @@ class AssaysRelationManager extends RelationManager
         }
     }
 
-    public function delete($storedFilename, $assay_id)
+    public function delete(string $storedFilename, int $assay_id)
     {
         $assay = Assay::find($assay_id);
 
         if ($assay) {
             $assayFiles = is_array($assay->assayfiles) ? $assay->assayfiles : [];
-            $assayFiles = array_values(array_filter($assayFiles, fn ($f): bool => $f !== $storedFilename));
+            $assayFiles = array_values(array_filter($assayFiles, fn($f): bool => $f !== $storedFilename));
             $assay->assayfiles = $assayFiles;
             $assay->save();
 
@@ -149,7 +149,7 @@ class AssaysRelationManager extends RelationManager
 
         // Delete the file and its metadata from S3
         Storage::disk('s3')->delete($storedFilename);
-        Storage::disk('s3')->delete($storedFilename.'.info');
+        Storage::disk('s3')->delete($storedFilename . '.info');
 
         $this->getFileMetadata();
     }
@@ -222,8 +222,8 @@ class AssaysRelationManager extends RelationManager
         if ($fileName) {
             try {
                 $storageDeleted = Storage::disk('s3')->delete($fileName);
-                $partDeleted = Storage::disk('s3')->delete($fileName.'.part');
-                Storage::disk('s3')->delete($fileName.'.info');
+                $partDeleted = Storage::disk('s3')->delete($fileName . '.part');
+                Storage::disk('s3')->delete($fileName . '.info');
 
                 Log::info('Files deleted from S3 storage', [
                     'file_name' => $fileName,
