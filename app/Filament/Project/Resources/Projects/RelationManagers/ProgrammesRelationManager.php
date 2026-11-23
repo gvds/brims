@@ -38,8 +38,8 @@ class ProgrammesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
-                'team' => fn (BelongsTo $teamQuery) => $teamQuery
+            ->modifyQueryUsing(fn(Builder $query): Builder => $query->with([
+                'team' => fn(BelongsTo $teamQuery) => $teamQuery
                     ->withoutGlobalScope(TeamScope::class)
                     ->select(['id', 'name']),
             ]))
@@ -71,10 +71,12 @@ class ProgrammesRelationManager extends RelationManager
             ->headerActions([
                 AttachAction::make()
                     ->preloadRecordSelect()
-                    ->attachAnother(false),
+                    ->attachAnother(false)
+                    ->visible(fn(): bool => Auth::user()->can('Update:Project')),
             ])
             ->recordActions([
-                DetachAction::make(),
+                DetachAction::make()
+                    ->visible(fn(): bool => Auth::user()->can('Update:Project')),
             ])
             ->toolbarActions([
                 //

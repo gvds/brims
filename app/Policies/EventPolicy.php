@@ -14,31 +14,31 @@ class EventPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'View:Event');
+        return evaluate_permission($authUser, 'View:Project');
     }
 
     public function view(AuthUser $authUser, Event $event): bool
     {
-        return evaluate_permission($authUser, 'View:Event');
+        return evaluate_permission($authUser, 'View:Project');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'Manage:Event');
+        return evaluate_permission($authUser, 'Manage:Project');
     }
 
     public function update(AuthUser $authUser, Event $event): bool
     {
-        return evaluate_permission($authUser, 'Manage:Event');
+        return evaluate_permission($authUser, 'Manage:Project');
     }
 
     public function delete(AuthUser $authUser, Event $event): bool
     {
-        return evaluate_permission($authUser, 'Delete:Event');
+        return evaluate_permission($authUser, 'Delete:Project');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return evaluate_permission($authUser, 'Delete:Event');
+        return evaluate_permission($authUser, 'Delete:Project');
     }
 }
