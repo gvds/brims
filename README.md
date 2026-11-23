@@ -15,7 +15,7 @@ BRIMS is a multi-site, research project management system that integrates a numb
 
 BRIMS is a web-based application developed using the Laravel PHP framework with Filament UI framemwork
 
-**This application is in Beta release and should not be deployed in mission-critical environments.**
+**This application is in Beta release and should be deployed with caution. It is, however, currently in production at Stellenbosch University.**
 
 *The developement of this software was financially supported by a grant from the South African National Research Foundation.*
 
