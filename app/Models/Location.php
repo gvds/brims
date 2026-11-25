@@ -15,4 +15,14 @@ class Location extends Model
     {
         return $this->belongsTo(VirtualUnit::class, 'virtual_unit_id');
     }
+
+    public function free(): bool
+    {
+        return $this->update([
+            'used' => false,
+            'specimen_id' => null,
+            'barcode' => null,
+            'virgin' => false,
+        ]);
+    }
 }

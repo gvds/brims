@@ -23,14 +23,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SpecimensTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
-                'subjectEvent' => fn ($query) => $query->withoutGlobalScope(SubjectEventScope::class),
+            ->modifyQueryUsing(fn(Builder $query): Builder => $query->with([
+                'subjectEvent' => fn($query) => $query->withoutGlobalScope(SubjectEventScope::class),
                 'subjectEvent.arm',
                 'subjectEvent.event',
             ]))
@@ -43,7 +44,7 @@ class SpecimensTable
                 TextColumn::make('subjectEvent.arm.name')
                     ->label('Arm')
                     ->searchable(
-                        query: fn (Builder $query, string $search): Builder => self::searchSubjectEvent($query, 'event.arm', 'arms.name', $search),
+                        query: fn(Builder $query, string $search): Builder => self::searchSubjectEvent($query, 'event.arm', 'arms.name', $search),
                         isIndividual: true,
                         isGlobal: false
                     ),
@@ -63,8 +64,8 @@ class SpecimensTable
                     ->searchable(
                         query: function (Builder $query, string $search): Builder {
                             $matchingStatuses = collect(SpecimenStatus::cases())
-                                ->filter(fn ($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
-                                ->map(fn ($status) => $status->value);
+                                ->filter(fn($status): bool => str_contains(strtolower((string) $status->getLabel()), strtolower($search)))
+                                ->map(fn($status) => $status->value);
 
                             return $query->whereIn('status', $matchingStatuses);
                         },
@@ -112,7 +113,7 @@ class SpecimensTable
                                 $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::Used, $records->pluck('barcode')->implode(','));
                                 Notification::make()
                                     ->title('Specimens Logged as Used')
-                                    ->body($specimen_count.' specimens have been logged as used.')
+                                    ->body($specimen_count . ' specimens have been logged as used.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -132,7 +133,7 @@ class SpecimensTable
                                 $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::LoggedOut, $records->pluck('barcode')->implode(','));
                                 Notification::make()
                                     ->title('Specimens Logged as Logged Out')
-                                    ->body($specimen_count.' specimens have been logged as logged out.')
+                                    ->body($specimen_count . ' specimens have been logged as logged out.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -160,7 +161,7 @@ class SpecimensTable
                                 $specimen_count = (new LogSpecimenStatus)(SpecimenStatus::InStorage, $records->pluck('barcode')->implode(','), $thawed);
                                 Notification::make()
                                     ->title('Specimens Logged as Returned to Storage')
-                                    ->body($specimen_count.' specimens have been logged as returned to storage.')
+                                    ->body($specimen_count . ' specimens have been logged as returned to storage.')
                                     ->success()
                                     ->send();
                             } catch (\Throwable $th) {
@@ -182,22 +183,51 @@ class SpecimensTable
                                 ->distinct()
                                 ->pluck('parentSpecimen_id');
                             $blockedBarcodes = $records
-                                ->filter(fn (Specimen $record): bool => $specimenIdsWithDerivatives->contains($record->getKey()))
+                                ->filter(fn(Specimen $record): bool => $specimenIdsWithDerivatives->contains($record->getKey()))
                                 ->pluck('barcode')
                                 ->implode(', ');
 
-                            if (blank($blockedBarcodes)) {
+                            if (! blank($blockedBarcodes)) {
+                                Notification::make()
+                                    ->title('Cannot delete specimen')
+                                    ->body("The following selected specimens cannot be deleted because they have derivative specimens: {$blockedBarcodes}. Delete the derivative specimens first, then try again.")
+                                    ->danger()
+                                    ->persistent()
+                                    ->send();
+
+                                $action->halt();
                                 return;
                             }
 
-                            Notification::make()
-                                ->title('Cannot delete specimen')
-                                ->body("The following selected specimens cannot be deleted because they have derivative specimens: {$blockedBarcodes}. Delete the derivative specimens first, then try again.")
-                                ->danger()
-                                ->persistent()
-                                ->send();
+                            $specimensInStorage = $records
+                                ->filter(fn(Specimen $record): bool => $record->status === SpecimenStatus::InStorage);
 
-                            $action->halt();
+                            DB::beginTransaction();
+                            try {
+                                foreach ($specimensInStorage as $specimen) {
+                                    if ($specimen->specimenType->storageDestination !== 'Internal') {
+                                        continue;
+                                    }
+
+                                    $location = $specimen->getStorageLocation();
+                                    if (!$location) {
+                                        throw new \Exception("Specimen {$specimen->barcode} is marked as In Storage but has no associated storage location.");
+                                    }
+                                    $location->free();
+                                }
+                                DB::commit();
+                            } catch (\Throwable $th) {
+                                DB::rollBack();
+                                Notification::make()
+                                    ->title('Failed to free storage locations for specimens')
+                                    ->body($th->getMessage())
+                                    ->danger()
+                                    ->persistent()
+                                    ->send();
+
+                                $action->halt();
+                                return;
+                            }
                         }),
                     ExportAction::make('export')
                         ->label('Export')
@@ -206,7 +236,7 @@ class SpecimensTable
                         ->accessSelectedRecords()
                         ->columnMappingColumns(3)
                         ->modifyQueryUsing(fn($query, $records) => $query->whereKey($records)),
-                ])->visible(fn (): bool => session('currentProject')->members()
+                ])->visible(fn(): bool => session('currentProject')->members()
                     ->where('user_id', Auth::id())
                     ->count() > 0),
 
@@ -222,7 +252,7 @@ class SpecimensTable
         return $query->whereIn(
             'specimens.subject_event_id',
             SubjectEvent::withoutGlobalScope(SubjectEventScope::class)
-                ->whereHas($relation, fn (Builder $relationQuery): Builder => $relationQuery->where($column, 'like', "%{$search}%"))
+                ->whereHas($relation, fn(Builder $relationQuery): Builder => $relationQuery->where($column, 'like', "%{$search}%"))
                 ->select('subject_event.id')
         );
     }
