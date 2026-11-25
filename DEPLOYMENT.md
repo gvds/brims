@@ -134,7 +134,7 @@ composer install --optimize-autoloader --no-dev
 ### 3. Install and Build Frontend Assets
 
 ```bash
-npm install
+npm ci
 npm run build
 ```
 
@@ -511,7 +511,7 @@ Use this checklist for every deployment:
 
 - [ ] Pull latest code: `git pull origin main`
 - [ ] Install/update PHP dependencies: `composer install --optimize-autoloader --no-dev`
-- [ ] Install/update Node dependencies and rebuild assets: `npm install && npm run build`
+- [ ] Install/update Node dependencies and rebuild assets: `npm ci && npm run build`
 - [ ] Run pending migrations: `php artisan migrate --force`
 - [ ] If new resources or policies were added, regenerate permissions: `php artisan shield:generate --all --panel=project --option=permissions --no-interaction`
 - [ ] Clear and rebuild the optimization cache: `php artisan optimize`
@@ -535,7 +535,7 @@ git pull origin main
 
 # 3. Install/update dependencies
 composer install --optimize-autoloader --no-dev
-npm install && npm run build
+npm ci && npm run build
 
 # 4. Run any new database migrations
 php artisan migrate --force
