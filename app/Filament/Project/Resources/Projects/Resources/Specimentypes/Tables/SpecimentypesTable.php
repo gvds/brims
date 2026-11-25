@@ -2,12 +2,15 @@
 
 namespace App\Filament\Project\Resources\Projects\Resources\Specimentypes\Tables;
 
+use App\Filament\Exports\SpecimenTypeExporter;
 use App\Models\Specimentype;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -29,7 +32,7 @@ class SpecimentypesTable
                 IconColumn::make('pooled')
                     ->boolean(),
                 TextColumn::make('defaultVolume')
-                    ->formatStateUsing(fn (Specimentype $record): string => $record->defaultVolume.' '.$record->volumeUnit),
+                    ->formatStateUsing(fn(Specimentype $record): string => $record->defaultVolume . ' ' . $record->volumeUnit),
                 TextColumn::make('specimenGroup')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('labware.name')
@@ -43,7 +46,7 @@ class SpecimentypesTable
                 TextColumn::make('parentSpecimenType.name')
                     ->searchable(isIndividual: true, isGlobal: false),
                 TextColumn::make('transferDestinations')
-                    ->formatStateUsing(fn ($state) => collect($state)->implode(', '))
+                    ->formatStateUsing(fn($state) => collect($state)->implode(', '))
                     ->listWithLineBreaks()
                     ->searchable(isIndividual: true, isGlobal: false)
                     ->size('xs'),
@@ -66,6 +69,12 @@ class SpecimentypesTable
             ->deferFilters(false)
             ->headerActions([
                 CreateAction::make(),
+                ExportAction::make('specimenTypeExporter')
+                    ->exporter(SpecimenTypeExporter::class)
+                    ->columnMapping(false)
+                    ->label('Export')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color(Color::Indigo),
             ])
             ->recordActions([
                 EditAction::make(),
