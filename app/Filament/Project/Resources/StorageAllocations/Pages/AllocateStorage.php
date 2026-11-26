@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Computed;
 
 class AllocateStorage extends Page implements HasForms
 {
@@ -37,10 +38,6 @@ class AllocateStorage extends Page implements HasForms
 
     public ?Project $project = null;
 
-    public Collection $specimenTypes;
-
-    public SupportCollection $locationsCounts;
-
     public ?int $userSiteId = null;
 
     public function mount(): void
@@ -53,36 +50,59 @@ class AllocateStorage extends Page implements HasForms
             ->pivot
             ->site_id;
 
-        $loggedAtUserSite = fn($query) => $query
+        $this->form->fill();
+    }
+
+    /**
+     * Computed rather than public so the withCount attributes survive Livewire requests.
+     *
+     * @return Collection<int, Specimentype>
+     */
+    #[Computed]
+    public function specimenTypes(): Collection
+    {
+        $loggedAtUserSite = fn ($query) => $query
             ->where('status', SpecimenStatus::Logged)
             ->where('site_id', $this->userSiteId);
 
-        $this->specimenTypes = Specimentype::query()
+        return Specimentype::query()
             ->where('project_id', $this->project->id)
             ->whereNotNull('storageSpecimenType')
             ->whereHas('specimens', $loggedAtUserSite)
             ->withCount(['specimens' => $loggedAtUserSite])
             ->get();
+    }
 
-        $this->locationsCounts = VirtualUnit::query()
+    /**
+     * @return SupportCollection<string, int>
+     */
+    #[Computed]
+    public function locationsCounts(): SupportCollection
+    {
+        return VirtualUnit::query()
             ->where('project_id', $this->project->id)
             ->where('active', true)
             ->withCount('freeLocations')
             ->get()
             ->groupBy('storageSpecimenType')
-            ->map(fn(Collection $units): int => $units->sum('free_locations_count'));
-
-        $this->form->fill();
+            ->map(fn (Collection $units): int => $units->sum('free_locations_count'));
     }
 
-    public function form(Schema $form): Schema
+    /**
+     * @return SupportCollection<int, bool>
+     */
+    #[Computed]
+    public function insufficientStorage(): SupportCollection
     {
-        $insufficientStorage = $this->specimenTypes->mapWithKeys(function (Specimentype $type): array {
+        return $this->specimenTypes->mapWithKeys(function (Specimentype $type): array {
             $available = $this->locationsCounts->get($type->storageSpecimenType, 0);
 
             return [$type->id => $type->specimens_count > $available];
         });
+    }
 
+    public function form(Schema $form): Schema
+    {
         return $form
             ->schema([
                 Toggle::make('reuse_locations')
@@ -94,18 +114,18 @@ class AllocateStorage extends Page implements HasForms
                     ->label('Select specimen types to allocate to storage')
                     ->options($this->specimenTypes->pluck('name', 'id')->all())
                     ->descriptions(
-                        $this->specimenTypes->mapWithKeys(function (Specimentype $type) use ($insufficientStorage): array {
-                            $description = "{$type->specimens_count} " . str('specimen')->plural($type->specimens_count);
+                        $this->specimenTypes->mapWithKeys(function (Specimentype $type): array {
+                            $description = "{$type->specimens_count} ".str('specimen')->plural($type->specimens_count);
 
-                            if ($insufficientStorage->get($type->id)) {
+                            if ($this->insufficientStorage->get($type->id)) {
                                 $available = $this->locationsCounts->get($type->storageSpecimenType, 0);
-                                $description .= " — Insufficient storage: {$available} " . str('location')->plural($available) . ' available';
+                                $description .= " — Insufficient storage: {$available} ".str('location')->plural($available).' available';
                             }
 
                             return [$type->id => $description];
                         })->all()
                     )
-                    ->disableOptionWhen(fn(string $value): bool => $insufficientStorage->get((int) $value, false))
+                    ->disableOptionWhen(fn (string $value): bool => $this->insufficientStorage->get((int) $value, false))
                     ->required(),
             ])
             ->statePath('data');
