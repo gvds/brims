@@ -13,7 +13,7 @@
                     @if ($stage === 1)
                     Select Parent Specimen
                     @else
-                    Log specimens for Parent Specimen: <span class="font-bold">{{ $parent_specimen->barcode }}</span>
+                    Log Derivatives of Parent Specimen: <span class="font-bold">{{ $parent_specimen->barcode }}</span>
                     @endif
                 </div>
                 <div class="italic">Subject: <span class="font-bold">{{ $subject->subjectID }}</span> |

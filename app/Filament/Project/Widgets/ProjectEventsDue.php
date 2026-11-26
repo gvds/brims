@@ -24,7 +24,7 @@ class ProjectEventsDue extends TableWidget
             ->description('Click on a row to access the subject record')
             ->query(function (): Builder {
                 $dueEventIds = Cache::remember(
-                    'project_events_due.'.session('currentProject')->id.'.'.Auth::id(),
+                    'project_events_due.' . session('currentProject')->id . '.' . Auth::id(),
                     120,
                     function (): array {
                         $userIds = Auth::user()->substitutees
@@ -32,10 +32,10 @@ class ProjectEventsDue extends TableWidget
                             ->push(Auth::id());
 
                         return SubjectEvent::query()
-                            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                            ->whereIn('status', [EventStatus::Pending, EventStatus::Scheduled])
                             ->where('minDate', '<=', today())
                             ->where('maxDate', '>=', today())
-                            ->whereHas('subject', fn (Builder $query) => $query->whereIn('user_id', $userIds))
+                            ->whereHas('subject', fn(Builder $query) => $query->whereIn('user_id', $userIds))
                             ->pluck('id')
                             ->all();
                     }
@@ -56,7 +56,7 @@ class ProjectEventsDue extends TableWidget
             ->paginated(false)
             ->emptyStateHeading('')
             ->recordUrl(
-                fn (SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => session('currentProject')->id, 'record' => $record->subject_id])
+                fn(SubjectEvent $record): string => route('filament.project.resources.subjects.view', parameters: ['tenant' => session('currentProject')->id, 'record' => $record->subject_id])
             );
     }
 }

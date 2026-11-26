@@ -191,6 +191,29 @@ describe('AllocateStorage Page', function (): void {
             ->assertHasFormErrors(['specimenTypeIds' => 'required']);
     });
 
+    it('keeps specimen types with insufficient storage disabled after a failed submit', function (): void {
+        $specimenType = Specimentype::factory()
+            ->for($this->project)
+            ->for($this->labware, 'labware')
+            ->create(['storageSpecimenType' => 'Frozen Plasma']);
+
+        Specimen::factory()
+            ->count(3)
+            ->for($this->subjectEvent, 'subjectEvent')
+            ->for($specimenType, 'specimenType')
+            ->for($this->project)
+            ->for($this->site)
+            ->create([...$this->specimenDefaults, 'origin_site_id' => $this->site->id, 'status' => SpecimenStatus::Logged]);
+
+        $component = livewire(AllocateStorage::class)
+            ->assertSee('Insufficient storage')
+            ->call('allocate')
+            ->assertHasFormErrors(['specimenTypeIds' => 'required'])
+            ->assertSee('Insufficient storage');
+
+        expect($component->html())->toMatch('/<input[^>]*value="'.$specimenType->id.'"[^>]*disabled|<input[^>]*disabled[^>]*value="'.$specimenType->id.'"/');
+    });
+
     it('allocates specimens to virtual unit locations', function (): void {
         $storageType = 'Frozen Plasma';
 
@@ -289,7 +312,7 @@ describe('AllocateStorage Page', function (): void {
         ]);
     });
 
-    it('notifies when no virtual unit exists for storage type', function (): void {
+    it('rejects a specimen type when no virtual unit exists for its storage type', function (): void {
         $specimenType = Specimentype::factory()
             ->for($this->project)
             ->for($this->labware, 'labware')
@@ -305,10 +328,10 @@ describe('AllocateStorage Page', function (): void {
         livewire(AllocateStorage::class)
             ->set('data.specimenTypeIds', [$specimenType->id])
             ->call('allocate')
-            ->assertNotified();
+            ->assertHasFormErrors(['specimenTypeIds.0']);
     });
 
-    it('notifies when insufficient storage locations exist', function (): void {
+    it('rejects a specimen type when insufficient storage locations exist', function (): void {
         $storageType = 'Frozen Plasma';
 
         $specimenType = Specimentype::factory()
@@ -347,7 +370,7 @@ describe('AllocateStorage Page', function (): void {
         livewire(AllocateStorage::class)
             ->set('data.specimenTypeIds', [$specimenType->id])
             ->call('allocate')
-            ->assertNotified();
+            ->assertHasFormErrors(['specimenTypeIds.0']);
 
         expect(Specimen::withoutGlobalScopes()->where('specimenType_id', $specimenType->id)->where('status', SpecimenStatus::Logged)->count())->toBe(5);
     });

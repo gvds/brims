@@ -63,7 +63,7 @@ class EventsDue extends TableWidget
                 $subjectEventsTable = (new SubjectEvent)->getTable();
 
                 return SubjectEvent::query()
-                    ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+                    ->whereIn('status', [EventStatus::Pending, EventStatus::Scheduled])
                     ->where('minDate', '<=', today())
                     ->where('maxDate', '>=', today())
                     ->whereHas('subject', fn(Builder $query) => $query

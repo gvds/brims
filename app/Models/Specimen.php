@@ -64,7 +64,7 @@ class Specimen extends Model
 
     public function studies(): BelongsToMany
     {
-        return $this->belongsToMany(Study::class, \App\Models\StudySpecimen::class)
+        return $this->belongsToMany(Study::class, StudySpecimen::class)
             // ->using(StudySpecimen::class)
             ->withTimestamps();
     }
@@ -83,6 +83,7 @@ class Specimen extends Model
     public function logUsed(): void
     {
         $this->createAuditLog(SpecimenStatus::Used);
+        $this->freeStorageLocation();
         $this->setStatus(SpecimenStatus::Used);
     }
 
@@ -117,6 +118,7 @@ class Specimen extends Model
     public function logTransferred(): void
     {
         $this->createAuditLog(SpecimenStatus::Transferred);
+        $this->freeStorageLocation();
         $this->setStatus(SpecimenStatus::Transferred);
     }
 
@@ -125,6 +127,21 @@ class Specimen extends Model
         $this->createAuditLog(SpecimenStatus::Received);
         $this->setStatus(SpecimenStatus::Received);
         $this->update(['site_id' => $destinationSiteId]);
+    }
+
+    public function freeStorageLocation(): void
+    {
+        $location = $this->getStorageLocation();
+        if ($location) {
+            $location->free();
+        }
+    }
+
+    public function getStorageLocation(): ?Location
+    {
+        return Location::query()
+            ->where('specimen_id', $this->id)
+            ->first();
     }
 
     #[\Override]
@@ -167,7 +184,7 @@ class Specimen extends Model
 
     public function manifests(): BelongsToMany
     {
-        return $this->belongsToMany(Manifest::class, \App\Models\ManifestItem::class)
+        return $this->belongsToMany(Manifest::class, ManifestItem::class)
             ->using(ManifestItem::class)
             ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
             ->withTimestamps();

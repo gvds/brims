@@ -2,8 +2,10 @@
 
 namespace App\Filament\Project\Pages;
 
+use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;
 use App\Enums\StorageDestinations;
+use App\Enums\SubjectStatus;
 use App\Models\Scopes\SubjectEventScope;
 use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
@@ -112,8 +114,6 @@ class LogPrimarySpecimens extends Page implements HasForms
                             ->rules([new ValidPSE])
                             ->statePath('pse_barcode')
                             ->autofocus()
-                            // ->live(onBlur: true)
-                            // ->afterStateUpdated(fn() => $this->loadSpecimenBarcodes())
                             ->extraAttributes([
                                 'class' => 'w-full md:w-80',
                                 'x-on:keydown.enter.prevent' => '$wire.loadSpecimenBarcodes()',
@@ -204,7 +204,7 @@ class LogPrimarySpecimens extends Page implements HasForms
         }
     }
 
-    private function logged($specimenType_id): bool
+    private function logged(int $specimenType_id): bool
     {
         return $this->specimens[$specimenType_id][count($this->specimens[$specimenType_id]) - 1]['logged'] ?? false;
     }
@@ -240,6 +240,26 @@ class LogPrimarySpecimens extends Page implements HasForms
             Notification::make()
                 ->title('Error')
                 ->body('Subject event not found.')
+                ->color('danger')
+                ->send();
+
+            return;
+        }
+
+        if ($this->subject->status !== SubjectStatus::Enrolled) {
+            Notification::make()
+                ->title('Error')
+                ->body('Subject is not enrolled.')
+                ->color('danger')
+                ->send();
+
+            return;
+        }
+
+        if (in_array($this->subjectEvent->status, [EventStatus::Missed, EventStatus::Cancelled])) {
+            Notification::make()
+                ->title('Error')
+                ->body('Event has been ' . $this->subjectEvent->status->getLabel() . '. Specimens cannot be logged.')
                 ->color('danger')
                 ->send();
 

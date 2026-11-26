@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('public_release_date')->nullable();
             $table->string('subjectID_prefix', 10);
             $table->unsignedTinyInteger('subjectID_digits');
-            $table->string('storageDesignation', 40)->nullable();
+            $table->string('storageDesignation', 20)->nullable();
             $table->unsignedInteger('last_subject_number')->default(0);
             $table->unsignedInteger('redcapProject_id')->nullable()->unique();
             $table->string('label_format', 30);

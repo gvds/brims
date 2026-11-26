@@ -94,7 +94,7 @@ class Calendar extends Page
             ->whereHas('user', function ($query): void {
                 $query->whereIn('users.id', $this->user_ids);
             })
-            ->whereIn('status', [EventStatus::Pending, EventStatus::Primed, EventStatus::Scheduled])
+            ->whereIn('status', [EventStatus::Pending, EventStatus::Scheduled])
             ->where('maxDate', '>=', $this->date)
             ->where('eventDate', '<=', $this->date->copy()->addDays(30))
             ->orderBy('eventDate', 'asc')

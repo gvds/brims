@@ -34,13 +34,13 @@ class ProjectForm
                         Select::make('leader_id')
                             ->relationship(
                                 name: 'leader',
-                                modifyQueryUsing: fn (Builder $query, Model $record) => $query->where(
-                                    fn (Builder $query) => $query->where('team_id', $record->team_id)
+                                modifyQueryUsing: fn(Builder $query, Model $record) => $query->where(
+                                    fn(Builder $query) => $query->where('team_id', $record->team_id)
                                         ->orWhereIn('system_role', [SystemRoles::SysAdmin->value, SystemRoles::SuperAdmin->value])
                                 )
                             )
                             ->getOptionLabelFromRecordUsing(
-                                fn ($record) => $record->fullname
+                                fn($record) => $record->fullname
                             )
                             ->required(),
                         Fieldset::make('Subject ID')
@@ -62,8 +62,9 @@ class ProjectForm
                             ->schema([
                                 TextInput::make('storageDesignation')
                                     ->label('Storage Designation')
-                                    // ->required()
-                                    ->maxLength(40),
+                                    ->rule('regex:/^[A-Za-z][A-Za-z0-9_]{2,19}$/')
+                                    ->maxLength(20)
+                                    ->minLength(3),
                                 Select::make('label_format')
                                     ->label('Label Format')
                                     ->relationship('labelSpecification', 'format')

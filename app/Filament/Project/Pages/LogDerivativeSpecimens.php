@@ -2,8 +2,10 @@
 
 namespace App\Filament\Project\Pages;
 
+use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;
 use App\Enums\StorageDestinations;
+use App\Enums\SubjectStatus;
 use App\Models\Scopes\SubjectEventScope;
 use App\Models\Scopes\SubjectScope;
 use App\Models\Specimen;
@@ -70,6 +72,8 @@ class LogDerivativeSpecimens extends Page implements HasForms
     public ?Specimen $parent_specimen = null;
 
     public Collection $potentialParentSpecimens;
+
+    public string|bool|int $mark_parent_used = 0;
 
     protected $listeners = ['updateform' => '$refresh'];
 
@@ -169,6 +173,20 @@ class LogDerivativeSpecimens extends Page implements HasForms
         } else {
             // Stage 2 - Specimen Barcodes and Volumes
             $sections = [];
+            $sections[] = Section::make('Mark parent specimen as used?')
+                ->schema([
+                    ToggleButtons::make('mark_parent_used')
+                        ->hiddenLabel()
+                        ->options([0 => 'No', 1 => 'Yes'])
+                        ->colors([0 => 'danger', 1 => 'success'])
+                        ->statePath('mark_parent_used')
+                        ->grouped()
+                        ->required(),
+                ])
+                ->compact()
+                ->columns(1)
+                ->visible(fn(): bool => $this->parent_specimen?->status !== SpecimenStatus::Used)
+                ->extraAttributes(['class' => 'py-0']);
             $groupedTypes = $this->specimenTypes->sortBy('specimenGroup')->groupBy('specimenGroup');
             foreach ($groupedTypes as $group => $types) {
                 $specimenTypes = [];
@@ -333,6 +351,26 @@ class LogDerivativeSpecimens extends Page implements HasForms
             return;
         }
 
+        if ($this->subject->status !== SubjectStatus::Enrolled) {
+            Notification::make()
+                ->title('Error')
+                ->body('Subject is not enrolled.')
+                ->color('danger')
+                ->send();
+
+            return;
+        }
+
+        if (in_array($this->subjectEvent->status, [EventStatus::Missed, EventStatus::Cancelled])) {
+            Notification::make()
+                ->title('Error')
+                ->body('Event has been ' . $this->subjectEvent->status->getLabel() . '. Specimens cannot be logged.')
+                ->color('danger')
+                ->send();
+
+            return;
+        }
+
         $parentalSpecimenTypes = Specimentype::where('project_id', session('currentProject')->id)
             ->whereNotNull('parentSpecimenType_id')
             ->pluck('parentSpecimenType_id')
@@ -412,6 +450,15 @@ class LogDerivativeSpecimens extends Page implements HasForms
                 }
             }
 
+            if ($this->mark_parent_used && $this->parent_specimen->status !== SpecimenStatus::Used) {
+                $this->parent_specimen->logUsed();
+                Notification::make()
+                    ->title('Parent Specimen Marked as Used')
+                    ->body('The parent specimen ' . $this->parent_specimen->barcode . ' has been marked as used.')
+                    ->color('success')
+                    ->send();
+            }
+
             DB::commit();
 
             Notification::make()
@@ -421,7 +468,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
                 ->send();
 
             // Reset form for new entry
-            $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stage', 'parent_specimen']);
+            $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stage', 'parent_specimen', 'mark_parent_used']);
             $this->initializeSpecimenTypes();
 
             $this->dispatch('updateform');
@@ -438,7 +485,7 @@ class LogDerivativeSpecimens extends Page implements HasForms
 
     public function resetForm(): void
     {
-        $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stage']);
+        $this->reset(['parent_barcode', 'specimens', 'subjectEvent', 'subject', 'stage', 'parent_specimen', 'mark_parent_used']);
         $this->initializeSpecimenTypes();
         $this->dispatch('updateform');
     }

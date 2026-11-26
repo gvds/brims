@@ -8,7 +8,7 @@ use Filament\Support\Contracts\HasLabel;
 enum EventStatus: int implements HasColor, HasLabel
 {
     case Pending = 0;
-    case Primed = 1;
+        // case Primed = 1;
     case Scheduled = 2;
     case Logged = 3;
     case LoggedLate = 4;
@@ -24,7 +24,7 @@ enum EventStatus: int implements HasColor, HasLabel
     {
         return match ($this) {
             self::Pending => 'gray',
-            self::Primed => 'info',
+            // self::Primed => 'info',
             self::Scheduled => 'warning',
             self::Logged => 'success',
             self::LoggedLate => 'success',
