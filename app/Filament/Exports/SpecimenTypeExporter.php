@@ -30,7 +30,6 @@ class SpecimenTypeExporter extends Exporter
             ExportColumn::make('pooled'),
             ExportColumn::make('defaultVolume'),
             ExportColumn::make('volumeUnit'),
-            ExportColumn::make('store'),
             ExportColumn::make('transferDestinations')
                 ->formatStateUsing(function ($state): string {
                     if (is_string($state)) {
@@ -45,6 +44,7 @@ class SpecimenTypeExporter extends Exporter
                 }),
             ExportColumn::make('specimenGroup'),
             ExportColumn::make('labware.name'),
+            ExportColumn::make('store'),
             ExportColumn::make('storageDestination'),
             ExportColumn::make('storageSpecimenType'),
             ExportColumn::make('parentSpecimenType.name'),
