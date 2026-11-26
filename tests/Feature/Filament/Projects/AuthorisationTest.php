@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\EventStatus;
 use App\Enums\SubjectStatus;
 use App\Enums\SystemRoles;
 use App\Filament\Project\Resources\Projects\Pages\ViewProject;
@@ -78,7 +79,7 @@ beforeEach(function (): void {
     Arm::factory()
         ->count(1)
         ->for($this->project)
-        ->sequence(fn (Sequence $sequence): array => [
+        ->sequence(fn(Sequence $sequence): array => [
             'arm_num' => $sequence->index + 1,
             'manual_enrol' => $sequence->index === 0 ? true : false,
         ])
@@ -105,7 +106,7 @@ beforeEach(function (): void {
 });
 
 it('can access the project panel of a project of which it is a member', function (): void {
-    $this->get('/project/'.$this->project->id)
+    $this->get('/project/' . $this->project->id)
         ->assertStatus(200)
         ->assertSee('Main Panel')
         ->assertSee('Project Configuration');
@@ -113,20 +114,20 @@ it('can access the project panel of a project of which it is a member', function
 
 it('cannot access the project panel of a project of which it is not a member', function (): void {
     actingAs($this->user3);
-    $this->get('/project/'.$this->project->id)
+    $this->get('/project/' . $this->project->id)
         ->assertStatus(404);
 });
 
 it('can access the project panel for another teams project of which it is a member', function (): void {
     actingAs($this->user2);
-    $this->get('/project/'.$this->project->id)
+    $this->get('/project/' . $this->project->id)
         ->assertStatus(200)
         ->assertSee('Main Panel')
         ->assertSee('Project Configuration');
 });
 
 test('that a user with no permissions cannot see any project function links', function (): void {
-    $this->get('/project/'.$this->project->id)
+    $this->get('/project/' . $this->project->id)
         ->assertDontSee('Subjects')
         ->assertDontSee('Generate Schedule')
         ->assertDontSee('Label Queue')
@@ -138,7 +139,7 @@ test('that a user with no permissions cannot see any project function links', fu
 });
 
 test('that a user with no permissions cannot see any relationmanagers under project configuration', function (): void {
-    $this->get('/project/'.$this->project->id.'/projects/'.$this->project->id)
+    $this->get('/project/' . $this->project->id . '/projects/' . $this->project->id)
         ->assertSee('Title')
         ->assertDontSee('Members')
         ->assertDontSee('Sites')
@@ -153,7 +154,7 @@ it('shows every project relation manager to a user with View:Project permission'
     $this->user->givePermissionTo($permission);
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    $this->get('/project/'.$this->project->id.'/projects/'.$this->project->id)
+    $this->get('/project/' . $this->project->id . '/projects/' . $this->project->id)
         ->assertOk()
         ->assertSee('Members')
         ->assertSee('Sites')
@@ -198,7 +199,7 @@ it('shows the members relation manager when the project membership role has View
 
     expect($this->user->can('View:Project'))->toBeFalse();
 
-    $this->get('/project/'.$this->project->id.'/projects/'.$this->project->id)
+    $this->get('/project/' . $this->project->id . '/projects/' . $this->project->id)
         ->assertOk()
         ->assertSee('Members');
 });
@@ -238,7 +239,7 @@ it('cannot access the schedule route without Mangage:Subject permission', functi
 });
 
 it('cannot access the subjects page without View:Subject permission', function (): void {
-    $this->get('/project/'.$this->project->id.'/subjects')
+    $this->get('/project/' . $this->project->id . '/subjects')
         ->assertForbidden();
 });
 
@@ -247,7 +248,7 @@ it('can see the subjects link given View:Subject permission', function (): void 
     $this->user->givePermissionTo($permission);
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    $this->get('/project/'.$this->project->id)
+    $this->get('/project/' . $this->project->id)
         ->assertSee('Subjects');
 });
 
@@ -256,7 +257,7 @@ it('can access the subjects list page given View:Subject permission', function (
     $this->user->givePermissionTo($permission);
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    $this->get('/project/'.$this->project->id.'/subjects')
+    $this->get('/project/' . $this->project->id . '/subjects')
         ->assertOk()
         ->assertSee('Generate subjects')
         ->assertSee('Subject ID');
@@ -276,7 +277,7 @@ it('can view an enrolled subject given View:Subject permission', function (): vo
         'status' => SubjectStatus::Enrolled,
     ]);
 
-    $this->get('/project/'.$this->project->id.'/subjects/'.$subject->id)
+    $this->get('/project/' . $this->project->id . '/subjects/' . $subject->id)
         ->assertSee('View Subject')
         ->assertSee($subject->subjectID);
 });
@@ -287,7 +288,7 @@ it('cannot access the create_subjects modal without Manage:Subject permission', 
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
     actingAs($this->user);
-    $this->get('/project/'.$this->project->id.'/subjects')
+    $this->get('/project/' . $this->project->id . '/subjects')
         ->assertOk();
 
     livewire(ListSubjects::class)
@@ -332,7 +333,7 @@ it('cannot edit an enrolled subject without Manage:Subject permission', function
         'status' => SubjectStatus::Enrolled,
     ]);
 
-    $this->get('/project/'.$this->project->id.'/subjects/'.$subject->id.'/edit')
+    $this->get('/project/' . $this->project->id . '/subjects/' . $subject->id . '/edit')
         ->assertForbidden();
 });
 
@@ -352,7 +353,7 @@ it('can edit an enrolled subject given Manage:Subject permission', function (): 
         'status' => SubjectStatus::Enrolled,
     ]);
 
-    $this->get('/project/'.$this->project->id.'/subjects/'.$subject->id.'/edit')
+    $this->get('/project/' . $this->project->id . '/subjects/' . $subject->id . '/edit')
         ->assertOk()
         ->assertSee('Edit Subject');
 });
@@ -384,7 +385,7 @@ it('can generate a schedule given Mangage:Subject permission', function (): void
 });
 
 it('cannot access the specimens page without View:Specimens permission', function (): void {
-    $this->get('/project/'.$this->project->id.'/specimens')
+    $this->get('/project/' . $this->project->id . '/specimens')
         ->assertForbidden();
 });
 
@@ -393,7 +394,7 @@ it('can see the specimens link given View:Specimens permission', function (): vo
     $this->user->givePermissionTo($permission);
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    $this->get('/project/'.$this->project->id)
+    $this->get('/project/' . $this->project->id)
         ->assertSee('Specimens');
 });
 
@@ -402,7 +403,7 @@ it('can access the specimens list page given View:Specimens permission', functio
     $this->user->givePermissionTo($permission);
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
-    $this->get('/project/'.$this->project->id.'/specimens')
+    $this->get('/project/' . $this->project->id . '/specimens')
         ->assertOk()
         ->assertSee('Export')
         ->assertSee('Barcode');
@@ -433,7 +434,7 @@ it('can view a specimen given View:Specimen permission', function (): void {
         'eventDate' => now(),
         'minDate' => now(),
         'maxDate' => now()->addDays(7),
-        'status' => 1,
+        'status' => EventStatus::Scheduled,
     ]);
 
     $specimenType = Specimentype::factory()->create([
@@ -454,8 +455,8 @@ it('can view a specimen given View:Specimen permission', function (): void {
             'loggedAt' => now(),
         ]);
 
-    $this->get('/project/'.$this->project->id.'/specimens/'.$specimen->id)
-        ->assertSee('View '.$specimen->barcode);
+    $this->get('/project/' . $this->project->id . '/specimens/' . $specimen->id)
+        ->assertSee('View ' . $specimen->barcode);
 });
 
 it('can edit a specimen given Manage:Specimen permission', function (): void {
@@ -485,7 +486,7 @@ it('can edit a specimen given Manage:Specimen permission', function (): void {
         'eventDate' => now(),
         'minDate' => now(),
         'maxDate' => now()->addDays(7),
-        'status' => 1,
+        'status' => EventStatus::Scheduled,
     ]);
 
     $specimenType = Specimentype::factory()->create([

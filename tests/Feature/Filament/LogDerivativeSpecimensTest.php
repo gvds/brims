@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\EventStatus;
 use App\Enums\SpecimenStatus;
+use App\Enums\SubjectStatus;
 use App\Filament\Project\Pages\LogDerivativeSpecimens;
 use App\Models\Arm;
 use App\Models\Event;
@@ -84,6 +86,7 @@ beforeEach(function (): void {
         ->for($this->user)
         ->create([
             'subjectID' => 'TEST001',
+            'status' => SubjectStatus::Enrolled,
         ]);
 
     // Create an arm for the project
@@ -100,7 +103,7 @@ beforeEach(function (): void {
     $this->subjectEvent = SubjectEvent::create([
         'subject_id' => $this->subject->id,
         'event_id' => $this->event->id,
-        'status' => 3, // Status that allows logging
+        'status' => EventStatus::Logged, // Status that allows logging
     ]);
 
     // Create a parent specimen
