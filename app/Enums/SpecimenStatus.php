@@ -8,7 +8,7 @@ use Filament\Support\Contracts\HasLabel;
 enum SpecimenStatus: int implements HasColor, HasLabel
 {
     case Unassigned = 0;
-    case Registered = 1;
+    // case Registered = 1;
     case Logged = 2;
     case InStorage = 3;
     case PreTransfer = 4;

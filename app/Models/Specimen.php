@@ -64,7 +64,7 @@ class Specimen extends Model
 
     public function studies(): BelongsToMany
     {
-        return $this->belongsToMany(Study::class, \App\Models\StudySpecimen::class)
+        return $this->belongsToMany(Study::class, StudySpecimen::class)
             // ->using(StudySpecimen::class)
             ->withTimestamps();
     }
@@ -137,7 +137,7 @@ class Specimen extends Model
         }
     }
 
-    public function getStorageLocation(): Location
+    public function getStorageLocation(): ?Location
     {
         return Location::query()
             ->where('specimen_id', $this->id)
@@ -184,7 +184,7 @@ class Specimen extends Model
 
     public function manifests(): BelongsToMany
     {
-        return $this->belongsToMany(Manifest::class, \App\Models\ManifestItem::class)
+        return $this->belongsToMany(Manifest::class, ManifestItem::class)
             ->using(ManifestItem::class)
             ->withPivot(['id', 'priorSpecimenStatus', 'received', 'receivedTime'])
             ->withTimestamps();
