@@ -148,9 +148,9 @@ class SubjectEventsRelationManager extends RelationManager
                     })
                     ->visible(
                         fn($record, $livewire): bool => $record->event->repeatable &&
-                            $record->status !== EventStatus::Cancelled &&
+                            in_array($record->status, [EventStatus::Logged, EventStatus::LoggedLate]) &&
                             $record->iteration === SubjectEvent::where('subject_id', $record->subject_id)->where('event_id', $record->event->id)->max('iteration') &&
-                            $record->eventDate > SubjectEvent::where('subject_id', $record->subject_id)->where('event_id', $record->event->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
+                            $record->eventDate >= SubjectEvent::where('subject_id', $record->subject_id)->where('event_id', $record->event->id)->whereIn('status', [EventStatus::Logged, EventStatus::LoggedLate])->max('eventDate') &&
                             $livewire->getOwnerRecord()->status === SubjectStatus::Enrolled
                     )
                     ->requiresConfirmation()
